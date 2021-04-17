@@ -1,0 +1,190 @@
+//TODO rename english_retranslation
+//TODO other versions:
+//english, brazilian, french, japan, korean, russian_old, russian
+
+none=None
+
+; The names of heroes
+
+hero0=Alisa
+hero1=Myau
+hero2=Tylon
+hero3=Lutz
+
+// TODO maps,  ...
+
+church0=Alisa Home
+church1=Camineet
+church2=Gothic
+church3=Loar
+church4=Paseo
+church5=Uzo
+church6=Casba
+church7=Twintown
+church8=Skure
+
+;       title             attack   use by
+weapon0=Wood Cane       ;   3   ;   0,2,3
+weapon1=Short Sword     ;   4   ;   0,2,3
+weapon2=Iron Sword      ;   12  ;   0,2
+weapon3=Psycho Wand     ;   10  ;   0,2,3
+weapon4=Saber Claw      ;   10  ;   1
+weapon5=Iron Axe        ;   10  ;   2
+weapon6=Titanium Sword  ;   21  ;   0,2
+weapon7=Ceramic Sword   ;   31  ;   0,2
+weapon8=Needle Gun      ;   18  ;   2
+weapon9=Silver Tusk    ;   30  ;   1
+weapon10=Heat Gun       ;   30  ;   2
+weapon11=Light Saber    ;   46  ;   0,2
+weapon12=Laser Gun      ;   50  ;   2
+weapon13=Laconian Sword ;   60  ;   0,2
+weapon14=Laconian Axe   ;   80  ;   2
+
+; 15
+armor0=Leather Clothes  ;   5   ;   0,2
+armor1=White Cloak      ;   5   ;   3
+armor2=Light Suit       ;   15  ;   0,2
+armor3=Iron Armor       ;   20  ;   2
+armor4=Spiky Fur        ;   30  ;   1
+armor5=Zirconian Mail   ;   30  ;   0,2
+armor6=Diamond Armor    ;   60  ;   0,2
+armor7=Laconian Armor   ;   80  ;   2
+armor8=Frad Cloak       ;   40  ;   3
+
+; 24
+shield0=Leather Shield      ;   3   ;   0,2
+shield1=Bronze Shield       ;   8   ;   2
+shield2=Iron Shield         ;   15  ;   0,2
+shield3=Ceramic Shield      ;   23  ;   0,2
+shield4=Animal Glove        ;   40  ;   1
+shield5=Laser Barrier       ;   30  ;   0,2,3
+shield6=Shield of Perseus   ;   40  ;   2
+shield7=Laconian Shield     ;   50  ;   0,2
+
+; vehicles
+
+item0=LandMaster
+item1=FlowMover
+item2=IceDecker
+
+; items
+
+item3=PelorieMate
+item4=Ruoginin
+item5=Soothe Flute
+item6=Searchlight
+item7=Escape Cloth
+item8=TranCarpet
+item9=Magic Hat
+item10=Alsuline
+item11=Polymeteral
+item12=Dungeon Key
+item13=Telepathy Ball
+item14=Eclipse Torch
+item15=Aeroprism
+item16=Laerma Berries
+item17=Hapsby
+item18=Road Pass
+item19=Passport
+item20=Compass
+item21=Shortcake
+item22=Governor's Letter
+item23=Laconian Pot
+item24=Light Pendant
+item25=Carbunckle Eye
+item26=GasClear
+item27=Damoa's Crystal
+item28=Master System
+item29=Miracle Key
+item30=Zillion
+item31=Secret Thing
+
+; spells
+spell0=None
+spell1=Bind
+spell2=Bypass
+spell3=Fire
+spell4=Heal
+spell5=Magic Unseal
+spell6=Magic Waller
+spell7=Power Boost
+spell8=Rebirth
+spell9=Quick Dash
+spell10=Super Heal
+spell11=Telepathy
+spell12=Terror
+spell13=Thunder
+spell14=Transrate
+spell15=Troop
+spell16=Untrap
+spell17=Waller
+spell18=Wind
+
+
+
+; Alphabet (need for save slots)
+
+c0=
+c1=0
+c2=1
+c3=2
+c4=3
+c5=4
+c6=5
+c7=6
+c8=7
+c9=8
+ca=9
+cb=A
+cc=B
+cd=C
+ce=D
+cf=E
+d0=F
+d1=G
+d2=H
+d3=I
+d4=J
+d5=K
+d6=L
+d7=M
+d8=N
+d9=O
+da=P
+db=Q
+dc=R
+dd=S
+de=T
+df=U
+e0=V
+e1=W
+e2=X
+e3=Y
+e4=Z
+e5=,
+e6=;
+e7=.
+e8=!
+e9=?
+ea=-
+eb="
+ec=
+ed=
+ee=
+ef=
+f0=
+f1=
+f2=
+f3=
+f4=
+f5=
+f6=
+f7=
+f8=
+f9=
+fa=
+fb=
+fc=
+fd=
+fe=
+ff=

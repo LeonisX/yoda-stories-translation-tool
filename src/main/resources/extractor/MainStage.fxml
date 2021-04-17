@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="md.leonis.extractor.view.MainStageController">
+   <center>
+      <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="5.0" BorderPane.alignment="CENTER">
+         <Button layoutX="260.0" layoutY="266.0" mnemonicParsing="false" onAction="#showDungeonMapsClick" prefWidth="300.0" text="Show dungeon maps" />
+         <Button layoutX="260.0" layoutY="251.0" mnemonicParsing="false" onAction="#processRawMapsDataClick" prefWidth="300.0" text="Process raw maps data" />
+         <Button mnemonicParsing="false" onAction="#dumpDungeonMapsClick" prefWidth="300.0" text="Dump dungeon maps" />
+         <Button mnemonicParsing="false" onAction="#dumpLevelStatsClick" prefWidth="300.0" text="Dump levels stats" />
+         <Button mnemonicParsing="false" onAction="#dumpAllRleCompressedDataClick" prefWidth="300.0" text="Dump all RLE compressed data" />
+      </VBox>
+   </center>
+</BorderPane>
