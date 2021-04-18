@@ -1,5 +1,583 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.RadioMenuItem?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="md.leonis.ystt.view.MainStageController" />
+<?import javafx.scene.control.TextArea?>
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="707.0" prefWidth="1137.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="md.leonis.ystt.view.MainStageController">
+    <top>
+        <MenuBar>
+            <Menu text="File">
+                <MenuItem fx:id="openMenuItem" mnemonicParsing="false" onAction="#openMenuItemClick" text="Open" />
+                <MenuItem fx:id="saveMenuItem" mnemonicParsing="false" onAction="#saveMenuItemClick" text="Save" />
+                <MenuItem fx:id="closeMenuItem" mnemonicParsing="false" onAction="#closeMenuItemClick" text="Close" />
+                <SeparatorMenuItem mnemonicParsing="false" />
+                <MenuItem fx:id="exitMenuItem" mnemonicParsing="false" onAction="#exitMenuItemClick" text="Exit" />
+            </Menu>
+            <Menu mnemonicParsing="false" text="Settings">
+                <Menu mnemonicParsing="false" text="Transparent Color">
+                    <RadioMenuItem fx:id="fuchsiaMenuItem" mnemonicParsing="false" onAction="#transparentColorMenuItemClick" selected="true" text="Fuchsia">
+                        <graphic>
+                            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="MAGENTA" height="16.0" stroke="BLACK" strokeType="INSIDE" width="16.0" />
+                        </graphic>
+                  <toggleGroup>
+                     <ToggleGroup fx:id="transparentColorToggleGroup" />
+                  </toggleGroup>
+                    </RadioMenuItem>
+                    <RadioMenuItem fx:id="blackMenuItem" mnemonicParsing="false" onAction="#transparentColorMenuItemClick" text="Black" toggleGroup="$transparentColorToggleGroup">
+                        <graphic>
+                            <Rectangle arcHeight="5.0" arcWidth="5.0" height="16.0" stroke="BLACK" strokeType="INSIDE" width="16.0" />
+                        </graphic>
+                    </RadioMenuItem>
+                    <RadioMenuItem fx:id="whiteMenuItem" mnemonicParsing="false" onAction="#transparentColorMenuItemClick" text="White" toggleGroup="$transparentColorToggleGroup">
+                        <graphic>
+                            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="16.0" stroke="BLACK" strokeType="INSIDE" width="16.0" />
+                        </graphic>
+                    </RadioMenuItem>
+                </Menu>
+
+            </Menu>
+            <Menu mnemonicParsing="false" text="Operations">
+                <MenuItem fx:id="addTilesMenuItem" mnemonicParsing="false" onAction="#addTilesMenuItemClick" text="Add Tile(s)" />
+            </Menu>
+            <Menu mnemonicParsing="false" text="Help">
+                <MenuItem fx:id="howToMenuItem" mnemonicParsing="false" onAction="#howToMenuItemClick" text="How To..." />
+            <MenuItem fx:id="aboutMenuItem" mnemonicParsing="false" onAction="#aboutMenuItemClick" text="About" />
+            </Menu>
+        </MenuBar>
+    </top>
+   <center>
+       <SplitPane dividerPositions="0.6738461538461539" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0" BorderPane.alignment="CENTER">
+           <BorderPane prefHeight="200.0" prefWidth="200.0">
+              <center>
+                  <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+                      <Tab text="Common Information">
+                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                              <Label layoutX="14.0" layoutY="14.0" text="Name:"/>
+                              <Label layoutX="15.0" layoutY="65.0" text="Internal Version:"/>
+                              <Label layoutX="15.0" layoutY="31.0" text="CRC32:"/>
+                              <Label layoutX="14.0" layoutY="48.0" text="Size:"/>
+                              <Label fx:id="internalVersionLabel" layoutX="107.0" layoutY="65.0"/>
+                              <Label fx:id="sizeLabel" layoutX="107.0" layoutY="48.0"/>
+                              <Label fx:id="crc32Label" layoutX="107.0" layoutY="31.0"/>
+                              <Label fx:id="nameLabel" layoutX="107.0" layoutY="14.0"/>
+                              <TableView fx:id="commonInformationTableView" layoutX="14.0" layoutY="93.0"
+                                         prefHeight="272.0" prefWidth="421.0">
+                                  <columns>
+                                      <TableColumn editable="false" prefWidth="75.0" sortable="false"/>
+                                      <TableColumn prefWidth="75.0" text="Data Size"/>
+                                      <TableColumn editable="false" prefWidth="75.0" sortable="false" text="Full Size"/>
+                                      <TableColumn prefWidth="75.0" text="Start Offset"/>
+                                      <TableColumn editable="false" prefWidth="75.0" sortable="false"
+                                                   text="Data Offset"/>
+                                  </columns>
+                              </TableView>
+                              <Button fx:id="dumpAllSectionsButton" layoutX="15.0" layoutY="371.0"
+                                      mnemonicParsing="false" onAction="#dumpAllSectionsButtonClick"
+                                      text="Dump All Sections"/>
+                          </AnchorPane>
+                      </Tab>
+                      <Tab text="Portable Executable">
+                          <BorderPane prefHeight="200.0" prefWidth="200.0">
+                              <top>
+                                  <HBox alignment="CENTER_LEFT" prefHeight="44.0" prefWidth="1135.0" spacing="5.0"
+                                        BorderPane.alignment="CENTER">
+                                      <padding>
+                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                                      </padding>
+                                      <Button fx:id="dumpPETextToDocx" mnemonicParsing="false"
+                                              onAction="#dumpPETextToDocxCLick" text="Dump text to DOCX"/>
+                                      <Button fx:id="loadPETranslatedText" mnemonicParsing="false"
+                                              onAction="#loadPETranslatedTextClick" text="Load translated text"/>
+                                      <Button fx:id="replacePETextInDta" mnemonicParsing="false"
+                                              onAction="#replacePETextInDtaClick" text="Replace text in EXE"/>
+                                      <CheckBox fx:id="trimPESpacesCheckBox" mnemonicParsing="false"
+                                                text="Trim spaces"/>
+                                  </HBox>
+                              </top>
+                              <center>
+                                  <TableView prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                                      <columns>
+                                          <TableColumn editable="false" prefWidth="442.0" sortable="false" text="Original" />
+                                          <TableColumn editable="false" minWidth="0.0" prefWidth="524.0" sortable="false" text="Translated" />
+                                      </columns>
+                                  </TableView>
+                              </center></BorderPane>
+                      </Tab>
+                      <Tab text="Title Screen">
+                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                              <Button fx:id="saveToBitmapButton" layoutX="14.0" layoutY="14.0" mnemonicParsing="false"
+                                      onAction="#saveToBitmapButtonClick" prefHeight="25.0" prefWidth="112.0"
+                                      text="Save to Bitmap"/>
+                              <Button fx:id="loadFromBitmapButton" layoutX="14.0" layoutY="47.0" mnemonicParsing="false"
+                                      onAction="#loadFromBitmapButtonClick" text="Load from Bitmap"/>
+                              <ImageView fitHeight="288.0" fitWidth="288.0" layoutX="141.0" layoutY="14.0"
+                                         pickOnBounds="true" preserveRatio="true"/>
+                          </AnchorPane>
+                      </Tab>
+                      <Tab text="Sounds">
+                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                              <Label layoutX="14.0" layoutY="14.0" text="Sounds count:"/>
+                              <Label fx:id="soundsCountLabel" layoutX="100.0" layoutY="14.0"/>
+                              <Button fx:id="saveSoundsListToFileButton" layoutX="14.0" layoutY="36.0"
+                                      mnemonicParsing="false" onAction="#saveSoundsListToFileButtonClick"
+                                      text="Save list to file"/>
+                          </AnchorPane>
+                      </Tab>
+                      <Tab text="Tiles/Sprites">
+                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                              <ScrollPane layoutX="166.0" layoutY="13.0" prefHeight="382.0" prefWidth="543.0">
+                                  <GridPane fx:id="tilesGridPane">
+                                      <columnConstraints>
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="32.0" prefWidth="32.0"/>
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="32.0" prefWidth="32.0"/>
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="32.0" prefWidth="32.0"/>
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="32.0" prefWidth="32.0"/>
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="32.0" prefWidth="32.0"/>
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="32.0" prefWidth="32.0"/>
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="32.0" prefWidth="32.0"/>
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="32.0" prefWidth="32.0"/>
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="32.0" prefWidth="32.0"/>
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="32.0" prefWidth="32.0"/>
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="32.0" prefWidth="32.0"/>
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="32.0" prefWidth="32.0"/>
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="32.0" prefWidth="32.0"/>
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="32.0" prefWidth="32.0"/>
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="32.0" prefWidth="32.0"/>
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="32.0" prefWidth="32.0"/>
+                                      </columnConstraints>
+                                      <rowConstraints>
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                      </rowConstraints>
+                                  </GridPane>
+                              </ScrollPane>
+                              <ImageView fitHeight="32.0" fitWidth="32.0" layoutX="10.0" layoutY="10.0"
+                                         pickOnBounds="true" preserveRatio="true"/>
+                              <Label layoutX="12.0" layoutY="18.0" text="Tiles count:"/>
+                              <Label fx:id="tilesCountLabel" layoutX="88.0" layoutY="18.0"/>
+                              <Button fx:id="saveTilesToSeparateFiles" layoutX="10.0" layoutY="42.0"
+                                      mnemonicParsing="false" onAction="#saveTilesToSeparateFilesClick"
+                                      text="Save to separate files"/>
+                              <CheckBox fx:id="decimalFilenamesCheckBox" layoutX="26.0" layoutY="72.0"
+                                        mnemonicParsing="false" selected="true" text="Decimal filenames"/>
+                              <CheckBox fx:id="hexFilenamesCheckBox" layoutX="26.0" layoutY="96.0"
+                                        mnemonicParsing="false" selected="true" text="HEX filenames"/>
+                              <CheckBox fx:id="groupByAttributesFilenamesCheckBox" layoutX="26.0" layoutY="122.0"
+                                        mnemonicParsing="false" selected="true" text="Group by attributes"/>
+                              <Button fx:id="saveTilesToOneFile" layoutX="10.0" layoutY="161.0" mnemonicParsing="false"
+                                      onAction="#saveTilesToOneFileClick" text="Save tiles to one file"/>
+                              <Label layoutX="12.0" layoutY="195.0" text="Tiles in a row:"/>
+                              <TextField fx:id="tilesInARowTextField" layoutX="96.0" layoutY="191.0" prefHeight="25.0"
+                                         prefWidth="39.0" text="16"/>
+                              <ImageView fx:id="clipboardImageView" fitHeight="288.0" fitWidth="288.0" layoutX="713.0"
+                                         layoutY="14.0" pickOnBounds="true" preserveRatio="true"/>
+                              <Label layoutX="824.0" layoutY="312.0" text="Clipboard image"/>
+                              <Button fx:id="loadClipboardImage" layoutX="764.0" layoutY="337.0" minWidth="64.0"
+                                      mnemonicParsing="false" onAction="#loadClipboardImageClick" text="Load"/>
+                              <Button fx:id="saveClipboardImage" layoutX="836.0" layoutY="337.0" minWidth="64.0"
+                                      mnemonicParsing="false" onAction="#saveClipboardImageClick" text="Save"/>
+                              <Button fx:id="clearClipboardImage" layoutX="908.0" layoutY="337.0" minWidth="64.0"
+                                      mnemonicParsing="false" onAction="#clearClipboardImageClick" text="Clear"/>
+                              <ScrollPane layoutX="476.0" layoutY="158.0" prefHeight="261.0" prefWidth="283.0">
+                                  <FlowPane fx:id="tilesFlowPane" columnHalignment="CENTER" prefHeight="200.0"
+                                            prefWidth="269.0" prefWrapLength="548.0"/>
+                              </ScrollPane>
+                          </AnchorPane>
+                      </Tab>
+                      <Tab text="Zones/Maps">
+                          <BorderPane prefHeight="200.0" prefWidth="200.0">
+                        <center>
+                            <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE"
+                                     BorderPane.alignment="CENTER">
+                                <Tab text="General Information">
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                        <Label layoutX="14.0" layoutY="14.0" text="Maps count:"/>
+                                        <Label fx:id="mapsCountLabel" layoutX="98.0" layoutY="14.0"/>
+                                        <Button fx:id="saveMapsToFilesButton" layoutX="14.0" layoutY="40.0"
+                                                mnemonicParsing="false" onAction="#saveMapsToFilesButtonClick"
+                                                text="Save maps to files"/>
+                                        <CheckBox fx:id="normalSaveCheckBox" layoutX="25.0" layoutY="73.0"
+                                                  mnemonicParsing="false" selected="true" text="Normal save"/>
+                                        <CheckBox fx:id="groupByFlagsCheckBox" layoutX="25.0" layoutY="98.0"
+                                                  mnemonicParsing="false" text="Group by flags"/>
+                                        <CheckBox fx:id="groupByPlanetTypeCheckBox" layoutX="25.0"
+                                                  layoutY="123.0" mnemonicParsing="false"
+                                                  text="Group by planet type"/>
+                                        <CheckBox fx:id="dumpActionsCheckBox" layoutX="25.0" layoutY="148.0"
+                                                  mnemonicParsing="false" selected="true" text="Dump actions"/>
+                                        <CheckBox fx:id="dumpTextCheckBox" layoutX="25.0" layoutY="174.0"
+                                                  mnemonicParsing="false" selected="true" text="Dump text"/>
+                                        <CheckBox fx:id="saveUnusedTilesCheckBox" layoutX="25.0" layoutY="199.0"
+                                                  mnemonicParsing="false" text="Save unused tiles??"/>
+                                        <ListView layoutX="171.0" layoutY="15.0" prefHeight="366.0"
+                                                  prefWidth="93.0"/>
+                                        <ImageView fitHeight="576.0" fitWidth="576.0" layoutX="271.0"
+                                                   layoutY="15.0" pickOnBounds="true" preserveRatio="true"/>
+                                    </AnchorPane>
+                                </Tab>
+                                <Tab text="HEX Offsets">
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                        <TableView fx:id="mapsTableView" layoutX="14.0" layoutY="14.0"
+                                                   prefHeight="370.0" prefWidth="1105.0">
+                                            <columns>
+                                                <TableColumn prefWidth="60.0" text="Map #"/>
+                                                <TableColumn prefWidth="60.0" text="Map">
+                                                    <columns>
+                                                        <TableColumn prefWidth="60.0" text="Offset"/>
+                                                        <TableColumn prefWidth="60.0" text="Size"/>
+                                                    </columns>
+                                                </TableColumn>
+                                                <TableColumn prefWidth="60.0" text="IZON">
+                                                    <columns>
+                                                        <TableColumn prefWidth="60.0" text="Offset"/>
+                                                        <TableColumn prefWidth="60.0" text="Size"/>
+                                                    </columns>
+                                                </TableColumn>
+                                                <TableColumn prefWidth="60.0" text="OIE">
+                                                    <columns>
+                                                        <TableColumn prefWidth="60.0" text="Offset"/>
+                                                        <TableColumn prefWidth="60.0" text="Size"/>
+                                                        <TableColumn prefWidth="60.0" text="Count"/>
+                                                    </columns>
+                                                </TableColumn>
+                                                <TableColumn prefWidth="60.0" text="IZAX">
+                                                    <columns>
+                                                        <TableColumn prefWidth="60.0" text="Offset"/>
+                                                        <TableColumn prefWidth="60.0" text="Size"/>
+                                                    </columns>
+                                                </TableColumn>
+                                                <TableColumn prefWidth="60.0" text="IZX2">
+                                                    <columns>
+                                                        <TableColumn prefWidth="60.0" text="Offset"/>
+                                                        <TableColumn prefWidth="60.0" text="Size"/>
+                                                    </columns>
+                                                </TableColumn>
+                                                <TableColumn prefWidth="60.0" text="IZX3">
+                                                    <columns>
+                                                        <TableColumn prefWidth="60.0" text="Offset"/>
+                                                        <TableColumn prefWidth="60.0" text="Size"/>
+                                                    </columns>
+                                                </TableColumn>
+                                                <TableColumn prefWidth="60.0" text="IZX4">
+                                                    <columns>
+                                                        <TableColumn prefWidth="60.0" text="Offset"/>
+                                                        <TableColumn prefWidth="60.0" text="Size"/>
+                                                    </columns>
+                                                </TableColumn>
+                                                <TableColumn prefWidth="60.0" text="IACT">
+                                                    <columns>
+                                                        <TableColumn prefWidth="60.0" text="Offset"/>
+                                                        <TableColumn prefWidth="60.0" text="Size"/>
+                                                    </columns>
+                                                </TableColumn>
+                                            </columns>
+                                        </TableView>
+                                    </AnchorPane>
+                                </Tab>
+                                <Tab text="Map Editor">
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                        <ListView layoutX="171.0" layoutY="15.0" prefHeight="366.0"
+                                                  prefWidth="93.0"/>
+                                        <ImageView fx:id="mapEditorImageView" fitHeight="576.0" fitWidth="576.0"
+                                                   layoutX="662.0" layoutY="14.0" pickOnBounds="true"
+                                                   preserveRatio="true"/>
+                                        <ScrollPane layoutX="112.0" layoutY="14.0" prefHeight="382.0"
+                                                    prefWidth="543.0">
+                                            <GridPane fx:id="mapEditorGridPane">
+                                                <columnConstraints>
+                                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="32.0"
+                                                                       prefWidth="32.0"/>
+                                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="32.0"
+                                                                       prefWidth="32.0"/>
+                                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="32.0"
+                                                                       prefWidth="32.0"/>
+                                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="32.0"
+                                                                       prefWidth="32.0"/>
+                                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="32.0"
+                                                                       prefWidth="32.0"/>
+                                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="32.0"
+                                                                       prefWidth="32.0"/>
+                                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="32.0"
+                                                                       prefWidth="32.0"/>
+                                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="32.0"
+                                                                       prefWidth="32.0"/>
+                                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="32.0"
+                                                                       prefWidth="32.0"/>
+                                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="32.0"
+                                                                       prefWidth="32.0"/>
+                                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="32.0"
+                                                                       prefWidth="32.0"/>
+                                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="32.0"
+                                                                       prefWidth="32.0"/>
+                                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="32.0"
+                                                                       prefWidth="32.0"/>
+                                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="32.0"
+                                                                       prefWidth="32.0"/>
+                                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="32.0"
+                                                                       prefWidth="32.0"/>
+                                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="32.0"
+                                                                       prefWidth="32.0"/>
+                                                </columnConstraints>
+                                                <rowConstraints>
+                                                    <RowConstraints minHeight="10.0" prefHeight="30.0"
+                                                                    vgrow="SOMETIMES"/>
+                                                </rowConstraints>
+                                            </GridPane>
+                                        </ScrollPane>
+                                        <ScrollPane layoutX="476.0" layoutY="158.0" prefHeight="261.0"
+                                                    prefWidth="283.0">
+                                            <FlowPane fx:id="mapEditorFlowPane" columnHalignment="CENTER"
+                                                      prefHeight="200.0" prefWidth="269.0"
+                                                      prefWrapLength="548.0"/>
+                                        </ScrollPane>
+                                        <ListView fx:id="mapEditorListView" layoutX="14.0" layoutY="109.0"
+                                                  prefHeight="270.0" prefWidth="93.0"/>
+                                        <TitledPane animated="false" layoutX="14.0" layoutY="15.0"
+                                                    prefHeight="92.0" prefWidth="93.0" text="Map layer">
+                                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0"
+                                                        prefWidth="200.0">
+                                                <RadioButton fx:id="topRadioButton" layoutX="5.0"
+                                                             layoutY="4.0" mnemonicParsing="false"
+                                                             selected="true" text="Top" toggleGroup="$mapLayerToggleGroup">
+                                                </RadioButton>
+                                                <RadioButton fx:id="middleRadioButton" layoutX="5.0"
+                                                             layoutY="23.0" mnemonicParsing="false"
+                                                             text="Middle"
+                                                             toggleGroup="$mapLayerToggleGroup"/>
+                                                <RadioButton fx:id="bottomRadioButton" layoutX="5.0"
+                                                             layoutY="42.0" mnemonicParsing="false"
+                                                             text="Bottom"
+                                                             toggleGroup="$mapLayerToggleGroup"/>
+                                            </AnchorPane>
+                                        </TitledPane>
+                                    </AnchorPane>
+                                </Tab>
+                                <Tab text="Text Translation">
+                                    <BorderPane prefHeight="200.0" prefWidth="200.0">
+                                        <top>
+                                            <HBox alignment="CENTER_LEFT" prefHeight="44.0" prefWidth="1135.0"
+                                                  spacing="5.0" BorderPane.alignment="CENTER">
+                                                <padding>
+                                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                                                </padding>
+                                                <Button fx:id="dumpTextToDocx" mnemonicParsing="false"
+                                                        onAction="#dumpTextToDocxCLick"
+                                                        text="Dump text to DOCX"/>
+                                                <Button fx:id="loadTranslatedText" mnemonicParsing="false"
+                                                        onAction="#loadTranslatedTextClick"
+                                                        text="Load translated text"/>
+                                                <Button fx:id="replaceTextInDta" mnemonicParsing="false"
+                                                        onAction="#replaceTextInDtaClick"
+                                                        text="Replace text in DTA"/>
+                                                <CheckBox fx:id="trimSpacesCheckBox" mnemonicParsing="false"
+                                                          text="Trim spaces"/>
+                                            </HBox>
+                                        </top>
+                                        <center>
+                                            <TableView prefHeight="200.0" prefWidth="200.0"
+                                                       BorderPane.alignment="CENTER">
+                                                <columns>
+                                                    <TableColumn editable="false" prefWidth="442.0" sortable="false"
+                                                                 text="Original"/>
+                                                    <TableColumn editable="false" minWidth="0.0" prefWidth="524.0"
+                                                                 sortable="false" text="Translated"/>
+                                                </columns>
+                                            </TableView>
+                                        </center>
+                                    </BorderPane>
+                                </Tab>
+                            </TabPane>
+                        </center></BorderPane>
+                      </Tab>
+                      <Tab text="Puzzles">
+                          <BorderPane prefHeight="200.0" prefWidth="200.0">
+                              <center>
+                                  <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE"
+                                           BorderPane.alignment="CENTER">
+                                      <Tab text="General Information">
+                                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0"
+                                                      prefWidth="200.0">
+                                              <Label layoutX="14.0" layoutY="14.0" text="Puzzles count:"/>
+                                              <Label fx:id="puzzlesCountLabel" layoutX="98.0" layoutY="14.0"/>
+                                              <Button fx:id="savePuzzlesToFilesButton" layoutX="14.0"
+                                                      layoutY="40.0" mnemonicParsing="false"
+                                                      onAction="#savePuzzlesToFilesButtonClick"
+                                                      text="Save puzzles to files"/>
+                                          </AnchorPane>
+                                      </Tab>
+                                      <Tab text="Text Translation">
+                                          <BorderPane prefHeight="200.0" prefWidth="200.0">
+                                              <top>
+                                                  <HBox alignment="CENTER_LEFT" prefHeight="44.0" prefWidth="1135.0"
+                                                        spacing="5.0" BorderPane.alignment="CENTER">
+                                                      <padding>
+                                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                                                      </padding>
+                                                      <Button fx:id="dumpPuzzlesTextToDocx"
+                                                              mnemonicParsing="false"
+                                                              onAction="#dumpPuzzlesTextToDocxCLick"
+                                                              text="Dump text to DOCX"/>
+                                                      <Button fx:id="loadPuzzlesTranslatedText"
+                                                              mnemonicParsing="false"
+                                                              onAction="#loadPuzzlesTranslatedTextClick"
+                                                              text="Load translated text"/>
+                                                      <Button fx:id="replacePuzzlesTextInDta"
+                                                              mnemonicParsing="false"
+                                                              onAction="#replacePuzzlesTextInDtaClick"
+                                                              text="Replace text in DTA"/>
+                                                      <CheckBox fx:id="trimPuzzlesSpacesCheckBox"
+                                                                mnemonicParsing="false" text="Trim spaces"/>
+                                                  </HBox>
+                                              </top>
+                                              <center>
+                                                  <TableView prefHeight="200.0" prefWidth="200.0"
+                                                             BorderPane.alignment="CENTER">
+                                                      <columns>
+                                                          <TableColumn editable="false" prefWidth="442.0"
+                                                                       sortable="false" text="Original"/>
+                                                          <TableColumn editable="false" minWidth="0.0"
+                                                                       prefWidth="524.0" sortable="false"
+                                                                       text="Translated"/>
+                                                      </columns>
+                                                  </TableView>
+                                              </center>
+                                          </BorderPane>
+                                      </Tab>
+                                  </TabPane>
+                              </center></BorderPane>
+                      </Tab>
+                      <Tab text="Characters">
+                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                              <Label layoutX="14.0" layoutY="14.0" text="Characters count:"/>
+                              <Label fx:id="charactersCountLabel" layoutX="115.0" layoutY="14.0"/>
+                              <Button fx:id="saveCharactersToFilesButton" layoutX="14.0" layoutY="40.0"
+                                      mnemonicParsing="false" onAction="#saveCharactersToFilesButtonClick"
+                                      text="Save characters to files"/>
+                              <Label layoutX="14.0" layoutY="78.0"
+                                     text="WARNING!!! Characters don't need to translate. Don't waste your time :)"
+                                     textFill="#8d0909">
+                                  <font>
+                                      <Font name="System Bold" size="12.0"/>
+                                  </font>
+                              </Label>
+                          </AnchorPane>
+                      </Tab>
+                      <Tab text="Names">
+                          <BorderPane prefHeight="200.0" prefWidth="200.0">
+                              <center>
+                                  <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE"
+                                           BorderPane.alignment="CENTER">
+                                      <Tab text="General Information">
+                                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0"
+                                                      prefWidth="200.0">
+                                              <Label layoutX="14.0" layoutY="14.0" text="Puzzles count:"/>
+                                              <Label fx:id="namesCountLabel" layoutX="98.0" layoutY="14.0"/>
+                                              <Button fx:id="saveNamesToFilesButton" layoutX="14.0"
+                                                      layoutY="40.0" mnemonicParsing="false"
+                                                      onAction="#saveNamesToFilesButtonClick"
+                                                      text="Save names to files"/>
+                                          </AnchorPane>
+                                      </Tab>
+                                      <Tab text="Text Translation">
+                                          <BorderPane prefHeight="200.0" prefWidth="200.0">
+                                              <top>
+                                                  <HBox alignment="CENTER_LEFT" prefHeight="44.0" prefWidth="1135.0"
+                                                        spacing="5.0" BorderPane.alignment="CENTER">
+                                                      <padding>
+                                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                                                      </padding>
+                                                      <Button fx:id="dumpNamesTextToDocx"
+                                                              mnemonicParsing="false"
+                                                              onAction="#dumpNamesTextToDocxCLick"
+                                                              text="Dump text to DOCX"/>
+                                                      <Button fx:id="loadNamesTranslatedText"
+                                                              mnemonicParsing="false"
+                                                              onAction="#loadNamesTranslatedTextClick"
+                                                              text="Load translated text"/>
+                                                      <Button fx:id="replaceNamesTextInDta"
+                                                              mnemonicParsing="false"
+                                                              onAction="#replaceNamesTextInDtaClick"
+                                                              text="Replace text in DTA"/>
+                                                      <CheckBox fx:id="trimNamesSpacesCheckBox"
+                                                                mnemonicParsing="false" text="Trim spaces"/>
+                                                  </HBox>
+                                              </top>
+                                              <center>
+                                                  <TableView prefHeight="200.0" prefWidth="200.0"
+                                                             BorderPane.alignment="CENTER">
+                                                      <columns>
+                                                          <TableColumn editable="false" prefWidth="442.0"
+                                                                       sortable="false" text="Original"/>
+                                                          <TableColumn editable="false" minWidth="0.0"
+                                                                       prefWidth="524.0" sortable="false"
+                                                                       text="Translated"/>
+                                                      </columns>
+                                                  </TableView>
+                                              </center>
+                                          </BorderPane>
+                                      </Tab>
+                                  </TabPane>
+                              </center></BorderPane>
+                      </Tab>
+                  </TabPane>
+              </center>
+           </BorderPane>
+           <BorderPane prefHeight="200.0" prefWidth="200.0">
+              <center>
+                  <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+                      <Tab text="Logs">
+                          <BorderPane prefHeight="200.0" prefWidth="200.0">
+                              <center>
+                                  <TextArea fx:id="logsTextArea"/>
+                              </center>
+                          </BorderPane>
+                      </Tab>
+                      <Tab text="HEX Viewer">
+                          <BorderPane prefHeight="200.0" prefWidth="200.0">
+                              <center>
+                                  <TextArea fx:id="hexViewerTextArea"/>
+                              </center>
+                          </BorderPane>
+                      </Tab>
+                  </TabPane>
+              </center>
+            <bottom>
+                <HBox alignment="CENTER_LEFT" prefHeight="25.0" prefWidth="1135.0" BorderPane.alignment="CENTER">
+                    <padding>
+                        <Insets left="5.0" right="5.0"/>
+                    </padding>
+                    <Label fx:id="statusLabel"/>
+                </HBox>
+            </bottom>
+           </BorderPane>
+       </SplitPane>
+   </center>
+</BorderPane>

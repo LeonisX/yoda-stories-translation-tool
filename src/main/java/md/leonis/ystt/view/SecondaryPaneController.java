@@ -8,10 +8,10 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
-import md.leonis.ystt.model.SaveGameStatus;
+import md.leonis.ystt.oldmodel.SaveGameStatus;
 import md.leonis.ystt.utils.Config;
 import md.leonis.ystt.utils.JavaFxUtils;
-import md.leonis.ystt.model.SaveState;
+import md.leonis.ystt.oldmodel.SaveState;
 
 import java.io.IOException;
 import java.util.Optional;

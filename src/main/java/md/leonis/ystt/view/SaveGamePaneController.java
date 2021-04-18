@@ -8,7 +8,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.util.StringConverter;
-import md.leonis.ystt.model.Geo;
+import md.leonis.ystt.oldmodel.Geo;
 import md.leonis.ystt.utils.Config;
 import md.leonis.ystt.utils.JavaFxUtils;
 

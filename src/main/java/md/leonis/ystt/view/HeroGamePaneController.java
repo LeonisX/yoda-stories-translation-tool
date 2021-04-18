@@ -8,7 +8,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.util.StringConverter;
-import md.leonis.ystt.model.Level;
+import md.leonis.ystt.oldmodel.Level;
 import md.leonis.ystt.utils.Config;
 import md.leonis.ystt.utils.JavaFxUtils;
 

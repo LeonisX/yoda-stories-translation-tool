@@ -16,19 +16,19 @@ public class JavaFxUtils {
 
     private static BorderPane rootLayout;
 
-    private static int sceneWidth = 900;
-    private static int sceneHeight = 720;
+    private static final int SCENE_WIDTH = 900;
+    private static final int SCENE_HEIGHT = 720;
 
     public static Object currentController;
 
     public static void showMainPane(Stage primaryStage) {
-        primaryStage.setTitle("TiVi Admin Panel");
+        primaryStage.setTitle("Yoda Stories Translation Tool");
         try {
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(MainApp.class.getResource(Config.resourcePath + "MainStage.fxml"));
             rootLayout = loader.load();
             //MainStageController controller = loader.getController();
-            Scene scene = new Scene(rootLayout, sceneWidth, sceneHeight);
+            Scene scene = new Scene(rootLayout, SCENE_WIDTH, SCENE_HEIGHT);
             primaryStage.setScene(scene);
 
             showPrimaryPanel();
@@ -48,7 +48,7 @@ public class JavaFxUtils {
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(MainApp.class.getResource(Config.resourcePath + resource));
             Region innerPanel = loader.load();
-            innerPanel.setPrefSize(sceneWidth, sceneHeight);
+            innerPanel.setPrefSize(SCENE_WIDTH, SCENE_HEIGHT);
             innerPanel.prefHeightProperty().bind(rootLayout.heightProperty());
             innerPanel.prefWidthProperty().bind(rootLayout.widthProperty());
             currentController = loader.getController();

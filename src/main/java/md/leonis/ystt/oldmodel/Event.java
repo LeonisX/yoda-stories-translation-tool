@@ -1,6 +1,6 @@
-package md.leonis.ystt.model;
+package md.leonis.ystt.oldmodel;
 
-import md.leonis.extractor.utils.Config;
+import md.leonis.ystt.utils.Config;
 
 import java.util.*;
 import java.util.stream.Collectors;

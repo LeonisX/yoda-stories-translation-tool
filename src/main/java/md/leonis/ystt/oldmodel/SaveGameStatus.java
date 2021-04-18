@@ -1,4 +1,4 @@
-package md.leonis.ystt.model;
+package md.leonis.ystt.oldmodel;
 
 public enum SaveGameStatus {
     EMPTY, DELETED, ACTIVE, DEFAULT

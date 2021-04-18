@@ -1,6 +1,6 @@
 package md.leonis.bin;
 
-import md.leonis.ystt.model.SaveState;
+import md.leonis.ystt.oldmodel.SaveState;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

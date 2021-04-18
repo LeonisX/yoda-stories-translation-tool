@@ -1,4 +1,4 @@
-package md.leonis.ystt.model;
+package md.leonis.ystt.oldmodel;
 
 
 import md.leonis.bin.Dump;
@@ -8,7 +8,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 
-import static md.leonis.ystt.model.SaveGameStatus.EMPTY;
+import static md.leonis.ystt.oldmodel.SaveGameStatus.EMPTY;
 
 public class SaveState {
 

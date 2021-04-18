@@ -1,10 +1,10 @@
-package md.leonis.ystt.model;
+package md.leonis.ystt.oldmodel;
 
 
 import md.leonis.bin.ByteOrder;
 import md.leonis.bin.Dump;
 
-import static md.leonis.ystt.model.SaveState.SAVE_GAME_SIZE;
+import static md.leonis.ystt.oldmodel.SaveState.SAVE_GAME_SIZE;
 
 public class SaveGame {
 

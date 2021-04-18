@@ -10,9 +10,10 @@ An original version: https://github.com/LeonisX/YExplorer
 
 ## TODO
 
-* Add new tiles - already in Delphi version
+* Add new tiles - already in Delphi version - we need a better solution: "PLUS" button at the end of tiles
 * Dump from EXE file
-* Dump/read to RTF/DOC/DOCX
+* Dump palette from EXE file
+* Dump/read to DOCX
 * Validate text (first-last) phrases
 * Hide debug tabs by default
 

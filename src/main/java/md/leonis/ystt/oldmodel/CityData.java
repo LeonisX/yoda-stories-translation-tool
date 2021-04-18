@@ -1,6 +1,4 @@
-package md.leonis.ystt.model;
-
-import md.leonis.extractor.utils.Config;
+package md.leonis.ystt.oldmodel;
 
 import java.util.AbstractMap;
 import java.util.Map;
@@ -30,10 +28,11 @@ public class CityData {
     }
 
     public String getCityValue() {
-        String titleId = Config.getKeyByValue(title);
+        /*String titleId = Config.getKeyByValue(title);
         //System.out.println(titleId);
         String commentId = Config.getKeyByValue(comment);
-        return String.format("%02X;%02X;%s;%s", mapLayer, mapId, titleId, commentId);
+        return String.format("%02X;%02X;%s;%s", mapLayer, mapId, titleId, commentId);*/
+        return "";
     }
 
     public Map.Entry<String, String> toMapEntry() {
@@ -45,7 +44,7 @@ public class CityData {
         String key = entry.getKey();
         String value = entry.getValue();
         CityData cityData = new CityData();
-        String[] chunks = value.split(";");
+        /*String[] chunks = value.split(";");
         cityData.setTitle(Config.languageTable.getProperty(chunks[2]));
         if (chunks.length == 4) {
             cityData.setComment(Config.languageTable.getProperty(chunks[3]));
@@ -54,8 +53,9 @@ public class CityData {
         }
         cityData.setMapLayer(Integer.parseInt(chunks[0], 16));
         cityData.setMapId(Integer.parseInt(chunks[1], 16));
-        cityData.setId(Integer.parseInt(key.substring(4), 16));
+        cityData.setId(Integer.parseInt(key.substring(4), 16));*/
         return cityData;
+
     }
 
     public String fineView() {

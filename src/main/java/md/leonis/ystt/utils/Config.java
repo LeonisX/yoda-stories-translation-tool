@@ -1,6 +1,6 @@
 package md.leonis.ystt.utils;
 
-import md.leonis.ystt.model.*;
+import md.leonis.ystt.oldmodel.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
