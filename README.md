@@ -12,6 +12,20 @@ Original version: https://github.com/LeonisX/YExplorer
 * Validate text (first-last) phrases
 * Hide debug tabs by default
 
+### BMP
+
+* https://www.infoworld.com/article/2077561/java-tip-60--saving-bitmap-files-in-java.html
+* http://www.java2s.com/Tutorials/Java/Graphics_How_to/Image/Create_BMP_format_image.htm
+* https://docs.oracle.com/javase/tutorial/2d/images/index.html
+* https://coderanch.com/t/456757/java/creating-BufferedImage-save-bmp-file
+* https://research.cs.queensu.ca/home/blostein/image/Example/BMPFile.java
+* https://github.com/nayuki/BMP-IO
+* http://image4j.sourceforge.net/#license
+* https://commons.apache.org/proper/commons-imaging/
+* https://www.programcreek.com/java-api-examples/?api=java.awt.image.IndexColorModel
+* http://www.java2s.com/Tutorials/Java/Graphics_How_to/Image/Swap_Palette_for_an_BufferedImage.htm
+* https://docs.oracle.com/javase/8/docs/api/javax/imageio/package-summary.html
+
 ### Hex Editors (Java FX)
 
 * https://github.com/Velocity-/Hexstar
