@@ -2,6 +2,10 @@
 
 Utility Yoda Stories Translation Tool
 
+**Current status: doesn't work**
+
+Current stage: project preparation
+
 Original version: https://github.com/LeonisX/YExplorer
 
 ## TODO
