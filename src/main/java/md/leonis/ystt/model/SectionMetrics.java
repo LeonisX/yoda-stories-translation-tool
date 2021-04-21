@@ -2,17 +2,31 @@ package md.leonis.ystt.model;
 
 public class SectionMetrics {
 
-    /*dataSize: Cardinal;
-    fullSize: Cardinal;
-    startOffset: Cardinal;
-    dataOffset: Cardinal;
-    constructor Create(dataSize, fullSize, dataOffset, startOffset: Cardinal);*/
+    private final int dataSize;
+    private final int fullSize;
+    private final int dataOffset;
+    private final int startOffset;
 
-    /*constructor TSectionMetricks.Create(dataSize, fullSize, dataOffset, startOffset: Cardinal);
-    begin
-    Self.dataSize := dataSize;
-    Self.fullSize := fullSize;
-    Self.startOffset := startOffset;
-    Self.dataOffset := dataOffset;
-    end;*/
+    public SectionMetrics(int dataSize, int fullSize, int dataOffset, int startOffset) {
+        this.dataSize = dataSize;
+        this.fullSize = fullSize;
+        this.dataOffset = dataOffset;
+        this.startOffset = startOffset;
+    }
+
+    public int getDataSize() {
+        return dataSize;
+    }
+
+    public int getFullSize() {
+        return fullSize;
+    }
+
+    public int getDataOffset() {
+        return dataOffset;
+    }
+
+    public int getStartOffset() {
+        return startOffset;
+    }
 }

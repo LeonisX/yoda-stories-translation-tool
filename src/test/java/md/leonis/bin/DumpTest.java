@@ -24,11 +24,11 @@ public class DumpTest extends Assert {
     @Test
     public void moveTo() throws Exception {
         for (int i = 0; i < SaveState.START_TEXT.length(); i++) {
-            romData.moveTo(i);
+            romData.moveToAddress(i);
             assertEquals(romData.getByte(), SaveState.START_TEXT.codePointAt(i));
         }
         for (int i = SaveState.START_TEXT.length() - 1; i >= 0 ; i--) {
-            romData.moveTo(i);
+            romData.moveToAddress(i);
             assertEquals(romData.getByte(), SaveState.START_TEXT.codePointAt(i));
         }
     }
@@ -40,17 +40,17 @@ public class DumpTest extends Assert {
 
     @Test
     public void checkZeroes() throws Exception {
-        romData.moveTo(0x00);
+        romData.moveToAddress(0x00);
         assertFalse(romData.checkZeroes(0x10));
-        romData.moveTo(0x40);
+        romData.moveToAddress(0x40);
         assertTrue(romData.checkZeroes(0x10));
     }
 
     @Test
     public void getByte() throws Exception {
-        romData.moveTo(0x40);
+        romData.moveToAddress(0x40);
         assertEquals(romData.getByte(), 0x00);
-        romData.moveTo(0x100);
+        romData.moveToAddress(0x100);
         assertEquals(romData.getByte(), 0xF1);
     }
 
@@ -62,28 +62,28 @@ public class DumpTest extends Assert {
 
     @Test
     public void getShort() throws Exception {
-        romData.moveTo(0x5E0);
-        assertEquals(romData.getShort(), 0xFFC8);
-        romData.moveTo(0x500);
-        assertEquals(romData.getShort(), 0x0192);
+        romData.moveToAddress(0x5E0);
+        assertEquals(romData.getWord(), 0xFFC8);
+        romData.moveToAddress(0x500);
+        assertEquals(romData.getWord(), 0x0192);
         romData.setByteOrder(ByteOrder.LITTLE_ENDIAN);
-        romData.moveTo(0x5E0);
-        assertEquals(romData.getShort(), 0xC8FF);
-        romData.moveTo(0x500);
-        assertEquals(romData.getShort(), 0x9201);
+        romData.moveToAddress(0x5E0);
+        assertEquals(romData.getWord(), 0xC8FF);
+        romData.moveToAddress(0x500);
+        assertEquals(romData.getWord(), 0x9201);
         romData.setByteOrder(ByteOrder.BIG_ENDIAN);
     }
 
     @Test
     public void getShortPos() throws Exception {
-        assertEquals(romData.getShort(0x5E0), 0xFFC8);
+        assertEquals(romData.getWord(0x5E0), 0xFFC8);
     }
 
     @Test
     public void getBoolean() throws Exception {
-        romData.moveTo(0x499);
+        romData.moveToAddress(0x499);
         assertFalse(romData.getBoolean());
-        romData.moveTo(0x500);
+        romData.moveToAddress(0x500);
         assertTrue(romData.getBoolean());
     }
 
@@ -111,11 +111,11 @@ public class DumpTest extends Assert {
     @Test
     public void setByte() throws Exception {
         int address = 0x1CA0;
-        romData.moveTo(address);
+        romData.moveToAddress(address);
         romData.setByte(FF);
-        romData.moveTo(address);
+        romData.moveToAddress(address);
         assertEquals(romData.getByte(), FF);
-        romData.moveTo(address);
+        romData.moveToAddress(address);
         romData.setByte(OO);
         assertEquals(romData.getByte(address), OO);
     }
@@ -132,43 +132,43 @@ public class DumpTest extends Assert {
     @Test
     public void setShort() throws Exception {
         int address = 0x220;
-        assertEquals(romData.getShort(address), OO);
-        romData.moveTo(address);
-        romData.setShort(0xFF44);
-        assertEquals(romData.getShort(address), 0xFF44);
+        assertEquals(romData.getWord(address), OO);
+        romData.moveToAddress(address);
+        romData.setWord(0xFF44);
+        assertEquals(romData.getWord(address), 0xFF44);
         assertEquals(romData.getByte(address), 0xFF);
         assertEquals(romData.getByte(), 0x44);
         romData.setByteOrder(ByteOrder.LITTLE_ENDIAN);
-        romData.moveTo(address);
-        romData.setShort(0xFF44);
-        assertEquals(romData.getShort(address), 0xFF44);
+        romData.moveToAddress(address);
+        romData.setWord(0xFF44);
+        assertEquals(romData.getWord(address), 0xFF44);
         assertEquals(romData.getByte(address), 0x44);
         assertEquals(romData.getByte(), 0xFF);
         romData.setByteOrder(ByteOrder.BIG_ENDIAN);
-        romData.moveTo(address);
-        romData.setShort(OO);
-        assertEquals(romData.getShort(address), OO);
+        romData.moveToAddress(address);
+        romData.setWord(OO);
+        assertEquals(romData.getWord(address), OO);
     }
 
     @Test
     public void setShort1() throws Exception {
         int address = 0x220;
-        assertEquals(romData.getShort(address), OO);
-        romData.setShort(address, 0xFF44);
-        assertEquals(romData.getShort(address), 0xFF44);
+        assertEquals(romData.getWord(address), OO);
+        romData.setWord(address, 0xFF44);
+        assertEquals(romData.getWord(address), 0xFF44);
         assertEquals(romData.getByte(address), 0xFF);
         assertEquals(romData.getByte(), 0x44);
-        romData.setShort(address, OO);
-        assertEquals(romData.getShort(address), OO);
+        romData.setWord(address, OO);
+        assertEquals(romData.getWord(address), OO);
     }
 
     @Test
     public void setBoolean() throws Exception {
         int address = 0x222;
-        romData.moveTo(address);
+        romData.moveToAddress(address);
         romData.setBoolean(true);
         assertTrue(romData.getBoolean(address));
-        romData.moveTo(address);
+        romData.moveToAddress(address);
         romData.setBoolean(false);
         assertFalse(romData.getBoolean(address));
     }
@@ -187,18 +187,18 @@ public class DumpTest extends Assert {
         String s1 = "00001111";
         String s2 = "FA44";
         int address = 0x240;
-        romData.moveTo(address);
+        romData.moveToAddress(address);
         romData.writeHexDump(s1);
         assertEquals(romData.getByte(address),  OO);
         assertEquals(romData.getByte(),  OO);
         assertEquals(romData.getByte(),  0x11);
         assertEquals(romData.getByte(),  0x11);
-        romData.moveTo(address);
+        romData.moveToAddress(address);
         romData.writeHexDump(s2);
         assertEquals(romData.getByte(address),  0xFA);
         assertEquals(romData.getByte(),  0x44);
         s2 = "FA 44";
-        romData.moveTo(address);
+        romData.moveToAddress(address);
         romData.writeHexDump(s2);
         assertEquals(romData.getByte(address),  0xFA);
         assertEquals(romData.getByte(),  0x44);
@@ -209,7 +209,7 @@ public class DumpTest extends Assert {
         String dump = "FFFFFFFF";
         int address = 0x230;
         romData.writeHexDump(address, dump);
-        romData.moveTo(address + 1);
+        romData.moveToAddress(address + 1);
         romData.erase(2);
         assertEquals(romData.getByte(address),  FF);
         assertEquals(romData.getByte(),  OO);

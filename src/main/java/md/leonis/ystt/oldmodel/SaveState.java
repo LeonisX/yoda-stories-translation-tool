@@ -55,16 +55,16 @@ public class SaveState {
     private void testInnerData() {
         if (romData.size() < MINIMAL_ROM_SIZE) throw new RuntimeException("Save State too small");
         //TODO other sizes
-        romData.moveTo(0);
+        romData.moveToAddress(0);
         if (!romData.readString(START_TEXT.length()).equals(START_TEXT)) throw new RuntimeException("Corrupted header / not Phantasy Star Save State");
         if (!romData.checkZeroes(FIRST_ZEROES_SIZE)) throw new RuntimeException("Garbage in header / not Phantasy Star Save State");
-        romData.moveTo(SECOND_ZEROES_OFFSET);
+        romData.moveToAddress(SECOND_ZEROES_OFFSET);
         if (!romData.checkZeroes(SECOND_ZEROES_SIZE)) throw new RuntimeException("Garbage in header / not Phantasy Star Save State");
         for (int i = 0; i < 5; i ++) {
             if (romData.getByte(0x126 + i * 0x24) - 0xC1 != i + 1 ) throw new RuntimeException("Corrupt save slots listing");
         }
 
-        romData.moveTo(SAVE_GAME_STATUS_OFFSET);
+        romData.moveToAddress(SAVE_GAME_STATUS_OFFSET);
         for (int i = 0; i < 5; i ++) {
             if (romData.getByte() == 1) saveGames[i].setStatus(SaveGameStatus.ACTIVE);
         }
@@ -128,7 +128,7 @@ public class SaveState {
     public String readName(int index) {
         String name = "";
         for (int i = 0; i < 5; i ++) {
-            romData.moveTo(FIRST_SAVE_SLOT_NAME_OFFSET + index * 0x24 + i * 2);
+            romData.moveToAddress(FIRST_SAVE_SLOT_NAME_OFFSET + index * 0x24 + i * 2);
             //TODO charset select
             name += Config.languageTable.getProperty(Integer.toHexString(romData.getByte()));
         }
@@ -139,12 +139,12 @@ public class SaveState {
 
     //TODO test
     public void eraseName(int index) {
-        romData.moveTo(FIRST_SAVE_SLOT_NAME_OFFSET + index * 0x24);
+        romData.moveToAddress(FIRST_SAVE_SLOT_NAME_OFFSET + index * 0x24);
         for (int i = 0; i < 5; i ++) {
             romData.setByte(0xC0);
             romData.setByte(0x00);
         }
-        romData.moveTo(FIRST_SAVE_SLOT_NAME_OFFSET + index * 0x24 + 0x12);
+        romData.moveToAddress(FIRST_SAVE_SLOT_NAME_OFFSET + index * 0x24 + 0x12);
         for (int i = 0; i < 5; i ++) {
             romData.setByte(0xC0);
             romData.setByte(0x00);
@@ -155,12 +155,12 @@ public class SaveState {
     public void writeName(int index, String name) {
         //System.out.println(Integer.toHexString(FIRST_SAVE_SLOT_NAME_OFFSET + index * 0x24));
         //String name = Config.saveState.getSaveGames()[index].getName();
-        romData.moveTo(FIRST_SAVE_SLOT_NAME_OFFSET + index * 0x24);
+        romData.moveToAddress(FIRST_SAVE_SLOT_NAME_OFFSET + index * 0x24);
         for (int i = 0; i < 5; i ++) {
             romData.setByte(0xC0);
             romData.setByte(0x10);
         }
-        romData.moveTo(FIRST_SAVE_SLOT_NAME_OFFSET + index * 0x24 + 0x12);
+        romData.moveToAddress(FIRST_SAVE_SLOT_NAME_OFFSET + index * 0x24 + 0x12);
         for (int i = 0; i < 5; i ++) {
             romData.setByte(0xC0);
             romData.setByte(0x10);

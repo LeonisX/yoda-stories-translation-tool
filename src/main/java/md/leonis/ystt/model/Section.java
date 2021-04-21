@@ -1,7 +1,22 @@
 package md.leonis.ystt.model;
 
-public class Section {
+import md.leonis.bin.Dump;
+import md.leonis.ystt.utils.BinaryUtils;
+import md.leonis.ystt.utils.Config;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+public class Section {
 
     // ShortInt                 -128..127                                   byte        8
     // Byte                     0..255;                                     int/char    8
@@ -11,137 +26,106 @@ public class Section {
     // Cardinal, LongWord       0..4294967295;                              long        32
     // Int64                    -9223372036854775808..9223372036854775807   long        64
 
+    private static final String[] PLANETS = { "", "desert", "snow", "forest", "unknown", "swamp"};
 
-    /*
-    planets: Array[1..5] of String = ('desert', 'snow', 'forest', 'unknown', 'swamp');
+    private List<String> crcs = new ArrayList<>();
 
-    TSection = class
-    private
-    crcs: TStringList;
-    public
-    sections: TStringList;
-    data: TMemoryStream;
-    tiles: array of Boolean;
-    maps: TStringList;
-    crc32: String;
-    dtaRevision: String;
-    version: String;
-    soundsCount: Byte;
-    tilesCount: Integer;
-    mapsCount: Integer;
-    puzzlesCount: Integer;
-    charsCount: Integer;
-    namesCount: Integer;
-    procedure Clear;
+    //TODO getters
+    public Map<KnownSections, SectionMetrics> sections = new HashMap<>();
+    //TODO dtaDump, exeDump also
+    public Dump dump;
+    public boolean[] tiles;
+    public Map<Integer, MapEntry> maps = new HashMap<>();
+    public String exeCrc32;
+    public String dtaCrc32;
+    public String dtaRevision;
+    public String version;
+    public byte soundsCount;
+    public int tilesCount;
+    public int mapsCount;
+    public int puzzlesCount;
+    public int charsCount;
+    public int namesCount;
 
-    var DTA: TSection;
+    public Section DTA;
 
-    implementation
+    public Section(File file) throws IOException {
 
-    function TSection.GetTileFlag(id: Word): Cardinal;
-    begin
-    SetPosition(GetDataOffset(knownSections[4]) + id * $404);
-    result := ReadLongWord;
-    end;
+        dump = new Dump(file);
+        //crcs.LoadFromFile('./conf/crcs.cfg'); we read this in config
+    }
 
-    procedure TSection.SetTileFlag(id: Word; flag: Cardinal);
-    begin
-    SetPosition(GetDataOffset(knownSections[4]) + id * $404);
-    WriteLongWord(flag);
-    end;
+    public long GetTileFlag(int id) {
+        SetPosition(GetDataOffset(KnownSections.TILE) + id * 0x404);
+        return ReadLongWord();
+    }
 
-    procedure TSection.Clear;
-    var i: Word;
-    begin
-  if sections.Count > 0 then
-        for i := 0 to sections.Count - 1 do sections.Objects[i].Free;
-    sections.Clear;
-  if maps.Count > 0 then
-        for i := 0 to maps.Count - 1 do maps.Objects[i].Free;
-    maps.Clear;
-    SetLength(tiles, 0);
-    version := '';
-    soundsCount := 0;
-    tilesCount := 0;
-    mapsCount := 0;
-    puzzlesCount := 0;
-    charsCount := 0;
-    namesCount := 0;
-//  if data <> nil then FreeAndNil(data);
-    end;
+    public void SetTileFlag(int id, long flag) {
+        SetPosition(GetDataOffset(KnownSections.TILE) + id * 0x404);
+        WriteLongWord(flag);
+    }
 
-    procedure TSection.AddMap(id: Word);
-    begin
-  maps.AddObject(IntToStr(id), TMap.Create);
-    end;
+    //TODO do we need this?
+    public void clear() {
 
-    procedure TSection.Add(section: String; dataSize, fullSize, dataOffset, startOffset: Cardinal);
-    begin
-  sections.AddObject(section, TSectionMetricks.Create(dataSize, fullSize, dataOffset, startOffset))
-    end;
+        sections = new HashMap<>();
+        maps = new HashMap<>();
+        tiles = new boolean[0];
+        version = "";
+        soundsCount = 0;
+        tilesCount = 0;
+        mapsCount = 0;
+        puzzlesCount = 0;
+        charsCount = 0;
+        namesCount = 0;
+    }
 
-    function TSection.GetStartOffset(section: String): Cardinal;
-    begin
-    result := TSectionMetricks(sections.Objects[sections.IndexOf(section)]).startOffset;
-    end;
+    public void AddMap(int id) {
+        maps.put(id, new MapEntry());
+    }
 
-    function TSection.GetDataOffset(section: String): Cardinal;
-    begin
-    result := TSectionMetricks(sections.Objects[sections.IndexOf(section)]).dataOffset;
-    end;
+    public void Add(KnownSections section, int dataSize, int fullSize, int dataOffset, int startOffset) {
+        sections.put(section, new SectionMetrics(dataSize, fullSize, dataOffset, startOffset));
+    }
 
-    function TSection.GetDataSize(section: String): Cardinal;
-    begin
-    result := TSectionMetricks(sections.Objects[sections.IndexOf(section)]).dataSize;
-    end;
+    public int GetStartOffset(KnownSections section) {
+        return sections.get(section).getStartOffset();
+    }
 
-    function TSection.GetFullSize(section: String): Cardinal;
-    begin
-    result := TSectionMetricks(sections.Objects[sections.IndexOf(section)]).fullSize;
-    end;
+    public int GetDataOffset(KnownSections section) {
+        return sections.get(section).getDataOffset();
+    }
 
-    function TSection.Have(section: String): boolean;
-    begin
-    result := sections.IndexOf(section) <> -1;
-    end;
+    public int GetDataSize(KnownSections section) {
+        return sections.get(section).getDataSize();
+    }
 
+    public int GetFullSize(KnownSections section) {
+        return sections.get(section).getFullSize();
+    }
 
-    constructor TSection.Create;
-    begin
-    sections := TStringList.Create;
-    maps := TStringList.Create;
-    crcs := TStringList.Create;
-  crcs.LoadFromFile('./conf/crcs.cfg');
-    end;
+    public boolean Have(KnownSections section) {
+        return sections.containsKey(section);
+    }
 
-    destructor TSection.Destroy;
-    begin
-            Clear;
-    sections.Free;
-    maps.Free;
-    crcs.Free;
-    FreeAndNil(data);
-    end;
+    public int GetSize() {
+        return dump.size();
+    }
 
+    public boolean InBound(KnownSections section) {
+        return dump.getIndex() < GetDataOffset(section) + GetDataSize(section);
+    }
 
-    function TSection.GetSize: Cardinal;
-    begin
-    result := data.Size;
-    end;
+    public byte ChunkIndex(KnownSections section) {
 
-    function TSection.InBound(section: String): boolean;
-    begin
-    result := data.Position < getDataOffset(section) + getDataSize(section)
-    end;
-
-
-    function TSection.ChunkIndex(s:string):byte;
-    var i: byte;
-    begin
-    result:=0;
- for i:=1 to sizeof(knownSections) do
-            if knownSections[i]=s then result:=i;
-    end;
+        byte result=0;
+        for (int i=0; i < KnownSections.values().length; i++) {
+            if (KnownSections.values()[i] == section) {
+                result = (byte)  (i + 1);
+            }
+        }
+        return result;
+    }
 
     procedure TSection.readDTAMetricks;
     var keepReading:boolean;
@@ -306,365 +290,373 @@ public class Section {
   Log.Debug('Puzzles: ' + IntToStr(puzzlesCount));;
     end;
 
-    procedure TSection.ScanZONE(sectionName: String);
-    var sz: Longword;
+    public void ScanIZON(KnownSections sectionName) {
+
+    /*var sz: Longword;
     i: Word;
-    ind: Cardinal;
-    begin
+    ind: Cardinal;*/
+
     //Signature: String[4];       // 4 bytes: "ZONE" - уже прочитано
-    ind := GetPosition;
-    mapsCount := ReadWord;        // 2 bytes - maps count $0291 = 657 items
+    int ind = GetPosition();
+    mapsCount = ReadWord();        // 2 bytes - maps count $0291 = 657 items
     // Next repeated data of TZone
-  for i:=1 to mapsCount do
-    begin
-            ReadWord;                //unknown:word;          01 00 - unknown 2 bytes
-    sz:=ReadLongWord;        //size:longword;         size of current map (4b)
-      Log.Debug(inttostr(i-1) + ' Offset:Size: ' + IntToHex(GetPosition - 4, 4) + ':' + IntToHex(sz, 4));
-    MovePosition(sz);
-    end;
-    //Add(sectionName, 4 + index - ind, ind);
-    Add(sectionName, GetPosition - ind, GetPosition - ind + 4, ind, ind - 4);
-  Log.Debug('Maps (zones): ' + IntToStr(mapsCount));
-    //Log.NewLine;
+  for (int i=0; i< mapsCount; i++) {
+              ReadWord();                //unknown:word;          01 00 - unknown 2 bytes
+      int sz=(int)ReadLongWord();        //size:longword;         size of current map (4b)
+      Log.Debug((i - 1) + " Offset:Size: " + Integer.toHexString(GetPosition() - 4) + ':' + Integer.toHexString(sz));
+      MovePosition(sz);
+  }
+
+    Add(sectionName, GetPosition() - ind, GetPosition() - ind + 4, ind, ind - 4);
+  Log.Debug("Maps (zones): " + mapsCount);
+    //Log.NewLine();
 
 
-    SetPosition(knownSections[5]);   // ZONE
-    ReadWord;                     // 2 bytes - maps count $0291 = 657 items
-//    showmessage('scan zone ok');
-  for i := 0 to mapsCount - 1 do ScanIZON(i);
-    //Log.NewLine;
+    SetPosition(KnownSections.ZONE);   // ZONE
+    ReadWord();                     // 2 bytes - maps count $0291 = 657 items
+        ShowMessage("scan zone ok");
+  for (int i = 0; i < mapsCount; i++) {
+      ScanIZON(i);
+  }
+    //Log.NewLine();
 
-    end;
+    }
 
-    procedure TSection.ScanIZON(id: Word);
-    var sz,  pn, w, h, oieCount, uw: Word;
-    size, unk2: Longword;
-    begin
+    public void ScanIZON(int id) {
+
         // Repeated data of TZone
-    AddMap(id);
-    uw := ReadWord;               // unknown:word; //01 00 // map type (desert, ...)
-  if uw > $0005 then ShowMessage('ID: ' + IntToStr(id) + ' UNK: ' + IntToHex(uw, 4) + ' > ' + IntToStr($0005));
-    sz := ReadLongWord;           // size:longword; size of the current map
-    TMap(maps.Objects[id]).mapOffset := GetPosition;
-    TMap(maps.Objects[id]).mapSize := sz + 6;
-    pn := ReadWord;               // number:word; //2 bytes - serial number of the map starting with 0
-  if pn <> id then ShowMessage('ID: ' + IntToStr(pn) + ' <> ' + IntToStr(id));
-    ReadString(4);                // izon:string[4]; //4 bytes: "IZON"
-    size := ReadLongWord;         // longword; //4 bytes - size of block IZON (include 'IZON') until object info entry count
-    TMap(maps.Objects[id]).izonOffset := GetPosition;
-    TMap(maps.Objects[id]).izonSize := size - 6;
-    Application.ProcessMessages;
+        AddMap(id);
+        int uw=ReadWord();               // unknown:word; //01 00 // map type (desert, ...)
+        if (uw > 0x0005) {
+            ShowMessage("ID: " + id + " UNK: " + Integer.toHexString(uw) + " > " + 0x0005);
+        }
+        int sz=(int)ReadLongWord();           // size:longword; size of the current map
+        maps.get(id).setMapOffset(GetPosition());
+        maps.get(id).setMapSize(sz + 6);
+        int pn=ReadWord();               // number:word; //2 bytes - serial number of the map starting with 0
+        if (pn!= id) {
+            ShowMessage("ID: " + pn + " <> " + id);
+        }
+        ReadString(4);                // izon:string[4]; //4 bytes: "IZON"
+        int size=(int)ReadLongWord();         // longword; //4 bytes - size of block IZON (include 'IZON') until object info entry count
+        maps.get(id).setIzonOffset(GetPosition());
+        maps.get(id).setIzonSize(size - 6);
 
-    w := ReadWord;                // width:word; //2 bytes: map width (W)
-    h := ReadWord;                // height:word; //2 bytes: map height (H)
-    ReadWord;                     // flags:word; //2 byte: map flags (unknown meanings)* добавил байт снизу
-    unk2 := ReadLongWord;         // unused:longword; //5 bytes: unused (same values for every map)
-    ReadWord;                     // planet:word; //1 byte: planet (0x01 = desert, 0x02 = snow, 0x03 = forest, 0x05 = swamp)* добавил следующий байт
+        //TODO
+        //Application.ProcessMessages;
 
-    //Log.Debug('Map #' + IntToStr(pn) + ': ' + planets[p] + ' (' + IntToStr(w) + 'x' + IntToStr(h) + ')');
-    //Log.Debug('Flags: ' + IntToStr(flags) + '; unknown value: $' + IntToHex(unk, 4));
-  if unk2 <> $FFFF0000 then ShowMessage(IntToHex(unk2, 8));
+        int w=ReadWord();                // width:word; //2 bytes: map width (W)
+        int h=ReadWord();                // height:word; //2 bytes: map height (H)
+        int flags=ReadWord();             // flags:word; //2 byte: map flags (unknown meanings)* добавил байт снизу
+        long unk2=ReadLongWord();         // unused:longword; //5 bytes: unused (same values for every map)
+        int p = ReadWord();               // planet:word; //1 byte: planet (0x01 = desert, 0x02 = snow, 0x03 = forest, 0x05 = swamp)* добавил следующий байт
 
-    MovePosition(w * h * 6);
+        Log.Debug("Map #" + pn + ": " + PLANETS[p] + " (" + w + "x" + h + ")");
+        Log.Debug("Flags: " + flags + "; unknown value: 0x" + Long.toHexString(unk2));
+        if (unk2!=0xFFFF0000) {
+            ShowMessage(Long.toHexString(unk2));
+        }
 
-    oieCount := ReadWord;         //2 bytes: object info entry count (X)
-    TMap(maps.Objects[id]).oieOffset := GetPosition;
-    TMap(maps.Objects[id]).oieCount := oieCount;
-    TMap(maps.Objects[id]).oieSize := oieCount * 12;
-    MovePosition(oieCount * 12);     //X*12 bytes: object info data
+        MovePosition(w * h * 6);
 
-    //Log.Debug('Object info entries count: ' + IntToStr(oieCount));
+        int oieCount=ReadWord();         //2 bytes: object info entry count (X)
+        maps.get(id).setOieOffset(GetPosition());
+        maps.get(id).setOieCount(oieCount);
+        maps.get(id).setOieSize(oieCount * 12);
+        MovePosition(oieCount * 12);     //X*12 bytes: object info data
 
-    ScanIZAX(id);
-    ScanIZX2(id);
-    ScanIZX3(id);
-    ScanIZX4(id);
-    ScanIACT(id);
-    end;
+        Log.Debug("Object info entries count: " + oieCount);
 
-    procedure TSection.ScanIZAX(id: Word);
-    var size: Longword;
-    begin
-    ReadString(4);                //4 bytes: "IZAX"
-    size := ReadLongWord;         //4 bytes: length (X)
-    TMap(maps.Objects[id]).izaxOffset := GetPosition;
-    TMap(maps.Objects[id]).izaxSize := size - 8;
-    MovePosition(size - 8);          //X-8 bytes: IZAX data
-    end;
+        ScanIZAX(id);
+        ScanIZX2(id);
+        ScanIZX3(id);
+        ScanIZX4(id);
+        ScanIACT(id);
+    }
 
-    procedure TSection.ScanIZX2(id: Word);
-    var size: Longword;
-    begin
-    ReadString(4);                //4 bytes: "IZX2"
-    size := ReadLongWord;         //4 bytes: length (X)
-    TMap(maps.Objects[id]).izx2Offset := GetPosition;
-    TMap(maps.Objects[id]).izx2Size := size - 8;
-    MovePosition(size - 8);          //X-8 bytes: IZX2 data
-    end;
+    //TODO
+    private void ShowMessage(String text) {
+        Log.Message(text);
+    }
 
-    procedure TSection.ScanIZX3(id: Word);
-    var size: Longword;
-    begin
-    ReadString(4);                //4 bytes: "IZX3"
-    size := ReadLongWord;         //4 bytes: length (X)
-    TMap(maps.Objects[id]).izx3Offset := GetPosition;
-    TMap(maps.Objects[id]).izx3Size := size - 8;
-    MovePosition(size - 8);          //X-8 bytes: IZX3 data
-    end;
+    public void ScanIZAX(int id) {
 
-    procedure TSection.ScanIZX4(id: Word);
-    begin
-    ReadString(4);                //4 bytes: "IZX4"
-    TMap(maps.Objects[id]).izx4Offset := GetPosition;
-    TMap(maps.Objects[id]).izx4Size := 8;
-    MovePosition(8);          //8 bytes: IZX4 data
-    end;
+        ReadString(4);                //4 bytes: "IZAX"
+        int size = (int) ReadLongWord();         //4 bytes: length (X)
+        maps.get(id).setIzaxOffset(GetPosition());
+        maps.get(id).setIzaxSize(size - 8);
+        MovePosition(size - 8);          //X-8 bytes: IZAX data
+    }
 
-    procedure TSection.ScanIACT(id: Word);
-    label l1, l2;
-    var title: String;
-    size, idx: Longword;
-    k: Byte;
-    begin
-    idx := data.Position;
-    TMap(maps.Objects[id]).iactOffset := GetPosition;
-    //TMap(maps.Objects[id]).iactSize := size - 6;
-    k := 0;
-    l1:
-    title := ReadString(4); //4 bytes: "IACT"
-  if title <> 'IACT' then goto l2;
-    SetLength(TMap(maps.Objects[id]).IACTS, Length(TMap(maps.Objects[id]).IACTS) + 1);
-    TMap(maps.Objects[id]).IACTS[k] := GetPosition;
-    size := ReadLongWord;   //4 bytes: length (X)
-    //Log.Debug(title + ' ' + inttohex(size, 4));
-    MovePosition(size);
-    Inc(k);
-  goto l1;
-    l2:
-    MovePosition(-4);
-    TMap(maps.Objects[id]).iactSize := GetPosition - idx;
-    end;
+    public void ScanIZX2(int id) {
 
+        ReadString(4);                //4 bytes: "IZX2"
+        int size = (int) ReadLongWord();         //4 bytes: length (X)
+        maps.get(id).setIzx2Offset(GetPosition());
+        maps.get(id).setIzx2Size(size - 8);
+        MovePosition(size - 8);          //X-8 bytes: IZX2 data
+    }
 
-    procedure TSection.ScanTILE(sectionName: String);
-    var sz: Cardinal;
-    i: Word;
-    begin
-    sz:=ReadLongWord;             //4 bytes - length of section TILE
-    Add(sectionName, sz, sz + 4 + 4, GetPosition, GetPosition - 4 - 4);
-    MovePosition(sz);
-    tilesCount := sz div $404;
-    SetLength(tiles, tilesCount);
-  for i := 0 to tilesCount - 1 do tiles[i] := false;
-  Log.debug('Sprites, tiles: ' + IntToStr(tilesCount));
-    end;
+    public void ScanIZX3(int id) {
 
+        ReadString(4);                //4 bytes: "IZX3"
+        int size = (int) ReadLongWord();         //4 bytes: length (X)
+        maps.get(id).setIzx3Offset(GetPosition());
+        maps.get(id).setIzx3Size(size - 8);
+        MovePosition(size - 8);          //X-8 bytes: IZX3 data
+    }
 
-    procedure TSection.ScanSNDS(sectionName: String);
-    var sz, msz: Word;
-    begin
-    sz:=ReadLongWord;             //4 bytes - length of section SNDS
-    Add(sectionName, sz, sz + 4 + 4, GetPosition, GetPosition - 4 - 4);
-    soundsCount := 0;
-    ReadWord;
-  while InBound(knownSections[3]) do
-    begin
-    msz := ReadWord;
-    ReadString(msz);
-    inc(soundsCount);
-    end;
-  Log.Debug('Sounds, melodies: ' + IntToStr(soundsCount));
-    end;
+    public void ScanIZX4(int id) {
 
-    procedure TSection.ScanSTUP(sectionName: String);
-    var sz: Longword;
-    begin
-    sz:=ReadLongWord;             //4 bytes - length of section STUP
-    Add(sectionName, sz, sz + 4 + 4, GetPosition, GetPosition - 4 - 4);
-    MovePosition(sz);
-  Log.Debug('Title screen: exists');
-    end;
+        ReadString(4);                //4 bytes: "IZX4"
+        maps.get(id).setIzx4Offset(GetPosition());
+        maps.get(id).setIzx4Size(8);
+        MovePosition(8);          //8 bytes: IZX4 data
+    }
 
-    procedure TSection.ScanVERS(sectionName: String);
-    var ver: LongWord;
-    begin
-    Add(sectionName, 4, 4 + 4, GetPosition, GetPosition - 4);
-  data.ReadBuffer(ver, SizeOf(ver));
-  if ver = $0200 then version := '2.0' else version := 'x.x';
-  Log.Debug('File version: ' + version);
-    //showmessage('vers');
-    end;
+    public void ScanIACT(int id) {
 
+        int idx = dump.getIndex();
+        maps.get(id).setIactOffset(GetPosition());
 
-    function TSection.GetIZON(offset : Cardinal): Word;
-    var i: Word;
-    begin
-    //Log.Debug(inttostr(maps.Count));
-    //for i := 0 to 5 do
-    //  Log.Debug('====izon #' + inttostr(i) + ': ' + inttohex(TMap(maps.Objects[i]).izonOffset, 4));
+        List<Integer> iacts = maps.get(id).getIACTS();
 
-  for i := 0 to mapsCount - 1 do
-    begin
-    //Log.Debug('-izon #' + inttostr(i) + ': ' + inttohex(offset, 4) + '~' + inttohex(TMap(maps.Objects[i]).izonOffset, 4));
-    if offset < TMap(maps.Objects[i]).izonOffset then Break;
-    end;
-    Result := i - 1;
-    end;
+        while(ReadString(4).equals("IACT")) { //4 bytes: "IACT"
+            iacts.add(GetPosition());
+            int size=(int)ReadLongWord();   //4 bytes: length (X)
+            //Log.Debug(title + ' ' + inttohex(size, 4));
+            MovePosition(size);
+        }
+        MovePosition(-4);
+        iacts.set(iacts.size() - 1, GetPosition() - idx);
+    }
 
-    function TSection.GetIACT(offset : Cardinal): Word;
-    var izon, i: Word;
-    begin
-//  Log.Debug('GetIACT. Offset: ' + inttohex(offset,4));
-    izon := GetIZON(offset);
-  Log.Debug('GetIZON: ' + inttostr(izon));
-  for i := 0 to Length(TMap(maps.Objects[izon]).IACTS) - 1 do
-    begin
-//    Log.Debug(inttostr(i) + ': ' + inttohex(TMap(maps.Objects[izon]).IACTS[i], 4));
-    if offset < TMap(maps.Objects[izon]).IACTS[i] then Break;
-    end;
-    Result := i - 1;
-  Log.Debug('IZON/IACT: ' + inttostr(izon) + '/' + inttostr(i - 1));
-    end;
+    public void ScanTILE(KnownSections sectionName) {
 
+        int sz = (int) ReadLongWord();             //4 bytes - length of section TILE
+        Add(sectionName, sz, sz + 4 + 4, GetPosition(), GetPosition() - 4 - 4);
+        MovePosition(sz);
+        int tilesCount = sz / 0x404;
+        tiles = new boolean[tilesCount];
+        for (int i = 0; i <  tilesCount; i++) {
+            tiles[i] = false;
+        }
 
-    procedure TSection.LoadFileToArray(fileName: String);
-    begin
-  Log.Debug('DTA file internal structure');
-  Log.Debug('===========================');
-    Log.NewLine;
+        Log.Debug("Sprites, tiles: " + tilesCount);
+    }
 
-    crc32 := IntToHex(GetFileCRC(fileName), 8);
-  if crcs.IndexOfName(crc32) = -1
-    then dtaRevision := 'Unknown'
-            else dtaRevision := crcs.Values[crc32];
+    public void ScanSNDS(KnownSections sectionName) {
 
-  if data <> nil then FreeAndNil(data);
-    data := TMemoryStream.Create;
-  data.LoadFromFile(fileName);
+        int sz=(int)ReadLongWord();             //4 bytes - length of section SNDS
+        Add(sectionName, sz, sz + 4 + 4, GetPosition(), GetPosition() - 4 - 4);
+        soundsCount = 0;
+        ReadWord();
+        while (InBound(sectionName)) {
+            int msz = ReadWord();
 
-    Log.NewLine;
-  Log.Debug('Sections:');
-  Log.Debug('---------');
-    Log.NewLine;
-  Log.debug('Size: ' + inttostr(data.Size));
-  Log.debug('CRC-32: ' + crc32);
-  Log.debug('DTA revision: ' + dtaRevision);
-    SetPosition(0);
-    end;
+        ReadString(msz);
+        soundsCount++;
+        }
 
-    procedure TSection.SaveToFile(fileName: String);
-    begin
-  dta.SaveToFile(fileName);
-    end;
+        Log.Debug("Sounds, melodies: " + soundsCount);
+    }
 
+    public void ScanSTUP(KnownSections sectionName) {
 
-    procedure TSection.SetPosition(offset: Cardinal);
-    begin
-    data.Position := offset;
-    end;
+        int sz=(int) ReadLongWord();             //4 bytes - length of section STUP
+        Add(sectionName, sz, sz + 4 + 4, GetPosition(), GetPosition() - 4 - 4);
+        MovePosition(sz);
+        Log.Debug("Title screen: exists");
+    }
 
-    procedure TSection.SetPosition(section: String);
-    begin
-    data.Position := GetDataOffset(section);
-    end;
+    public void ScanVERS(KnownSections sectionName) {
 
-    procedure TSection.MovePosition(offset: integer);
-    begin
-  data.Seek(offset, soCurrent);
-    end;
+        Add(sectionName, 4, 4 + 4, GetPosition(), GetPosition() - 4);
+        long ver = dump.getLongWord();
+        if (ver == 0x0200) {
+            version = "2.0";
+        } else {
+            version="x.x";
+        }
+        Log.Debug("File version: " + version);
+        System.out.println("vers");
+    }
 
-    function TSection.GetPosition: Cardinal;
-    begin
-    result := data.Position;
-    end;
+    public int GetIZON(int offset) {
+        Log.Debug(maps.size());
+        for (int i = 0; i < 5; i++) {
+            Log.Debug("====izon #" + i + ": " + Integer.toHexString(maps.get(i).getIzonOffset()));
+        }
 
-    procedure TSection.ReplaceArea(oldString, newString: String);
-    var delta: Integer;
-    begin
-    delta := Length(oldString) - Length(newString);
-  if delta > 0 then DeleteArea(delta);
-  if delta < 0 then InsertArea(Abs(delta));
-    WriteString(newString);
-    end;
+        int result = 0;
+        for (int i = 0; i < mapsCount; i++) {
+            Log.Debug("-izon #" + i + ": " + Integer.toHexString(offset) + '~' + Integer.toHexString(maps.get(i).getIzonOffset()));
+            if (offset<maps.get(i).getIzonOffset()) {
+                break;
+            }
+            result = i;
+        }
+        return result;
+    }
 
-    procedure TSection.DeleteArea(length: Cardinal);
-    begin
-    Move(Pointer(Cardinal(data.Memory) + data.Position + length)^,
-    Pointer(Cardinal(data.Memory) + data.Position)^,
-    data.Size - data.Position - length);
-  data.SetSize(data.Size - length);
-    end;
+    public int GetIACT(int offset) {
 
-    procedure TSection.InsertArea(length: Cardinal);
-    begin
-  data.SetSize(data.Size + length);
-    Move(Pointer(Cardinal(data.Memory) + data.Position)^,
-    Pointer(Cardinal(data.Memory) + data.Position + length)^,
-    data.Size - data.Position - length);
-    end;
+          Log.Debug("GetIACT. Offset: " + Integer.toHexString(offset));
+        int izon = GetIZON(offset);
+        Log.Debug("GetIZON: " + izon);
+        int result = 0;
+        for (int i = 0; i < maps.get(izon).getIACTS().size(); i++) {
+            Log.Debug(i + ": " + Integer.toHexString(maps.get(izon).getIACTS().get(i)));
+            if (offset<maps.get(izon).getIACTS().get(i)) {
+                    break;
+            }
+            result = i;
+        }
+
+        Log.Debug("IZON/IACT: " + izon + '/' + result);
+        return result;
+    }
+
+    //TODO DTA, validate CRC32 also
+    public void LoadFileToArray(String fileName) throws IOException {
+
+        Log.Debug("DTA file internal structure");
+        Log.Debug("===========================");
+        Log.NewLine();
+
+        Path exePath = Paths.get(fileName);
+        Path dtaPath = getDtaPath(exePath.getParent());
+
+        exeCrc32 = Integer.toHexString(BinaryUtils.crc32(Paths.get(fileName)));
+        dtaCrc32 = Integer.toHexString(BinaryUtils.crc32(Paths.get(fileName)));
+
+        Release release = Config.releases.stream().filter(r -> r.getExe().equals(exeCrc32) && r.getDta().equals(dtaCrc32)).findFirst().orElse(null);
+
+        if (null == release) {
+            dtaRevision = "Unknown";
+        } else {
+            dtaRevision = release.getTitle();
+        }
+
+        dump = new Dump(new File(fileName));
+
+        Log.NewLine();
+        Log.Debug("Sections:");
+        Log.Debug("---------");
+        Log.NewLine();
+        //TODO exe
+        Log.Debug("Size: " + dump.size());
+        Log.Debug("CRC-32: " + dtaCrc32);
+        Log.Debug("DTA revision: " + dtaRevision);
+        SetPosition(0);
+    }
+
+    public Path getDtaPath(Path dir) throws IOException {
+
+        try (Stream<Path> stream = Files.list(dir)) {
+            return stream
+                    .filter(file -> !Files.isDirectory(file))
+                    .filter(file -> file.getFileName().toString().toLowerCase().endsWith(".dta"))
+                    .findFirst().orElse(null);
+        }
+    }
+
+    public void SaveToFile(String fileName) throws IOException {
+        dump.saveToFile(fileName);
+    }
 
 
-    procedure TSection.InsertEmptyArea(length: Cardinal);
-    begin
-    InsertArea(length);
-    FillChar(Pointer(Cardinal(data.Memory) + data.Position)^, length, $00);
-    end;
+    public void SetPosition(int offset) {
+        dump.setIndex(offset);
+    }
 
-    function TSection.ReadChar: Char;
-    begin
-  data.ReadBuffer(result, SizeOf(result));
-    end;
+    public void SetPosition(KnownSections section) {
+        dump.setIndex(GetDataOffset(section));
+    }
 
-    function TSection.ReadByte: Byte;
-    begin
-  data.ReadBuffer(result, SizeOf(result));
-    end;
+    public void MovePosition(int offset) {
+        dump.moveTo(offset);
+    }
 
-    function TSection.ReadWord: Word;
-    begin
-  data.ReadBuffer(result, SizeOf(result));
-    end;
+    public int GetPosition() {
+        return dump.getIndex();
+    }
 
-    function TSection.ReadLongWord: LongWord;
-    begin
-  data.ReadBuffer(result, SizeOf(result));
-    end;
+    public void ReplaceArea(String oldString, String newString) {
+        int delta = oldString.length() - newString.length();
+        if (delta > 0) {
+            dump.deleteArea(delta);
+        } else if (delta < 0) {
+            InsertArea(Math.abs(delta));
+        }
+        dump.setString(newString);
+    }
+    
+    public void DeleteArea(int length) {
+        dump.deleteArea(length);
+    }
+    
+    public void InsertArea(int length) {
+        dump.insertEmptyArea(length);
+    }
 
-    function TSection.ReadString(size: Cardinal): String;
-    begin
-    SetLength(result, size);
-  if size > 0 then
-      data.ReadBuffer(result[1], size)
-    end;
+    public void InsertEmptyArea(int length) {
+        dump.insertEmptyArea(length);
+    }
 
-    procedure TSection.WriteByte(value: Byte);
-    begin
- data.WriteBuffer(value, SizeOf(value));
-    end;
+    public char ReadChar() {
+        return dump.getChar();
+    }
 
-    procedure TSection.WriteWord(value: Word);
-    begin
- data.WriteBuffer(value, SizeOf(value));
-    end;
+    public int ReadByte() {
+        return dump.getByte();
+    }
 
-    procedure TSection.WriteLongWord(value: LongWord);
-    begin
- data.WriteBuffer(value, SizeOf(value));
-    end;
+    public int ReadWord() {
+        return dump.getWord();
+    }
 
-    procedure TSection.WriteString(value: String);
-    begin
- data.WriteBuffer(value[1], Length(value));
-    end;
+    public long ReadLongWord() {
+        return dump.getLongWord();
+    }
 
-    initialization
+    public String ReadString(int size) {
+        return dump.readString(size);
+    }
 
-    DTA := TSection.Create;
+    public void WriteByte(int value) {
+        dump.setByte(value);
+    }
 
-    finalization
+    public void WriteWord(int value) {
+        dump.setWord(value);
+    }
 
-    DTA.Clear;
-    DTA.Free;
+    public void WriteLongWord(long value) {
+        dump.setLongWord(value);
+    }
 
-    end.*/
+    public void WriteString(String value) {
+        dump.setString(value);
+    }
+
+    //TODO
+    public static class Log {
+
+        public static void Debug(String message) {
+            System.out.println("DEBUG: " + message);
+        }
+
+        public static void Debug(int integer) {
+            Debug(Integer.toString(integer));
+        }
+
+        public static void NewLine() {
+            System.out.println("");
+        }
+
+        public static void Message(String message) {
+            System.out.println("MESSAGE: " + message);
+        }
+    }
 }

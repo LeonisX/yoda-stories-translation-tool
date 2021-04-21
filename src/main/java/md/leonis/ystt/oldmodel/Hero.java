@@ -48,7 +48,7 @@ public class Hero {
 //TODO research for all heroes start equipment
 
     public static Hero readFromRom(Dump romData, int index) {
-        return new Hero(index, romData.getBoolean(), romData.getByte(), romData.getByte(), romData.getShort() ,romData.getByte(),
+        return new Hero(index, romData.getBoolean(), romData.getByte(), romData.getByte(), romData.getWord() ,romData.getByte(),
                 romData.getByte(), romData.getByte(),romData.getByte(), romData.getByte(), romData.getByte(), romData.getByte(), romData.getByte(),
                 romData.getByte(), romData.getByte(), romData.getByte());
     }
@@ -60,7 +60,7 @@ public class Hero {
         romData.setByte(mp);
         //ByteOrder byteOrder = romData.getByteOrder();
         //romData.setByteOrder(ByteOrder.LITTLE_ENDIAN);
-        romData.setShort(experience);
+        romData.setWord(experience);
         //romData.setByteOrder(ByteOrder.BIG_ENDIAN);
         romData.setByte(level);
         romData.setByte(maxHp);

@@ -27,7 +27,7 @@ public class Level {
         this.attack = dump.getByte();
         this.defense = dump.getByte();
         this.mp = dump.getByte();
-        this.experience = dump.getShort();
+        this.experience = dump.getWord();
         this.combatSpells = dump.getByte();
         this.curativeSpells = dump.getByte();
     }
