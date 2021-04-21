@@ -5,7 +5,7 @@ import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
-import md.leonis.ystt.model.KnownSections;
+import md.leonis.ystt.utils.JavaFxUtils;
 
 import java.util.List;
 
@@ -171,7 +171,9 @@ public class MainStageController {
         Opendialog1.InitialDir := ExtractFilePath(ParamStr(0))+'\';*/
     }
 
-    public void openMenuItemClick(ActionEvent actionEvent) {
+    public void openMenuItemClick() {
+
+        JavaFxUtils.openFile();
     }
 
     public void saveMenuItemClick(ActionEvent actionEvent) {

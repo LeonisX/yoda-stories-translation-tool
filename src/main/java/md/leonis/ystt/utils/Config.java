@@ -1,13 +1,13 @@
 package md.leonis.ystt.utils;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.google.gson.stream.JsonReader;
+import md.leonis.ystt.model.Release;
 import md.leonis.ystt.oldmodel.*;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
+import java.io.*;
+import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -62,7 +62,6 @@ public class Config {
 
     public static int[][] battleSpells = {{4, 9, 14, 3, 1}, {10, 12, 17, 7}, {}, {3, 11, 18, 6, 13}};
     public static int[][] overworldSpells = {{4, 15}, {10, 16, 2}, {}, {10, 2, 11, 5, 8}};
-
 
 
     //static final String resourcePath = "/" + MainStageController.class.getPackage().getName().replaceAll("\\.", "/") + "/";
@@ -125,12 +124,24 @@ public class Config {
 
     public static void loadCRCs() throws IOException {
 
-        String fileName = "crcs.cfg";
+        ClassLoader classLoader = Config.class.getClassLoader();
+        File file = new File(classLoader.getResource("crcs.json").getFile());
+        Type releaseType = new TypeToken<List<Release>>() {
+        }.getType();
+        Gson gson = new Gson();
+
+        try {
+            JsonReader reader = new JsonReader(new FileReader(file));
+            releases = gson.fromJson(reader, releaseType);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        /*String fileName = "crcs.cfg";
         try (InputStream inputStream = Config.class.getClassLoader().getResourceAsStream(fileName)) {
             if (inputStream == null) throw new FileNotFoundException("Language table not found: " + fileName);
             crcs.load(inputStream);
-
-        }
+        }*/
     }
 
     /*public static void loadLevels() throws IOException {
@@ -185,38 +196,7 @@ public class Config {
 
     public static List<Geo> geos;
 
-    static {
-        ClassLoader classLoader = Config.class.getClassLoader();
-        File file = new File(classLoader.getResource("results.csv").getFile());
-        geos = new LinkedList<>();
-        try {
-            List<String> list = Files.readAllLines(file.toPath(), Charset.defaultCharset() );
-            list.forEach(r -> {
-                String[] chunks = r.replace("\"","").split(";");
-                String map = chunks[2]/*.substring(2) + chunks[2].substring(0, 2)*/;
-                //System.out.println(chunks[2] + " " + map);
-                geos.add(new Geo(chunks[8],
-                        Integer.parseInt(chunks[0], 16),
-                        Integer.parseInt(chunks[1],16),
-                        Integer.parseInt(chunks[2].substring(0, 2), 16), // mapLayer
-                        Integer.parseInt(chunks[2].substring(2), 16), // mapId
-                        Integer.parseInt(chunks[5],16),
-                        Integer.parseInt(chunks[4],16),
-                        Integer.parseInt(chunks[3],16),
-                        0,
-                        0,
-                        0,
-                        Integer.parseInt(chunks[1],16),
-                        Integer.parseInt(chunks[0],16),
-                        Integer.parseInt(chunks[6],16),
-                        Integer.parseInt(chunks[7],16),
-                        0)
-                );
-            });
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+    public static List<Release> releases;
 
     public static List<Item> getWeapons() {
         return getItem("weapon");
@@ -241,7 +221,7 @@ public class Config {
         long count = languageTable.keySet().stream()
                 .filter(k -> ((String) k).matches("^" + group + "[0-9]*$")).count();
         List<String> result = new LinkedList<>();
-        for (int i = 0; i < count; i++ ) {
+        for (int i = 0; i < count; i++) {
             result.add(languageTable.getProperty(group + i));
         }
         return result;

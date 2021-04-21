@@ -7,12 +7,16 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Region;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import md.leonis.ystt.MainApp;
 
+import java.io.File;
 import java.io.IOException;
 
 public class JavaFxUtils {
+
+    private static Stage stage;
 
     private static BorderPane rootLayout;
 
@@ -22,13 +26,15 @@ public class JavaFxUtils {
     public static Object currentController;
 
     public static void showMainPane(Stage primaryStage) {
+        stage = primaryStage;
         primaryStage.setTitle("Yoda Stories Translation Tool");
         try {
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(MainApp.class.getResource(Config.resourcePath + "MainStage.fxml"));
             rootLayout = loader.load();
             //MainStageController controller = loader.getController();
-            Scene scene = new Scene(rootLayout, SCENE_WIDTH, SCENE_HEIGHT);
+            Scene scene = new Scene(rootLayout);
+            //Scene scene = new Scene(rootLayout, SCENE_WIDTH, SCENE_HEIGHT);
             primaryStage.setScene(scene);
 
             showPrimaryPanel();
@@ -43,12 +49,16 @@ public class JavaFxUtils {
         showPane("PrimaryPane.fxml");
     }
 
+    public static void showMainPanel() {
+        showPane("MainPane.fxml");
+    }
+
     public static void showPane(String resource) {
         try {
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(MainApp.class.getResource(Config.resourcePath + resource));
             Region innerPanel = loader.load();
-            innerPanel.setPrefSize(SCENE_WIDTH, SCENE_HEIGHT);
+            //innerPanel.setPrefSize(SCENE_WIDTH, SCENE_HEIGHT);
             innerPanel.prefHeightProperty().bind(rootLayout.heightProperty());
             innerPanel.prefWidthProperty().bind(rootLayout.widthProperty());
             currentController = loader.getController();
@@ -79,7 +89,7 @@ public class JavaFxUtils {
         alert.setContentText(text);
         //alert.setWidth(800);
         alert.getDialogPane().setPrefSize(880, 320);
-        alert.getDialogPane().getChildren().stream().filter(node -> node instanceof Label).forEach(node -> ((Label)node).setMinHeight(Region.USE_PREF_SIZE));
+        alert.getDialogPane().getChildren().stream().filter(node -> node instanceof Label).forEach(node -> ((Label) node).setMinHeight(Region.USE_PREF_SIZE));
         alert.showAndWait();
     }
 
@@ -88,5 +98,17 @@ public class JavaFxUtils {
         alert.setTitle(title);
         alert.setHeaderText(header);
         alert.showAndWait();
+    }
+
+    public static void openFile() {
+
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Open Executable File");
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Executable Files", "*.exe"));
+        File selectedFile = fileChooser.showOpenDialog(stage);
+        if (selectedFile != null) {
+            showMainPanel();
+        }
     }
 }
