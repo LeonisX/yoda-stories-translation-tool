@@ -108,7 +108,12 @@ public class JavaFxUtils {
                 new FileChooser.ExtensionFilter("Executable Files", "*.exe"));
         File selectedFile = fileChooser.showOpenDialog(stage);
         if (selectedFile != null) {
-            showMainPanel();
+            try {
+                Config.loadGameFiles(selectedFile);
+                showMainPanel();
+            } catch (Exception e) {
+                showAlert("Loading error", e.getMessage(), Alert.AlertType.ERROR);
+            }
         }
     }
 }

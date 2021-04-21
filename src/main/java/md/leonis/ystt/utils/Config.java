@@ -235,4 +235,8 @@ public class Config {
     public static Level getLevel(int heroId, int level) {
         return Level.fromCSV(Config.levels.getProperty(String.format("hero%s-%s", heroId, level)));
     }
+
+    public static void loadGameFiles(File selectedFile) {
+        throw new RuntimeException("YODESK.DTA file not found");
+    }
 }
