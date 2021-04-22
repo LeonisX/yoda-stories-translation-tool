@@ -19,7 +19,7 @@ An original version: https://github.com/LeonisX/YExplorer
 * Log
 * HEX
 
-* Prepate translated DTA & dump it here
+* Prepare translated DTA & dump it here
 
 * Restore functionality
 * Add new tiles - already in Delphi version - we need a better solution: "PLUS" button at the end of tiles
