@@ -29,6 +29,8 @@ An original version: https://github.com/LeonisX/YExplorer
 * Validate text (first-last) phrases
 * Hide debug tabs by default
 
+* TODO tests!!!!!!!!!!!!!!!
+
 ### BMP
 
 * https://www.infoworld.com/article/2077561/java-tip-60--saving-bitmap-files-in-java.html

@@ -188,9 +188,9 @@ public class Section {
         Log.debug("Maps offsets, sizes detailed:");
         Log.debug("------------------");
         Log.newLine();
-        Log.debug(String.format("%3s %-13s %-13s  %-16s  %-13s  %-13s  %-13s  %-13s  %-13s", "#", "MAP", "IZON", "OIE", "IZAX", "ISX2", "IZX3", "IZX4", "IACT"));
+        Log.debug(String.format("%3s   %-13s %-13s  %-16s  %-13s  %-13s  %-13s  %-13s  %-13s", "#", "MAP", "IZON", "OIE", "IZAX", "ISX2", "IZX3", "IZX4", "IACT"));
 
-        maps.forEach((key, value) -> Log.debug(String.format("%3d %-13s %-13s  %-19s  %-13s  %-13s  %-13s  %-13s  %-13s", key,
+        maps.forEach((key, value) -> Log.debug(String.format("%3d %-13s %-13s  %-16s  %-13s  %-13s  %-13s  %-13s  %-13s", key,
                 intToHex(value.getMapOffset(), 8) + ':' + intToHex(value.getMapSize(), 4),
                 intToHex(value.getIzonOffset(), 8) + ':' + intToHex(value.getIzonSize(), 4),
                 intToHex(value.getOieOffset(), 8) + ':' + intToHex(value.getOieSize(), 4) + ':' + intToHex(value.getOieCount(), 2),
@@ -646,7 +646,7 @@ public class Section {
     public String intToHex(int value, int size) {
 
         String result = Integer.toHexString(value).toUpperCase();
-        return StringUtils.leftPad(result, size - result.length());
+        return StringUtils.leftPad(result, size);
     }
 
     public String longToHex(long value, int size) {
