@@ -1,11 +1,14 @@
 package md.leonis.ystt.view;
 
+import com.google.gson.Gson;
 import javafx.application.Platform;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
-import javafx.scene.image.*;
+import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
@@ -13,8 +16,16 @@ import javafx.stage.FileChooser;
 import md.leonis.ystt.model.KnownSections;
 import md.leonis.ystt.utils.Config;
 import md.leonis.ystt.utils.JavaFxUtils;
+import net.sf.image4j.codec.bmp.BMPDecoder;
+import net.sf.image4j.codec.bmp.BMPEncoder;
+import net.sf.image4j.codec.bmp.BMPImage;
+import net.sf.image4j.codec.bmp.InfoHeader;
+import net.sf.image4j.io.LittleEndianOutputStream;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.List;
 
 import static md.leonis.ystt.utils.Config.section;
@@ -460,7 +471,7 @@ public class MainPaneController {
     }
 
 
-    public void saveMenuItemClick(ActionEvent actionEvent) {
+    public void saveMenuItemClick() {
         //TODO
     }
 
@@ -477,7 +488,6 @@ public class MainPaneController {
     }
 
     public void transparentColorMenuItemClick() {
-
         currentFillColor = (Color) transparentColorToggleGroup.getSelectedToggle().getUserData();
     }
 
@@ -499,21 +509,56 @@ public class MainPaneController {
         openFile();
     }
 
+    //TODO
     public void dumpAllSectionsButtonClick(ActionEvent actionEvent) {
     }
 
+    //TODO
     public void dumpPETextToDocxCLick(ActionEvent actionEvent) {
     }
 
+    //TODO
     public void loadPETranslatedTextClick(ActionEvent actionEvent) {
     }
 
-    public void replacePETextInDtaClick(ActionEvent actionEvent) {
+    //TODO
+    public void replacePETextInDtaClick() {
     }
 
-    public void saveToBitmapButtonClick(ActionEvent actionEvent) {
+    public void saveToBitmapButtonClick() throws IOException {
+
+        BMPImage image = BMPDecoder.readExt(new File("D:\\Working\\_Yoda\\YExplorer\\out\\output-eng-2\\STUP.bmp"));
+
+        // {"iSize":40,"iWidth":288,"iHeight":288,"sPlanes":1,"sBitCount":8,"iCompression":0,"iImageSize":82944,
+        // "iXpixelsPerM":0,"iYpixelsPerM":0,"iColorsUsed":256,"iColorsImportant":0,"iNumColors":256}
+        InfoHeader infoHeader = image.getInfoHeader();
+
+        //image.getImage().getColorModel().
+
+        WritableImage wi = SwingFXUtils.toFXImage(image.getImage(), null);
+
+        // IndexColorModel(int bits, int size,
+        //                           byte r[], byte g[], byte b[]
+        //IndexColorModel icm = new IndexColorModel();
+
+        BufferedImage bi = SwingFXUtils.fromFXImage(wi, null);
+
+        //BufferedImage out = new BufferedImage(bi.getWidth(), bi.getHeight(), BufferedImage.TYPE_BYTE_INDEXED, icm);
+
+        LittleEndianOutputStream os = new LittleEndianOutputStream(new FileOutputStream(new File("D:\\Working\\_Yoda\\YExplorer\\out\\output-eng-2\\STUPx.bmp")));
+
+        //BMPEncoder.writeFileHeader();
+
+        //BMPEncoder.write(bi, new File("D:\\Working\\_Yoda\\YExplorer\\out\\output-eng-2\\STUPx.bmp"));
+
+        BMPEncoder.write(bi, new File("D:\\Working\\_Yoda\\YExplorer\\out\\output-eng-2\\STUPx.bmp"));
+
+        System.out.println(new Gson().toJson(infoHeader));
+
+        System.out.println();
+
         /*Log.Clear;
-        CreateDir(opath);
+        CreateDir(c);
         TitleImage.Picture.SaveToFile(opath + knownSections[2] + '.bmp');
         Log.Debug('Title screen saved');*/
     }

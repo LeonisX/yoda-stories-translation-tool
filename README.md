@@ -27,6 +27,7 @@ An original version: https://github.com/LeonisX/YExplorer
 * https://github.com/nayuki/BMP-IO
 * http://image4j.sourceforge.net/#license
 * https://commons.apache.org/proper/commons-imaging/
+* https://github.com/imagej/imagej
 * https://www.programcreek.com/java-api-examples/?api=java.awt.image.IndexColorModel
 * http://www.java2s.com/Tutorials/Java/Graphics_How_to/Image/Swap_Palette_for_an_BufferedImage.htm
 * https://docs.oracle.com/javase/8/docs/api/javax/imageio/package-summary.html
@@ -60,3 +61,6 @@ An original version: https://github.com/LeonisX/YExplorer
 * http://web.archive.org/web/20120708235509/http://java.net/projects/pe-file-reader
 * http://sourceware.org/binutils/docs/binutils/windres.html
 
+
+
+Uses modified code from http://image4j.sourceforge.net/ project
