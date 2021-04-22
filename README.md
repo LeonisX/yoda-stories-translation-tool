@@ -2,14 +2,26 @@
 
 Utility Yoda Stories Translation Tool
 
-**Current status: doesn't work**
+**Current status: starting only**
 
-**Current stage: project preparation**
+**Current stage: project development**
 
 An original version: https://github.com/LeonisX/YExplorer
 
 ## TODO
 
+* Fill tables
+* Draw tiles, maps
+* Dump all
+* Dump texts to DOCX (separators, IACT/PUZ2 labels, ignore them, allow blocked text)
+* Replace tiles, maps
+* Replace text from DOCX
+* Log
+* HEX
+
+* Prepate translated DTA & dump it here
+
+* Restore functionality
 * Add new tiles - already in Delphi version - we need a better solution: "PLUS" button at the end of tiles
 * Dump from EXE file
 * Dump palette from EXE file

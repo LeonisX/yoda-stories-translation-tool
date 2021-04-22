@@ -31,8 +31,9 @@ public class Section {
 
     //TODO getters
     public Map<KnownSections, SectionMetrics> sections = new HashMap<>();
-    //TODO dtaDump, exeDump also
+    //TODO dtaDump
     public Dump dump;
+    public Dump exeDump;
     public boolean[] tiles;
     public Map<Integer, MapEntry> maps = new HashMap<>();
     public String exeCrc32;
@@ -46,10 +47,7 @@ public class Section {
     public int charsCount;
     public int namesCount;
 
-    public Section() throws IOException {
-
-        //dump = new Dump(file);
-        //crcs.LoadFromFile('./conf/crcs.cfg'); we read this in config
+    public Section() {
     }
 
     public long GetTileFlag(int id) {
@@ -192,7 +190,7 @@ public class Section {
         Log.newLine();
         Log.debug(String.format("%3s %-13s %-13s  %-16s  %-13s  %-13s  %-13s  %-13s  %-13s", "#", "MAP", "IZON", "OIE", "IZAX", "ISX2", "IZX3", "IZX4", "IACT"));
 
-        maps.forEach((key, value) -> Log.debug(String.format("%3d %-13s %-13s  %-16s  %-13s  %-13s  %-13s  %-13s  %-13s", key,
+        maps.forEach((key, value) -> Log.debug(String.format("%3d %-13s %-13s  %-19s  %-13s  %-13s  %-13s  %-13s  %-13s", key,
                 intToHex(value.getMapOffset(), 8) + ':' + intToHex(value.getMapSize(), 4),
                 intToHex(value.getIzonOffset(), 8) + ':' + intToHex(value.getIzonSize(), 4),
                 intToHex(value.getOieOffset(), 8) + ':' + intToHex(value.getOieSize(), 4) + ':' + intToHex(value.getOieCount(), 2),
@@ -273,7 +271,7 @@ public class Section {
 
         int sz = (int) ReadLongWord();           //4 bytes - length of section PUZ2
         Add(sectionName, sz, sz + 4 + 4, GetPosition(), GetPosition() - 4 - 4);
-        int puzzlesCount = 0;
+        puzzlesCount = 0;
         while (InBound(sectionName)) {
             if (ReadWord() == 0xFFFF) {    //2 bytes - index of puzzle (from 0)
                 break;
@@ -428,7 +426,7 @@ public class Section {
         int sz = (int) ReadLongWord();             //4 bytes - length of section TILE
         Add(sectionName, sz, sz + 4 + 4, GetPosition(), GetPosition() - 4 - 4);
         MovePosition(sz);
-        int tilesCount = sz / 0x404;
+        tilesCount = sz / 0x404;
         tiles = new boolean[tilesCount];
         for (int i = 0; i < tilesCount; i++) {
             tiles[i] = false;
@@ -509,7 +507,7 @@ public class Section {
         return result;
     }
 
-    //TODO DTA, validate CRC32 also
+    //TODO EXE, validate CRC32 also
     public void LoadFileToArray(File file) throws IOException {
 
         Log.debug("DTA file internal structure");
@@ -530,6 +528,19 @@ public class Section {
             dtaRevision = release.getTitle();
         }
 
+        exeDump = new Dump(exePath);
+        exeDump.setByteOrder(ByteOrder.LITTLE_ENDIAN);
+
+        Log.newLine();
+        Log.debug("EXE:");
+        Log.debug("---------");
+        Log.newLine();
+        Log.debug("Size: " + exeDump.size());
+        Log.debug("CRC-32: " + exeCrc32);
+        Log.debug("DTA revision: " + dtaRevision);
+        exeDump.setIndex(0);
+
+
         dump = new Dump(dtaPath);
         dump.setByteOrder(ByteOrder.LITTLE_ENDIAN);
 
@@ -537,7 +548,6 @@ public class Section {
         Log.debug("Sections:");
         Log.debug("---------");
         Log.newLine();
-        //TODO exe
         Log.debug("Size: " + dump.size());
         Log.debug("CRC-32: " + dtaCrc32);
         Log.debug("DTA revision: " + dtaRevision);
@@ -635,7 +645,7 @@ public class Section {
 
     public String intToHex(int value, int size) {
 
-        String result = Integer.toHexString(value);
+        String result = Integer.toHexString(value).toUpperCase();
         return StringUtils.leftPad(result, size - result.length());
     }
 

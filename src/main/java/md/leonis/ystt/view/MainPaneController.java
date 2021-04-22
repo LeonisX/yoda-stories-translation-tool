@@ -7,6 +7,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.FlowPane;
@@ -65,6 +66,7 @@ public class MainPaneController {
     public Button loadFromBitmapButton;
     public ImageView titleScreenImageView;
     public Canvas titleScreenCanvas;
+    private BMPImage titleImage;
 
     public Label soundsCountLabel;
     public Button saveSoundsListToFileButton;
@@ -250,9 +252,8 @@ public class MainPaneController {
 
         section.clear();
         section.readDTAMetricks();
-        //TODO HEX.LoadFromStream(DTA.data);
         internalVersionLabel.setText(section.version);
-        sizeLabel.setText(Integer.toString(section.dump.size()));
+        sizeLabel.setText(section.dump.size() + "b / " + section.exeDump.size() + "b");
         crc32Label.setText(section.dtaCrc32 + " / " + section.exeCrc32);
         nameLabel.setText(section.dtaRevision);
 
@@ -525,37 +526,16 @@ public class MainPaneController {
     public void replacePETextInDtaClick() {
     }
 
+
+
     public void saveToBitmapButtonClick() throws IOException {
 
-        BMPImage image = BMPDecoder.readExt(new File("D:\\Working\\_Yoda\\YExplorer\\out\\output-eng-2\\STUP.bmp"));
-
-        // {"iSize":40,"iWidth":288,"iHeight":288,"sPlanes":1,"sBitCount":8,"iCompression":0,"iImageSize":82944,
-        // "iXpixelsPerM":0,"iYpixelsPerM":0,"iColorsUsed":256,"iColorsImportant":0,"iNumColors":256}
-        InfoHeader infoHeader = image.getInfoHeader();
-
-        //image.getImage().getColorModel().
-
-        WritableImage wi = SwingFXUtils.toFXImage(image.getImage(), null);
-
-        // IndexColorModel(int bits, int size,
-        //                           byte r[], byte g[], byte b[]
-        //IndexColorModel icm = new IndexColorModel();
-
-        BufferedImage bi = SwingFXUtils.fromFXImage(wi, null);
-
-        //BufferedImage out = new BufferedImage(bi.getWidth(), bi.getHeight(), BufferedImage.TYPE_BYTE_INDEXED, icm);
-
-        LittleEndianOutputStream os = new LittleEndianOutputStream(new FileOutputStream(new File("D:\\Working\\_Yoda\\YExplorer\\out\\output-eng-2\\STUPx.bmp")));
-
-        //BMPEncoder.writeFileHeader();
-
-        //BMPEncoder.write(bi, new File("D:\\Working\\_Yoda\\YExplorer\\out\\output-eng-2\\STUPx.bmp"));
-
-        BMPEncoder.write(bi, new File("D:\\Working\\_Yoda\\YExplorer\\out\\output-eng-2\\STUPx.bmp"));
-
-        System.out.println(new Gson().toJson(infoHeader));
-
-        System.out.println();
+        if (titleImage != null) {
+            BMPEncoder.write(titleImage, new File("D:\\Working\\_Yoda\\YExplorer\\out\\output-eng-2\\STUPti.bmp"));
+        } else {
+            BMPEncoder.write8bit(titleScreenImageView, new File("D:\\Working\\_Yoda\\YExplorer\\out\\output-eng-2\\STUPi.bmp"));
+            BMPEncoder.write8bit(titleScreenCanvas, new File("D:\\Working\\_Yoda\\YExplorer\\out\\output-eng-2\\STUPc.bmp"));
+        }
 
         /*Log.Clear;
         CreateDir(c);
@@ -563,7 +543,22 @@ public class MainPaneController {
         Log.Debug('Title screen saved');*/
     }
 
-    public void loadFromBitmapButtonClick(ActionEvent actionEvent) {
+    public void loadFromBitmapButtonClick(ActionEvent actionEvent) throws IOException {
+
+        BMPImage titleImage = BMPDecoder.readExt(new File("D:\\Working\\_Yoda\\YExplorer\\out\\output-eng-2\\STUP.bmp"));
+
+        //TODO notify if not indexed
+        WritableImage image = new WritableImage(titleImage.getWidth(), titleImage.getHeight());
+        SwingFXUtils.toFXImage(titleImage.getImage(), image);
+
+        for (int y = 0; y < image.getWidth(); y++) {
+            for (int x = 0; x < image.getHeight(); x++) {
+                Color color = image.getPixelReader().getColor(x, y);
+                titleScreenCanvas.getGraphicsContext2D().getPixelWriter().setColor(x, y, color);
+            }
+        }
+        titleScreenImageView.setImage(image);
+
         // LoadBMP('output/STUP.bmp',bmp);
     }
 
