@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import md.leonis.ystt.model.Release;
+import md.leonis.ystt.model.Section;
 import md.leonis.ystt.oldmodel.*;
 
 import java.io.*;
@@ -63,6 +64,8 @@ public class Config {
     public static int[][] battleSpells = {{4, 9, 14, 3, 1}, {10, 12, 17, 7}, {}, {3, 11, 18, 6, 13}};
     public static int[][] overworldSpells = {{4, 15}, {10, 16, 2}, {}, {10, 2, 11, 5, 8}};
 
+
+    public static Section section;
 
     //static final String resourcePath = "/" + MainStageController.class.getPackage().getName().replaceAll("\\.", "/") + "/";
 
@@ -236,7 +239,10 @@ public class Config {
         return Level.fromCSV(Config.levels.getProperty(String.format("hero%s-%s", heroId, level)));
     }
 
-    public static void loadGameFiles(File selectedFile) {
-        throw new RuntimeException("YODESK.DTA file not found");
+    public static void loadGameFiles(File selectedFile) throws IOException {
+
+        section = new Section();
+        section.LoadFileToArray(selectedFile);
+        //throw new RuntimeException("YODESK.DTA file not found");
     }
 }

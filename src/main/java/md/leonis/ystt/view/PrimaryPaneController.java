@@ -52,6 +52,6 @@ public class PrimaryPaneController {
 
     //TODO center button when resize main panel
     public void openExeFileButtonClick() {
-        JavaFxUtils.openFile();
+        MainPaneController.openFile();
     }
 }

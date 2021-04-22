@@ -7,11 +7,9 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Region;
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import md.leonis.ystt.MainApp;
 
-import java.io.File;
 import java.io.IOException;
 
 public class JavaFxUtils {
@@ -100,20 +98,7 @@ public class JavaFxUtils {
         alert.showAndWait();
     }
 
-    public static void openFile() {
-
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Open Executable File");
-        fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("Executable Files", "*.exe"));
-        File selectedFile = fileChooser.showOpenDialog(stage);
-        if (selectedFile != null) {
-            try {
-                Config.loadGameFiles(selectedFile);
-                showMainPanel();
-            } catch (Exception e) {
-                showAlert("Loading error", e.getMessage(), Alert.AlertType.ERROR);
-            }
-        }
+    public static Stage getStage() {
+        return stage;
     }
 }

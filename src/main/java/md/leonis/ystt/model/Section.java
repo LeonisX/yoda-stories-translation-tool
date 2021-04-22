@@ -1,5 +1,6 @@
 package md.leonis.ystt.model;
 
+import md.leonis.bin.ByteOrder;
 import md.leonis.bin.Dump;
 import md.leonis.ystt.utils.BinaryUtils;
 import md.leonis.ystt.utils.Config;
@@ -9,7 +10,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +26,8 @@ public class Section {
     // Int64                    -9223372036854775808..9223372036854775807   long        64
 
     private static final String[] PLANETS = {"", "desert", "snow", "forest", "unknown", "swamp"};
+
+    //TODO read palette from EXE
 
     //TODO getters
     public Map<KnownSections, SectionMetrics> sections = new HashMap<>();
@@ -44,9 +46,9 @@ public class Section {
     public int charsCount;
     public int namesCount;
 
-    public Section(File file) throws IOException {
+    public Section() throws IOException {
 
-        dump = new Dump(file);
+        //dump = new Dump(file);
         //crcs.LoadFromFile('./conf/crcs.cfg'); we read this in config
     }
 
@@ -119,7 +121,7 @@ public class Section {
             //TODO
             //Application.ProcessMessages;
             String s = ReadString(4);
-            Log.Debug(s);
+            Log.debug(s);
             try {
                 KnownSections sections = KnownSections.valueOf(s);
                 switch (sections) {
@@ -161,18 +163,22 @@ public class Section {
                         keepReading = false;
                         break;
                 }
+            } catch (IllegalArgumentException e) {
+                showMessage("Неизвестная секция: 0x" + intToHex(GetPosition(), 4) + ": \"" + s + '"');
+                keepReading = false;
             } catch (Exception e) {
-                ShowMessage("Неизвестная секция: 0x" + IntToHex(GetPosition(), 4) + ": \"" + s + '"');
+                Log.error(e.getClass().getName() + " " + e.getMessage());
+                e.printStackTrace();
                 keepReading = false;
             }
         }
-        Log.NewLine();
-        Log.Debug("Sections detailed:");
-        Log.Debug("------------------");
-        Log.NewLine();
-        Log.Debug(String.format("%7s %12s %11s %12s %11s", "Section", "Data offset", "Data size", "Start offset", "Full size"));
+        Log.newLine();
+        Log.debug("Sections detailed:");
+        Log.debug("------------------");
+        Log.newLine();
+        Log.debug(String.format("%7s %12s %11s %12s %11s", "Section", "Data offset", "Data size", "Start offset", "Full size"));
 
-        sections.forEach((key, value) -> Log.Debug(String.format("%7s %12x %11d %12x %11d",
+        sections.forEach((key, value) -> Log.debug(String.format("%7s %12x %11d %12x %11d",
                 key,
                 value.getDataOffset(),
                 value.getDataSize(),
@@ -180,21 +186,21 @@ public class Section {
                 value.getFullSize()
         )));
 
-        Log.NewLine();
-        Log.Debug("Maps offsets, sizes detailed:");
-        Log.Debug("------------------");
-        Log.NewLine();
-        Log.Debug(String.format("%3s %-13s %-13s  %-16s  %-13s  %-13s  %-13s  %-13s  %-13s", "#", "MAP", "IZON", "OIE", "IZAX", "ISX2", "IZX3", "IZX4", "IACT"));
+        Log.newLine();
+        Log.debug("Maps offsets, sizes detailed:");
+        Log.debug("------------------");
+        Log.newLine();
+        Log.debug(String.format("%3s %-13s %-13s  %-16s  %-13s  %-13s  %-13s  %-13s  %-13s", "#", "MAP", "IZON", "OIE", "IZAX", "ISX2", "IZX3", "IZX4", "IACT"));
 
-        maps.forEach((key, value) -> Log.Debug(String.format("%3d %-13s %-13s  %-16s  %-13s  %-13s  %-13s  %-13s  %-13s", key,
-                IntToHex(value.getMapOffset(), 8) + ':' + IntToHex(value.getMapSize(), 4),
-                IntToHex(value.getIzonOffset(), 8) + ':' + IntToHex(value.getIzonSize(), 4),
-                IntToHex(value.getOieOffset(), 8) + ':' + IntToHex(value.getOieSize(), 4) + ':' + IntToHex(value.getOieCount(), 2),
-                IntToHex(value.getIzaxOffset(), 8) + ':' + IntToHex(value.getIzaxSize(), 4),
-                IntToHex(value.getIzx2Offset(), 8) + ':' + IntToHex(value.getIzx2Size(), 4),
-                IntToHex(value.getIzx3Offset(), 8) + ':' + IntToHex(value.getIzx3Size(), 4),
-                IntToHex(value.getIzx4Offset(), 8) + ':' + IntToHex(value.getIzx4Size(), 4),
-                IntToHex(value.getIactOffset(), 8) + ':' + IntToHex(value.getIactSize(), 4)
+        maps.forEach((key, value) -> Log.debug(String.format("%3d %-13s %-13s  %-16s  %-13s  %-13s  %-13s  %-13s  %-13s", key,
+                intToHex(value.getMapOffset(), 8) + ':' + intToHex(value.getMapSize(), 4),
+                intToHex(value.getIzonOffset(), 8) + ':' + intToHex(value.getIzonSize(), 4),
+                intToHex(value.getOieOffset(), 8) + ':' + intToHex(value.getOieSize(), 4) + ':' + intToHex(value.getOieCount(), 2),
+                intToHex(value.getIzaxOffset(), 8) + ':' + intToHex(value.getIzaxSize(), 4),
+                intToHex(value.getIzx2Offset(), 8) + ':' + intToHex(value.getIzx2Size(), 4),
+                intToHex(value.getIzx3Offset(), 8) + ':' + intToHex(value.getIzx3Size(), 4),
+                intToHex(value.getIzx4Offset(), 8) + ':' + intToHex(value.getIzx4Size(), 4),
+                intToHex(value.getIactOffset(), 8) + ':' + intToHex(value.getIactSize(), 4)
         )));
     }
 
@@ -204,7 +210,7 @@ public class Section {
         //Add(sectionName, 4 + sz, index);
         Add(sectionName, sz, sz + 4 + 4, GetPosition(), GetPosition() - 4 - 4);
         MovePosition(sz);
-        Log.Debug(sectionName + " - what is it?...");
+        Log.debug(sectionName + " - what is it?...");
     }
 
     // 246 * 26 + size(4) + 'TNAM' + $FFFF = 6406
@@ -222,7 +228,7 @@ public class Section {
             count++;
         }
         namesCount = count;
-        Log.Debug(sectionName + ": " + count);
+        Log.debug(sectionName + ": " + count);
     }
 
     // 77 * 4 = 308 + size(4) + 'CAUX' + FFFF = 318
@@ -232,7 +238,7 @@ public class Section {
         Add(sectionName, sz, sz + 4 + 4, GetPosition(), GetPosition() - 4 - 4);
         MovePosition(sz);
         int count = (sz - 2) / 4;
-        Log.Debug(sectionName + ": " + count);
+        Log.debug(sectionName + ": " + count);
     }
 
     // 77 * 6 = 462 + size(4) + 'CHWP' + FFFF = 472
@@ -242,7 +248,7 @@ public class Section {
         Add(sectionName, sz, sz + 4 + 4, GetPosition(), GetPosition() - 4 - 4);
         MovePosition(sz);
         int count = (sz - 2) / 6;
-        Log.Debug(sectionName + ": " + count);
+        Log.debug(sectionName + ": " + count);
     }
 
     // 78 Characters
@@ -260,7 +266,7 @@ public class Section {
             ReadString(csz);
             charsCount++;
         }
-        Log.Debug("Characters: " + charsCount);
+        Log.debug("Characters: " + charsCount);
     }
 
     public void ScanPUZ2(KnownSections sectionName) {
@@ -277,7 +283,7 @@ public class Section {
             ReadString(psz);
             puzzlesCount++;
         }
-        Log.Debug("Puzzles: " + puzzlesCount);
+        Log.debug("Puzzles: " + puzzlesCount);
     }
 
     public void ScanZONE(KnownSections sectionName) {
@@ -289,23 +295,22 @@ public class Section {
         for (int i = 0; i < mapsCount; i++) {
             ReadWord();                //unknown:word;          01 00 - unknown 2 bytes
             int sz = (int) ReadLongWord();        //size:longword;         size of current map (4b)
-            Log.Debug((i - 1) + " Offset:Size: " + IntToHex(GetPosition() - 4, 4) + ':' + IntToHex(sz, 4));
+            Log.debug(i + " Offset:Size: " + intToHex(GetPosition() - 4, 4) + ':' + intToHex(sz, 4));
             MovePosition(sz);
         }
 
         Add(sectionName, GetPosition() - ind, GetPosition() - ind + 4, ind, ind - 4);
-        Log.Debug("Maps (zones): " + mapsCount);
+        Log.debug("Maps (zones): " + mapsCount);
         //Log.NewLine();
 
 
         SetPosition(KnownSections.ZONE);   // ZONE
         ReadWord();                     // 2 bytes - maps count $0291 = 657 items
-        ShowMessage("scan zone ok");
+        showMessage("scan zone ok");
         for (int i = 0; i < mapsCount; i++) {
             ScanIZON(i);
         }
-        //Log.NewLine();
-
+        Log.newLine();
     }
 
     public void ScanIZON(int id) {
@@ -314,14 +319,14 @@ public class Section {
         AddMap(id);
         int uw = ReadWord();               // unknown:word; //01 00 // map type (desert, ...)
         if (uw > 0x0005) {
-            ShowMessage("ID: " + id + " UNK: " + IntToHex(uw, 4) + " > " + 0x0005);
+            showMessage("ID: " + id + " UNK: " + intToHex(uw, 4) + " > " + 0x0005);
         }
         int sz = (int) ReadLongWord();           // size:longword; size of the current map
         maps.get(id).setMapOffset(GetPosition());
         maps.get(id).setMapSize(sz + 6);
         int pn = ReadWord();               // number:word; //2 bytes - serial number of the map starting with 0
         if (pn != id) {
-            ShowMessage("ID: " + pn + " <> " + id);
+            showMessage("ID: " + pn + " <> " + id);
         }
         ReadString(4);                // izon:string[4]; //4 bytes: "IZON"
         int size = (int) ReadLongWord();         // longword; //4 bytes - size of block IZON (include 'IZON') until object info entry count
@@ -337,10 +342,10 @@ public class Section {
         long unk2 = ReadLongWord();         // unused:longword; //5 bytes: unused (same values for every map)
         int p = ReadWord();               // planet:word; //1 byte: planet (0x01 = desert, 0x02 = snow, 0x03 = forest, 0x05 = swamp)* добавил следующий байт
 
-        Log.Debug("Map #" + pn + ": " + PLANETS[p] + " (" + w + "x" + h + ")");
-        Log.Debug("Flags: " + flags + "; unknown value: 0x" + LongToHex(unk2, 4));
+        Log.debug("Map #" + pn + ": " + PLANETS[p] + " (" + w + "x" + h + ")");
+        Log.debug("Flags: " + flags + "; unknown value: 0x" + longToHex(unk2, 4));
         if (unk2 != 0xFFFF0000) {
-            ShowMessage(LongToHex(unk2, 8));
+            showMessage(longToHex(unk2, 8));
         }
 
         MovePosition(w * h * 6);
@@ -351,7 +356,7 @@ public class Section {
         maps.get(id).setOieSize(oieCount * 12);
         MovePosition(oieCount * 12);     //X*12 bytes: object info data
 
-        Log.Debug("Object info entries count: " + oieCount);
+        Log.debug("Object info entries count: " + oieCount);
 
         ScanIZAX(id);
         ScanIZX2(id);
@@ -403,18 +408,19 @@ public class Section {
         List<Integer> iacts = maps.get(id).getIACTS();
 
         while (true) {
+            //Log.debug(idx);
             String title = ReadString(4); //4 bytes: "IACT"
             if (title.equals("IACT")) {
                 iacts.add(GetPosition());
                 int size = (int) ReadLongWord();   //4 bytes: length (X)
-                Log.Debug(title + ' ' + IntToHex(size, 4));
+                Log.debug(title + ' ' + intToHex(size, 4));
                 MovePosition(size);
             } else {
                 break;
             }
         }
         MovePosition(-4);
-        iacts.set(iacts.size() - 1, GetPosition() - idx);
+        maps.get(id).setIactSize(GetPosition() - idx);
     }
 
     public void ScanTILE(KnownSections sectionName) {
@@ -428,7 +434,7 @@ public class Section {
             tiles[i] = false;
         }
 
-        Log.Debug("Sprites, tiles: " + tilesCount);
+        Log.debug("Sprites, tiles: " + tilesCount);
     }
 
     public void ScanSNDS(KnownSections sectionName) {
@@ -444,7 +450,7 @@ public class Section {
             soundsCount++;
         }
 
-        Log.Debug("Sounds, melodies: " + soundsCount);
+        Log.debug("Sounds, melodies: " + soundsCount);
     }
 
     public void ScanSTUP(KnownSections sectionName) {
@@ -452,7 +458,7 @@ public class Section {
         int sz = (int) ReadLongWord();             //4 bytes - length of section STUP
         Add(sectionName, sz, sz + 4 + 4, GetPosition(), GetPosition() - 4 - 4);
         MovePosition(sz);
-        Log.Debug("Title screen: exists");
+        Log.debug("Title screen: exists");
     }
 
     public void ScanVERS(KnownSections sectionName) {
@@ -464,19 +470,19 @@ public class Section {
         } else {
             version = "x.x";
         }
-        Log.Debug("File version: " + version);
+        Log.debug("File version: " + version);
         System.out.println("vers");
     }
 
     public int GetIZON(int offset) {
-        Log.Debug(maps.size());
+        Log.debug(maps.size());
         for (int i = 0; i < 5; i++) {
-            Log.Debug("====izon #" + i + ": " + IntToHex(maps.get(i).getIzonOffset(), 4));
+            Log.debug("====izon #" + i + ": " + intToHex(maps.get(i).getIzonOffset(), 4));
         }
 
         int result = 0;
         for (int i = 0; i < mapsCount; i++) {
-            Log.Debug("-izon #" + i + ": " + IntToHex(offset, 4) + '~' + IntToHex(maps.get(i).getIzonOffset(), 4));
+            Log.debug("-izon #" + i + ": " + intToHex(offset, 4) + '~' + intToHex(maps.get(i).getIzonOffset(), 4));
             if (offset < maps.get(i).getIzonOffset()) {
                 break;
             }
@@ -487,34 +493,34 @@ public class Section {
 
     public int GetIACT(int offset) {
 
-        Log.Debug("GetIACT. Offset: " + IntToHex(offset, 4));
+        Log.debug("GetIACT. Offset: " + intToHex(offset, 4));
         int izon = GetIZON(offset);
-        Log.Debug("GetIZON: " + izon);
+        Log.debug("GetIZON: " + izon);
         int result = 0;
         for (int i = 0; i < maps.get(izon).getIACTS().size(); i++) {
-            Log.Debug(i + ": " + IntToHex(maps.get(izon).getIACTS().get(i), 4));
+            Log.debug(i + ": " + intToHex(maps.get(izon).getIACTS().get(i), 4));
             if (offset < maps.get(izon).getIACTS().get(i)) {
                 break;
             }
             result = i;
         }
 
-        Log.Debug("IZON/IACT: " + izon + '/' + result);
+        Log.debug("IZON/IACT: " + izon + '/' + result);
         return result;
     }
 
     //TODO DTA, validate CRC32 also
-    public void LoadFileToArray(String fileName) throws IOException {
+    public void LoadFileToArray(File file) throws IOException {
 
-        Log.Debug("DTA file internal structure");
-        Log.Debug("===========================");
-        Log.NewLine();
+        Log.debug("DTA file internal structure");
+        Log.debug("===========================");
+        Log.newLine();
 
-        Path exePath = Paths.get(fileName);
+        Path exePath = file.toPath();
         Path dtaPath = getDtaPath(exePath.getParent());
 
-        exeCrc32 = IntToHex(BinaryUtils.crc32(Paths.get(fileName)), 8);
-        dtaCrc32 = IntToHex(BinaryUtils.crc32(Paths.get(fileName)), 8);
+        exeCrc32 = intToHex(BinaryUtils.crc32(exePath), 8);
+        dtaCrc32 = intToHex(BinaryUtils.crc32(dtaPath), 8);
 
         Release release = Config.releases.stream().filter(r -> r.getExe().equals(exeCrc32) && r.getDta().equals(dtaCrc32)).findFirst().orElse(null);
 
@@ -524,16 +530,17 @@ public class Section {
             dtaRevision = release.getTitle();
         }
 
-        dump = new Dump(new File(fileName));
+        dump = new Dump(dtaPath);
+        dump.setByteOrder(ByteOrder.LITTLE_ENDIAN);
 
-        Log.NewLine();
-        Log.Debug("Sections:");
-        Log.Debug("---------");
-        Log.NewLine();
+        Log.newLine();
+        Log.debug("Sections:");
+        Log.debug("---------");
+        Log.newLine();
         //TODO exe
-        Log.Debug("Size: " + dump.size());
-        Log.Debug("CRC-32: " + dtaCrc32);
-        Log.Debug("DTA revision: " + dtaRevision);
+        Log.debug("Size: " + dump.size());
+        Log.debug("CRC-32: " + dtaCrc32);
+        Log.debug("DTA revision: " + dtaRevision);
         SetPosition(0);
     }
 
@@ -626,39 +633,43 @@ public class Section {
         dump.setString(value);
     }
 
-    public String IntToHex(int value, int size) {
+    public String intToHex(int value, int size) {
 
         String result = Integer.toHexString(value);
         return StringUtils.leftPad(result, size - result.length());
     }
 
-    public String LongToHex(long value, int size) {
+    public String longToHex(long value, int size) {
 
         String result = Long.toHexString(value);
         return StringUtils.leftPad(result, size - result.length());
     }
 
     //TODO
-    private void ShowMessage(String text) {
-        Log.Message(text);
+    private void showMessage(String text) {
+        Log.message(text);
     }
 
     //TODO
     public static class Log {
 
-        public static void Debug(String message) {
+        public static void error(String message) {
+            System.out.println("ERROR: " + message);
+        }
+
+        public static void debug(String message) {
             System.out.println("DEBUG: " + message);
         }
 
-        public static void Debug(int integer) {
-            Debug(Integer.toString(integer));
+        public static void debug(int integer) {
+            debug(Integer.toString(integer));
         }
 
-        public static void NewLine() {
+        public static void newLine() {
             System.out.println("");
         }
 
-        public static void Message(String message) {
+        public static void message(String message) {
             System.out.println("MESSAGE: " + message);
         }
     }

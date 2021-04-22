@@ -3,6 +3,7 @@ package md.leonis.bin;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
 
 public class Dump {
@@ -25,7 +26,11 @@ public class Dump {
 
     public Dump(File file) throws IOException {
         //this.file = file;
-        dump = Files.readAllBytes(file.toPath());
+        this(file.toPath());
+    }
+
+    public Dump(Path path) throws IOException {
+        dump = Files.readAllBytes(path);
     }
 
     public void saveToFile(String file) throws IOException {
