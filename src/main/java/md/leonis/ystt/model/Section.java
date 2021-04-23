@@ -82,7 +82,7 @@ public class Section {
     }
 
     public void AddMap(int id) {
-        maps.put(id, new MapEntry());
+        maps.put(id, new MapEntry(id));
     }
 
     public void Add(KnownSections section, int dataSize, int fullSize, int dataOffset, int startOffset) {

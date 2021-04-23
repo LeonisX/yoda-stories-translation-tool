@@ -3,8 +3,10 @@ package md.leonis.ystt.model;
 import java.util.ArrayList;
 import java.util.List;
 
+//TODO may be keep IACT, PUZ2 text count
 public class MapEntry {
 
+    private int id;
     private int mapOffset;
     private int izonOffset;
     private int izaxOffset;
@@ -25,6 +27,18 @@ public class MapEntry {
     private int oieCount;
 
     private List<Integer> IACTS = new ArrayList<>();
+
+    public MapEntry(int id) {
+        this.id = id;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public int getMapOffset() {
         return mapOffset;

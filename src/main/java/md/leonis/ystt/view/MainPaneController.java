@@ -13,12 +13,13 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
-import md.leonis.ystt.model.SectionMetrics;
-import md.leonis.ystt.utils.IOUtils;
-import md.leonis.ystt.utils.PaletteUtils;
 import md.leonis.ystt.model.KnownSections;
+import md.leonis.ystt.model.MapEntry;
+import md.leonis.ystt.model.SectionMetrics;
 import md.leonis.ystt.utils.Config;
+import md.leonis.ystt.utils.IOUtils;
 import md.leonis.ystt.utils.JavaFxUtils;
+import md.leonis.ystt.utils.PaletteUtils;
 import net.sf.image4j.codec.bmp.BMPDecoder;
 import net.sf.image4j.codec.bmp.BMPEncoder;
 import net.sf.image4j.codec.bmp.BMPImage;
@@ -26,7 +27,6 @@ import net.sf.image4j.codec.bmp.BMPImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -98,7 +98,7 @@ public class MainPaneController {
     public CheckBox dumpActionsCheckBox;
     public CheckBox dumpTextCheckBox;
     public CheckBox saveUnusedTilesCheckBox;
-    public TableView mapsTableView;
+    public TableView<MapEntry> mapsTableView;
 
     public ImageView mapEditorImageView;
     public GridPane mapEditorGridPane;
@@ -279,11 +279,18 @@ public class MainPaneController {
         soundsTextArea.setText(String.join("\n", section.sounds));
 
 
-
+        // Tiles, sprites
         tilesCountLabel.setText(Integer.toString(section.tilesCount));
 
+        // Maps
         mapsCountLabel.setText(Integer.toString(section.mapsCount));
 
+        List<MapEntry> mapEntries = section.maps.values().stream()
+                .sorted(Comparator.comparing(MapEntry::getId)).collect(Collectors.toList());
+        mapsTableView.setItems(FXCollections.observableList(mapEntries));
+
+
+        // Puzzles
         puzzlesCountLabel.setText(Integer.toString(section.puzzlesCount));
 
         charactersCountLabel.setText(Integer.toString(section.charsCount));

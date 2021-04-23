@@ -300,54 +300,198 @@
                                                 <TableView fx:id="mapsTableView" layoutX="14.0" layoutY="14.0"
                                                            prefHeight="370.0" prefWidth="1105.0">
                                                     <columns>
-                                                        <TableColumn prefWidth="60.0" text="Map #"/>
                                                         <TableColumn prefWidth="60.0" text="Map">
                                                             <columns>
-                                                                <TableColumn prefWidth="60.0" text="Offset"/>
-                                                                <TableColumn prefWidth="60.0" text="Size"/>
+                                                                <TableColumn prefWidth="40.0" text="ID">
+                                                                    <cellValueFactory>
+                                                                        <PropertyValueFactory property="id"/>
+                                                                    </cellValueFactory>
+                                                                    <cellFactory>
+                                                                        <FormattedTableCellFactory alignment="right">
+                                                                        </FormattedTableCellFactory>
+                                                                    </cellFactory>
+                                                                </TableColumn>
+                                                                <TableColumn prefWidth="79.0" text="Offset">
+                                                                    <cellValueFactory>
+                                                                        <PropertyValueFactory property="mapOffset"/>
+                                                                    </cellValueFactory>
+                                                                    <cellFactory>
+                                                                        <FormattedHexTableCellFactory alignment="right">
+                                                                        </FormattedHexTableCellFactory>
+                                                                    </cellFactory>
+                                                                </TableColumn>
+                                                                <TableColumn prefWidth="45.0" text="Size">
+                                                                    <cellValueFactory>
+                                                                        <PropertyValueFactory property="mapSize"/>
+                                                                    </cellValueFactory>
+                                                                    <cellFactory>
+                                                                        <FormattedTableCellFactory alignment="right">
+                                                                        </FormattedTableCellFactory>
+                                                                    </cellFactory>
+                                                                </TableColumn>
                                                             </columns>
                                                         </TableColumn>
                                                         <TableColumn prefWidth="60.0" text="IZON">
                                                             <columns>
-                                                                <TableColumn prefWidth="60.0" text="Offset"/>
-                                                                <TableColumn prefWidth="60.0" text="Size"/>
+                                                                <TableColumn prefWidth="79.0" text="Offset">
+                                                                    <cellValueFactory>
+                                                                        <PropertyValueFactory property="izonOffset"/>
+                                                                    </cellValueFactory>
+                                                                    <cellFactory>
+                                                                        <FormattedHexTableCellFactory alignment="right">
+                                                                        </FormattedHexTableCellFactory>
+                                                                    </cellFactory>
+                                                                </TableColumn>
+                                                                <TableColumn prefWidth="45.0" text="Size">
+                                                                    <cellValueFactory>
+                                                                        <PropertyValueFactory property="izonSize"/>
+                                                                    </cellValueFactory>
+                                                                    <cellFactory>
+                                                                        <FormattedTableCellFactory alignment="right">
+                                                                        </FormattedTableCellFactory>
+                                                                    </cellFactory>
+                                                                </TableColumn>
                                                             </columns>
                                                         </TableColumn>
                                                         <TableColumn prefWidth="60.0" text="OIE">
                                                             <columns>
-                                                                <TableColumn prefWidth="60.0" text="Offset"/>
-                                                                <TableColumn prefWidth="60.0" text="Size"/>
-                                                                <TableColumn prefWidth="60.0" text="Count"/>
+                                                                <TableColumn prefWidth="79.0" text="Offset">
+                                                                    <cellValueFactory>
+                                                                        <PropertyValueFactory property="oieOffset"/>
+                                                                    </cellValueFactory>
+                                                                    <cellFactory>
+                                                                        <FormattedHexTableCellFactory alignment="right">
+                                                                        </FormattedHexTableCellFactory>
+                                                                    </cellFactory>
+                                                                </TableColumn>
+                                                                <TableColumn prefWidth="45.0" text="Size">
+                                                                    <cellValueFactory>
+                                                                        <PropertyValueFactory property="oieSize"/>
+                                                                    </cellValueFactory>
+                                                                    <cellFactory>
+                                                                        <FormattedTableCellFactory alignment="right">
+                                                                        </FormattedTableCellFactory>
+                                                                    </cellFactory>
+                                                                </TableColumn>
+                                                                <TableColumn prefWidth="45.0" text="Count">
+                                                                    <cellValueFactory>
+                                                                        <PropertyValueFactory property="oieCount"/>
+                                                                    </cellValueFactory>
+                                                                    <cellFactory>
+                                                                        <FormattedTableCellFactory alignment="right">
+                                                                        </FormattedTableCellFactory>
+                                                                    </cellFactory>
+                                                                </TableColumn>
                                                             </columns>
                                                         </TableColumn>
                                                         <TableColumn prefWidth="60.0" text="IZAX">
                                                             <columns>
-                                                                <TableColumn prefWidth="60.0" text="Offset"/>
-                                                                <TableColumn prefWidth="60.0" text="Size"/>
+                                                                <TableColumn prefWidth="79.0" text="Offset">
+                                                                    <cellValueFactory>
+                                                                        <PropertyValueFactory property="izaxOffset"/>
+                                                                    </cellValueFactory>
+                                                                    <cellFactory>
+                                                                        <FormattedHexTableCellFactory alignment="right">
+                                                                        </FormattedHexTableCellFactory>
+                                                                    </cellFactory>
+                                                                </TableColumn>
+                                                                <TableColumn prefWidth="45.0" text="Size">
+                                                                    <cellValueFactory>
+                                                                        <PropertyValueFactory property="izaxSize"/>
+                                                                    </cellValueFactory>
+                                                                    <cellFactory>
+                                                                        <FormattedTableCellFactory alignment="right">
+                                                                        </FormattedTableCellFactory>
+                                                                    </cellFactory>
+                                                                </TableColumn>
                                                             </columns>
                                                         </TableColumn>
                                                         <TableColumn prefWidth="60.0" text="IZX2">
                                                             <columns>
-                                                                <TableColumn prefWidth="60.0" text="Offset"/>
-                                                                <TableColumn prefWidth="60.0" text="Size"/>
+                                                                <TableColumn prefWidth="79.0" text="Offset">
+                                                                    <cellValueFactory>
+                                                                        <PropertyValueFactory property="izx2Offset"/>
+                                                                    </cellValueFactory>
+                                                                    <cellFactory>
+                                                                        <FormattedHexTableCellFactory alignment="right">
+                                                                        </FormattedHexTableCellFactory>
+                                                                    </cellFactory>
+                                                                </TableColumn>
+                                                                <TableColumn prefWidth="45.0" text="Size">
+                                                                    <cellValueFactory>
+                                                                        <PropertyValueFactory property="izx2Size"/>
+                                                                    </cellValueFactory>
+                                                                    <cellFactory>
+                                                                        <FormattedTableCellFactory alignment="right">
+                                                                        </FormattedTableCellFactory>
+                                                                    </cellFactory>
+                                                                </TableColumn>
                                                             </columns>
                                                         </TableColumn>
                                                         <TableColumn prefWidth="60.0" text="IZX3">
                                                             <columns>
-                                                                <TableColumn prefWidth="60.0" text="Offset"/>
-                                                                <TableColumn prefWidth="60.0" text="Size"/>
+                                                                <TableColumn prefWidth="79.0" text="Offset">
+                                                                    <cellValueFactory>
+                                                                        <PropertyValueFactory property="izx3Offset"/>
+                                                                    </cellValueFactory>
+                                                                    <cellFactory>
+                                                                        <FormattedHexTableCellFactory alignment="right">
+                                                                        </FormattedHexTableCellFactory>
+                                                                    </cellFactory>
+                                                                </TableColumn>
+                                                                <TableColumn prefWidth="45.0" text="Size">
+                                                                    <cellValueFactory>
+                                                                        <PropertyValueFactory property="izx3Size"/>
+                                                                    </cellValueFactory>
+                                                                    <cellFactory>
+                                                                        <FormattedTableCellFactory alignment="right">
+                                                                        </FormattedTableCellFactory>
+                                                                    </cellFactory>
+                                                                </TableColumn>
                                                             </columns>
                                                         </TableColumn>
                                                         <TableColumn prefWidth="60.0" text="IZX4">
                                                             <columns>
-                                                                <TableColumn prefWidth="60.0" text="Offset"/>
-                                                                <TableColumn prefWidth="60.0" text="Size"/>
+                                                                <TableColumn prefWidth="79.0" text="Offset">
+                                                                    <cellValueFactory>
+                                                                        <PropertyValueFactory property="izx4Offset"/>
+                                                                    </cellValueFactory>
+                                                                    <cellFactory>
+                                                                        <FormattedHexTableCellFactory alignment="right">
+                                                                        </FormattedHexTableCellFactory>
+                                                                    </cellFactory>
+                                                                </TableColumn>
+                                                                <TableColumn prefWidth="45.0" text="Size">
+                                                                    <cellValueFactory>
+                                                                        <PropertyValueFactory property="izx4Size"/>
+                                                                    </cellValueFactory>
+                                                                    <cellFactory>
+                                                                        <FormattedTableCellFactory alignment="right">
+                                                                        </FormattedTableCellFactory>
+                                                                    </cellFactory>
+                                                                </TableColumn>
                                                             </columns>
                                                         </TableColumn>
                                                         <TableColumn prefWidth="60.0" text="IACT">
                                                             <columns>
-                                                                <TableColumn prefWidth="60.0" text="Offset"/>
-                                                                <TableColumn prefWidth="60.0" text="Size"/>
+                                                                <TableColumn prefWidth="79.0" text="Offset">
+                                                                    <cellValueFactory>
+                                                                        <PropertyValueFactory property="iactOffset"/>
+                                                                    </cellValueFactory>
+                                                                    <cellFactory>
+                                                                        <FormattedHexTableCellFactory alignment="right">
+                                                                        </FormattedHexTableCellFactory>
+                                                                    </cellFactory>
+                                                                </TableColumn>
+                                                                <TableColumn prefWidth="45.0" text="Size">
+                                                                    <cellValueFactory>
+                                                                        <PropertyValueFactory property="iactSize"/>
+                                                                    </cellValueFactory>
+                                                                    <cellFactory>
+                                                                        <FormattedTableCellFactory alignment="right">
+                                                                        </FormattedTableCellFactory>
+                                                                    </cellFactory>
+                                                                </TableColumn>
                                                             </columns>
                                                         </TableColumn>
                                                     </columns>
