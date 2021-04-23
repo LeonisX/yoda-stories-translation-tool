@@ -31,21 +31,30 @@
                         </Menu>
                         <Menu mnemonicParsing="false" text="Settings">
                             <Menu mnemonicParsing="false" text="Transparent Color">
+                                <RadioMenuItem fx:id="noColorMenuItem" mnemonicParsing="false"
+                                               onAction="#transparentColorMenuItemClick" selected="true" text="No color">
+                                    <toggleGroup>
+                                        <ToggleGroup fx:id="transparentColorToggleGroup"/>
+                                    </toggleGroup>
+                                    <graphic>
+                                        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#F4F4F4" height="16.0" stroke="BLACK"
+                                                   strokeType="INSIDE" width="16.0"/>
+                                    </graphic>
+                                </RadioMenuItem>
                                 <RadioMenuItem fx:id="fuchsiaMenuItem" mnemonicParsing="false"
-                                               onAction="#transparentColorMenuItemClick" selected="true" text="Fuchsia">
+                                               onAction="#transparentColorMenuItemClick" text="Fuchsia"
+                                               toggleGroup="$transparentColorToggleGroup">
+
                                     <graphic>
                                         <Rectangle arcHeight="5.0" arcWidth="5.0" fill="MAGENTA" height="16.0"
                                                    stroke="BLACK" strokeType="INSIDE" width="16.0"/>
                                     </graphic>
-                                    <toggleGroup>
-                                        <ToggleGroup fx:id="transparentColorToggleGroup"/>
-                                    </toggleGroup>
                                 </RadioMenuItem>
                                 <RadioMenuItem fx:id="blackMenuItem" mnemonicParsing="false"
                                                onAction="#transparentColorMenuItemClick" text="Black"
                                                toggleGroup="$transparentColorToggleGroup">
                                     <graphic>
-                                        <Rectangle arcHeight="5.0" arcWidth="5.0" height="16.0" stroke="BLACK"
+                                        <Rectangle arcHeight="5.0" arcWidth="5.0"  fill="BLACK" height="16.0" stroke="BLACK"
                                                    strokeType="INSIDE" width="16.0"/>
                                     </graphic>
                                 </RadioMenuItem>
@@ -203,33 +212,10 @@
                         </Tab>
                         <Tab text="Tiles/Sprites">
                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                                <ScrollPane layoutX="166.0" layoutY="13.0" prefHeight="382.0" prefWidth="543.0">
-                                    <GridPane fx:id="tilesGridPane">
-                                        <columnConstraints>
-                                            <ColumnConstraints hgrow="SOMETIMES" minWidth="32.0" prefWidth="32.0"/>
-                                            <ColumnConstraints hgrow="SOMETIMES" minWidth="32.0" prefWidth="32.0"/>
-                                            <ColumnConstraints hgrow="SOMETIMES" minWidth="32.0" prefWidth="32.0"/>
-                                            <ColumnConstraints hgrow="SOMETIMES" minWidth="32.0" prefWidth="32.0"/>
-                                            <ColumnConstraints hgrow="SOMETIMES" minWidth="32.0" prefWidth="32.0"/>
-                                            <ColumnConstraints hgrow="SOMETIMES" minWidth="32.0" prefWidth="32.0"/>
-                                            <ColumnConstraints hgrow="SOMETIMES" minWidth="32.0" prefWidth="32.0"/>
-                                            <ColumnConstraints hgrow="SOMETIMES" minWidth="32.0" prefWidth="32.0"/>
-                                            <ColumnConstraints hgrow="SOMETIMES" minWidth="32.0" prefWidth="32.0"/>
-                                            <ColumnConstraints hgrow="SOMETIMES" minWidth="32.0" prefWidth="32.0"/>
-                                            <ColumnConstraints hgrow="SOMETIMES" minWidth="32.0" prefWidth="32.0"/>
-                                            <ColumnConstraints hgrow="SOMETIMES" minWidth="32.0" prefWidth="32.0"/>
-                                            <ColumnConstraints hgrow="SOMETIMES" minWidth="32.0" prefWidth="32.0"/>
-                                            <ColumnConstraints hgrow="SOMETIMES" minWidth="32.0" prefWidth="32.0"/>
-                                            <ColumnConstraints hgrow="SOMETIMES" minWidth="32.0" prefWidth="32.0"/>
-                                            <ColumnConstraints hgrow="SOMETIMES" minWidth="32.0" prefWidth="32.0"/>
-                                        </columnConstraints>
-                                        <rowConstraints>
-                                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-                                        </rowConstraints>
-                                    </GridPane>
+                                <ScrollPane layoutX="166.0" layoutY="13.0" prefHeight="382.0" prefWidth="545.0">
+                                        <FlowPane fx:id="tilesFlowPane" columnHalignment="CENTER" prefHeight="380.0" prefWidth="527.0"
+                                                  prefWrapLength="540.0" hgap="1.0" vgap="1.0" />
                                 </ScrollPane>
-                                <ImageView fitHeight="32.0" fitWidth="32.0" layoutX="10.0" layoutY="10.0"
-                                           pickOnBounds="true" preserveRatio="true"/>
                                 <Label layoutX="12.0" layoutY="18.0" text="Tiles count:"/>
                                 <Label fx:id="tilesCountLabel" layoutX="88.0" layoutY="18.0"/>
                                 <Button fx:id="saveTilesToSeparateFiles" layoutX="10.0" layoutY="42.0"
@@ -256,10 +242,72 @@
                                         mnemonicParsing="false" onAction="#saveClipboardImageClick" text="Save"/>
                                 <Button fx:id="clearClipboardImage" layoutX="908.0" layoutY="337.0" minWidth="64.0"
                                         mnemonicParsing="false" onAction="#clearClipboardImageClick" text="Clear"/>
-                                <ScrollPane layoutX="476.0" layoutY="158.0" prefHeight="261.0" prefWidth="283.0">
-                                    <FlowPane fx:id="tilesFlowPane" columnHalignment="CENTER" prefHeight="200.0"
-                                              prefWidth="269.0" prefWrapLength="548.0"/>
-                                </ScrollPane>
+                                <Label visible="false">
+                                    <contextMenu>
+                                        <ContextMenu fx:id="tilesContextMenu">
+                                            <items>
+                                                <Menu mnemonicParsing="false" text="Set flag">
+
+                                                    <RadioMenuItem userData="2" text="Bottom layer">
+                                                        <toggleGroup>
+                                                            <ToggleGroup fx:id="tilesToggleGroup"/>
+                                                        </toggleGroup>
+                                                    </RadioMenuItem>
+                                                    <RadioMenuItem toggleGroup="$tilesToggleGroup" userData="4" text="Middle layer" />
+                                                    <RadioMenuItem toggleGroup="$tilesToggleGroup" userData="5" text="Middle layer (transparent)" />
+                                                    <RadioMenuItem toggleGroup="$tilesToggleGroup" userData="13" text="Movable items" />
+                                                    <RadioMenuItem toggleGroup="$tilesToggleGroup" userData="16" text="Top layer" />
+                                                    <RadioMenuItem toggleGroup="$tilesToggleGroup" userData="17" text="Top layer (transparent)" />
+
+                                                    <Menu mnemonicParsing="false" text="Weapons">
+                                                        <RadioMenuItem toggleGroup="$tilesToggleGroup" userData="65601" text="Light Blaster" />
+                                                        <RadioMenuItem toggleGroup="$tilesToggleGroup" userData="131137" text="Heavy Blaster, Thermal Detonator" />
+                                                        <RadioMenuItem toggleGroup="$tilesToggleGroup" userData="262209" text="Lightsaber" />
+                                                        <RadioMenuItem toggleGroup="$tilesToggleGroup" userData="524353" text="The Force" />
+                                                    </Menu>
+
+                                                    <Menu mnemonicParsing="false" text="Items">
+                                                        <RadioMenuItem toggleGroup="$tilesToggleGroup" userData="65665" text="Keycard" />
+                                                        <RadioMenuItem toggleGroup="$tilesToggleGroup" userData="131201" text="Item (for use)" />
+                                                        <RadioMenuItem toggleGroup="$tilesToggleGroup" userData="262273" text="Item (part)" />
+                                                        <RadioMenuItem toggleGroup="$tilesToggleGroup" userData="524417" text="Item (to trade)" />
+                                                        <RadioMenuItem toggleGroup="$tilesToggleGroup" userData="1048705" text="Locator" />
+                                                        <RadioMenuItem toggleGroup="$tilesToggleGroup" userData="4194433" text="Health pack" />
+                                                    </Menu>
+
+                                                    <Menu mnemonicParsing="false" text="Characters">
+                                                        <RadioMenuItem toggleGroup="$tilesToggleGroup" userData="65793" text="Luke" />
+                                                        <RadioMenuItem toggleGroup="$tilesToggleGroup" userData="131329" text="Enemy" />
+                                                        <RadioMenuItem toggleGroup="$tilesToggleGroup" userData="262401" text="Friendly" />
+                                                    </Menu>
+
+                                                    <RadioMenuItem userData="65538" text="Door, passage, ladder" />
+
+                                                    <Menu mnemonicParsing="false" text="Mini map">
+                                                        <RadioMenuItem userData="131104" text="Starting point" />
+                                                        <RadioMenuItem userData="262176" text="Puzzle" />
+                                                        <RadioMenuItem userData="524320" text="Puzzle (solved)" />
+                                                        <RadioMenuItem userData="1048608" text="Gateway" />
+                                                        <RadioMenuItem userData="2097184" text="Gateway (solved)" />
+                                                        <RadioMenuItem userData="4194336" text="Upper barrier (locked)" />
+                                                        <RadioMenuItem userData="8388640" text="Bottom barrier (locked)" />
+                                                        <RadioMenuItem userData="16777248" text="Left barrier (locked)" />
+                                                        <RadioMenuItem userData="33554464" text="Right barrier (locked)" />
+                                                        <RadioMenuItem userData="67108896" text="Upper barrier" />
+                                                        <RadioMenuItem userData="134217760" text="Bottom barrier" />
+                                                        <RadioMenuItem userData="268435488" text="Left barrier" />
+                                                        <RadioMenuItem userData="536870944" text="Right barrier" />
+                                                        <RadioMenuItem userData="1073741856" text="Objective" />
+                                                        <RadioMenuItem userData="2147483680" text="Current position" />
+                                                    </Menu>
+                                                </Menu>
+                                                <MenuItem mnemonicParsing="false" text="Add tile(s)" />
+                                                <MenuItem mnemonicParsing="false" text="Delete this tile" />
+                                            </items>
+                                        </ContextMenu>
+                                    </contextMenu>
+                                </Label>
+
                             </AnchorPane>
                         </Tab>
                         <Tab text="Zones/Maps">

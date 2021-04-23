@@ -2,6 +2,7 @@ package md.leonis.bin;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -104,7 +105,7 @@ public class Dump {
 
     // 4 bytes
     public long getLongWord() {
-        int result;
+        long result;
         switch (byteOrder) {
             case LITTLE_ENDIAN:
                 result = Byte.toUnsignedInt(dump[index]);
@@ -128,6 +129,35 @@ public class Dump {
                 break;
         }
         return result;
+    }
+
+    public String getLongWordS() {
+        BigInteger result = BigInteger.valueOf(0L);
+        switch (byteOrder) {
+            case LITTLE_ENDIAN:
+                result = result.add(BigInteger.valueOf(Byte.toUnsignedInt(dump[index])));
+                index++;
+                result = result.add(BigInteger.valueOf(Byte.toUnsignedInt(dump[index]) * 256));
+                index++;
+                result = result.add(BigInteger.valueOf(Byte.toUnsignedInt(dump[index]) * 256 * 256));
+                index++;
+                BigInteger v = BigInteger.valueOf(Byte.toUnsignedInt(dump[index]) * 256 * 256);
+                result = result.add(v.multiply(BigInteger.valueOf(256)));
+                index++;
+                break;
+            default:
+                v = BigInteger.valueOf(Byte.toUnsignedInt(dump[index]) * 256 * 256);
+                result = v.multiply(BigInteger.valueOf(256));
+                index++;
+                result = result.add(BigInteger.valueOf(Byte.toUnsignedInt(dump[index]) * 256 * 256));
+                index++;
+                result = result.add(BigInteger.valueOf(Byte.toUnsignedInt(dump[index]) * 256));
+                index++;
+                result = result.add(BigInteger.valueOf(Byte.toUnsignedInt(dump[index])));
+                index++;
+                break;
+        }
+        return result.toString();
     }
 
     /*public int getInt64() {

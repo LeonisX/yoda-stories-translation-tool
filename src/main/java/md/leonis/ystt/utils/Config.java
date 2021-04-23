@@ -90,6 +90,10 @@ public class Config {
 
     public static Color[] palette = new Color[256];
 
+    public static byte[] ra = new byte[256];
+    public static byte[] ga = new byte[256];
+    public static byte[] ba = new byte[256];
+
     static {
         updatePalette();
     }
@@ -161,6 +165,20 @@ public class Config {
             int a = ~gamePalette[i + 3];
             // palette[i / 4] = (a << 24) | (r << 16) | (g << 8) | b;
             palette[i / 4] = Color.rgb(r,g,b);
+        }
+
+        for (int i = 0; i < 1024; i += 4) {
+            int id = i / 4;
+            int r = gamePalette[i + 2];
+            int g = gamePalette[i + 1];
+            int b = gamePalette[i];
+            int a = ~gamePalette[i + 3];
+            // palette[i / 4] = (a << 24) | (r << 16) | (g << 8) | b;
+            palette[id] = Color.rgb(r, g, b);
+
+            ra[id] = (byte) r;
+            ga[id] = (byte) g;
+            ba[id] = (byte) b;
         }
     }
 

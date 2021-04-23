@@ -98,6 +98,11 @@ public class JavaFxUtils {
         alert.showAndWait();
     }
 
+    public static void showAlert(String title, Exception exception) {
+        showAlert(title, exception.getClass().getName() + ": " + exception.getMessage(), Alert.AlertType.ERROR);
+        exception.printStackTrace();
+    }
+
     public static Stage getStage() {
         return stage;
     }

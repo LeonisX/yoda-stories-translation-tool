@@ -2,37 +2,44 @@ package md.leonis.ystt.view;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
+import javafx.stage.WindowEvent;
 import md.leonis.ystt.model.KnownSections;
 import md.leonis.ystt.model.MapEntry;
 import md.leonis.ystt.model.SectionMetrics;
-import md.leonis.ystt.utils.Config;
-import md.leonis.ystt.utils.IOUtils;
-import md.leonis.ystt.utils.JavaFxUtils;
-import md.leonis.ystt.utils.PaletteUtils;
+import md.leonis.ystt.utils.*;
 import net.sf.image4j.codec.bmp.BMPDecoder;
 import net.sf.image4j.codec.bmp.BMPEncoder;
 import net.sf.image4j.codec.bmp.BMPImage;
+import org.apache.commons.lang3.StringUtils;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static md.leonis.ystt.utils.Config.gamePalette;
 import static md.leonis.ystt.utils.Config.section;
+import static md.leonis.ystt.utils.ImageUtils.ReadWPicture;
 
 public class MainPaneController {
 
@@ -42,6 +49,7 @@ public class MainPaneController {
     public MenuItem exitMenuItem;
 
     public ToggleGroup transparentColorToggleGroup;
+    public RadioMenuItem noColorMenuItem;
     public RadioMenuItem fuchsiaMenuItem;
     public RadioMenuItem blackMenuItem;
     public RadioMenuItem whiteMenuItem;
@@ -50,8 +58,6 @@ public class MainPaneController {
 
     public MenuItem howToMenuItem;
     public MenuItem aboutMenuItem;
-
-    public Button openExeFileButton;
 
     public Label internalVersionLabel;
     public Label sizeLabel;
@@ -76,7 +82,6 @@ public class MainPaneController {
     public Button saveSoundsListToFileButton;
     public TextArea soundsTextArea;
 
-    public GridPane tilesGridPane;
     public Label tilesCountLabel;
     public Button saveTilesToSeparateFiles;
     public CheckBox decimalFilenamesCheckBox;
@@ -89,6 +94,10 @@ public class MainPaneController {
     public Button loadClipboardImage;
     public Button saveClipboardImage;
     public Button clearClipboardImage;
+    public ContextMenu tilesContextMenu;
+    public ToggleGroup tilesToggleGroup;
+    private final Map<String, RadioMenuItem> tileFlagsMap = new HashMap<>();
+    private Node currentTile;
 
     public Label mapsCountLabel;
     public Button saveMapsToFilesButton;
@@ -112,6 +121,7 @@ public class MainPaneController {
     public Button loadTranslatedText;
     public Button replaceTextInDta;
     public CheckBox trimSpacesCheckBox;
+
 
     public Label puzzlesCountLabel;
     public Button savePuzzlesToFilesButton;
@@ -145,7 +155,7 @@ public class MainPaneController {
     String spath, opath;
     int selectedCell, selectedTileX, selectedTileY;
     // TODO
-    Color currentFillColor = Color.FUCHSIA;
+    Color currentFillColor;
 
     // Insert text
     //TODO
@@ -172,24 +182,11 @@ public class MainPaneController {
         begin
         spath := ExtractFilePath(paramstr(0));
         opath := spath + OUTPUT + '\';
-        BMP := TBitmap.Create;
-        BMP.PixelFormat := pf8bit;
-        TileImage.Picture.Bitmap.PixelFormat := pf8bit;
-        TitleImage.Picture.Bitmap.PixelFormat := pf8bit;
-        MapImage.Picture.Bitmap.PixelFormat := pf8bit;
-        ClipboardImage.Picture.Bitmap.Width := ClipboardImage.Width;
-        ClipboardImage.Picture.Bitmap.Height := ClipboardImage.Height;
-        ClipboardImage.Picture.Bitmap.PixelFormat := pf8bit;
 
         ZeroColorRGDo(false);
-        FillInternalPalette(TitleImage.Picture.Bitmap, 0);
-        FillInternalPalette(MapImage.Picture.Bitmap, 0);
         OpenDTADialog.InitialDir := '.\';
         texts := TStringList.Create;
         log.SetOutput(LogMemo.lines);
-        FuchsiaMenuItem.Bitmap.Transparent := false;
-        BlackMenuItem.Bitmap.Transparent := false;
-        WhiteMenuItem.Bitmap.Transparent := false;
 
         // insert text
         ts := TStringList.Create;
@@ -218,46 +215,48 @@ public class MainPaneController {
     @FXML
     void initialize() {
 
+        currentFillColor = Color.rgb(0xF4, 0xF4, 0xF4);
+
+        noColorMenuItem.setUserData(currentFillColor);
         fuchsiaMenuItem.setUserData(Color.FUCHSIA);
         blackMenuItem.setUserData(Color.BLACK);
         whiteMenuItem.setUserData(Color.WHITE);
 
         //TODO log.Clear;
 
-        ScanFileAndUpdate();
+        // Scan DTA
+        try {
+            section.readDTAMetricks();
+        } catch (Exception e) {
+            JavaFxUtils.showAlert("DTA file processing error", e);
+        }
+
+        try {
+            mapTileFlags(tilesContextMenu.getItems());
+            updateUI();
+        } catch (Exception e) {
+            JavaFxUtils.showAlert("UI update error", e);
+        }
 
         //TODO Log.SaveToFile(opath, 'Structure');
     }
 
-    public void openMenuItemClick() {
-
-        openFile();
-    }
-
-    public static void openFile() {
-
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Open Executable File");
-        //TODO remove
-        fileChooser.setInitialDirectory(new File("D:\\Working\\_Yoda\\YExplorer\\other\\Yoda Stories (14.02.1997)"));
-        fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("Executable Files", "*.exe"));
-        File selectedFile = fileChooser.showOpenDialog(JavaFxUtils.getStage());
-        if (selectedFile != null) {
-            try {
-                Config.loadGameFiles(selectedFile);
-                JavaFxUtils.showMainPanel();
-            } catch (Exception e) {
-                JavaFxUtils.showAlert("Loading error", e.getClass().getName() + " " + e.getMessage(), Alert.AlertType.ERROR);
-                e.printStackTrace();
+    private void mapTileFlags(ObservableList<MenuItem> items) {
+        items.forEach(m -> {
+            if (m instanceof Menu) {
+                mapTileFlags(((Menu) m).getItems());
+            } else {
+                String userData = (String) m.getUserData();
+                if (StringUtils.isNotBlank(userData)) {
+                    RadioMenuItem menuItem = (RadioMenuItem) m;
+                    //menuItem.setToggleGroup(tilesToggleGroup);
+                    tileFlagsMap.put(userData, menuItem);
+                }
             }
-        }
+        });
     }
 
-    private void ScanFileAndUpdate() {
-
-        section.clear();
-        section.readDTAMetricks();
+    private void updateUI() {
 
         // Common information, sections
         internalVersionLabel.setText(section.version);
@@ -267,28 +266,29 @@ public class MainPaneController {
 
         List<SectionMetrics> metrics = section.sections.values().stream()
                 .sorted(Comparator.comparing(SectionMetrics::getStartOffset)).collect(Collectors.toList());
+
         commonInformationTableView.setItems(FXCollections.observableList(metrics));
 
-
         // Title image, palette
-        DrawTitleImage();
-        DrawPalette();
+        drawTitleImage();
+        drawPalette();
 
         // Sounds
         soundsCountLabel.setText(Integer.toString(section.soundsCount));
         soundsTextArea.setText(String.join("\n", section.sounds));
 
-
         // Tiles, sprites
         tilesCountLabel.setText(Integer.toString(section.tilesCount));
+        drawTiles();
+        tilesContextMenu.setOnShown(this::selectTileMenuItem);
 
         // Maps
         mapsCountLabel.setText(Integer.toString(section.mapsCount));
 
         List<MapEntry> mapEntries = section.maps.values().stream()
                 .sorted(Comparator.comparing(MapEntry::getId)).collect(Collectors.toList());
-        mapsTableView.setItems(FXCollections.observableList(mapEntries));
 
+        mapsTableView.setItems(FXCollections.observableList(mapEntries));
 
         // Puzzles
         puzzlesCountLabel.setText(Integer.toString(section.puzzlesCount));
@@ -296,104 +296,125 @@ public class MainPaneController {
         charactersCountLabel.setText(Integer.toString(section.charsCount));
 
         namesCountLabel.setText(Integer.toString(section.namesCount));
-
-
-        // refactor
-        /*
-        MapsStringGrid.RowCount := DTA.mapsCount + 1;
-        MapsStringGrid.Cells[0, 0] := 'Map #';
-        MapsStringGrid.Cells[1, 0] := 'Map offset';
-        MapsStringGrid.Cells[2, 0] := 'Map size';
-        MapsStringGrid.Cells[3, 0] := 'IZON offset';
-        MapsStringGrid.Cells[4, 0] := 'IZON size';
-        MapsStringGrid.Cells[5, 0] := 'OIE offset';
-        MapsStringGrid.Cells[6, 0] := 'OIE size';
-        MapsStringGrid.Cells[7, 0] := 'OIE count';
-
-        MapsStringGrid.Cells[8, 0] := 'IZAX offset';
-        MapsStringGrid.Cells[9, 0] := 'IZAX size';
-        MapsStringGrid.Cells[10, 0] := 'IZX2 offset';
-        MapsStringGrid.Cells[11, 0] := 'IZX2 size';
-        MapsStringGrid.Cells[12, 0] := 'IZX3 offset';
-        MapsStringGrid.Cells[13, 0] := 'IZX3 size';
-        MapsStringGrid.Cells[14, 0] := 'IZX4 offset';
-        MapsStringGrid.Cells[15, 0] := 'IZX4 size';
-        MapsStringGrid.Cells[16, 0] := 'IACT offset';
-        MapsStringGrid.Cells[17, 0] := 'IACT size';
-
-        for i := 0 to DTA.mapsCount - 1 do
-            begin
-        MapsStringGrid.Cells[0, i + 1] := IntToStr(i);
-        MapsStringGrid.Cells[1, i + 1] := '$' + IntToHex(TMap(DTA.maps.Objects[i]).mapOffset, 6);
-        MapsStringGrid.Cells[2, i + 1] := IntToStr(TMap(DTA.maps.Objects[i]).mapSize);
-        MapsStringGrid.Cells[3, i + 1] := '$' + IntToHex(TMap(DTA.maps.Objects[i]).izonOffset, 6);
-        MapsStringGrid.Cells[4, i + 1] := IntToStr(TMap(DTA.maps.Objects[i]).izonSize);
-        MapsStringGrid.Cells[5, i + 1] := '$' + IntToHex(TMap(DTA.maps.Objects[i]).oieOffset, 6);
-        MapsStringGrid.Cells[6, i + 1] := IntToStr(TMap(DTA.maps.Objects[i]).oieSize);
-        MapsStringGrid.Cells[7, i + 1] := IntToStr(TMap(DTA.maps.Objects[i]).oieCount);
-        MapsStringGrid.Cells[8, i + 1] := '$' + IntToHex(TMap(DTA.maps.Objects[i]).izaxOffset, 6);
-        MapsStringGrid.Cells[9, i + 1] := IntToStr(TMap(DTA.maps.Objects[i]).izaxSize);
-        MapsStringGrid.Cells[10, i + 1] := '$' + IntToHex(TMap(DTA.maps.Objects[i]).izx2Offset, 6);
-        MapsStringGrid.Cells[11, i + 1] := IntToStr(TMap(DTA.maps.Objects[i]).izx2Size);
-        MapsStringGrid.Cells[12, i + 1] := '$' + IntToHex(TMap(DTA.maps.Objects[i]).izx3Offset, 6);
-        MapsStringGrid.Cells[13, i + 1] := IntToStr(TMap(DTA.maps.Objects[i]).izx3Size);
-        MapsStringGrid.Cells[14, i + 1] := '$' + IntToHex(TMap(DTA.maps.Objects[i]).izx4Offset, 6);
-        MapsStringGrid.Cells[15, i + 1] := IntToStr(TMap(DTA.maps.Objects[i]).izx4Size);
-        MapsStringGrid.Cells[16, i + 1] := '$' + IntToHex(TMap(DTA.maps.Objects[i]).iactOffset, 6);
-        MapsStringGrid.Cells[17, i + 1] := IntToStr(TMap(DTA.maps.Objects[i]).iactSize);
-        end;
-
-        MapsListStringGrid.RowCount := DTA.mapsCount;
-        for i := 0 to DTA.mapsCount - 1 do
-            begin
-        MapsListStringGrid.Cells[0, i] := 'Map #' + IntToStr(i);
-        end;
-        MapsListStringGrid.Row := 0;
-        ViewMap(0);
-
-        TilesDrawGrid.RowCount := DTA.tilesCount div 16 + 1;
-        TilesDrawGrid.Repaint;*/
-
-        //PageControl.Visible := true;
     }
 
-    //TODO error processing
-    private void DrawTitleImage() {
+    private void drawTitleImage() {
 
-        ReadPicture(section.GetDataOffset(KnownSections.STUP), Color.BLACK);
-    }
-
-    private void ReadPicture(int offset, Color transparentColor) {
-
-        if (offset > 0) {
-            section.SetPosition(offset);
+        try {
+            WritableImage image = ReadWPicture(section.GetDataOffset(KnownSections.STUP), 288, 288, Color.BLACK);
+            titleScreenImageView.setImage(image);
+        } catch (Exception e) {
+            JavaFxUtils.showAlert("Title screen display error", e);
         }
+    }
 
-        WritableImage image = new WritableImage(288, 288);
+    private void selectTileMenuItem(WindowEvent event) {
+        String flag = getTileFlag(currentTile);
+        tileFlagsMap.get(flag).setSelected(true);
+    }
 
-        for (int y = 0; y < 288; y++) {
-            for (int x = 0; x < 288; x++) {
-                int index = section.ReadByte();
-                Color color = (index == 0) ? transparentColor : Config.palette[index];
-                image.getPixelWriter().setColor(x, y, color);
-                /*titleScreenCanvas.getGraphicsContext2D().getPixelWriter().setArgb(x, y, palette[index]);
-                image.getPixelWriter().setArgb(x, y, palette[index]);*/
+    private void drawPalette() {
+
+        try {
+            ImageUtils.drawPalette(paletteCanvas);
+        } catch (Exception e) {
+            JavaFxUtils.showAlert("Palette display error", e);
+        }
+    }
+
+    private void drawTiles() {
+
+        try {
+            for (int i = 0; i < section.tilesCount; i++) {
+                ImageView image = new ImageView(GetWTile(i));
+                image.setUserData(i);
+                image.setOnMouseEntered(mouseEnteredHandler);
+                image.setOnMouseExited(mouseExitedHandler);
+                image.setOnContextMenuRequested(e -> tilesContextMenu.show((Node) e.getSource(), e.getScreenX(), e.getScreenY()));
+                tilesFlowPane.getChildren().add(image);
             }
+        } catch (Exception e) {
+            JavaFxUtils.showAlert("Tiles display error", e);
         }
-        titleScreenImageView.setImage(image);
     }
 
-    //TODO error processing
-    private void DrawPalette() {
+    EventHandler<MouseEvent> mouseEnteredHandler = new EventHandler<MouseEvent>() {
 
-        for (int y = 0; y < 16; y++) {
-            for (int x = 0; x < 16; x++) {
-                paletteCanvas.getGraphicsContext2D().setFill(Config.palette[y * 16 + x]);
-                paletteCanvas.getGraphicsContext2D().fillRect(x * 18, y * 18, 18, 18);
+        @Override
+        public void handle(MouseEvent mouseEvent) {
+
+            currentTile = (Node) mouseEvent.getSource();
+            int id = ((Integer) (currentTile).getUserData());
+            String flag = getTileFlag(currentTile);
+            SetFlagMenuItem(flag);
+            statusLabel.setText("Tile #" + id + ": " + GetFlagDescription(flag));
+        }
+    };
+
+    private String getTileFlag(Node tile) {
+        int id = ((Integer) (tile).getUserData());
+        return section.GetTileFlagS(id);
+    }
+
+    EventHandler<MouseEvent> mouseExitedHandler = new EventHandler<MouseEvent>() {
+
+        @Override
+        public void handle(MouseEvent mouseEvent) {
+            currentTile = null;
+            statusLabel.setText("");
+        }
+    };
+
+    private String GetFlagDescription(String flag) {
+        return tileFlagsMap.get(flag).getText();
+    }
+
+    //TODO select flag in context menu
+    private void SetFlagMenuItem(String flag) {
+    /*
+    var i: Word;
+    m: TMenuItem;
+
+  for i := 0 to ComponentCount - 1 do
+            if Components[i] is TMenuItem then
+            begin
+    m := Components[i] as TMenuItem;
+      if m.GroupIndex = 7 then
+            begin
+    m.Checked := false;
+        if m.Tag = flag then m.Checked := true;
+        if (flag = 2147483680) and (m.Tag = 2000000000) then m.Checked := true;
+    end;
+    end;*/
+    }
+
+
+
+    public void openMenuItemClick() {
+        //TODO notify if changed
+        //TODO clear if need
+        openFile();
+    }
+
+    public static void openFile() {
+
+        try {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Open Executable File");
+            //TODO remove
+            fileChooser.setInitialDirectory(new File("D:\\Working\\_Yoda\\YExplorer\\other\\Yoda Stories (14.02.1997)"));
+            fileChooser.getExtensionFilters().addAll(
+                    new FileChooser.ExtensionFilter("Executable Files", "*.exe"));
+            File selectedFile = fileChooser.showOpenDialog(JavaFxUtils.getStage());
+
+            if (selectedFile != null) {
+                Config.loadGameFiles(selectedFile);
+                JavaFxUtils.showMainPanel();
             }
+        } catch (Exception e) {
+            JavaFxUtils.showAlert("EXE file loading error", e);
         }
     }
-
 
     public void saveMenuItemClick() {
         //TODO
@@ -413,6 +434,12 @@ public class MainPaneController {
 
     public void transparentColorMenuItemClick() {
         currentFillColor = (Color) transparentColorToggleGroup.getSelectedToggle().getUserData();
+        ObservableList<Node> children = tilesFlowPane.getChildren();
+        for (int i = 0; i < children.size(); i++) {
+            ImageView imageView = (ImageView) children.get(i);
+            imageView.setImage(GetWTile(i));
+        }
+        //TODO redraw clipboard,  other images
     }
 
     //TODO
@@ -427,11 +454,6 @@ public class MainPaneController {
     public void aboutMenuItemClick() {
     }
 
-    public void openExeFileButtonClick() {
-        //TODO notify if changed
-        //TODO clear if need
-        openFile();
-    }
 
     //TODO
     public void dumpAllSectionsButtonClick(ActionEvent actionEvent) {
@@ -469,36 +491,48 @@ public class MainPaneController {
 
         //TODO LoadBMP('output/STUP.bmp',bmp);
 
-        BMPImage titleImage = BMPDecoder.readExt(new File("D:\\Working\\_Yoda\\YExplorer\\out\\output-eng-2\\STUP.bmp"));
+        try {
+            BMPImage titleImage = BMPDecoder.readExt(new File("D:\\Working\\_Yoda\\YExplorer\\out\\output-eng-2\\STUP.bmp"));
 
-        //TODO notify if not indexed
-        WritableImage image = new WritableImage(titleImage.getWidth(), titleImage.getHeight());
-        SwingFXUtils.toFXImage(titleImage.getImage(), image);
+            //TODO notify if not indexed
+            WritableImage image = new WritableImage(titleImage.getWidth(), titleImage.getHeight());
+            SwingFXUtils.toFXImage(titleImage.getImage(), image);
 
-        for (int y = 0; y < image.getWidth(); y++) {
-            for (int x = 0; x < image.getHeight(); x++) {
-                Color color = image.getPixelReader().getColor(x, y);
-                //titleScreenCanvas.getGraphicsContext2D().getPixelWriter().setColor(x, y, color);
+            for (int y = 0; y < image.getWidth(); y++) {
+                for (int x = 0; x < image.getHeight(); x++) {
+                    Color color = image.getPixelReader().getColor(x, y);
+                    //titleScreenCanvas.getGraphicsContext2D().getPixelWriter().setColor(x, y, color);
+                }
             }
+            titleScreenImageView.setImage(image);
+            titleScreenImageView.setUserData(titleImage);
+        } catch (Exception e) {
+            JavaFxUtils.showAlert("Title screen loading error", e);
         }
-        titleScreenImageView.setImage(image);
-        titleScreenImageView.setUserData(titleImage);
     }
 
-    //TODO error processing
-    public void savePaletteButtonButtonClick() throws IOException {
-        BMPEncoder.write8bit(paletteCanvas, new File("D:\\Working\\_Yoda\\YExplorer\\out\\output-eng-2\\palette.bmp"));
+    public void savePaletteButtonButtonClick() {
+        try {
+            BMPEncoder.write8bit(paletteCanvas, new File("D:\\Working\\_Yoda\\YExplorer\\out\\output-eng-2\\palette.bmp"));
+        } catch (Exception e) {
+            JavaFxUtils.showAlert("Palette loading error", e);
+        }
     }
 
-    //TODO error processing
-    public void dumpPaletteButtonButtonClick() throws IOException {
-        PaletteUtils.saveToFile(gamePalette, "D:\\Working\\_Yoda\\YExplorer\\out\\output-eng-2\\palette.pal");
+    public void dumpPaletteButtonButtonClick() {
+        try {
+            PaletteUtils.saveToFile(gamePalette, "D:\\Working\\_Yoda\\YExplorer\\out\\output-eng-2\\palette.pal");
+        } catch (Exception e) {
+            JavaFxUtils.showAlert("Palette saving error", e);
+        }
     }
 
-    //TODO error processing
-    public void saveSoundsListToFileButtonClick() throws IOException {
-
-        IOUtils.saveTextFile(section.sounds, Paths.get("D:\\Working\\_Yoda\\YExplorer\\out\\output-eng-2\\SNDSn.txt"));
+    public void saveSoundsListToFileButtonClick() {
+        try {
+            IOUtils.saveTextFile(section.sounds, Paths.get("D:\\Working\\_Yoda\\YExplorer\\out\\output-eng-2\\SNDSn.txt"));
+        } catch (Exception e) {
+            JavaFxUtils.showAlert("Sounds list saving error", e);
+        }
     }
 
     public void saveTilesToSeparateFilesClick(ActionEvent actionEvent) {
@@ -613,19 +647,10 @@ public class MainPaneController {
     }
 
 
-    /*
-        function IntToBin(Value: LongWord): string;
-        var i: Integer;
-        begin
-        SetLength(Result, 32);
-        for i := 1 to 32 do begin
-        if ((Value shl (i-1)) shr 31) = 0 then begin
-        Result[i] := '0'
-        end else begin
-        Result[i] := '1';
-        end;
-        end;
-        end;*/
+    //TODO need to test signed
+    private String IntToBin(long value) {
+        return Long.toBinaryString(value);
+    }
 
 
     /*procedure TMainForm.ReadMap(id: Word; show, save: Boolean);
@@ -983,27 +1008,6 @@ const arr: Array[1..100] of String = (
     ReadIZON(StrToInt(MapsStringGrid.Cells[0, ARow]), false);
     end;
 
-    procedure TMainForm.TilesDrawGridDrawCell(Sender: TObject; ACol, ARow: Integer; Rect: TRect; State: TGridDrawState);
-    var id: Word;
-    begin
-    id := ACol + ARow * 16;
-  if ((ACol < TilesDrawGrid.ColCount) and (ARow < TilesDrawGrid.RowCount)) and (id < DTA.tilesCount) then
-    begin
-    bmp.PixelFormat := pf8bit;
-    bmp.Width := TileSize;
-    bmp.Height := TileSize;
-    FillInternalPalette(BMP, currentFillColor);
-
-    TilesDrawGrid.Canvas.Brush.Color := currentFillColor;
-    TilesDrawGrid.Canvas.Brush.Style := bsSolid;
-    GetTile(dta, id, bmp);
-    CopyFrame(TilesDrawGrid.Canvas, Rect.Left, Rect.Top);
-    end else
-    begin
-    TilesDrawGrid.Canvas.Brush.Color := clBtnFace;
-    TilesDrawGrid.Canvas.FillRect(Rect);
-    end;
-    end;
 
 
 
@@ -1186,6 +1190,7 @@ const arr: Array[1..100] of String = (
             end;
 
 
+// Dump characters
             procedure TMainForm.Button10Click(Sender: TObject);
     var i: Word;
     begin
@@ -1369,6 +1374,7 @@ const arr: Array[1..100] of String = (
     TilesDrawGrid.Repaint;
     end;
 
+
     procedure TMainForm.TilesDrawGridMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     var pnt: TPoint;
     begin
@@ -1377,77 +1383,8 @@ const arr: Array[1..100] of String = (
     else ShowTileStatus;
     end;
 
-    function TMainForm.GetFlagDescription(flag: Cardinal): String;
-    var i: Word;
-    m: TMenuItem;
-    begin
-    result := '';
-  for i := 0 to ComponentCount - 1 do
-            if Components[i] is TMenuItem then
-            begin
-    m := Components[i] as TMenuItem;
-      if m.GroupIndex = 7 then
-            begin
-        if m.Tag = flag then
-    begin
-    result := AnsiReplaceStr(m.Caption, '&', '');
-    Break;
-    end;
-        if (flag = 2147483680) and (m.Tag = 2000000000) then
-    begin
-    result := AnsiReplaceStr(m.Caption, '&', '');
-    Break;
-    end;
-    end;
-    end;
-    end;
 
-    procedure TMainForm.SetFlagMenuItem(flag: Cardinal);
-    var i: Word;
-    m: TMenuItem;
-    begin
-  for i := 0 to ComponentCount - 1 do
-            if Components[i] is TMenuItem then
-            begin
-    m := Components[i] as TMenuItem;
-      if m.GroupIndex = 7 then
-            begin
-    m.Checked := false;
-        if m.Tag = flag then m.Checked := true;
-        if (flag = 2147483680) and (m.Tag = 2000000000) then m.Checked := true;
-    end;
-    end;
-    end;
-
-    procedure TMainForm.ShowTileStatus;
-    var flag: Cardinal;
-    begin
-    selectedCell := TilesDrawGrid.Col + TilesDrawGrid.Row * 16;
-    flag := DTA.GetTileFlag(selectedCell);
-    SetFlagMenuItem(flag);
-    StatusBar.Panels[0].Text := 'Tile #' + IntToStr(selectedCell) + ': ' + GetFlagDescription(flag);
-    end;
-
-    procedure TMainForm.TilesDrawGridMouseWheelDown(Sender: TObject; Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
-    begin
-            ShowTileStatus;
-    Handled:= false;
-    end;
-
-    procedure TMainForm.TilesDrawGridKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
-    begin
-            ShowTileStatus;
-    end;
-
-    procedure TMainForm.TilesDrawGridMouseWheelUp(Sender: TObject; Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
-    begin
-            ShowTileStatus;
-    end;
-
-    procedure TMainForm.TilesDrawGridSelectCell(Sender: TObject; ACol, ARow: Integer; var CanSelect: Boolean);
-    begin
-            //break;
-            end;
+// Tiles menu item click
 
     procedure TMainForm.Bottomlayer1Click(Sender: TObject);
     var flag: Cardinal;
@@ -1459,6 +1396,7 @@ const arr: Array[1..100] of String = (
     //flag := DTA.GetTileFlag(selectedCell);
     //Showmessage(inttohex(flag,4));
     end;
+
 
     procedure TMainForm.Adddtiles1Click(Sender: TObject);
     var count: Byte;
@@ -1476,6 +1414,7 @@ const arr: Array[1..100] of String = (
     end;
     end;
 
+
     procedure TMainForm.Deletetile1Click(Sender: TObject);
     begin
   if MessageDlg('Are you sure to delete current tile?', mtConfirmation, [mbYes, mbNo], 0) = mrYes then
@@ -1488,10 +1427,12 @@ const arr: Array[1..100] of String = (
     end;
     end;
 
+
     procedure TMainForm.MapsListStringGridSelectCell(Sender: TObject; ACol, ARow: Integer; var CanSelect: Boolean);
     begin
   if ARow < DTA.mapsCount then ViewMap(ARow);
     end;
+
 
     procedure TMainForm.ViewMap(id: Word);
     begin
@@ -1501,6 +1442,7 @@ const arr: Array[1..100] of String = (
     FillInternalPalette(BMP, $FE00FE);
     ReadMap(id, true, false);
     end;
+
 
     procedure TMainForm.ReadColumn(col: Byte; StringGrid: TStringGrid);
     var f: textfile;
@@ -1542,6 +1484,7 @@ const arr: Array[1..100] of String = (
   if (c1 > 1) and (c2 > 1) and (c1 <> c2) then Showmessage('Number of phrases does not match!');
     end;
 
+
     function TMainForm.FindStringPosition(searchString: String): Cardinal;
     var
     startPosition: Cardinal;
@@ -1566,6 +1509,7 @@ const arr: Array[1..100] of String = (
     end else Inc(startPosition);
     end; // while
     end;
+
 
     function TMainForm.FindStringPositionReverse(searchString: String): Cardinal;
     var
@@ -1592,15 +1536,18 @@ const arr: Array[1..100] of String = (
     end; // while
     end;
 
+
     procedure TMainForm.Button1Click(Sender: TObject);
     begin
   if Opendialog1.Execute then ReadColumn(1, StringGrid1);
     end;
 
+
     procedure TMainForm.Button12Click(Sender: TObject);
     begin
  if Opendialog1.Execute then ReadColumn(2, StringGrid1);
     end;
+
 
     function TMainForm.DecompressString(s: String): String;
     begin
@@ -1695,6 +1642,7 @@ const arr: Array[1..100] of String = (
     hGrid.RowHeights[Arow] := Max(n + 1, hGrid.RowHeights[Arow]);
     end;
 
+
     procedure TMainForm.Highlight(offset, size: Cardinal);
     begin
   HEX.LoadFromStream(DTA.data);
@@ -1703,6 +1651,7 @@ const arr: Array[1..100] of String = (
     HEX.CenterCursorPosition;
     Application.ProcessMessages;
     end;
+
 
     procedure TMainForm.Button14Click(Sender: TObject);
     var
@@ -1807,10 +1756,12 @@ const arr: Array[1..100] of String = (
     ScanFileAndUpdate;
     end;
 
+
     procedure TMainForm.Button16Click(Sender: TObject);
     begin
   if Opendialog1.Execute then ReadColumn(1, StringGrid4);
     end;
+
 
     procedure TMainForm.Button17Click(Sender: TObject);
     begin
@@ -1832,6 +1783,7 @@ const arr: Array[1..100] of String = (
     Label7.Caption := '';
 
     previousSize := DTA.GetSize;
+ // PUZ2
   DTA.SetPosition(DTA.GetDataOffset(knownSections[6]));
     phaseEnd := DTA.GetPosition;
 
@@ -1910,31 +1862,37 @@ const arr: Array[1..100] of String = (
     ScanFileAndUpdate;
     end;
 
+
     procedure TMainForm.StringGrid1DrawCell(Sender: TObject; ACol, ARow: Integer; Rect: TRect; State: TGridDrawState);
     begin
     StringGridDrawCell(Sender, ACol, ARow, Rect, State);
     end;
+
 
     procedure TMainForm.StringGrid4DrawCell(Sender: TObject; ACol, ARow: Integer; Rect: TRect; State: TGridDrawState);
     begin
     StringGridDrawCell(Sender, ACol, ARow, Rect, State);
     end;
 
+
     procedure TMainForm.Button20Click(Sender: TObject);
     begin
   if Opendialog1.Execute then ReadColumn(1, StringGrid2);
     end;
+
 
     procedure TMainForm.Button21Click(Sender: TObject);
     begin
   if Opendialog1.Execute then ReadColumn(2, StringGrid2);
     end;
 
+
     procedure TMainForm.Button22Click(Sender: TObject);
     var i: Word;
     s, msg: String;
     len: Byte;
     begin
+// TNAM
   DTA.SetPosition(DTA.GetDataOffset(knownSections[10]));
     msg := '';
   for i := 1 to DTA.namesCount do
@@ -1969,6 +1927,7 @@ const arr: Array[1..100] of String = (
     ProgressBar2.Max := StringGrid2.RowCount;
     Label9.Caption := '';
 
+// TNAM
   DTA.SetPosition(DTA.GetDataOffset(knownSections[10]));
 
   for i := 1 to DTA.namesCount do
@@ -2030,6 +1989,7 @@ const arr: Array[1..100] of String = (
     Accept := (Source is TDrawGrid);
     end;
 
+
     procedure TMainForm.SelectMapTile(X, Y: Integer; concrete: Boolean);
     var left, top, w, h: Word;
     begin
@@ -2057,6 +2017,7 @@ const arr: Array[1..100] of String = (
     ViewMap(MapsListStringGrid.Row);
     end;
 
+
     procedure TMainForm.MapImageMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     var pnt: TPoint;
     t1, t2, t3: Word;
@@ -2071,10 +2032,12 @@ const arr: Array[1..100] of String = (
   if (Button = mbRight) and GetCursorPos(pnt) and TabSheet18.Visible then MapPopupMenu.Popup(pnt.X - 7, pnt.Y - 10);
     end;
 
+
     procedure TMainForm.RadioGroup1Click(Sender: TObject);
     begin
     prevTile := -1;
     end;
+
 
     procedure TMainForm.Undo1Click(Sender: TObject);
     begin
@@ -2086,6 +2049,7 @@ const arr: Array[1..100] of String = (
     ViewMap(MapsListStringGrid.Row);
     end;
     end;
+
 
     procedure TMainForm.Empty1Click(Sender: TObject);
     var
@@ -2121,4 +2085,23 @@ const arr: Array[1..100] of String = (
     begin
   if HEX.HasFile then StatusBar.Panels[0].Text := 'Offset: 0x' + IntToHex(HEX.GetSelStart, 8);
     end;*/
+
+
+    private BufferedImage GetTile(int id) {
+
+        int index = section.GetPosition();
+        section.SetPosition(section.GetDataOffset(KnownSections.TILE) + id * 0x404 + 4);
+        BufferedImage image = ImageUtils.ReadBPicture(section.GetDataOffset(KnownSections.TILE) + id * 0x404 + 4, 32, 32, currentFillColor);
+        section.SetPosition(index);
+        return image;
+    }
+
+    private WritableImage GetWTile(int id) {
+
+        int index = section.GetPosition();
+        section.SetPosition(section.GetDataOffset(KnownSections.TILE) + id * 0x404 + 4);
+        WritableImage image = ImageUtils.ReadWPicture(section.GetDataOffset(KnownSections.TILE) + id * 0x404 + 4, 32, 32, currentFillColor);
+        section.SetPosition(index);
+        return image;
+    }
 }

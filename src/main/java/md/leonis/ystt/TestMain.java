@@ -16,7 +16,9 @@ public class TestMain {
 
     public static void main(String[] args) throws IOException {
 
-        File file = new File("D:\\Working\\_Yoda\\YExplorer\\out\\output-eng-2\\STUP.bmp");
+        System.out.println(Long.toBinaryString(0xFFFFFFFFL));
+
+        /*File file = new File("D:\\Working\\_Yoda\\YExplorer\\out\\output-eng-2\\STUP.bmp");
         
         BMPImage bmpImage = BMPDecoder.readExt(file);
         BufferedImage bufferedImage = BMPDecoder.read(file);
@@ -34,7 +36,7 @@ public class TestMain {
         // "iXpixelsPerM":0,"iYpixelsPerM":0,"iColorsUsed":256,"iColorsImportant":0,"iNumColors":256}
         System.out.println(new Gson().toJson(bmpImage.getInfoHeader()));
 
-        System.out.println();
+        System.out.println();*/
 
         /*Log.Clear;
         CreateDir(c);

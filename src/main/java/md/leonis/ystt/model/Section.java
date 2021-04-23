@@ -55,6 +55,11 @@ public class Section {
     public Section() {
     }
 
+    public String GetTileFlagS(int id) {
+        SetPosition(GetDataOffset(KnownSections.TILE) + id * 0x404);
+        return dump.getLongWordS();
+    }
+
     public long GetTileFlag(int id) {
         SetPosition(GetDataOffset(KnownSections.TILE) + id * 0x404);
         return ReadLongWord();
@@ -118,6 +123,8 @@ public class Section {
     }
 
     public void readDTAMetricks() {
+
+        clear();
 
         SetPosition(0);
         boolean keepReading = true;

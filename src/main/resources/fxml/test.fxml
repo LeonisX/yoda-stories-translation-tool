@@ -1,18 +1,83 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.ContextMenu?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.RadioMenuItem?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.shape.Rectangle?>
 
-<AnchorPane prefHeight="619.0" prefWidth="825.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fxml.Test">
+<AnchorPane prefHeight="405.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fxml.Test">
    <children>
-      <TextArea editable="false" layoutX="85.0" layoutY="50.0" prefHeight="481.0" prefWidth="300.0" />
-      <TableView layoutX="428.0" layoutY="110.0" prefHeight="200.0" prefWidth="200.0">
-        <columns>
-          <TableColumn prefWidth="75.0" text="Map&#10;ID" />
-          <TableColumn prefWidth="75.0" text="C2" />
-        </columns>
-      </TableView>
+      <Label id="1" layoutX="165.0" layoutY="151.0" text="Label">
+         <contextMenu>
+            <ContextMenu fx:id="tilesContextMenu">
+              <items>
+                  <Menu mnemonicParsing="false" text="Set flag">
+
+                      <RadioMenuItem text="Bottom layer" />
+                      <RadioMenuItem text="Middle layer" />
+                      <RadioMenuItem text="Middle layer (transparent)" />
+                      <RadioMenuItem text="Push/pull block" />
+                      <RadioMenuItem text="Top layer" />
+                      <RadioMenuItem text="Top layer (transparent)" />
+                      <RadioMenuItem text="Bottom layer" />
+                      <RadioMenuItem text="Bottom layer" />
+
+
+                      <Menu mnemonicParsing="false" text="Weapons">
+
+                          <RadioMenuItem text="Light Blaster" />
+                          <RadioMenuItem text="Heavy Blaster, Thermal Detonator" />
+                          <RadioMenuItem text="Lightsaber" />
+                          <RadioMenuItem text="The Force" />
+                      </Menu>
+
+                      <Menu mnemonicParsing="false" text="Items">
+
+                          <RadioMenuItem text="Keycard" />
+                          <RadioMenuItem text="Item (for use)" />
+                          <RadioMenuItem text="Item (part of)" />
+                          <RadioMenuItem text="Item (to trade)" />
+                          <RadioMenuItem text="Locator" />
+                          <RadioMenuItem text="Health pack" />
+                      </Menu>
+
+                      <Menu mnemonicParsing="false" text="Characters">
+
+                          <RadioMenuItem text="Player" />
+                          <RadioMenuItem text="Enemy" />
+                          <RadioMenuItem text="Friendly" />
+                      </Menu>
+
+                      <RadioMenuItem text="Door, passage, ladder" />
+
+                      <Menu mnemonicParsing="false" text="Mini map">
+
+                          <RadioMenuItem text="Home" userData="123" />
+                          <RadioMenuItem text="Puzzle" />
+                          <RadioMenuItem text="Puzzle (solved)" />
+                          <RadioMenuItem text="Gateway" />
+                          <RadioMenuItem text="Gateway (solved)" />
+                          <RadioMenuItem text="Up wall (locked)" />
+                          <RadioMenuItem text="Down wall (locked)" />
+                          <RadioMenuItem text="Left wall (locked)" />
+                          <RadioMenuItem text="Right wall (locked)" />
+                          <RadioMenuItem text="Up wall" />
+                          <RadioMenuItem text="Down wall" />
+                          <RadioMenuItem text="Left wall" />
+                          <RadioMenuItem text="Right wall" />
+                          <RadioMenuItem text="Objective" />
+                          <RadioMenuItem text="Current position" />
+                      </Menu>
+                  </Menu>
+                  <MenuItem mnemonicParsing="false" text="Add tile(s)" />
+                  <MenuItem mnemonicParsing="false" text="Delete this tile" />
+              </items>
+            </ContextMenu>
+         </contextMenu>
+      </Label>
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#345d83" height="200.0" layoutX="65.0" layoutY="160.0" stroke="BLACK" strokeType="INSIDE" width="200.0" />
    </children>
 </AnchorPane>

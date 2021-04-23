@@ -10,8 +10,8 @@ An original version: https://github.com/LeonisX/YExplorer
 
 ## TODO
 
-* Fill tables
-* Draw tiles, maps
+* Clipboard
+* Draw maps
 * Dump all
 * Dump texts to DOCX (separators, IACT/PUZ2 labels, ignore them, allow blocked text)
 * Replace tiles, maps
