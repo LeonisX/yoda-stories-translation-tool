@@ -1,6 +1,7 @@
 package md.leonis.ystt.view;
 
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -12,6 +13,8 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
+import md.leonis.ystt.model.SectionMetrics;
+import md.leonis.ystt.utils.IOUtils;
 import md.leonis.ystt.utils.PaletteUtils;
 import md.leonis.ystt.model.KnownSections;
 import md.leonis.ystt.utils.Config;
@@ -22,7 +25,11 @@ import net.sf.image4j.codec.bmp.BMPImage;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static md.leonis.ystt.utils.Config.gamePalette;
 import static md.leonis.ystt.utils.Config.section;
@@ -50,7 +57,7 @@ public class MainPaneController {
     public Label sizeLabel;
     public Label crc32Label;
     public Label nameLabel;
-    public TableView commonInformationTableView;
+    public TableView<SectionMetrics> commonInformationTableView;
     public Button dumpAllSectionsButton;
 
     public Button dumpPETextToDocx;
@@ -67,6 +74,7 @@ public class MainPaneController {
 
     public Label soundsCountLabel;
     public Button saveSoundsListToFileButton;
+    public TextArea soundsTextArea;
 
     public GridPane tilesGridPane;
     public Label tilesCountLabel;
@@ -250,15 +258,27 @@ public class MainPaneController {
 
         section.clear();
         section.readDTAMetricks();
-        internalVersionLabel.setText(section.version);
-        sizeLabel.setText(section.dump.size() + "b / " + section.exeDump.size() + "b");
-        crc32Label.setText(section.dtaCrc32 + " / " + section.exeCrc32);
-        nameLabel.setText(section.dtaRevision);
 
+        // Common information, sections
+        internalVersionLabel.setText(section.version);
+        nameLabel.setText(section.dtaRevision);
+        sizeLabel.setText(section.dump.size() + " / " + section.exeDump.size());
+        crc32Label.setText(section.dtaCrc32 + " / " + section.exeCrc32);
+
+        List<SectionMetrics> metrics = section.sections.values().stream()
+                .sorted(Comparator.comparing(SectionMetrics::getStartOffset)).collect(Collectors.toList());
+        commonInformationTableView.setItems(FXCollections.observableList(metrics));
+
+
+        // Title image, palette
         DrawTitleImage();
         DrawPalette();
 
+        // Sounds
         soundsCountLabel.setText(Integer.toString(section.soundsCount));
+        soundsTextArea.setText(String.join("\n", section.sounds));
+
+
 
         tilesCountLabel.setText(Integer.toString(section.tilesCount));
 
@@ -270,39 +290,9 @@ public class MainPaneController {
 
         namesCountLabel.setText(Integer.toString(section.namesCount));
 
-        // refactor
-        /*SectionsStringGrid.RowCount := DTA.sections.Count + 1;
-        SectionsStringGrid.Cells[1, 0] := 'Section';
-        SectionsStringGrid.Cells[1, 0] := 'Data size';
-        SectionsStringGrid.Cells[2, 0] := 'Full size';
-        SectionsStringGrid.Cells[3, 0] := 'Data offset';
-        SectionsStringGrid.Cells[4, 0] := 'Start offset';
-
-        for i := 0 to DTA.sections.Count - 1 do
-            begin
-        SectionsStringGrid.Cells[0, i + 1] := DTA.sections[i];
-        SectionsStringGrid.Cells[1, i + 1] := IntToStr(DTA.GetDataSize(DTA.sections[i]));
-        SectionsStringGrid.Cells[2, i + 1] := IntToStr(DTA.GetFullSize(DTA.sections[i]));
-        SectionsStringGrid.Cells[3, i + 1] := '$' + IntToHex(DTA.GetDataOffset(DTA.sections[i]), 6);
-        SectionsStringGrid.Cells[4, i + 1] := '$' + IntToHex(DTA.GetStartOffset(DTA.sections[i]), 6);
-        end;
 
         // refactor
-        MapsStringGrid.Cells[0, 0] := 'Section';
-        MapsStringGrid.Cells[1, 0] := 'Data size';
-        MapsStringGrid.Cells[2, 0] := 'Full size';
-        MapsStringGrid.Cells[3, 0] := 'Data offset';
-        MapsStringGrid.Cells[4, 0] := 'Start offset';
-
-        for i := 0 to DTA.sections.Count - 1 do
-            begin
-        MapsStringGrid.Cells[0, i + 1] := DTA.sections[i];
-        MapsStringGrid.Cells[1, i + 1] := IntToStr(DTA.GetDataSize(DTA.sections[i]));
-        MapsStringGrid.Cells[2, i + 1] := IntToStr(DTA.GetFullSize(DTA.sections[i]));
-        MapsStringGrid.Cells[3, i + 1] := '$' + IntToHex(DTA.GetDataOffset(DTA.sections[i]), 6);
-        MapsStringGrid.Cells[4, i + 1] := '$' + IntToHex(DTA.GetStartOffset(DTA.sections[i]), 6);
-        end;
-
+        /*
         MapsStringGrid.RowCount := DTA.mapsCount + 1;
         MapsStringGrid.Cells[0, 0] := 'Map #';
         MapsStringGrid.Cells[1, 0] := 'Map offset';
@@ -364,12 +354,6 @@ public class MainPaneController {
     private void DrawTitleImage() {
 
         ReadPicture(section.GetDataOffset(KnownSections.STUP), Color.BLACK);
-
-        /*FillInternalPalette(BMP, 0);
-        BMP.Width :=TitleImage.Width;
-        BMP.Height :=TitleImage.Height;
-        ReadPicture(DTA, DTA.GetDataOffset(knownSections[2]));
-        CopyPicture(TitleImage, 0, 0);*/
     }
 
     private void ReadPicture(int offset, Color transparentColor) {
@@ -462,20 +446,21 @@ public class MainPaneController {
     //TODO error processing
     public void saveToBitmapButtonClick() throws IOException {
 
+        // TODO Log.Clear;
+        // TODO IOUtils.createDirectories("");
+        // TODO Log.Debug('Title screen saved')
+
         if (titleScreenImageView.getUserData() != null) {
             BMPEncoder.write((BMPImage) titleScreenImageView.getUserData(), new File("D:\\Working\\_Yoda\\YExplorer\\out\\output-eng-2\\STUPti.bmp"));
         } else {
             BMPEncoder.write8bit(titleScreenImageView, new File("D:\\Working\\_Yoda\\YExplorer\\out\\output-eng-2\\STUPi.bmp"));
         }
-
-        /*Log.Clear;
-        CreateDir(c);
-        TitleImage.Picture.SaveToFile(opath + knownSections[2] + '.bmp');
-        Log.Debug('Title screen saved');*/
     }
 
     //TODO error processing
     public void loadFromBitmapButtonClick(ActionEvent actionEvent) throws IOException {
+
+        //TODO LoadBMP('output/STUP.bmp',bmp);
 
         BMPImage titleImage = BMPDecoder.readExt(new File("D:\\Working\\_Yoda\\YExplorer\\out\\output-eng-2\\STUP.bmp"));
 
@@ -491,8 +476,6 @@ public class MainPaneController {
         }
         titleScreenImageView.setImage(image);
         titleScreenImageView.setUserData(titleImage);
-
-        // LoadBMP('output/STUP.bmp',bmp);
     }
 
     //TODO error processing
@@ -505,39 +488,10 @@ public class MainPaneController {
         PaletteUtils.saveToFile(gamePalette, "D:\\Working\\_Yoda\\YExplorer\\out\\output-eng-2\\palette.pal");
     }
 
-    public void saveSoundsListToFileButtonClick(ActionEvent actionEvent) {
-        /*var msz, i: Integer;
-        title: String;
-        begin
-        Log.Clear;
-        Log.Debug('Sounds & melodies:');
-        Log.Debug('');
-        title := knownSections[3]; // SNDS
-        DTA.SetPosition(title);
-        Log.Debug('Unknown value: ' + inttohex(DTA.ReadWord, 4)); // C0 FF ??????
-        i := 0;
-        while DTA.InBound(title) do
-            begin
-        msz := DTA.ReadWord;
-        Log.Debug('#' + rightstr('00'+inttostr(i),2) + ': ' + DTA.ReadString(msz - 1));
-        DTA.ReadByte;                   // 00 at the end of string
-        inc(i)
-        end;
-        Log.SaveToFile(opath, title);
-        end;
+    //TODO error processing
+    public void saveSoundsListToFileButtonClick() throws IOException {
 
-        function IntToBin(Value: LongWord): string;
-        var i: Integer;
-        begin
-        SetLength(Result, 32);
-        for i := 1 to 32 do begin
-        if ((Value shl (i-1)) shr 31) = 0 then begin
-        Result[i] := '0'
-        end else begin
-        Result[i] := '1';
-        end;
-        end;
-        end;*/
+        IOUtils.saveTextFile(section.sounds, Paths.get("D:\\Working\\_Yoda\\YExplorer\\out\\output-eng-2\\SNDSn.txt"));
     }
 
     public void saveTilesToSeparateFilesClick(ActionEvent actionEvent) {
@@ -650,6 +604,22 @@ public class MainPaneController {
         if CheckBox2.Checked then texts.SaveToFile(opath + 'iact.txt');
         end;*/
     }
+
+
+    /*
+        function IntToBin(Value: LongWord): string;
+        var i: Integer;
+        begin
+        SetLength(Result, 32);
+        for i := 1 to 32 do begin
+        if ((Value shl (i-1)) shr 31) = 0 then begin
+        Result[i] := '0'
+        end else begin
+        Result[i] := '1';
+        end;
+        end;
+        end;*/
+
 
     /*procedure TMainForm.ReadMap(id: Word; show, save: Boolean);
     var s: String;

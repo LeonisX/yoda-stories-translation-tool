@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,6 +45,7 @@ public class Section {
     public String dtaRevision;
     public String version;
     public byte soundsCount;
+    public List<String> sounds = new ArrayList<>();
     public int tilesCount;
     public int mapsCount;
     public int puzzlesCount;
@@ -71,6 +73,7 @@ public class Section {
         tiles = new boolean[0];
         version = "";
         soundsCount = 0;
+        sounds = new ArrayList<>();
         tilesCount = 0;
         mapsCount = 0;
         puzzlesCount = 0;
@@ -83,7 +86,7 @@ public class Section {
     }
 
     public void Add(KnownSections section, int dataSize, int fullSize, int dataOffset, int startOffset) {
-        sections.put(section, new SectionMetrics(dataSize, fullSize, dataOffset, startOffset));
+        sections.put(section, new SectionMetrics(section, dataSize, fullSize, startOffset, dataOffset));
     }
 
     public int GetStartOffset(KnownSections section) {
@@ -191,7 +194,7 @@ public class Section {
         Log.debug("Maps offsets, sizes detailed:");
         Log.debug("------------------");
         Log.newLine();
-        Log.debug(String.format("%3s   %-13s %-13s  %-16s   %-13s  %-13s  %-13s  %-13s  %-13s", "#", "MAP", "IZON", "OIE", "IZAX", "ISX2", "IZX3", "IZX4", "IACT"));
+        Log.debug(String.format("%3s   %-13s %-13s  %-16s  %-13s  %-13s  %-13s  %-13s  %-13s", "#", "MAP", "IZON", "OIE", "IZAX", "ISX2", "IZX3", "IZX4", "IACT"));
 
         maps.forEach((key, value) -> Log.debug(String.format("%3d   %-13s %-13s  %-16s  %-13s  %-13s  %-13s  %-13s  %-13s", key,
                 intToHex(value.getMapOffset(), 6) + ':' + intToHex(value.getMapSize(), 4),
@@ -445,9 +448,8 @@ public class Section {
         soundsCount = 0;
         ReadWord();
         while (InBound(sectionName)) {
-            int msz = ReadWord();
-
-            ReadString(msz);
+            int msz = ReadWord(); // length
+            sounds.add(ReadString(msz).trim());
             soundsCount++;
         }
 
@@ -525,7 +527,7 @@ public class Section {
         Release release = Config.releases.stream().filter(r -> r.getExe().equals(exeCrc32) && r.getDta().equals(dtaCrc32)).findFirst().orElse(null);
 
         if (null == release) {
-            dtaRevision = "Unknown";
+            dtaRevision = "Unknown combination of files";
         } else {
             dtaRevision = release.getTitle();
         }
@@ -668,7 +670,7 @@ public class Section {
     public String intToHex(int value, int size) {
 
         String result = Integer.toHexString(value).toUpperCase();
-        return "$" + StringUtils.leftPad(result, size, '0');
+        return /*"$" +*/ StringUtils.leftPad(result, size, '0');
     }
 
     public String longToHex(long value, int size) {

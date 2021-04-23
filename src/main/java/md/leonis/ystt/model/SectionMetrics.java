@@ -2,16 +2,23 @@ package md.leonis.ystt.model;
 
 public class SectionMetrics {
 
+    private final KnownSections section;
     private final int dataSize;
     private final int fullSize;
-    private final int dataOffset;
     private final int startOffset;
+    private final int dataOffset;
 
-    public SectionMetrics(int dataSize, int fullSize, int dataOffset, int startOffset) {
+    public SectionMetrics(KnownSections section, int dataSize, int fullSize, int startOffset, int dataOffset) {
+
+        this.section = section;
         this.dataSize = dataSize;
         this.fullSize = fullSize;
-        this.dataOffset = dataOffset;
         this.startOffset = startOffset;
+        this.dataOffset = dataOffset;
+    }
+
+    public KnownSections getSection() {
+        return section;
     }
 
     public int getDataSize() {

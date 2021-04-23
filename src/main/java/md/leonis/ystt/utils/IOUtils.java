@@ -12,6 +12,12 @@ import java.util.List;
 
 public class IOUtils {
 
+    public static void saveTextFile(List<String> sounds, Path path) throws IOException {
+
+        createDirectories(path.getParent());
+        Files.write(path, sounds);
+    }
+
     public void saveToFile(String filePath, String fileName, List<String> lines) throws IOException {
 
         Path directory = Paths.get(filePath);
