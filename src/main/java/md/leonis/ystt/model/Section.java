@@ -4,6 +4,7 @@ import md.leonis.bin.ByteOrder;
 import md.leonis.bin.Dump;
 import md.leonis.ystt.utils.BinaryUtils;
 import md.leonis.ystt.utils.Config;
+import md.leonis.ystt.utils.PaletteUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
@@ -14,6 +15,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
+
+import static md.leonis.ystt.utils.Config.gamePalette;
 
 public class Section {
 
@@ -188,17 +191,17 @@ public class Section {
         Log.debug("Maps offsets, sizes detailed:");
         Log.debug("------------------");
         Log.newLine();
-        Log.debug(String.format("%3s   %-13s %-13s  %-16s  %-13s  %-13s  %-13s  %-13s  %-13s", "#", "MAP", "IZON", "OIE", "IZAX", "ISX2", "IZX3", "IZX4", "IACT"));
+        Log.debug(String.format("%3s   %-13s %-13s  %-16s   %-13s  %-13s  %-13s  %-13s  %-13s", "#", "MAP", "IZON", "OIE", "IZAX", "ISX2", "IZX3", "IZX4", "IACT"));
 
-        maps.forEach((key, value) -> Log.debug(String.format("%3d %-13s %-13s  %-16s  %-13s  %-13s  %-13s  %-13s  %-13s", key,
-                intToHex(value.getMapOffset(), 8) + ':' + intToHex(value.getMapSize(), 4),
-                intToHex(value.getIzonOffset(), 8) + ':' + intToHex(value.getIzonSize(), 4),
-                intToHex(value.getOieOffset(), 8) + ':' + intToHex(value.getOieSize(), 4) + ':' + intToHex(value.getOieCount(), 2),
-                intToHex(value.getIzaxOffset(), 8) + ':' + intToHex(value.getIzaxSize(), 4),
-                intToHex(value.getIzx2Offset(), 8) + ':' + intToHex(value.getIzx2Size(), 4),
-                intToHex(value.getIzx3Offset(), 8) + ':' + intToHex(value.getIzx3Size(), 4),
-                intToHex(value.getIzx4Offset(), 8) + ':' + intToHex(value.getIzx4Size(), 4),
-                intToHex(value.getIactOffset(), 8) + ':' + intToHex(value.getIactSize(), 4)
+        maps.forEach((key, value) -> Log.debug(String.format("%3d   %-13s %-13s  %-16s  %-13s  %-13s  %-13s  %-13s  %-13s", key,
+                intToHex(value.getMapOffset(), 6) + ':' + intToHex(value.getMapSize(), 4),
+                intToHex(value.getIzonOffset(), 6) + ':' + intToHex(value.getIzonSize(), 4),
+                intToHex(value.getOieOffset(), 6) + ':' + intToHex(value.getOieSize(), 4) + ':' + intToHex(value.getOieCount(), 2),
+                intToHex(value.getIzaxOffset(), 6) + ':' + intToHex(value.getIzaxSize(), 4),
+                intToHex(value.getIzx2Offset(), 6) + ':' + intToHex(value.getIzx2Size(), 4),
+                intToHex(value.getIzx3Offset(), 6) + ':' + intToHex(value.getIzx3Size(), 4),
+                intToHex(value.getIzx4Offset(), 6) + ':' + intToHex(value.getIzx4Size(), 4),
+                intToHex(value.getIactOffset(), 6) + ':' + intToHex(value.getIactSize(), 4)
         )));
     }
 
@@ -507,7 +510,6 @@ public class Section {
         return result;
     }
 
-    //TODO EXE, validate CRC32 also
     public void LoadFileToArray(File file) throws IOException {
 
         Log.debug("DTA file internal structure");
@@ -531,6 +533,15 @@ public class Section {
         exeDump = new Dump(exePath);
         exeDump.setByteOrder(ByteOrder.LITTLE_ENDIAN);
 
+        int paletteStartIndex = exeDump.findAddress(PaletteUtils.getBGRASample(gamePalette));
+
+        if (paletteStartIndex < 0) {
+            throw new RuntimeException("Palette isn't found in EXE file");
+        }
+
+        //TODO const
+        boolean otherPaletteLocation = (0x550F0 != paletteStartIndex);
+
         Log.newLine();
         Log.debug("EXE:");
         Log.debug("---------");
@@ -538,8 +549,13 @@ public class Section {
         Log.debug("Size: " + exeDump.size());
         Log.debug("CRC-32: " + exeCrc32);
         Log.debug("DTA revision: " + dtaRevision);
+        Log.debug("Palette address: " + intToHex(paletteStartIndex, 6));
         exeDump.setIndex(0);
+        if (otherPaletteLocation) {
+            Log.debug("Unknown palette location. Standard is: 0x550F0");
+        }
 
+        dumpPalette(paletteStartIndex);
 
         dump = new Dump(dtaPath);
         dump.setByteOrder(ByteOrder.LITTLE_ENDIAN);
@@ -552,6 +568,12 @@ public class Section {
         Log.debug("CRC-32: " + dtaCrc32);
         Log.debug("DTA revision: " + dtaRevision);
         SetPosition(0);
+    }
+
+    private void dumpPalette(int paletteStartIndex) {
+
+        gamePalette = PaletteUtils.dumpBGRAPalette(exeDump.getDump(), paletteStartIndex);
+        Config.updatePalette();
     }
 
     public Path getDtaPath(Path dir) throws IOException {
@@ -646,7 +668,7 @@ public class Section {
     public String intToHex(int value, int size) {
 
         String result = Integer.toHexString(value).toUpperCase();
-        return StringUtils.leftPad(result, size);
+        return "$" + StringUtils.leftPad(result, size, '0');
     }
 
     public String longToHex(long value, int size) {

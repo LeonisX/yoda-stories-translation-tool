@@ -403,4 +403,26 @@ public class Dump {
         System.arraycopy(dump, index + 1 + length, newDump, dump.length, length);
         dump = newDump;
     }
+
+    public int findAddress(int[] sample) {
+
+        boolean done;
+        int startIndex = -1;
+
+        for (int i = 0; i < dump.length - sample.length; i++) {
+            done = true;
+            for (int j = 0; j < sample.length; j++) {
+                if (!(Byte.toUnsignedInt(dump[i + j]) == sample[j])) {
+                    done = false;
+                    break;
+                }
+            }
+            if (done) {
+                startIndex = i;
+                break;
+            }
+        }
+
+        return startIndex;
+    }
 }
