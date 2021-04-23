@@ -29,6 +29,10 @@ An original version: https://github.com/LeonisX/YExplorer
 * Validate text (first-last) phrases
 * Hide debug tabs by default
 
+* Show in UI: Chars, Names
+* Show in UI info about puzzles (id, size, phrases count)
+* IACT: show phrases count
+
 * TODO tests!!!!!!!!!!!!!!!
 
 ### BMP
