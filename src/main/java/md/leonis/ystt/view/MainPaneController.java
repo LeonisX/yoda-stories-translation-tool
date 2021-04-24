@@ -164,6 +164,8 @@ public class MainPaneController {
     int prevTile = -1;
     int prevTileX, prevTileY;
 
+    private File clipboardFile;
+
     public MainPaneController() {
 
         //TODO
@@ -389,7 +391,6 @@ public class MainPaneController {
     }
 
 
-
     public void openMenuItemClick() {
         //TODO notify if changed
         //TODO clear if need
@@ -580,16 +581,42 @@ public class MainPaneController {
         end;*/
     }
 
+    //TODO
     public void saveTilesToOneFileClick(ActionEvent actionEvent) {
     }
 
-    public void loadClipboardImageClick(ActionEvent actionEvent) {
+    //TODO use workdir here, if no clipboardFile
+    public void loadClipboardImageClick() {
+        try {
+            String initialFile = (null == clipboardFile) ? "clipboard.bmp": clipboardFile.getName();
+            String initialDir = (null == clipboardFile) ? null: clipboardFile.getParent();
+            File file = JavaFxUtils.showBMPLoadDialog("Load Clipboard image", initialDir, initialFile);
+            if (file != null) {
+                clipboardFile = file;
+                clipboardImageView.setImage(BMPDecoder.readWI(file));
+            }
+        } catch (Exception e) {
+            JavaFxUtils.showAlert("Clipboard image loading error", e);
+        }
     }
 
-    public void saveClipboardImageClick(ActionEvent actionEvent) {
+    public void saveClipboardImageClick() {
+        try {
+            if (null != clipboardImageView.getImage()) {
+                String initialFile = (null == clipboardFile) ? "clipboard.bmp": clipboardFile.getName();
+                String initialDir = (null == clipboardFile) ? null: clipboardFile.getParent();
+                File file = JavaFxUtils.showBMPSaveDialog("Save Clipboard image", initialDir, initialFile);
+                if (file != null) {
+                    BMPEncoder.write8bit(clipboardImageView, file);
+                }
+            }
+        } catch (Exception e) {
+            JavaFxUtils.showAlert("Clipboard image saving error", e);
+        }
     }
 
-    public void clearClipboardImageClick(ActionEvent actionEvent) {
+    public void clearClipboardImageClick() {
+        clipboardImageView.setImage(null);
     }
 
     public void saveMapsToFilesButtonClick(ActionEvent actionEvent) {

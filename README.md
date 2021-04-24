@@ -10,7 +10,7 @@ An original version: https://github.com/LeonisX/YExplorer
 
 ## TODO
 
-* Clipboard
+* Show rectangle
 * Draw maps
 * Dump all
 * Dump texts to DOCX (separators, IACT/PUZ2 labels, ignore them, allow blocked text)
@@ -34,6 +34,9 @@ An original version: https://github.com/LeonisX/YExplorer
 * IACT: show phrases count
 
 * TODO tests!!!!!!!!!!!!!!!
+
+* Paste from clipboard (good idea)
+* Validate loaded BMP palette
 
 ### BMP
 

@@ -7,10 +7,14 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Region;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import md.leonis.ystt.MainApp;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
 
 public class JavaFxUtils {
 
@@ -101,6 +105,31 @@ public class JavaFxUtils {
     public static void showAlert(String title, Exception exception) {
         showAlert(title, exception.getClass().getName() + ": " + exception.getMessage(), Alert.AlertType.ERROR);
         exception.printStackTrace();
+    }
+
+    public static File showBMPLoadDialog(String title, String initialDir, String initialFile) {
+        return getFileChooser(title, getBMPExtensionFilters(), initialDir, initialFile).showOpenDialog(JavaFxUtils.getStage());
+    }
+
+    public static File showBMPSaveDialog(String title, String initialDir, String initialFile) {
+        return getFileChooser(title, getBMPExtensionFilters(), initialDir, initialFile).showSaveDialog(JavaFxUtils.getStage());
+    }
+
+    private static List<FileChooser.ExtensionFilter> getBMPExtensionFilters() {
+        return Collections.singletonList(new FileChooser.ExtensionFilter("BMP files (*.bmp)", "*.bmp"));
+    }
+
+    private static FileChooser getFileChooser(String title, List<FileChooser.ExtensionFilter> extensionFilters, String initialDir, String initialFile) {
+
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().addAll(extensionFilters);
+        if (initialDir != null) {
+            fileChooser.setInitialDirectory(new File(initialDir));
+        }
+        fileChooser.setInitialFileName(initialFile);
+        fileChooser.setTitle(title);
+
+        return fileChooser;
     }
 
     public static Stage getStage() {
