@@ -10,12 +10,14 @@ import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
 import javafx.stage.WindowEvent;
 import md.leonis.ystt.model.KnownSections;
@@ -91,12 +93,14 @@ public class MainPaneController {
     public FlowPane tilesFlowPane;
     public TextField tilesInARowTextField;
     public ImageView clipboardImageView;
+    public Rectangle clipboardRectangle;
     public Button loadClipboardImage;
     public Button saveClipboardImage;
     public Button clearClipboardImage;
     public ContextMenu tilesContextMenu;
     public ToggleGroup tilesToggleGroup;
     private final Map<String, RadioMenuItem> tileFlagsMap = new HashMap<>();
+
     private Node currentTile;
 
     public Label mapsCountLabel;
@@ -287,6 +291,7 @@ public class MainPaneController {
         // Maps
         mapsCountLabel.setText(Integer.toString(section.mapsCount));
 
+        //TODO use list
         List<MapEntry> mapEntries = section.maps.values().stream()
                 .sorted(Comparator.comparing(MapEntry::getId)).collect(Collectors.toList());
 
@@ -585,6 +590,28 @@ public class MainPaneController {
     public void saveTilesToOneFileClick(ActionEvent actionEvent) {
     }
 
+    public void clipboardImageViewMouseEntered(MouseEvent mouseEvent) {
+        moveClipboardRectangle(mouseEvent.getX(), mouseEvent.getY());
+        clipboardRectangle.setVisible(true);
+    }
+
+    public void clipboardImageViewMouseMoved(MouseEvent mouseEvent) {
+        moveClipboardRectangle(mouseEvent.getX(), mouseEvent.getY());
+    }
+
+    private void moveClipboardRectangle(double mx, double my) {
+        double x = clipboardImageView.getLayoutX() + (((int) mx) & 0xFFFFFFE0);
+        double y = clipboardImageView.getLayoutY() + (((int) my) & 0xFFFFFFE0);
+        if (x != clipboardRectangle.getLayoutX() || y != clipboardRectangle.getLayoutY()) {
+            clipboardRectangle.setLayoutX(x);
+            clipboardRectangle.setLayoutY(y);
+        }
+    }
+
+    public void clipboardImageViewMouseExited() {
+        clipboardRectangle.setVisible(false);
+    }
+
     //TODO use workdir here, if no clipboardFile
     public void loadClipboardImageClick() {
         try {
@@ -593,7 +620,10 @@ public class MainPaneController {
             File file = JavaFxUtils.showBMPLoadDialog("Load Clipboard image", initialDir, initialFile);
             if (file != null) {
                 clipboardFile = file;
-                clipboardImageView.setImage(BMPDecoder.readWI(file));
+                Image image = BMPDecoder.readWI(file);
+                clipboardImageView.setImage(image);
+                clipboardImageView.setFitHeight(image.getHeight());
+                clipboardImageView.setFitWidth(image.getWidth());
             }
         } catch (Exception e) {
             JavaFxUtils.showAlert("Clipboard image loading error", e);
@@ -2131,4 +2161,5 @@ const arr: Array[1..100] of String = (
         section.SetPosition(index);
         return image;
     }
+
 }

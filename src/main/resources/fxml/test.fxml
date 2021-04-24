@@ -78,6 +78,6 @@
             </ContextMenu>
          </contextMenu>
       </Label>
-      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#345d83" height="200.0" layoutX="65.0" layoutY="160.0" stroke="BLACK" strokeType="INSIDE" width="200.0" />
+      <Rectangle fill="TRANSPARENT" height="32.0" layoutX="194.0" layoutY="80.0" smooth="false" stroke="BLACK" strokeType="OUTSIDE" width="32.0" />
    </children>
 </AnchorPane>

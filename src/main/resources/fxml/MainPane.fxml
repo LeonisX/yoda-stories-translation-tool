@@ -37,8 +37,7 @@
                                         <ToggleGroup fx:id="transparentColorToggleGroup"/>
                                     </toggleGroup>
                                     <graphic>
-                                        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#F4F4F4" height="16.0" stroke="BLACK"
-                                                   strokeType="INSIDE" width="16.0"/>
+                                        <Rectangle fill="#F4F4F4" height="16.0" stroke="BLACK" strokeType="INSIDE" width="16.0"/>
                                     </graphic>
                                 </RadioMenuItem>
                                 <RadioMenuItem fx:id="fuchsiaMenuItem" mnemonicParsing="false"
@@ -46,24 +45,21 @@
                                                toggleGroup="$transparentColorToggleGroup">
 
                                     <graphic>
-                                        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="MAGENTA" height="16.0"
-                                                   stroke="BLACK" strokeType="INSIDE" width="16.0"/>
+                                        <Rectangle fill="MAGENTA" height="16.0" stroke="BLACK" strokeType="INSIDE" width="16.0"/>
                                     </graphic>
                                 </RadioMenuItem>
                                 <RadioMenuItem fx:id="blackMenuItem" mnemonicParsing="false"
                                                onAction="#transparentColorMenuItemClick" text="Black"
                                                toggleGroup="$transparentColorToggleGroup">
                                     <graphic>
-                                        <Rectangle arcHeight="5.0" arcWidth="5.0"  fill="BLACK" height="16.0" stroke="BLACK"
-                                                   strokeType="INSIDE" width="16.0"/>
+                                        <Rectangle fill="BLACK" height="16.0" stroke="BLACK" strokeType="INSIDE" width="16.0"/>
                                     </graphic>
                                 </RadioMenuItem>
                                 <RadioMenuItem fx:id="whiteMenuItem" mnemonicParsing="false"
                                                onAction="#transparentColorMenuItemClick" text="White"
                                                toggleGroup="$transparentColorToggleGroup">
                                     <graphic>
-                                        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="16.0"
-                                                   stroke="BLACK" strokeType="INSIDE" width="16.0"/>
+                                        <Rectangle fill="WHITE" height="16.0" stroke="BLACK" strokeType="INSIDE" width="16.0"/>
                                     </graphic>
                                 </RadioMenuItem>
                             </Menu>
@@ -233,15 +229,20 @@
                                 <Label layoutX="12.0" layoutY="195.0" text="Tiles in a row:"/>
                                 <TextField fx:id="tilesInARowTextField" layoutX="96.0" layoutY="191.0" prefHeight="25.0"
                                            prefWidth="39.0" text="16"/>
-                                <ImageView fx:id="clipboardImageView" fitHeight="288.0" fitWidth="288.0" layoutX="713.0"
-                                           layoutY="14.0" pickOnBounds="true" preserveRatio="true"/>
-                                <Label layoutX="824.0" layoutY="312.0" text="Clipboard image"/>
-                                <Button fx:id="loadClipboardImage" layoutX="764.0" layoutY="337.0" minWidth="64.0"
+                                <ImageView fx:id="clipboardImageView" fitHeight="288.0" fitWidth="288.0" layoutX="720.0"
+                                           layoutY="14.0" pickOnBounds="true" preserveRatio="true"
+                                           onMouseEntered="#clipboardImageViewMouseEntered"
+                                           onMouseExited="#clipboardImageViewMouseExited"
+                                           onMouseMoved="#clipboardImageViewMouseMoved"/>
+                                <Label layoutX="824.0" layoutY="342.0" text="Clipboard image"/>
+                                <Button fx:id="loadClipboardImage" layoutX="764.0" layoutY="367.0" minWidth="64.0"
                                         mnemonicParsing="false" onAction="#loadClipboardImageClick" text="Load"/>
-                                <Button fx:id="saveClipboardImage" layoutX="836.0" layoutY="337.0" minWidth="64.0"
+                                <Button fx:id="saveClipboardImage" layoutX="836.0" layoutY="367.0" minWidth="64.0"
                                         mnemonicParsing="false" onAction="#saveClipboardImageClick" text="Save"/>
-                                <Button fx:id="clearClipboardImage" layoutX="908.0" layoutY="337.0" minWidth="64.0"
+                                <Button fx:id="clearClipboardImage" layoutX="908.0" layoutY="367.0" minWidth="64.0"
                                         mnemonicParsing="false" onAction="#clearClipboardImageClick" text="Clear"/>
+                                <Rectangle fx:id="clipboardRectangle" fill="TRANSPARENT" height="32.0" layoutX="194.0"
+                                           layoutY="80.0" smooth="false" stroke="BLACK" strokeType="OUTSIDE" width="32.0" visible="false" mouseTransparent="true"/>
                                 <Label visible="false">
                                     <contextMenu>
                                         <ContextMenu fx:id="tilesContextMenu">
@@ -338,7 +339,7 @@
                                                           mnemonicParsing="false" text="Save unused tiles??"/>
                                                 <ListView layoutX="171.0" layoutY="15.0" prefHeight="366.0"
                                                           prefWidth="93.0"/>
-                                                <ImageView fitHeight="576.0" fitWidth="576.0" layoutX="271.0"
+                                                <ImageView fx:id="mapImageView" fitHeight="576.0" fitWidth="576.0" layoutX="271.0"
                                                            layoutY="15.0" pickOnBounds="true" preserveRatio="true"/>
                                             </AnchorPane>
                                         </Tab>

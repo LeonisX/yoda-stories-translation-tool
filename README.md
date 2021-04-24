@@ -11,6 +11,11 @@ An original version: https://github.com/LeonisX/YExplorer
 ## TODO
 
 * Show rectangle
+
+
+* Refactor MapEntry (separate objects, Movable)
+* Ordered list of sections
+
 * Draw maps
 * Dump all
 * Dump texts to DOCX (separators, IACT/PUZ2 labels, ignore them, allow blocked text)
@@ -35,6 +40,7 @@ An original version: https://github.com/LeonisX/YExplorer
 
 * TODO tests!!!!!!!!!!!!!!!
 
+* Remove all text from DTA, save puz2, iacts together, verify if all phrases was found
 * Paste from clipboard (good idea)
 * Validate loaded BMP palette
 
