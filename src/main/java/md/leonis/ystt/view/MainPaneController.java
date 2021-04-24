@@ -21,7 +21,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
 import javafx.stage.WindowEvent;
 import md.leonis.ystt.model.KnownSections;
-import md.leonis.ystt.model.MapEntry;
+import md.leonis.ystt.model.Zone;
 import md.leonis.ystt.model.SectionMetrics;
 import md.leonis.ystt.utils.*;
 import net.sf.image4j.codec.bmp.BMPDecoder;
@@ -111,7 +111,7 @@ public class MainPaneController {
     public CheckBox dumpActionsCheckBox;
     public CheckBox dumpTextCheckBox;
     public CheckBox saveUnusedTilesCheckBox;
-    public TableView<MapEntry> mapsTableView;
+    public TableView<Zone> mapsTableView;
 
     public ImageView mapEditorImageView;
     public GridPane mapEditorGridPane;
@@ -290,12 +290,7 @@ public class MainPaneController {
 
         // Maps
         mapsCountLabel.setText(Integer.toString(section.mapsCount));
-
-        //TODO use list
-        List<MapEntry> mapEntries = section.maps.values().stream()
-                .sorted(Comparator.comparing(MapEntry::getId)).collect(Collectors.toList());
-
-        mapsTableView.setItems(FXCollections.observableList(mapEntries));
+        mapsTableView.setItems(FXCollections.observableList(section.maps));
 
         // Puzzles
         puzzlesCountLabel.setText(Integer.toString(section.puzzlesCount));

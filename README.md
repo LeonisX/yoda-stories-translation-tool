@@ -10,8 +10,6 @@ An original version: https://github.com/LeonisX/YExplorer
 
 ## TODO
 
-* Ordered list of sections
-
 * Draw maps
 * Dump all
 * Dump texts to DOCX (separators, IACT/PUZ2 labels, ignore them, allow blocked text)

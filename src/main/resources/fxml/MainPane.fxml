@@ -362,7 +362,7 @@
                                                                 </TableColumn>
                                                                 <TableColumn prefWidth="79.0" text="Offset">
                                                                     <cellValueFactory>
-                                                                        <PropertyValueFactory property="mapOffset"/>
+                                                                        <PropertyValueFactory property="position"/>
                                                                     </cellValueFactory>
                                                                     <cellFactory>
                                                                         <FormattedHexTableCellFactory alignment="right">
@@ -371,7 +371,7 @@
                                                                 </TableColumn>
                                                                 <TableColumn prefWidth="45.0" text="Size">
                                                                     <cellValueFactory>
-                                                                        <PropertyValueFactory property="mapSize"/>
+                                                                        <PropertyValueFactory property="size"/>
                                                                     </cellValueFactory>
                                                                     <cellFactory>
                                                                         <FormattedTableCellFactory alignment="right">
@@ -384,7 +384,7 @@
                                                             <columns>
                                                                 <TableColumn prefWidth="79.0" text="Offset">
                                                                     <cellValueFactory>
-                                                                        <PropertyValueFactory property="izonOffset"/>
+                                                                        <PropertyValueFactory property="izonPosition"/>
                                                                     </cellValueFactory>
                                                                     <cellFactory>
                                                                         <FormattedHexTableCellFactory alignment="right">
@@ -406,7 +406,7 @@
                                                             <columns>
                                                                 <TableColumn prefWidth="79.0" text="Offset">
                                                                     <cellValueFactory>
-                                                                        <PropertyValueFactory property="oieOffset"/>
+                                                                        <PropertyValueFactory property="oiePosition"/>
                                                                     </cellValueFactory>
                                                                     <cellFactory>
                                                                         <FormattedHexTableCellFactory alignment="right">
@@ -437,7 +437,7 @@
                                                             <columns>
                                                                 <TableColumn prefWidth="79.0" text="Offset">
                                                                     <cellValueFactory>
-                                                                        <PropertyValueFactory property="izaxOffset"/>
+                                                                        <PropertyValueFactory property="izaxPosition"/>
                                                                     </cellValueFactory>
                                                                     <cellFactory>
                                                                         <FormattedHexTableCellFactory alignment="right">
@@ -459,7 +459,7 @@
                                                             <columns>
                                                                 <TableColumn prefWidth="79.0" text="Offset">
                                                                     <cellValueFactory>
-                                                                        <PropertyValueFactory property="izx2Offset"/>
+                                                                        <PropertyValueFactory property="izx2Position"/>
                                                                     </cellValueFactory>
                                                                     <cellFactory>
                                                                         <FormattedHexTableCellFactory alignment="right">
@@ -481,7 +481,7 @@
                                                             <columns>
                                                                 <TableColumn prefWidth="79.0" text="Offset">
                                                                     <cellValueFactory>
-                                                                        <PropertyValueFactory property="izx3Offset"/>
+                                                                        <PropertyValueFactory property="izx3Position"/>
                                                                     </cellValueFactory>
                                                                     <cellFactory>
                                                                         <FormattedHexTableCellFactory alignment="right">
@@ -503,7 +503,7 @@
                                                             <columns>
                                                                 <TableColumn prefWidth="79.0" text="Offset">
                                                                     <cellValueFactory>
-                                                                        <PropertyValueFactory property="izx4Offset"/>
+                                                                        <PropertyValueFactory property="izx4Position"/>
                                                                     </cellValueFactory>
                                                                     <cellFactory>
                                                                         <FormattedHexTableCellFactory alignment="right">
@@ -525,7 +525,7 @@
                                                             <columns>
                                                                 <TableColumn prefWidth="79.0" text="Offset">
                                                                     <cellValueFactory>
-                                                                        <PropertyValueFactory property="iactOffset"/>
+                                                                        <PropertyValueFactory property="iactPosition"/>
                                                                     </cellValueFactory>
                                                                     <cellFactory>
                                                                         <FormattedHexTableCellFactory alignment="right">

@@ -39,7 +39,9 @@ public class Section {
     public Dump dump;
     public Dump exeDump;
     public boolean[] tiles;
-    public Map<Integer, MapEntry> maps = new HashMap<>();
+    //TODO zonesList
+    public List<Zone> maps = new ArrayList<>();
+    //public Map<Integer, Zone> maps = new HashMap<>();
     public String exeCrc32;
     public String dtaCrc32;
     public String dtaRevision;
@@ -47,6 +49,7 @@ public class Section {
     public byte soundsCount;
     public List<String> sounds = new ArrayList<>();
     public int tilesCount;
+    //TODO zonesCount, or delete, we have list and size
     public int mapsCount;
     public int puzzlesCount;
     public int charsCount;
@@ -74,7 +77,8 @@ public class Section {
     public void clear() {
 
         sections = new HashMap<>();
-        maps = new HashMap<>();
+        maps = new ArrayList<>();
+        //maps = new HashMap<>();
         tiles = new boolean[0];
         version = "";
         soundsCount = 0;
@@ -84,10 +88,6 @@ public class Section {
         puzzlesCount = 0;
         charsCount = 0;
         namesCount = 0;
-    }
-
-    public void AddMap(int id) {
-        maps.put(id, new MapEntry(id));
     }
 
     public void Add(KnownSections section, int dataSize, int fullSize, int dataOffset, int startOffset) {
@@ -203,7 +203,7 @@ public class Section {
         Log.newLine();
         Log.debug(String.format("%3s   %-13s %-13s  %-16s  %-13s  %-13s  %-13s  %-13s  %-13s", "#", "MAP", "IZON", "OIE", "IZAX", "ISX2", "IZX3", "IZX4", "IACT"));
 
-        maps.forEach((key, value) -> Log.debug(String.format("%3d   %-13s %-13s  %-16s  %-13s  %-13s  %-13s  %-13s  %-13s", key,
+        maps.forEach(value -> Log.debug(String.format("%3d   %-13s %-13s  %-16s  %-13s  %-13s  %-13s  %-13s  %-13s", value.getId(),
                 intToHex(value.getPosition(), 6) + ':' + intToHex(value.getSize(), 4),
                 intToHex(value.getIzon().getPosition(), 6) + ':' + intToHex(value.getIzon().getSize(), 4),
                 intToHex(value.getOie().getPosition(), 6) + ':' + intToHex(value.getOie().getSize(), 4) + ':' + intToHex(value.getOie().getCount(), 2),
@@ -327,7 +327,7 @@ public class Section {
     public void ScanIZON(int id) {
 
         // Repeated data of TZone
-        AddMap(id);
+        addZone(id);
         int uw = ReadWord();               // unknown:word; //01 00 // map type (desert, ...)
         if (uw > 0x0005) {
             showMessage("ID: " + id + " UNK: " + intToHex(uw, 4) + " > " + 0x0005);
@@ -371,6 +371,11 @@ public class Section {
         ScanIZX3(id);
         ScanIZX4(id);
         ScanIACT(id);
+    }
+
+    public void addZone(int id) {
+        maps.add(new Zone(id));
+        //maps.put(id, new Zone(id));
     }
 
     public void ScanIZAX(int id) {

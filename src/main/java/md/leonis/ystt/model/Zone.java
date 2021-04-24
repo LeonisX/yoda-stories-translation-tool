@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 //TODO may be keep IACT, PUZ2 text count
-public class MapEntry implements Movable {
+public class Zone implements Movable {
 
     private int id;
 
@@ -25,7 +25,7 @@ public class MapEntry implements Movable {
 
     private List<Izon> iacts = new ArrayList<>();
 
-    public MapEntry(int id) {
+    public Zone(int id) {
         this.id = id;
     }
 
@@ -125,5 +125,58 @@ public class MapEntry implements Movable {
 
     public void setIactSize(int iactSize) {
         this.iactSize = iactSize;
+    }
+
+    // For table
+    public int getIzonPosition() {
+        return izon.getPosition();
+    }
+
+    public int getIzaxPosition() {
+        return izax.getPosition();
+    }
+
+    public int getIzx2Position() {
+        return izx2.getPosition();
+    }
+
+    public int getIzx3Position() {
+        return izx3.getPosition();
+    }
+
+    public int getIzx4Position() {
+        return izx4.getPosition();
+    }
+
+    public int getIzonSize() {
+        return izon.getSize();
+    }
+
+    public int getIzaxSize() {
+        return izax.getSize();
+    }
+
+    public int getIzx2Size() {
+        return izx2.getSize();
+    }
+
+    public int getIzx3Size() {
+        return izx3.getSize();
+    }
+
+    public int getIzx4Size() {
+        return izx4.getSize();
+    }
+
+    public int getOiePosition() {
+        return oie.getPosition();
+    }
+
+    public int getOieSize() {
+        return oie.getSize();
+    }
+
+    public int getOieCount() {
+        return oie.getCount();
     }
 }
