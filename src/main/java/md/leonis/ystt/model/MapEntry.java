@@ -4,29 +4,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 //TODO may be keep IACT, PUZ2 text count
-public class MapEntry {
+public class MapEntry implements Movable {
 
     private int id;
-    private int mapOffset;
-    private int izonOffset;
-    private int izaxOffset;
-    private int izx2Offset;
-    private int izx3Offset;
-    private int izx4Offset;
-    private int iactOffset;
 
-    private int mapSize;
-    private int izonSize;
-    private int izaxSize;
-    private int izx2Size;
-    private int izx3Size;
-    private int izx4Size;
+    private int offset;
+    private int size;
+
+    private Oie oie;
+    private Izon izon;
+    private Izon izax;
+    private Izon izx2;
+    private Izon izx3;
+    private Izon izx4;
+
+    //TODO may be remove after unification (will be position of first iact)
+    private int iactPosition;
+    //TODO may be remove - need to test that this size is sum of all iacts sizes;
     private int iactSize;
-    private int oieOffset;
-    private int oieSize;
-    private int oieCount;
 
-    private List<Integer> IACTS = new ArrayList<>();
+    private List<Izon> iacts = new ArrayList<>();
 
     public MapEntry(int id) {
         this.id = id;
@@ -40,108 +37,86 @@ public class MapEntry {
         this.id = id;
     }
 
-    public int getMapOffset() {
-        return mapOffset;
+    @Override
+    public int getPosition() {
+        return offset;
     }
 
-    public void setMapOffset(int mapOffset) {
-        this.mapOffset = mapOffset;
+    @Override
+    public void setPosition(int position) {
+        this.offset = position;
     }
 
-    public int getIzonOffset() {
-        return izonOffset;
+    public int getSize() {
+        return size;
     }
 
-    public void setIzonOffset(int izonOffset) {
-        this.izonOffset = izonOffset;
+    public void setSize(int size) {
+        this.size = size;
     }
 
-    public int getIzaxOffset() {
-        return izaxOffset;
+    public Oie getOie() {
+        return oie;
     }
 
-    public void setIzaxOffset(int izaxOffset) {
-        this.izaxOffset = izaxOffset;
+    public void setOie(Oie oie) {
+        this.oie = oie;
     }
 
-    public int getIzx2Offset() {
-        return izx2Offset;
+    public Izon getIzon() {
+        return izon;
     }
 
-    public void setIzx2Offset(int izx2Offset) {
-        this.izx2Offset = izx2Offset;
+    public void setIzon(Izon izon) {
+        this.izon = izon;
     }
 
-    public int getIzx3Offset() {
-        return izx3Offset;
+    public Izon getIzax() {
+        return izax;
     }
 
-    public void setIzx3Offset(int izx3Offset) {
-        this.izx3Offset = izx3Offset;
+    public void setIzax(Izon izax) {
+        this.izax = izax;
     }
 
-    public int getIzx4Offset() {
-        return izx4Offset;
+    public Izon getIzx2() {
+        return izx2;
     }
 
-    public void setIzx4Offset(int izx4Offset) {
-        this.izx4Offset = izx4Offset;
+    public void setIzx2(Izon izx2) {
+        this.izx2 = izx2;
     }
 
-    public int getIactOffset() {
-        return iactOffset;
+    public Izon getIzx3() {
+        return izx3;
     }
 
-    public void setIactOffset(int iactOffset) {
-        this.iactOffset = iactOffset;
+    public void setIzx3(Izon izx3) {
+        this.izx3 = izx3;
     }
 
-    public int getMapSize() {
-        return mapSize;
+    public Izon getIzx4() {
+        return izx4;
     }
 
-    public void setMapSize(int mapSize) {
-        this.mapSize = mapSize;
+    public void setIzx4(Izon izx4) {
+        this.izx4 = izx4;
     }
 
-    public int getIzonSize() {
-        return izonSize;
+    public List<Izon> getIacts() {
+        return iacts;
     }
 
-    public void setIzonSize(int izonSize) {
-        this.izonSize = izonSize;
+    public void setIacts(List<Izon> iacts) {
+        this.iacts = iacts;
     }
 
-    public int getIzaxSize() {
-        return izaxSize;
+    public int getIactPosition() {
+        return iactPosition;
     }
 
-    public void setIzaxSize(int izaxSize) {
-        this.izaxSize = izaxSize;
-    }
-
-    public int getIzx2Size() {
-        return izx2Size;
-    }
-
-    public void setIzx2Size(int izx2Size) {
-        this.izx2Size = izx2Size;
-    }
-
-    public int getIzx3Size() {
-        return izx3Size;
-    }
-
-    public void setIzx3Size(int izx3Size) {
-        this.izx3Size = izx3Size;
-    }
-
-    public int getIzx4Size() {
-        return izx4Size;
-    }
-
-    public void setIzx4Size(int izx4Size) {
-        this.izx4Size = izx4Size;
+    public void setIactPosition(int iactPosition) {
+        this.iactPosition = iactPosition;
     }
 
     public int getIactSize() {
@@ -150,37 +125,5 @@ public class MapEntry {
 
     public void setIactSize(int iactSize) {
         this.iactSize = iactSize;
-    }
-
-    public int getOieOffset() {
-        return oieOffset;
-    }
-
-    public void setOieOffset(int oieOffset) {
-        this.oieOffset = oieOffset;
-    }
-
-    public int getOieSize() {
-        return oieSize;
-    }
-
-    public void setOieSize(int oieSize) {
-        this.oieSize = oieSize;
-    }
-
-    public int getOieCount() {
-        return oieCount;
-    }
-
-    public void setOieCount(int oieCount) {
-        this.oieCount = oieCount;
-    }
-
-    public List<Integer> getIACTS() {
-        return IACTS;
-    }
-
-    public void setIACTS(List<Integer> IACTS) {
-        this.IACTS = IACTS;
     }
 }

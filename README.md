@@ -10,10 +10,6 @@ An original version: https://github.com/LeonisX/YExplorer
 
 ## TODO
 
-* Show rectangle
-
-
-* Refactor MapEntry (separate objects, Movable)
 * Ordered list of sections
 
 * Draw maps
@@ -43,6 +39,8 @@ An original version: https://github.com/LeonisX/YExplorer
 * Remove all text from DTA, save puz2, iacts together, verify if all phrases was found
 * Paste from clipboard (good idea)
 * Validate loaded BMP palette
+* In Map we save offset before title (ex. IZX3). But IACT - we save offset after title. Need to unify all. 
+
 
 ### BMP
 

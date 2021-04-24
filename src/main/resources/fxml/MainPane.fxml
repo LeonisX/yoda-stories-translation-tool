@@ -256,7 +256,7 @@
                                                     </RadioMenuItem>
                                                     <RadioMenuItem toggleGroup="$tilesToggleGroup" userData="4" text="Middle layer" />
                                                     <RadioMenuItem toggleGroup="$tilesToggleGroup" userData="5" text="Middle layer (transparent)" />
-                                                    <RadioMenuItem toggleGroup="$tilesToggleGroup" userData="13" text="Movable items" />
+                                                    <RadioMenuItem toggleGroup="$tilesToggleGroup" userData="13" text="Movable item" />
                                                     <RadioMenuItem toggleGroup="$tilesToggleGroup" userData="16" text="Top layer" />
                                                     <RadioMenuItem toggleGroup="$tilesToggleGroup" userData="17" text="Top layer (transparent)" />
 

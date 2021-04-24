@@ -204,14 +204,14 @@ public class Section {
         Log.debug(String.format("%3s   %-13s %-13s  %-16s  %-13s  %-13s  %-13s  %-13s  %-13s", "#", "MAP", "IZON", "OIE", "IZAX", "ISX2", "IZX3", "IZX4", "IACT"));
 
         maps.forEach((key, value) -> Log.debug(String.format("%3d   %-13s %-13s  %-16s  %-13s  %-13s  %-13s  %-13s  %-13s", key,
-                intToHex(value.getMapOffset(), 6) + ':' + intToHex(value.getMapSize(), 4),
-                intToHex(value.getIzonOffset(), 6) + ':' + intToHex(value.getIzonSize(), 4),
-                intToHex(value.getOieOffset(), 6) + ':' + intToHex(value.getOieSize(), 4) + ':' + intToHex(value.getOieCount(), 2),
-                intToHex(value.getIzaxOffset(), 6) + ':' + intToHex(value.getIzaxSize(), 4),
-                intToHex(value.getIzx2Offset(), 6) + ':' + intToHex(value.getIzx2Size(), 4),
-                intToHex(value.getIzx3Offset(), 6) + ':' + intToHex(value.getIzx3Size(), 4),
-                intToHex(value.getIzx4Offset(), 6) + ':' + intToHex(value.getIzx4Size(), 4),
-                intToHex(value.getIactOffset(), 6) + ':' + intToHex(value.getIactSize(), 4)
+                intToHex(value.getPosition(), 6) + ':' + intToHex(value.getSize(), 4),
+                intToHex(value.getIzon().getPosition(), 6) + ':' + intToHex(value.getIzon().getSize(), 4),
+                intToHex(value.getOie().getPosition(), 6) + ':' + intToHex(value.getOie().getSize(), 4) + ':' + intToHex(value.getOie().getCount(), 2),
+                intToHex(value.getIzax().getPosition(), 6) + ':' + intToHex(value.getIzax().getSize(), 4),
+                intToHex(value.getIzx2().getPosition(), 6) + ':' + intToHex(value.getIzx2().getSize(), 4),
+                intToHex(value.getIzx3().getPosition(), 6) + ':' + intToHex(value.getIzx3().getSize(), 4),
+                intToHex(value.getIzx4().getPosition(), 6) + ':' + intToHex(value.getIzx4().getSize(), 4),
+                intToHex(value.getIactPosition(), 6) + ':' + intToHex(value.getIactSize(), 4)
         )));
     }
 
@@ -333,16 +333,15 @@ public class Section {
             showMessage("ID: " + id + " UNK: " + intToHex(uw, 4) + " > " + 0x0005);
         }
         int sz = (int) ReadLongWord();           // size:longword; size of the current map
-        maps.get(id).setMapOffset(GetPosition());
-        maps.get(id).setMapSize(sz + 6);
+        maps.get(id).setPosition(GetPosition());
+        maps.get(id).setSize(sz + 6);
         int pn = ReadWord();               // number:word; //2 bytes - serial number of the map starting with 0
         if (pn != id) {
             showMessage("ID: " + pn + " <> " + id);
         }
         ReadString(4);                // izon:string[4]; //4 bytes: "IZON"
         int size = (int) ReadLongWord();         // longword; //4 bytes - size of block IZON (include 'IZON') until object info entry count
-        maps.get(id).setIzonOffset(GetPosition());
-        maps.get(id).setIzonSize(size - 6);
+        maps.get(id).setIzon(new Izon(GetPosition(), size - 6));
 
         //TODO
         //Application.ProcessMessages;
@@ -362,9 +361,7 @@ public class Section {
         MovePosition(w * h * 6);
 
         int oieCount = ReadWord();         //2 bytes: object info entry count (X)
-        maps.get(id).setOieOffset(GetPosition());
-        maps.get(id).setOieCount(oieCount);
-        maps.get(id).setOieSize(oieCount * 12);
+        maps.get(id).setOie(new Oie(GetPosition(), oieCount * 12, oieCount));
         MovePosition(oieCount * 12);     //X*12 bytes: object info data
 
         Log.debug("Object info entries count: " + oieCount);
@@ -380,8 +377,7 @@ public class Section {
 
         ReadString(4);                //4 bytes: "IZAX"
         int size = (int) ReadLongWord();         //4 bytes: length (X)
-        maps.get(id).setIzaxOffset(GetPosition());
-        maps.get(id).setIzaxSize(size - 8);
+        maps.get(id).setIzax(new Izon(GetPosition(), size - 8));
         MovePosition(size - 8);          //X-8 bytes: IZAX data
     }
 
@@ -389,8 +385,7 @@ public class Section {
 
         ReadString(4);                //4 bytes: "IZX2"
         int size = (int) ReadLongWord();         //4 bytes: length (X)
-        maps.get(id).setIzx2Offset(GetPosition());
-        maps.get(id).setIzx2Size(size - 8);
+        maps.get(id).setIzx2(new Izon(GetPosition(), size - 8));
         MovePosition(size - 8);          //X-8 bytes: IZX2 data
     }
 
@@ -398,32 +393,29 @@ public class Section {
 
         ReadString(4);                //4 bytes: "IZX3"
         int size = (int) ReadLongWord();         //4 bytes: length (X)
-        maps.get(id).setIzx3Offset(GetPosition());
-        maps.get(id).setIzx3Size(size - 8);
+        maps.get(id).setIzx3(new Izon(GetPosition(), size - 8));
         MovePosition(size - 8);          //X-8 bytes: IZX3 data
     }
 
     public void ScanIZX4(int id) {
 
         ReadString(4);                //4 bytes: "IZX4"
-        maps.get(id).setIzx4Offset(GetPosition());
-        maps.get(id).setIzx4Size(8);
+        maps.get(id).setIzx4(new Izon(GetPosition(), 8));
         MovePosition(8);          //8 bytes: IZX4 data
     }
 
     public void ScanIACT(int id) {
 
         int idx = dump.getIndex();
-        maps.get(id).setIactOffset(GetPosition());
-
-        List<Integer> iacts = maps.get(id).getIACTS();
+        maps.get(id).setIactPosition(GetPosition());
 
         while (true) {
             //Log.debug(idx);
             String title = ReadString(4); //4 bytes: "IACT"
             if (title.equals("IACT")) {
-                iacts.add(GetPosition());
+                int position = GetPosition();
                 int size = (int) ReadLongWord();   //4 bytes: length (X)
+                maps.get(id).getIacts().add(new Izon(position, size));
                 Log.debug(title + ' ' + intToHex(size, 4));
                 MovePosition(size);
             } else {
@@ -487,13 +479,13 @@ public class Section {
     public int GetIZON(int offset) {
         Log.debug(maps.size());
         for (int i = 0; i < 5; i++) {
-            Log.debug("====izon #" + i + ": " + intToHex(maps.get(i).getIzonOffset(), 4));
+            Log.debug("====izon #" + i + ": " + intToHex(maps.get(i).getIzon().getPosition(), 4));
         }
 
         int result = 0;
         for (int i = 0; i < mapsCount; i++) {
-            Log.debug("-izon #" + i + ": " + intToHex(offset, 4) + '~' + intToHex(maps.get(i).getIzonOffset(), 4));
-            if (offset < maps.get(i).getIzonOffset()) {
+            Log.debug("-izon #" + i + ": " + intToHex(offset, 4) + '~' + intToHex(maps.get(i).getIzon().getPosition(), 4));
+            if (offset < maps.get(i).getIzon().getPosition()) {
                 break;
             }
             result = i;
@@ -507,9 +499,9 @@ public class Section {
         int izon = GetIZON(offset);
         Log.debug("GetIZON: " + izon);
         int result = 0;
-        for (int i = 0; i < maps.get(izon).getIACTS().size(); i++) {
-            Log.debug(i + ": " + intToHex(maps.get(izon).getIACTS().get(i), 4));
-            if (offset < maps.get(izon).getIACTS().get(i)) {
+        for (int i = 0; i < maps.get(izon).getIacts().size(); i++) {
+            Log.debug(i + ": " + intToHex(maps.get(izon).getIacts().get(i).getPosition(), 4));
+            if (offset < maps.get(izon).getIacts().get(i).getPosition()) {
                 break;
             }
             result = i;
