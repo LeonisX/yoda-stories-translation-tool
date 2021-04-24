@@ -10,7 +10,6 @@ An original version: https://github.com/LeonisX/YExplorer
 
 ## TODO
 
-* Draw maps
 * Dump all
 * Dump texts to DOCX (separators, IACT/PUZ2 labels, ignore them, allow blocked text)
 * Replace tiles, maps
@@ -38,7 +37,7 @@ An original version: https://github.com/LeonisX/YExplorer
 * Paste from clipboard (good idea)
 * Validate loaded BMP palette
 * In Map we save offset before title (ex. IZX3). But IACT - we save offset after title. Need to unify all. 
-
+* PUZ2 - если смотреть в дампах, то там перед текстом попадается левый текст, вроде: Bogus text; Unused text, right; Look elsewhere for this text. 
 
 ### BMP
 

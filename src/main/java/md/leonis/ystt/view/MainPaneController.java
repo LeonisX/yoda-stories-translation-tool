@@ -1,6 +1,8 @@
 package md.leonis.ystt.view;
 
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingFXUtils;
@@ -21,6 +23,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
 import javafx.stage.WindowEvent;
 import md.leonis.ystt.model.KnownSections;
+import md.leonis.ystt.model.Section;
 import md.leonis.ystt.model.Zone;
 import md.leonis.ystt.model.SectionMetrics;
 import md.leonis.ystt.utils.*;
@@ -32,16 +35,14 @@ import org.apache.commons.lang3.StringUtils;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static md.leonis.ystt.utils.Config.gamePalette;
 import static md.leonis.ystt.utils.Config.section;
-import static md.leonis.ystt.utils.ImageUtils.ReadWPicture;
+import static md.leonis.ystt.utils.ImageUtils.readWPicture;
 
 public class MainPaneController {
 
@@ -111,6 +112,8 @@ public class MainPaneController {
     public CheckBox dumpActionsCheckBox;
     public CheckBox dumpTextCheckBox;
     public CheckBox saveUnusedTilesCheckBox;
+    public ListView<String> mapsListView;
+    public Canvas mapCanvas;
     public TableView<Zone> mapsTableView;
 
     public ImageView mapEditorImageView;
@@ -156,7 +159,7 @@ public class MainPaneController {
     private List<String> texts;
 
     int pn;
-    String spath, opath;
+    Path spath, opath;
     int selectedCell, selectedTileX, selectedTileY;
     // TODO
     Color currentFillColor;
@@ -184,10 +187,10 @@ public class MainPaneController {
         ReadColumn(2, StringGrid4);
         Button18Click(Self);*/
 
+        spath = Paths.get(".");
+        opath = spath.resolve(OUTPUT);
+
         /*var k: Word;
-        begin
-        spath := ExtractFilePath(paramstr(0));
-        opath := spath + OUTPUT + '\';
 
         ZeroColorRGDo(false);
         OpenDTADialog.InitialDir := '.\';
@@ -290,6 +293,9 @@ public class MainPaneController {
 
         // Maps
         mapsCountLabel.setText(Integer.toString(section.mapsCount));
+        mapsListView.setItems(FXCollections.observableList(section.maps.stream().map(m -> "Map #" + m.getId()).collect(Collectors.toList())));
+        mapsListView.getSelectionModel().selectedItemProperty().addListener(mapsListViewChangeListener);
+        mapsListView.getSelectionModel().select(0);
         mapsTableView.setItems(FXCollections.observableList(section.maps));
 
         // Puzzles
@@ -303,7 +309,8 @@ public class MainPaneController {
     private void drawTitleImage() {
 
         try {
-            WritableImage image = ReadWPicture(section.GetDataOffset(KnownSections.STUP), 288, 288, Color.BLACK);
+            section.SetPosition(section.GetDataOffset(KnownSections.STUP));
+            WritableImage image = readWPicture(288, 288, Color.BLACK);
             titleScreenImageView.setImage(image);
         } catch (Exception e) {
             JavaFxUtils.showAlert("Title screen display error", e);
@@ -388,6 +395,170 @@ public class MainPaneController {
         if (flag = 2147483680) and (m.Tag = 2000000000) then m.Checked := true;
     end;
     end;*/
+    }
+
+    ChangeListener<String> mapsListViewChangeListener = new ChangeListener<String>() {
+
+        @Override
+        public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+            drawMap(mapsListView.getSelectionModel().getSelectedIndex());
+        }
+    };
+
+    private void drawMap(int id) {
+        try {
+            //ReadIZON(id, false);
+            ReadMap(id, normalSaveCheckBox.isSelected() || groupByFlagsCheckBox.isSelected() || groupByPlanetTypeCheckBox.isSelected(), false);
+        } catch (Exception e) {
+            JavaFxUtils.showAlert(String.format("Map %s display error", id), e);
+        }
+    }
+
+    private void ReadMap(int id, boolean show, boolean save) throws IOException {
+    /*var s: String;
+    k, w, h, i, j, flag, planet: Word;*/
+        section.SetPosition(section.maps.get(id).getPosition());   // go to map data
+        int pn = section.ReadWord();               // number:word; //2 bytes - serial number of the map starting with 0
+        if (pn != id) {
+            JavaFxUtils.showAlert("Wrong Zone ID", String.format("%s <> %s", pn, id), Alert.AlertType.WARNING);
+        }
+        section.ReadString(4);                // izon:string[4]; //4 bytes: "IZON"
+        section.ReadLongWord();                 // longword; //4 bytes - size of block IZON (include 'IZON') until object info entry count
+
+        //TODO Application.ProcessMessages;
+
+        int w = section.ReadWord();                // width:word; //2 bytes: map width (W)
+        int h = section.ReadWord();                // height:word; //2 bytes: map height (H)
+        int flag = section.ReadWord();             // flags:word; //2 byte: map flags (unknown meanings)* добавил байт снизу
+        section.ReadLongWord();                 // unused:longword; //5 bytes: unused (same values for every map)
+        int planet = section.ReadWord();           // planet:word; //1 byte: planet (0x01 = desert, 0x02 = snow, 0x03 = forest, 0x05 = swamp)* добавил следующий байт
+        Section.Log.debug("Map #" + pn + " offset: " + section.intToHex(section.GetPosition(), 8));
+        statusLabel.setText("Map: " + pn + " (" + Section.PLANETS[planet] + ")");
+
+        if (show) {
+            mapCanvas.setWidth(w * 32);
+            mapCanvas.setHeight(h * 32);
+
+            mapCanvas.getGraphicsContext2D().setFill(Color.rgb(1, 1, 1));
+            mapCanvas.getGraphicsContext2D().fillRect(0, 0, mapCanvas.getWidth(), mapCanvas.getHeight());
+
+            for (int y = 0; y < h; y++) {
+                for (int x = 0; x < h; x++) {
+                    //W*H*6 bytes: map data
+                    drawTileOnMap(x, y);
+                    drawTileOnMap(x, y);
+                    drawTileOnMap(x, y);
+                }
+            }
+        }
+        // TODO Application.ProcessMessages;
+
+        //TODO complete
+        if (normalSaveCheckBox.isSelected() && save) {
+            Path path = opath.resolve("Maps");
+            IOUtils.createDirectories(path);
+            BMPEncoder.write8bit(mapCanvas, path.resolve(StringUtils.leftPad(Integer.toString(id), 3, '0')));
+        }
+
+        if (groupByFlagsCheckBox.isSelected() && save) {
+            Path path = opath.resolve("MapsByFlags").resolve(IntToBin(flag));
+            IOUtils.createDirectories(path);
+            BMPEncoder.write8bit(mapCanvas, path.resolve(StringUtils.leftPad(Integer.toString(id), 3, '0')));
+        }
+
+        if (groupByPlanetTypeCheckBox.isSelected() && save) {
+            Path path = opath.resolve("MapsByPlanetType").resolve(Section.PLANETS[planet]);
+            IOUtils.createDirectories(path);
+            BMPEncoder.write8bit(mapCanvas, path.resolve(StringUtils.leftPad(Integer.toString(id), 3, '0')));
+        }
+    }
+
+    private void drawTileOnMap(int x, int y) {
+
+        int k = section.ReadWord();
+        if (k != 0xFFFF) {
+            section.tiles[k] = true;
+            GetWTile(k, mapCanvas, x * 32, y * 32);
+        }
+    }
+
+    private void ReadIZON(int id, boolean save) throws IOException {
+
+        ReadMap(id, normalSaveCheckBox.isSelected() || groupByFlagsCheckBox.isSelected() || groupByPlanetTypeCheckBox.isSelected(), save);
+
+        //TODO
+        //MapProgressBar.Position :=id;
+        //MapProgressLabel.Caption :=Format('%.2f %%',[((id + 1) / section.mapsCount) * 100]);
+        //TODO Application.ProcessMessages;
+
+        //TODO not need, commented in Delphi
+        //k:=DTA.ReadWord;                             //2 bytes: object info entry count (X)
+        //DTA.MoveIndex(k * 12);                       //X*12 bytes: object info data
+
+        if (dumpActionsCheckBox.isSelected() || dumpTextCheckBox.isSelected()) {
+            ReadIZAX(id);
+            ReadIZX2(id);
+            ReadIZX3(id);
+            ReadIZX4(id);
+            ReadIACT(id);
+            ReadOIE(id);
+        }
+    }
+
+    private void ReadIZAX(int id) throws IOException {
+        Path path = opath.resolve("IZAX").resolve(Integer.toString(id));
+        DumpData(path, section.maps.get(id).getIzax().getPosition(), section.maps.get(id).getIzax().getSize());
+    }
+
+    private void ReadIZX2(int id) throws IOException {
+        Path path = opath.resolve("IZX2").resolve(Integer.toString(id));
+        DumpData(path, section.maps.get(id).getIzx2().getPosition(), section.maps.get(id).getIzx2().getSize());
+    }
+
+    private void ReadIZX3(int id) throws IOException {
+        Path path = opath.resolve("IZX3").resolve(Integer.toString(id));
+        DumpData(path, section.maps.get(id).getIzx3().getPosition(), section.maps.get(id).getIzx3().getSize());
+    }
+
+    private void ReadIZX4(int id) throws IOException {
+        Path path = opath.resolve("IZX4").resolve(Integer.toString(id));
+        DumpData(path, section.maps.get(id).getIzx4().getPosition(), section.maps.get(id).getIzx4().getSize());
+    }
+
+    private void ReadIACT(int id) throws IOException {
+        byte k = 0;
+        section.SetPosition(section.maps.get(id).getIactPosition());
+
+        while (section.ReadString(4).equals("IACT")) {
+//    HEX.SetSelStart(DTA.GetIndex);
+//    HEX.SetSelEnd(DTA.GetIndex + 3);
+//    HEX.CenterCursorPosition;
+//    Application.ProcessMessages;
+            int size = (int) section.ReadLongWord();  //4 bytes: length (X)
+            if (dumpTextCheckBox.isSelected()) {
+                //TODO
+                //DumpText(section.GetPosition(), size);
+            }
+            if (dumpActionsCheckBox.isSelected()) {
+                String fileName = StringUtils.leftPad("000" + id, 3, "0") + '-' + StringUtils.leftPad("000" + k, 3, "0");
+                Path path = opath.resolve("IACT").resolve(fileName);
+                DumpData(path, section.GetPosition(), size);
+            } else {
+                section.MovePosition(size);
+            }
+            k++;
+        }
+
+    }
+
+    private void ReadOIE(int id) throws IOException {
+        Path path = opath.resolve("OIE").resolve(Integer.toString(id));
+        DumpData(path, section.maps.get(id).getOie().getPosition(), section.maps.get(id).getOie().getSize());
+    }
+
+    private void DumpData(Path path, int offset, int size) throws IOException {
+        byte[] array = Arrays.copyOfRange(section.dump.getDump(), offset, offset + size);
+        IOUtils.saveBytes(path, array);
     }
 
 
@@ -536,49 +707,58 @@ public class MainPaneController {
         }
     }
 
-    public void saveTilesToSeparateFilesClick(ActionEvent actionEvent) {
-        /*var tilesPath, hexPath, attrPath, attrFullPath, title: String;
-        attr, i: Cardinal;
-        begin
-        TilesProgressBar.Position := 0;
-        TilesProgressBar.Max := DTA.tilesCount;
-        tilesPath := opath +'Tiles';
-        hexPath := opath +'TilesHex';
-        attrPath := opath +'TilesByAttr';
-        Log.Clear;
-        CreateDir(opath);
-        if DecimalCheckBox.Checked then CreateDir(tilesPath);
-        if HexCheckBox.Checked then CreateDir(hexPath);
-        if AttrCheckBox.Checked then CreateDir(attrPath);
+    public void saveTilesToSeparateFilesClick() {
 
-        FillInternalPalette(BMP, currentFillColor);
-        BMP.Width := TileSize;
-        BMP.Height := TileSize;
-        title := knownSections[4]; // TILE
-        DTA.SetPosition(title);
-        for i := 0 to DTA.tilesCount - 1 do
-            begin
-        attr := DTA.ReadLongWord; // attributes
-        ReadPicture(DTA, 0);
-        CopyPicture(TileImage, 0, 0);
-        Application.ProcessMessages;
-        //  SaveBMP('output/Tiles/'+rightstr('000'+inttostr(i),4)+' - '+inttohex(k,6)+'.bmp',bmp);
-        if DecimalCheckBox.Checked then
-        SaveBMP(tilesPath + '\' + rightstr('000' + inttostr(i) ,4) + eBMP, bmp);
-        if AttrCheckBox.Checked then
-        begin
-        attrFullPath := attrPath + '\' + IntToBin(attr) + ' (' + IntToStr(attr) + ')';
-        CreateDir(attrFullPath);
-        SaveBMP(attrFullPath + '\' + rightstr('000' + inttostr(i) ,4) + eBMP, bmp);
-        end;
-        if HexCheckBox.Checked then
-        SaveBMP(hexPath + '\' + inttohex(i,4) + eBMP, bmp);
-                TilesProgressBar.Position := i;
-        TilesProgressLabel.Caption := Format('%.2f %%', [((i + 1) / DTA.tilesCount) * 100]);
-        Application.ProcessMessages;
-        end;
-        Log.Debug('OK');
-        end;*/
+        try {
+            //TilesProgressBar.Position := 0;
+            //TilesProgressBar.Max := DTA.tilesCount;
+            Path tilesPath = opath.resolve("Tiles");
+            Path hexPath = opath.resolve("TilesHex");
+            Path attrPath = opath.resolve("TilesByAttr");
+            //Section.Log.clear();
+            if (decimalFilenamesCheckBox.isSelected()) {
+                IOUtils.createDirectories(tilesPath);
+            }
+            if (hexFilenamesCheckBox.isSelected()) {
+                IOUtils.createDirectories(hexPath);
+            }
+            if (groupByAttributesFilenamesCheckBox.isSelected()) {
+                IOUtils.createDirectories(attrPath);
+            }
+
+            KnownSections title = KnownSections.TILE; // TILE
+            section.SetPosition(title);
+            for (int i = 0; i < section.tilesCount; i++) {
+
+                long attr = section.ReadLongWord(); // attributes
+                //ReadPicture(section, 0);
+                //CopyPicture(TileImage, 0, 0);
+                //TODO Application.ProcessMessages;
+
+                //  SaveBMP('output/Tiles/'+rightstr('000'+inttostr(i),4)+' - '+inttohex(k,6)+'.bmp',bmp);
+
+                if (decimalFilenamesCheckBox.isSelected()) {
+                    Path path = tilesPath.resolve(StringUtils.leftPad(Integer.toString(i), 4, "0") + E_BMP);
+                    BMPEncoder.write(GetTile(i), path.toFile());
+                }
+
+                if (groupByAttributesFilenamesCheckBox.isSelected()) {
+                    Path path = attrPath.resolve(IntToBin(attr) + " (" + attr + ")");
+                    IOUtils.createDirectories(path);
+                    BMPEncoder.write(GetTile(i), path.resolve(StringUtils.leftPad(Integer.toString(i), 4, "0") + E_BMP).toFile());
+                }
+
+                if (hexFilenamesCheckBox.isSelected()) {
+                    BMPEncoder.write(GetTile(i), hexPath.resolve(section.intToHex(i, 4) + E_BMP).toFile());
+                }
+                //TilesProgressBar.Position := i;
+                //TilesProgressLabel.Caption := Format('%.2f %%', [((i + 1) / DTA.tilesCount) * 100]);
+                //TODO Application.ProcessMessages;
+            }
+            Section.Log.debug("OK");
+        } catch (Exception e) {
+            JavaFxUtils.showAlert("Error saving tiles to separate files", e);
+        }
     }
 
     //TODO
@@ -610,8 +790,8 @@ public class MainPaneController {
     //TODO use workdir here, if no clipboardFile
     public void loadClipboardImageClick() {
         try {
-            String initialFile = (null == clipboardFile) ? "clipboard.bmp": clipboardFile.getName();
-            String initialDir = (null == clipboardFile) ? null: clipboardFile.getParent();
+            String initialFile = (null == clipboardFile) ? "clipboard.bmp" : clipboardFile.getName();
+            String initialDir = (null == clipboardFile) ? null : clipboardFile.getParent();
             File file = JavaFxUtils.showBMPLoadDialog("Load Clipboard image", initialDir, initialFile);
             if (file != null) {
                 clipboardFile = file;
@@ -628,8 +808,8 @@ public class MainPaneController {
     public void saveClipboardImageClick() {
         try {
             if (null != clipboardImageView.getImage()) {
-                String initialFile = (null == clipboardFile) ? "clipboard.bmp": clipboardFile.getName();
-                String initialDir = (null == clipboardFile) ? null: clipboardFile.getParent();
+                String initialFile = (null == clipboardFile) ? "clipboard.bmp" : clipboardFile.getName();
+                String initialDir = (null == clipboardFile) ? null : clipboardFile.getParent();
                 File file = JavaFxUtils.showBMPSaveDialog("Save Clipboard image", initialDir, initialFile);
                 if (file != null) {
                     BMPEncoder.write8bit(clipboardImageView, file);
@@ -644,7 +824,7 @@ public class MainPaneController {
         clipboardImageView.setImage(null);
     }
 
-    public void saveMapsToFilesButtonClick(ActionEvent actionEvent) {
+    public void saveMapsToFilesButtonClick() {
         /*var i: Word;
         begin
         CreateDir(opath);
@@ -705,170 +885,7 @@ public class MainPaneController {
     }
 
 
-    /*procedure TMainForm.ReadMap(id: Word; show, save: Boolean);
-    var s: String;
-    k, w, h, i, j, flag, planet: Word;
-    begin
-  DTA.SetPosition(TMap(DTA.maps.Objects[id]).mapOffset);   // go to map data
-    pn := DTA.ReadWord;               // number:word; //2 bytes - serial number of the map starting with 0
-  if pn <> id then ShowMessage(IntToStr(pn) + ' <> ' + IntToStr(id));
-  DTA.ReadString(4);                // izon:string[4]; //4 bytes: "IZON"
-    DTA.ReadLongWord;                 // longword; //4 bytes - size of block IZON (include 'IZON') until object info entry count
-
-    Application.ProcessMessages;
-
-    w := DTA.ReadWord;                // width:word; //2 bytes: map width (W)
-    h := DTA.ReadWord;                // height:word; //2 bytes: map height (H)
-    flag := DTA.ReadWord;             // flags:word; //2 byte: map flags (unknown meanings)* добавил байт снизу
-    DTA.ReadLongWord;                 // unused:longword; //5 bytes: unused (same values for every map)
-    planet := DTA.ReadWord;           // planet:word; //1 byte: planet (0x01 = desert, 0x02 = snow, 0x03 = forest, 0x05 = swamp)* добавил следующий байт
-  Log.Debug('Map #' + inttostr(pn) + ' offset: ' + inttohex(DTA.GetPosition, 8));
-    StatusBar.Panels[0].Text := 'Map: ' + IntToStr(pn) + ' (' + planets[planet] +')';
-
-  if show then
-    begin
-    MapImage.Width := w * 32;
-    MapImage.Height := h * 32;
-    MapImage.Picture.Bitmap.Width := w * 32;
-    MapImage.Picture.Bitmap.Height := h * 32;
-
-    MapImage.Picture.bitmap.Canvas.Pen.Color := $010101;
-    MapImage.Picture.bitmap.Canvas.Brush.Color := $010101;
-    MapImage.picture.Bitmap.canvas.Rectangle(0, 0, MapImage.picture.bitmap.width, MapImage.picture.bitmap.height);
-    MapImage.Canvas.Brush.Style := bsClear;
-
-    for i:=0 to h-1 do
-            for j:=0 to w-1 do
-    begin          //W*H*6 bytes: map data
-    k := DTA.ReadWord;
-        if k <> $FFFF then
-            begin
-    DTA.tiles[k] := true;
-    GetTile(dta, k, bmp);
-    CopyFrame(MapImage.Canvas, j * 32, i * 32);
-    end;
-    k := DTA.ReadWord;
-        if k <> $FFFF then
-            begin
-    DTA.tiles[k] := true;
-    GetTile(dta, k, bmp);
-    CopyFrame(MapImage.Canvas, j * 32, i * 32);
-    end;
-    k := DTA.ReadWord;
-        if k <> $FFFF then
-            begin
-    DTA.tiles[k] := true;
-    GetTile(dta, k, bmp);
-    CopyFrame(MapImage.Canvas, j * 32, i * 32);
-    end;
-    end;
-    Application.ProcessMessages;
-
-      if MapSaveCheckBox.Checked and save then
-        MapImage.Picture.SaveToFile(opath + 'Maps\' + rightstr('000' + inttostr(id), 3) + '.bmp');
-
-            if MapFlagSaveCheckBox.Checked and save then
-    begin
-    s := opath + 'MapsByFlags\' + IntToBin(flag);
-    CreateDir(s);
-        MapImage.Picture.SaveToFile(s + '\' + rightstr('000' + inttostr(id), 3) + '.bmp');
-    end;
-
-      if MapPlanetSaveCheckBox.Checked and save then
-    begin
-    s := opath + 'MapsByPlanetType\' + planets[planet];
-    CreateDir(s);
-        MapImage.Picture.SaveToFile(s + '\' + rightstr('000' + inttostr(id), 3) + '.bmp');
-    end;
-    end;
-    end;
-
-    procedure TMainForm.ReadIZON(id: Word; save: Boolean);
-    begin
-    ReadMap(id, MapSaveCheckBox.Checked or MapFlagSaveCheckBox.Checked or MapPlanetSaveCheckBox.Checked, save);
-
-    MapProgressBar.Position := id;
-    MapProgressLabel.Caption := Format('%.2f %%', [((id + 1)/ DTA.mapsCount) * 100]);
-    Application.ProcessMessages;
-
-    //k:=DTA.ReadWord;                             //2 bytes: object info entry count (X)
-    //DTA.MoveIndex(k * 12);                       //X*12 bytes: object info data
-
-  if ActionsCheckBox.Checked or CheckBox2.Checked then
-    begin
-        //ReadOIE(id);
-    ReadIZAX(id);
-    ReadIZX2(id);
-    ReadIZX3(id);
-    ReadIZX4(id);
-    ReadIACT(id);
-    ReadOIE(id);
-    end;
-    end;*/
-
-    /*procedure TMainForm.DumpData(fileName: String; offset, size: Cardinal);
-    var f: File of Byte;
-    i: Cardinal;
-    b: Byte;
-    begin
-        DTA.SetPosition(offset);
-    AssignFile(f, fileName);
-    Rewrite(f);
-        if size > 0 then
-        for i := 0 to size - 1 do
-    begin
-    b := DTA.ReadByte;
-    Write(f, b);
-    end;
-    CloseFile(f);
-    end;
-
-    procedure TMainForm.ReadOIE(id: Word);
-    begin
-    DumpData(opath + 'OIE\' + IntToStr(id), TMap(DTA.maps.Objects[id]).oieOffset, TMap(DTA.maps.Objects[id]).oieSize);
-            end;
-
-            procedure TMainForm.ReadIZAX(id: Word);
-    begin
-    DumpData(opath + 'IZAX\' + IntToStr(id), TMap(DTA.maps.Objects[id]).izaxOffset, TMap(DTA.maps.Objects[id]).izaxSize);
-            end;
-
-            procedure TMainForm.ReadIZX2(id: Word);
-    begin
-    DumpData(opath + 'IZX2\' + IntToStr(id), TMap(DTA.maps.Objects[id]).izx2Offset, TMap(DTA.maps.Objects[id]).izx2Size);
-            end;
-
-            procedure TMainForm.ReadIZX3(id: Word);
-    begin
-    DumpData(opath + 'IZX3\' + IntToStr(id), TMap(DTA.maps.Objects[id]).izx3Offset, TMap(DTA.maps.Objects[id]).izx3Size);
-            end;
-
-            procedure TMainForm.ReadIZX4;
-            begin
-            DumpData(opath + 'IZX4\' + IntToStr(id), TMap(DTA.maps.Objects[id]).izx4Offset, TMap(DTA.maps.Objects[id]).izx4Size);
-            end;
-
-            procedure TMainForm.ReadIACT(id: Word);
-    var size: Longword;
-    k: Byte;
-    begin
-    k := 0;
-        DTA.SetPosition(TMap(DTA.maps.Objects[id]).iactOffset);
-
-        while DTA.ReadString(4) = 'IACT' do
-    begin
-//    HEX.SetSelStart(DTA.GetIndex);
-//    HEX.SetSelEnd(DTA.GetIndex + 3);
-//    HEX.CenterCursorPosition;
-//    Application.ProcessMessages;
-    size := DTA.ReadLongWord;  //4 bytes: length (X)
-        if CheckBox2.Checked then DumpText(DTA.GetPosition, size);
-        if ActionsCheckBox.Checked then
-    DumpData(opath + 'IACT\' + rightstr('000' + inttostr(id), 3) + '-'+rightstr('000'+inttostr(k), 3), DTA.GetPosition, size)
-            else DTA.MovePosition(size);
-    inc(k);
-    end;
-    end;
+    /*
 
     function idDeprecatedWords(text: String): Boolean;
 const arr: Array[1..100] of String = (
@@ -2139,22 +2156,35 @@ const arr: Array[1..100] of String = (
     end;*/
 
 
-    private BufferedImage GetTile(int id) {
+    private BufferedImage GetTile(int tileId) {
 
         int index = section.GetPosition();
-        section.SetPosition(section.GetDataOffset(KnownSections.TILE) + id * 0x404 + 4);
-        BufferedImage image = ImageUtils.ReadBPicture(section.GetDataOffset(KnownSections.TILE) + id * 0x404 + 4, 32, 32, currentFillColor);
+        section.SetPosition(section.GetDataOffset(KnownSections.TILE) + tileId * 0x404 + 4);
+        BufferedImage image = ImageUtils.readBPicture(32, 32, currentFillColor);
         section.SetPosition(index);
         return image;
     }
 
-    private WritableImage GetWTile(int id) {
+    private WritableImage GetWTile(int tileId) {
 
         int index = section.GetPosition();
-        section.SetPosition(section.GetDataOffset(KnownSections.TILE) + id * 0x404 + 4);
-        WritableImage image = ImageUtils.ReadWPicture(section.GetDataOffset(KnownSections.TILE) + id * 0x404 + 4, 32, 32, currentFillColor);
+        section.SetPosition(section.GetDataOffset(KnownSections.TILE) + tileId * 0x404 + 4);
+        WritableImage image = ImageUtils.readWPicture(32, 32, currentFillColor);
         section.SetPosition(index);
         return image;
     }
 
+    private void GetWTile(int tileId, Canvas canvas, int xOffset, int yOffset) {
+
+        int index = section.GetPosition();
+        //System.out.println(String.format("%s %s/%s", tileId, xOffset, yOffset));
+        section.SetPosition(section.GetDataOffset(KnownSections.TILE) + tileId * 0x404 + 4);
+        ImageUtils.drawOnCanvas(canvas, xOffset, yOffset);
+        section.SetPosition(index);
+    }
+
+    private void fillMapTile(Canvas canvas, int xOffset, int yOffset, Color color) {
+
+        ImageUtils.drawOnCanvas(canvas, xOffset, yOffset, color);
+    }
 }

@@ -13,13 +13,7 @@ import static md.leonis.ystt.utils.Config.section;
 
 public class ImageUtils {
 
-    public static WritableImage ReadWPicture(int offset, int width, int height, Color transparentColor) {
-
-        int index = section.GetPosition();
-
-        if (offset > 0) {
-            section.SetPosition(offset);
-        }
+    public static WritableImage readWPicture(int width, int height, Color transparentColor) {
 
         WritableImage image = new WritableImage(width, height);
 
@@ -33,20 +27,12 @@ public class ImageUtils {
             }
         }
 
-        section.SetPosition(index);
-
         return image;
     }
 
 
     //TODO use transparent color
-    public static BufferedImage ReadBPicture(int offset, int width, int height, Color transparentColor) {
-
-        int index = section.GetPosition();
-
-        if (offset > 0) {
-            section.SetPosition(offset);
-        }
+    public static BufferedImage readBPicture(int width, int height, Color transparentColor) {
 
         IndexColorModel icm = new IndexColorModel(8, 256, ra, ga, ba);
 
@@ -61,8 +47,6 @@ public class ImageUtils {
             }
         }
 
-        section.SetPosition(index);
-
         return image;
     }
 
@@ -72,6 +56,29 @@ public class ImageUtils {
             for (int x = 0; x < 16; x++) {
                 canvas.getGraphicsContext2D().setFill(Config.palette[y * 16 + x]);
                 canvas.getGraphicsContext2D().fillRect(x * 18, y * 18, 18, 18);
+            }
+        }
+    }
+
+    public static void drawOnCanvas(Canvas canvas, int xOffset, int yOffset) {
+
+        for (int y = 0; y < 32; y++) {
+            for (int x = 0; x < 32; x++) {
+                int colorIndex = section.ReadByte();
+                if (colorIndex != 0) {
+                    Color color = Config.palette[colorIndex];
+                    canvas.getGraphicsContext2D().getPixelWriter().setColor(xOffset + x, yOffset + y, color);
+                }
+                /*titleScreenCanvas.getGraphicsContext2D().getPixelWriter().setArgb(x, y, palette[index]);*/
+            }
+        }
+    }
+
+    public static void drawOnCanvas(Canvas canvas, int xOffset, int yOffset, Color color) {
+
+        for (int y = 0; y < 32; y++) {
+            for (int x = 0; x < 32; x++) {
+                canvas.getGraphicsContext2D().getPixelWriter().setColor(xOffset + x, yOffset + y, color);
             }
         }
     }

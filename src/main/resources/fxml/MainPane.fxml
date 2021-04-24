@@ -317,8 +317,7 @@
                                     <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE"
                                              BorderPane.alignment="CENTER">
                                         <Tab text="General Information">
-                                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0"
-                                                        prefWidth="200.0">
+                                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                                 <Label layoutX="14.0" layoutY="14.0" text="Maps count:"/>
                                                 <Label fx:id="mapsCountLabel" layoutX="98.0" layoutY="14.0"/>
                                                 <Button fx:id="saveMapsToFilesButton" layoutX="14.0" layoutY="40.0"
@@ -337,10 +336,9 @@
                                                           mnemonicParsing="false" selected="true" text="Dump text"/>
                                                 <CheckBox fx:id="saveUnusedTilesCheckBox" layoutX="25.0" layoutY="199.0"
                                                           mnemonicParsing="false" text="Save unused tiles??"/>
-                                                <ListView layoutX="171.0" layoutY="15.0" prefHeight="366.0"
+                                                <ListView fx:id="mapsListView" layoutX="171.0" layoutY="15.0" prefHeight="366.0"
                                                           prefWidth="93.0"/>
-                                                <ImageView fx:id="mapImageView" fitHeight="576.0" fitWidth="576.0" layoutX="271.0"
-                                                           layoutY="15.0" pickOnBounds="true" preserveRatio="true"/>
+                                                <Canvas fx:id="mapCanvas" height="576.0" width="576.0" layoutX="271.0" layoutY="15.0"/>
                                             </AnchorPane>
                                         </Tab>
                                         <Tab text="HEX Offsets">

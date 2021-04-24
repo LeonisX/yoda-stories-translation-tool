@@ -29,7 +29,7 @@ public class Section {
     // Cardinal, LongWord       0..4294967295;                              long        32
     // Int64                    -9223372036854775808..9223372036854775807   long        64
 
-    private static final String[] PLANETS = {"", "desert", "snow", "forest", "unknown", "swamp"};
+    public static final String[] PLANETS = {"", "desert", "snow", "forest", "unknown", "swamp"};
 
     //TODO read palette from EXE
 

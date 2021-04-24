@@ -18,8 +18,11 @@ import net.sf.image4j.io.LittleEndianOutputStream;
 
 import java.awt.image.*;
 import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -42,8 +45,8 @@ public class BMPEncoder {
 
 
     // 8 bit only
-    public static void write8bit(InfoHeader ih, IndexColorModel icm, byte[] raster, java.io.File file) throws IOException {
-        java.io.FileOutputStream fout = new java.io.FileOutputStream(file);
+    public static void write8bit(InfoHeader ih, IndexColorModel icm, byte[] raster, File file) throws IOException {
+        FileOutputStream fout = new FileOutputStream(file);
         try {
             BufferedOutputStream out = new BufferedOutputStream(fout);
             write8bit(ih, icm, raster, out);
@@ -58,7 +61,7 @@ public class BMPEncoder {
 
 
     // 8 bit only
-    public static void write8bit(Image wi, java.io.File file) throws IOException {
+    public static void write8bit(Image wi, File file) throws IOException {
 
         int width = (int) wi.getWidth();
         int height = (int) wi.getHeight();
@@ -97,7 +100,7 @@ public class BMPEncoder {
         //ih.iColorsUsed = colorsUsed.size();
         ih.iImageSize = 0;
 
-        java.io.FileOutputStream fout = new java.io.FileOutputStream(file);
+        FileOutputStream fout = new FileOutputStream(file);
         try {
             BufferedOutputStream out = new BufferedOutputStream(fout);
             write8bit(ih, icm, raster, out);
@@ -111,7 +114,12 @@ public class BMPEncoder {
     }
 
     // 8 bit only
-    public static void write8bit(Canvas canvas, java.io.File file) throws IOException {
+    public static void write8bit(Canvas canvas, Path path) throws IOException {
+        write8bit(canvas, path.toFile());
+    }
+
+    // 8 bit only
+    public static void write8bit(Canvas canvas, File file) throws IOException {
 
         WritableImage wi = new WritableImage((int) canvas.getWidth(), (int) canvas.getHeight());
         canvas.snapshot(null, wi);
@@ -119,12 +127,12 @@ public class BMPEncoder {
     }
 
     // 8 bit only
-    public static void write8bit(ImageView imageView, java.io.File file) throws IOException {
+    public static void write8bit(ImageView imageView, File file) throws IOException {
         write8bit(imageView.getImage(), file);
     }
 
     // 8 bit only
-    public static void write8bit(BufferedImage bi, java.io.File file) throws IOException {
+    public static void write8bit(BufferedImage bi, File file) throws IOException {
 
         int width = bi.getWidth();
         int height = bi.getHeight();
@@ -161,7 +169,7 @@ public class BMPEncoder {
         //ih.iColorsUsed = colorsUsed.size();
         ih.iImageSize = 0;
 
-        java.io.FileOutputStream fout = new java.io.FileOutputStream(file);
+        FileOutputStream fout = new FileOutputStream(file);
         try {
             BufferedOutputStream out = new BufferedOutputStream(fout);
             write8bit(ih, icm, raster, out);
@@ -217,8 +225,8 @@ public class BMPEncoder {
     }
 
 
-    public static void write(BMPImage bmpImage, java.io.File file) throws IOException {
-        java.io.FileOutputStream fout = new java.io.FileOutputStream(file);
+    public static void write(BMPImage bmpImage, File file) throws IOException {
+        FileOutputStream fout = new FileOutputStream(file);
         try {
             BufferedOutputStream out = new BufferedOutputStream(fout);
             write(bmpImage, out);
@@ -327,8 +335,8 @@ public class BMPEncoder {
      * @param file the file to which encoded data will be written
      * @throws java.io.IOException if an error occurs
      */
-    public static void write(BufferedImage img, java.io.File file) throws IOException {
-        java.io.FileOutputStream fout = new java.io.FileOutputStream(file);
+    public static void write(BufferedImage img, File file) throws IOException {
+        FileOutputStream fout = new FileOutputStream(file);
         try {
             BufferedOutputStream out = new BufferedOutputStream(fout);
             write(img, out);

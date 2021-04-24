@@ -18,6 +18,10 @@ public class IOUtils {
         Files.write(path, sounds);
     }
 
+    public static void saveBytes(Path path, byte[] array) throws IOException {
+        Files.write(path, array);
+    }
+
     public void saveToFile(String filePath, String fileName, List<String> lines) throws IOException {
 
         Path directory = Paths.get(filePath);
