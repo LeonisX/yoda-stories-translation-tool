@@ -34,7 +34,9 @@ public class Section {
     //TODO read palette from EXE
 
     //TODO getters
+    //TODO may be lis will be better???
     public Map<KnownSections, SectionMetrics> sections = new HashMap<>();
+    public List<SectionMetrics> sectionsList = new ArrayList<>();
     //TODO dtaDump
     public Dump dump;
     public Dump exeDump;
@@ -44,7 +46,8 @@ public class Section {
     //public Map<Integer, Zone> maps = new HashMap<>();
     public String exeCrc32;
     public String dtaCrc32;
-    public String dtaRevision;
+    public String revision;
+    public String revisionId;
     public String version;
     public byte soundsCount;
     public List<String> sounds = new ArrayList<>();
@@ -77,6 +80,7 @@ public class Section {
     public void clear() {
 
         sections = new HashMap<>();
+        sectionsList = new ArrayList<>();
         maps = new ArrayList<>();
         //maps = new HashMap<>();
         tiles = new boolean[0];
@@ -91,7 +95,9 @@ public class Section {
     }
 
     public void Add(KnownSections section, int dataSize, int fullSize, int dataOffset, int startOffset) {
-        sections.put(section, new SectionMetrics(section, dataSize, fullSize, startOffset, dataOffset));
+        SectionMetrics sectionMetrics = new SectionMetrics(section, dataSize, fullSize, startOffset, dataOffset);
+        sections.put(section, sectionMetrics);
+        sectionsList.add(sectionMetrics);
     }
 
     public int GetStartOffset(KnownSections section) {
@@ -189,12 +195,12 @@ public class Section {
         Log.newLine();
         Log.debug(String.format("%7s %12s %11s %12s %11s", "Section", "Data offset", "Data size", "Start offset", "Full size"));
 
-        sections.forEach((key, value) -> Log.debug(String.format("%7s %12x %11d %12x %11d",
-                key,
-                value.getDataOffset(),
-                value.getDataSize(),
-                value.getStartOffset(),
-                value.getFullSize()
+        sectionsList.forEach(s -> Log.debug(String.format("%7s %12x %11d %12x %11d",
+                s.getSection(),
+                s.getDataOffset(),
+                s.getDataSize(),
+                s.getStartOffset(),
+                s.getFullSize()
         )));
 
         Log.newLine();
@@ -528,12 +534,14 @@ public class Section {
         exeCrc32 = intToHex(BinaryUtils.crc32(exePath), 8);
         dtaCrc32 = intToHex(BinaryUtils.crc32(dtaPath), 8);
 
-        Release release = Config.releases.stream().filter(r -> r.getExe().equals(exeCrc32) && r.getDta().equals(dtaCrc32)).findFirst().orElse(null);
+        Release release = Config.releases.stream().filter(r -> r.getExeCrc32().equals(exeCrc32) && r.getDtaCrc32().equals(dtaCrc32)).findFirst().orElse(null);
 
         if (null == release) {
-            dtaRevision = "Unknown combination of files";
+            revision = "Unknown combination of files";
+            revisionId = "unk";
         } else {
-            dtaRevision = release.getTitle();
+            revision = release.getTitle();
+            revisionId = release.getId();
         }
 
         exeDump = new Dump(exePath);
@@ -554,7 +562,7 @@ public class Section {
         Log.newLine();
         Log.debug("Size: " + exeDump.size());
         Log.debug("CRC-32: " + exeCrc32);
-        Log.debug("DTA revision: " + dtaRevision);
+        Log.debug("DTA revision: " + revision);
         Log.debug("Palette address: " + intToHex(paletteStartIndex, 6));
         exeDump.setIndex(0);
         if (otherPaletteLocation) {
@@ -572,7 +580,7 @@ public class Section {
         Log.newLine();
         Log.debug("Size: " + dump.size());
         Log.debug("CRC-32: " + dtaCrc32);
-        Log.debug("DTA revision: " + dtaRevision);
+        Log.debug("DTA revision: " + revision);
         SetPosition(0);
     }
 

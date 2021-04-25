@@ -57,7 +57,6 @@ type
     SectionsStringGrid: TStringGrid;
     TitleImage: TImage;
     TileImage: TImage;
-    Button2: TButton;
     Splitter1: TSplitter;
     TilesDrawGrid: TDrawGrid;
     Panel4: TPanel;
@@ -69,7 +68,6 @@ type
     OpenClipboardDialog: TOpenDialog;
     Button5: TButton;
     SaveDTADialog: TSaveDialog;
-    Button6: TButton;
     Button7: TButton;
     Button8: TButton;
     Label2: TLabel;
@@ -201,9 +199,12 @@ type
     MapPopupMenu: TPopupMenu;
     Undo1: TMenuItem;
     Empty1: TMenuItem;
+    N1: TMenuItem;
+    Save1: TMenuItem;
+    Save2: TMenuItem;
+    Button2: TButton;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
-    procedure Button2Click(Sender: TObject);
     procedure OpenDTAButtonClick(Sender: TObject);
     procedure SaveSTUPButtonClick(Sender: TObject);
     procedure ListSNDSButtonClick(Sender: TObject);
@@ -224,7 +225,6 @@ type
     procedure ClipboardImageMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure TilesDrawGridDragOver(Sender, Source: TObject; X, Y: Integer; State: TDragState; var Accept: Boolean);
     procedure TilesDrawGridDragDrop(Sender, Source: TObject; X, Y: Integer);
-    procedure Button6Click(Sender: TObject);
     procedure Button7Click(Sender: TObject);
     procedure Button8Click(Sender: TObject);
     procedure Button9Click(Sender: TObject);
@@ -263,6 +263,9 @@ type
     procedure RadioGroup1Click(Sender: TObject);
     procedure Undo1Click(Sender: TObject);
     procedure Empty1Click(Sender: TObject);
+    procedure Save1Click(Sender: TObject);
+    procedure Save2Click(Sender: TObject);
+    procedure Button2Click(Sender: TObject);
   private
     texts: TStringList;
   public
@@ -320,7 +323,7 @@ var
   ts, ts2: TStringList;
 
   prevTile: Integer = -1;
-  prevTileX, prevTileY: Word;
+  prevTileAddress: Cardinal;
   
 implementation
 
@@ -330,7 +333,6 @@ procedure TMainForm.FormCreate(Sender: TObject);
 var k: Word;
 begin
   spath := ExtractFilePath(paramstr(0));
-  opath := spath + OUTPUT + '\';
   BMP := TBitmap.Create;
   BMP.PixelFormat := pf8bit;
   TileImage.Picture.Bitmap.PixelFormat := pf8bit;
@@ -385,28 +387,37 @@ begin
   ts2.Free;
 end;
 
-procedure TMainForm.Button2Click(Sender: TObject);
-begin
-  LoadBMP('output/STUP.bmp',bmp);
-  //CopyPicture(Image1,0,0);
-end;
-
-
 procedure TMainForm.OpenDTAButtonClick(Sender: TObject);
+var s, so: String;
 begin
-  OpenDTADialog.FileName := 'D:\YExplorer\Yodesk.dta';
-  //if OpenDTADialog.Execute then
-  //  begin
+  //OpenDTADialog.FileName := 'D:\YExplorer\Yodesk.dta';
+  if OpenDTADialog.Execute then
+  begin
     PageControl.Visible := true;
     log.Clear;
     DTA.LoadFileToArray(OpenDTADialog.FileName);
 
     ScanFileAndUpdate;
 
-    Log.SaveToFile(opath, 'Structure');
-  //  end;
+    s := DTA.dtaRevision;
+    so := '';
+    if AnsiContainsStr(s, '14.02.1997') then so := 'eng-1';
+    if AnsiContainsStr(s, '(Demo)') then so := 'eng-1-demo';
+    if AnsiContainsStr(s, '20.03.1997') then so := 'eng-2';
+    if AnsiContainsStr(s, '10.08.1998') then so := 'eng-3';
+    if AnsiContainsStr(s, 'T+Spa') then so := 'spa';
+    if AnsiContainsStr(s, '(Ger)') then so := 'ger';
+    if AnsiContainsStr(s, '(T-Rus)') then so := 'rus-1';
+    if so = '' then so := 'unk';
 
-  OpenDialog1.FileName := 'D:\YExplorer\iact-e.txt';
+//00000000=Star Wars: Yoda Stories (xx.xx.2016) (T+Rus)
+//00000001=Star Wars: Yoda Stories (xx.xx.2016) (Ger) (T+Eng)
+
+    opath := spath + OUTPUT + '-' + so + '\';
+    Log.SaveToFile(opath, 'structure');
+  end;
+
+{  OpenDialog1.FileName := 'D:\YExplorer\iact-e.txt';
   ReadColumn(1, StringGrid1);
   OpenDialog1.FileName := 'D:\YExplorer\iact-d.txt';
   ReadColumn(2, StringGrid1);
@@ -415,7 +426,7 @@ begin
   ReadColumn(1, StringGrid4);
   OpenDialog1.FileName := 'D:\YExplorer\puz2-d.txt';
   ReadColumn(2, StringGrid4);
-  Button18Click(Self);
+  Button18Click(Self);}
 end;
 
 procedure TMainForm.ScanFileAndUpdate;
@@ -549,7 +560,7 @@ procedure TMainForm.SaveSTUPButtonClick(Sender: TObject);
 begin
   Log.Clear;
   CreateDir(opath);
-  TitleImage.Picture.SaveToFile(opath + knownSections[2] + '.bmp');
+  TitleImage.Picture.SaveToFile(opath + 'stup.bmp');
   Log.Debug('Title screen saved');
 end;
 
@@ -560,7 +571,7 @@ begin
   Log.Clear;
   Log.Debug('Sounds & melodies:');
   Log.Debug('');
-  title := knownSections[3]; // SNDS
+  title := 'snds'; // SNDS
   DTA.SetPosition(title);
   Log.Debug('Unknown value: ' + inttohex(DTA.ReadWord, 4)); // C0 FF ??????
   i := 0;
@@ -684,6 +695,7 @@ begin
   end;
 
   if CheckBox2.Checked then texts.SaveToFile(opath + 'iact.txt');
+  ViewMap(MapsListStringGrid.Row);
 end;
 
 procedure TMainForm.ReadMap(id: Word; show, save: Boolean);
@@ -718,25 +730,25 @@ begin
     MapImage.picture.Bitmap.canvas.Rectangle(0, 0, MapImage.picture.bitmap.width, MapImage.picture.bitmap.height);
     MapImage.Canvas.Brush.Style := bsClear;
 
-    for i:=0 to h-1 do
-      for j:=0 to w-1 do
+    for i := 0 to h - 1 do
+      for j := 0 to w - 1 do
       begin          //W*H*6 bytes: map data
         k := DTA.ReadWord;
-        if k <> $FFFF then
+        if k < DTA.tilesCount then
         begin
           DTA.tiles[k] := true;
           GetTile(dta, k, bmp);
           CopyFrame(MapImage.Canvas, j * 32, i * 32);
         end;
         k := DTA.ReadWord;
-        if k <> $FFFF then
+        if k < DTA.tilesCount then
         begin
           DTA.tiles[k] := true;
           GetTile(dta, k, bmp);
           CopyFrame(MapImage.Canvas, j * 32, i * 32);
         end;
         k := DTA.ReadWord;
-        if k <> $FFFF then
+        if k < DTA.tilesCount then
         begin
           DTA.tiles[k] := true;
           GetTile(dta, k, bmp);
@@ -854,24 +866,27 @@ end;
 
 function idDeprecatedWords(text: String): Boolean;
 const arr: Array[1..100] of String = (
-'el:', 'ckup L', 'MS S', '€Î½', 'n 2', 'Redra', 'Remov', 'Redr', 'plac', 'Sho',
-'Show', 'opI', 'ne ', 'Red', 'Set', 'wRandN', 'up L', 'Remove~', 'ng, ', 'opIt',
-'Redraw', 'ckup', 'Y: 12 ', 'Bump', 'Pick', 'Bum', 'Has', '0n', 'Pickup L', 'SetHer',
-'BumpTi', 'Repla', 'MS San', 'Remove,', 'd my j', 'WaitF', 'SetH', 'SetHe', 'RandNu', 'eIte',
+'el:', 'ckup L', 'MS S', '€Î½', 'n 2', '######', '######', '######', 'plac', 'Sho',
+'Show', 'opI', 'ne ', 'Red', 'Set', '######', 'up L', '######', 'ng, ', 'opIt',
+'######', 'ckup', 'Y: 12 ', 'Bump', 'Pick', 'Bum', 'Has', '0n', 'Pickup L', 'SetHer',
+'BumpTi', 'Repla', 'MS San', '######', 'd my j', 'WaitF', 'SetH', 'SetHe', '######', 'eIte',
 'n 1 an', 'œœž', 'L÷½', '6,12', '0, 1', 'Door', 'aySo', 'c X:', 'Game', 'Ð©µ',
-'Remove', 'a l', 'ndNu', 'PlayS', 'Force ', ' Lev', 'ter:', 'ter:F', '€Û¹', 'o Na',
+'######', 'a l', '######', 'PlayS', 'Force ', ' Lev', 'ter:', 'ter:F', '€Û¹', 'o Na',
 't•±', '4kß', 'w on o', 'ndN', 'HotS', '€Ó´', 'perial', '12 Y', 'Name', 'sta',
 'Wait', 'securi', '''s don', 'cku', 'ÄFÂ', 'rTim', 'Wai', 'øí±', 'Backgr', 'e''s',
 'MS ', ' ’µ', 'h th', 'n''t th', 'u ta', 's! What ', 'Pic', '¤K‡', 'Wait', 'Coun',
 '#####', '´úm', 'up ', 'Sav', 'ÿÿÿÿÿÿÿÿ', 'Rep', '¸D´', '!!!', 'ô$‚', 'Coun'
 );
+
 var i: byte;
 begin
   result := false;
-  for i := 1 to Length(arr) do
-    if arr[i] = text then result := true;
+  for i := 1 to Length(arr) do if arr[i] = text then result := true;
+  if not result then result := AnsiStartsStr('Remov', text) and (Length(text) <= 7);
+  if not result then result := AnsiStartsStr('Redr', text) and (Length(text) <= 6);
   if not result then result := AnsiStartsStr('ShowT', text);
   if not result then result := AnsiStartsStr('awArea', text);
+  if not result then result := AnsiContainsStr(text, 'ndN');
   if not result then result := AnsiStartsStr('HasI', text);
   if not result then result := AnsiStartsStr('ZX', text);
   if not result then result := AnsiStartsStr(' X:', text);
@@ -1149,11 +1164,6 @@ begin
   end;
 end;
 
-procedure TMainForm.Button6Click(Sender: TObject);
-begin
-  if SaveDTADialog.Execute then DTA.SaveToFile(SaveDTADialog.FileName);
-end;
-
 procedure TMainForm.Button7Click(Sender: TObject);
 var p: PByteArray;
 i, j: Word;
@@ -1271,6 +1281,7 @@ begin
     name := name + chr(k);              // Character name, ended with $00 <= 16
     k := DTA.ReadByte;
   end;
+  texts.Add(name);
   seq := '';
   if Length(name) mod 2 = 0 then seq := seq + IntToHex(DTA.ReadByte, 2) + ' ';
   k := DTA.ReadByte;
@@ -1514,6 +1525,7 @@ begin
     DTA.SetPosition(DTA.GetDataOffset(knownSections[4]) - 4);
     DTA.WriteLongWord(DTA.GetDataSize(knownSections[4]) + size);
     ScanFileAndUpdate;
+    prevTile := -1;
   end;
 end;
 
@@ -1526,6 +1538,7 @@ begin
     DTA.SetPosition(DTA.GetDataOffset(knownSections[4]) - 4);
     DTA.WriteLongWord(DTA.GetDataSize(knownSections[4]) - $404);
     ScanFileAndUpdate;
+    prevTile := -1;
   end;
 end;
 
@@ -1989,7 +2002,7 @@ begin
   DTA.SetPosition(DTA.GetStartOffset(knownSections[6]));
   if DTA.ReadString(4) <> 'PUZ2' then ShowMessage('PUZ2 not found!!!');
   size := DTA.ReadLongWord;
-  if size <> DTA.GetDataSize((knownSections[6])) then ShowMessage('PUZ2 size don''t match!');
+  if size <> DTA.GetDataSize(knownSections[6]) then ShowMessage('PUZ2 size don''t match!');
   DTA.MovePosition(-4);
   DTA.WriteLongWord(size - previousSize + DTA.GetSize);
 
@@ -2050,7 +2063,7 @@ end;
 procedure TMainForm.Button23Click(Sender: TObject);
 var currentPos: Cardinal;
   i: Word;
-  j, len: Byte;
+  j: Byte;
   str: String;
 begin
   Log.Clear;
@@ -2120,7 +2133,7 @@ begin
 end;
 
 procedure TMainForm.SelectMapTile(X, Y: Integer; concrete: Boolean);
-var left, top, w, h: Word;
+var left, top, w: Word;
 begin
   left := x div 32;
   top := y div 32;
@@ -2128,8 +2141,7 @@ begin
   DTA.SetPosition(TMap(DTA.maps.Objects[MapsListStringGrid.Row]).mapOffset);   // go to map data
   DTA.ReadString(10);
   w := DTA.ReadWord;                // width:word; //2 bytes: map width (W)
-  h := DTA.ReadWord;                // height:word; //2 bytes: map height (H)
-  DTA.ReadString(8);
+  DTA.ReadString(10);
   DTA.MovePosition((top * w + left) * 6);
   if concrete then DTA.MovePosition(RadioGroup1.ItemIndex * 2);
 end;
@@ -2137,27 +2149,25 @@ end;
 
 procedure TMainForm.MapImageDragDrop(Sender, Source: TObject; X, Y: Integer);
 begin
-  prevTileX := x div 32;
-  prevTileY := y div 32;
   SelectMapTile(x, y, true);
+  prevTileAddress := DTA.GetPosition;
   prevTile := DTA.ReadWord;
   DTA.MovePosition(-2);
   DTA.WriteWord(selectedCell);
+  Highlight(DTA.GetPosition - 2, 2);
   ViewMap(MapsListStringGrid.Row);
 end;
 
 procedure TMainForm.MapImageMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var pnt: TPoint;
-  t1, t2, t3: Word;
 begin
   SelectMapTile(x, y, false);
-  t1 := DTA.ReadWord;
-  t2 := DTA.ReadWord;
-  t3 := DTA.ReadWord;
-
-  StatusBar.Panels[0].Text := '$' + IntToHex(t1, 4) + ' $' + IntToHex(t2, 4) + ' $' + IntToHex(t3, 4) + ' (bottom, middle, top)';
-
-  if (Button = mbRight) and GetCursorPos(pnt) and TabSheet18.Visible then MapPopupMenu.Popup(pnt.X - 7, pnt.Y - 10);
+  Highlight(DTA.GetPosition, 6);
+  if (Button = mbRight) and GetCursorPos(pnt) and TabSheet18.Visible then
+  begin
+    Undo1.Enabled := prevTile <> -1;
+    MapPopupMenu.Popup(pnt.X - 7, pnt.Y - 10);
+  end;
 end;
 
 procedure TMainForm.RadioGroup1Click(Sender: TObject);
@@ -2169,25 +2179,57 @@ procedure TMainForm.Undo1Click(Sender: TObject);
 begin
   if prevTile <> -1 then
   begin
-    SelectMapTile(prevTileX, prevTileY, true);
+    DTA.SetPosition(prevTileAddress);
     DTA.WriteWord(prevTile);
+    Highlight(DTA.GetPosition - 2, 2);
     prevTile := -1;
     ViewMap(MapsListStringGrid.Row);
   end;
 end;
 
 procedure TMainForm.Empty1Click(Sender: TObject);
-var
-  pt : tPoint;
+var pt : tPoint;
 begin
   pt := ScreenToClient(Mouse.CursorPos);
-  prevTileX := pt.x div 32;
-  prevTileY := pt.y div 32;
-  SelectMapTile(prevTileX, prevTileY, true);
+  SelectMapTile(pt.x div 32, pt.y div 32, true);
+  prevTileAddress := DTA.GetPosition;
   prevTile := DTA.ReadWord;
   DTA.MovePosition(-2);
   DTA.WriteWord($FFFF);
+  Highlight(DTA.GetPosition - 2, 2);
   ViewMap(MapsListStringGrid.Row);
+end;
+
+procedure TMainForm.Save1Click(Sender: TObject);
+begin
+  Hex.LoadFromStream(DTA.data);
+  Hex.Save;
+  ShowMessage('OK');
+end;
+
+procedure TMainForm.Save2Click(Sender: TObject);
+begin
+  if SaveDTADialog.Execute then
+  begin
+    Hex.LoadFromStream(DTA.data);
+    Hex.SaveToFile(SaveDTADialog.FileName, true);
+  end;
+end;
+
+procedure TMainForm.Button2Click(Sender: TObject);
+var i: Byte;
+  name, dir: String;
+begin
+  CreateDir(opath);
+  dir := opath + 'Dumps\';
+  CreateDir(dir);
+  for i := 0 to DTA.sections.Count - 1 do
+  begin
+    name := DTA.sections[i];
+    DumpData(dir + name + '.bin', DTA.GetStartOffset(name), DTA.GetFullSize(name));
+    Log.Debug(name + ' saved');
+  end;
+  Showmessage('OK');
 end;
 
 end.

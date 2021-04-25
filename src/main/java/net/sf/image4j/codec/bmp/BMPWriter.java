@@ -127,6 +127,11 @@ public class BMPWriter {
     }
 
     // 8 bit only
+    public static void write8bit(ImageView imageView, Path path) throws IOException {
+        write8bit(imageView.getImage(), path.toFile());
+    }
+
+    // 8 bit only
     public static void write8bit(ImageView imageView, File file) throws IOException {
         write8bit(imageView.getImage(), file);
     }
@@ -229,6 +234,10 @@ public class BMPWriter {
         out.write(raster);
     }
 
+
+    public static void write(BMPImage bmpImage, Path path) throws IOException {
+        write(bmpImage, path.toFile());
+    }
 
     public static void write(BMPImage bmpImage, File file) throws IOException {
         FileOutputStream fout = new FileOutputStream(file);

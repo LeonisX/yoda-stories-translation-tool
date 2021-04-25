@@ -110,22 +110,13 @@ object MainForm: TMainForm
         OnSelectCell = SectionsStringGridSelectCell
       end
       object Button2: TButton
-        Left = 96
-        Top = 348
-        Width = 75
+        Left = 8
+        Top = 336
+        Width = 113
         Height = 25
-        Caption = 'LoadBMP'
+        Caption = 'Dump all sections'
         TabOrder = 1
         OnClick = Button2Click
-      end
-      object Button6: TButton
-        Left = 16
-        Top = 344
-        Width = 75
-        Height = 25
-        Caption = 'Save DTA'
-        TabOrder = 2
-        OnClick = Button6Click
       end
     end
     object TabSheet2: TTabSheet
@@ -370,11 +361,11 @@ object MainForm: TMainForm
         Top = 0
         Width = 1237
         Height = 490
-        ActivePage = TabSheet18
+        ActivePage = TabSheet11
         Align = alClient
         MultiLine = True
         Style = tsFlatButtons
-        TabIndex = 2
+        TabIndex = 0
         TabOrder = 0
         object TabSheet11: TTabSheet
           Caption = 'General information'
@@ -443,6 +434,8 @@ object MainForm: TMainForm
             Width = 145
             Height = 17
             Caption = 'Dump actions'
+            Checked = True
+            State = cbChecked
             TabOrder = 3
           end
           object MapPlanetSaveCheckBox: TCheckBox
@@ -467,6 +460,8 @@ object MainForm: TMainForm
             Width = 145
             Height = 17
             Caption = 'Normal save'
+            Checked = True
+            State = cbChecked
             TabOrder = 6
           end
           object SaveMapsButton: TButton
@@ -635,11 +630,11 @@ object MainForm: TMainForm
         Top = 0
         Width = 1237
         Height = 490
-        ActivePage = TabSheet16
+        ActivePage = TabSheet14
         Align = alClient
         MultiLine = True
         Style = tsFlatButtons
-        TabIndex = 1
+        TabIndex = 0
         TabOrder = 0
         object TabSheet14: TTabSheet
           Caption = 'General information'
@@ -821,11 +816,11 @@ object MainForm: TMainForm
         Top = 0
         Width = 1237
         Height = 490
-        ActivePage = TabSheet17
+        ActivePage = TabSheet15
         Align = alClient
         MultiLine = True
         Style = tsFlatButtons
-        TabIndex = 1
+        TabIndex = 0
         TabOrder = 0
         object TabSheet15: TTabSheet
           Caption = 'General information'
@@ -1069,12 +1064,23 @@ object MainForm: TMainForm
     Top = 144
     object File1: TMenuItem
       Caption = 'File'
+      object Open1: TMenuItem
+        Caption = 'Open'
+        OnClick = OpenDTAButtonClick
+      end
+      object Save1: TMenuItem
+        Caption = 'Save'
+        OnClick = Save1Click
+      end
+      object Save2: TMenuItem
+        Caption = 'Save...'
+        OnClick = Save2Click
+      end
+      object N1: TMenuItem
+        Caption = '-'
+      end
       object Exit1: TMenuItem
         Caption = 'Exit'
-      end
-      object Open1: TMenuItem
-        Caption = 'Open...'
-        OnClick = OpenDTAButtonClick
       end
     end
     object Settings1: TMenuItem
@@ -1143,6 +1149,7 @@ object MainForm: TMainForm
       Caption = 'Operations'
       object AddTiles: TMenuItem
         Caption = 'Add tile(s)'
+        OnClick = Adddtiles1Click
       end
     end
     object Help1: TMenuItem

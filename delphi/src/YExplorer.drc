@@ -8,30 +8,31 @@
   resources were bound to the produced executable.
 */
 
-#define MPHexEditorEx_STR_CF_PALETTE 65216
-#define MPHexEditorEx_STR_CF_PENDATA 65217
-#define MPHexEditorEx_STR_CF_RIFF 65218
-#define MPHexEditorEx_STR_CF_WAVE 65219
-#define MPHexEditorEx_STR_CF_UNICODETEXT 65220
-#define MPHexEditorEx_STR_CF_ENHMETAFILE 65221
-#define MPHexEditorEx_STR_CF_HDROP 65222
-#define MPHexEditorEx_STR_CF_LOCALE 65223
-#define MPHexEditorEx_UNDO_PASTECB 65232
-#define MPHexEditorEx_UNDO_CUTCB 65233
-#define MPHexEditorEx_UNDO_DROPPED 65234
-#define MPHexEditorEx_UNDO_MOVED 65235
-#define MPHexEditorEx_SELECT_FORMAT_CAPTION 65236
-#define MPHexEditorEx_SELECT_FORMAT_ASHEX 65237
-#define MPHexEditorEx_STR_SCRAPFILE 65238
-#define MPHexEditorEx_MPTH_CF 65239
-#define MPHexEditorEx_STR_CF_TEXT 65240
-#define MPHexEditorEx_STR_CF_BITMAP 65241
-#define MPHexEditorEx_STR_CF_METAFILEPICT 65242
-#define MPHexEditorEx_STR_CF_SYLK 65243
-#define MPHexEditorEx_STR_CF_DIF 65244
-#define MPHexEditorEx_STR_CF_TIFF 65245
-#define MPHexEditorEx_STR_CF_OEMTEXT 65246
-#define MPHexEditorEx_STR_CF_DIB 65247
+#define MPHexEditorEx_STR_CF_DIB 65216
+#define MPHexEditorEx_STR_CF_PALETTE 65217
+#define MPHexEditorEx_STR_CF_PENDATA 65218
+#define MPHexEditorEx_STR_CF_RIFF 65219
+#define MPHexEditorEx_STR_CF_WAVE 65220
+#define MPHexEditorEx_STR_CF_UNICODETEXT 65221
+#define MPHexEditorEx_STR_CF_ENHMETAFILE 65222
+#define MPHexEditorEx_STR_CF_HDROP 65223
+#define MPHexEditorEx_STR_CF_LOCALE 65224
+#define MPHexEditorEx_ERR_BACKUP_CREATE 65232
+#define MPHexEditorEx_UNDO_PASTECB 65233
+#define MPHexEditorEx_UNDO_CUTCB 65234
+#define MPHexEditorEx_UNDO_DROPPED 65235
+#define MPHexEditorEx_UNDO_MOVED 65236
+#define MPHexEditorEx_SELECT_FORMAT_CAPTION 65237
+#define MPHexEditorEx_SELECT_FORMAT_ASHEX 65238
+#define MPHexEditorEx_STR_SCRAPFILE 65239
+#define MPHexEditorEx_MPTH_CF 65240
+#define MPHexEditorEx_STR_CF_TEXT 65241
+#define MPHexEditorEx_STR_CF_BITMAP 65242
+#define MPHexEditorEx_STR_CF_METAFILEPICT 65243
+#define MPHexEditorEx_STR_CF_SYLK 65244
+#define MPHexEditorEx_STR_CF_DIF 65245
+#define MPHexEditorEx_STR_CF_TIFF 65246
+#define MPHexEditorEx_STR_CF_OEMTEXT 65247
 #define MPHexEditor_ERR_INVALID_FORMATRADIX 65248
 #define MPHexEditor_ERR_INVALID_RADIXCHAR 65249
 #define MPHexEditor_ERR_INVALID_BPU 65250
@@ -46,8 +47,8 @@
 #define ComConst_SNoMethod 65259
 #define ComConst_SVarNotObject 65260
 #define ComConst_STooManyParams 65261
-#define MPHexEditorEx_ERR_BACKUP_DELETE 65262
-#define MPHexEditorEx_ERR_BACKUP_CREATE 65263
+#define MPHexEditorEx_ERR_NOFILE 65262
+#define MPHexEditorEx_ERR_BACKUP_DELETE 65263
 #define MPHexEditor_UNDO_APPEND 65264
 #define MPHexEditor_UNDO_INSNIBBLE 65265
 #define MPHexEditor_UNDO_DELNIBBLE 65266
@@ -322,6 +323,7 @@
 #define SysConst_SOverflow 65535
 STRINGTABLE
 BEGIN
+	MPHexEditorEx_STR_CF_DIB,	"Device Independent Bitmap Picture"
 	MPHexEditorEx_STR_CF_PALETTE,	"Color Palete"
 	MPHexEditorEx_STR_CF_PENDATA,	"Pen Data"
 	MPHexEditorEx_STR_CF_RIFF,	"RIFF Audio Data"
@@ -330,6 +332,7 @@ BEGIN
 	MPHexEditorEx_STR_CF_ENHMETAFILE,	"Enhanced Metafile Picture"
 	MPHexEditorEx_STR_CF_HDROP,	"File List"
 	MPHexEditorEx_STR_CF_LOCALE,	"Text Locale"
+	MPHexEditorEx_ERR_BACKUP_CREATE,	"Cannot create backup %s. (%s)"
 	MPHexEditorEx_UNDO_PASTECB,	"Paste from clipboard"
 	MPHexEditorEx_UNDO_CUTCB,	"Cut to clipboard"
 	MPHexEditorEx_UNDO_DROPPED,	"Data dropped"
@@ -345,7 +348,6 @@ BEGIN
 	MPHexEditorEx_STR_CF_DIF,	"Software Arts' Data Interchange Format"
 	MPHexEditorEx_STR_CF_TIFF,	"Tagged Image File Format (TIFF) Picture"
 	MPHexEditorEx_STR_CF_OEMTEXT,	"OEM Text"
-	MPHexEditorEx_STR_CF_DIB,	"Device Independent Bitmap Picture"
 	MPHexEditor_ERR_INVALID_FORMATRADIX,	"Invalid radix in offset format (%xh), allowed: 02h..10h"
 	MPHexEditor_ERR_INVALID_RADIXCHAR,	"Invalid character %s, cannot convert using radix %xh"
 	MPHexEditor_ERR_INVALID_BPU,	"Invalid bytes per unit value %d, allowed: 1,2,4,8"
@@ -360,8 +362,8 @@ BEGIN
 	ComConst_SNoMethod,	"Method '%s' not supported by automation object"
 	ComConst_SVarNotObject,	"Variant does not reference an automation object"
 	ComConst_STooManyParams,	"Dispatch methods do not support more than 64 parameters"
+	MPHexEditorEx_ERR_NOFILE,	"No filename specified"
 	MPHexEditorEx_ERR_BACKUP_DELETE,	"Cannot delete previous backup %s. (%s)"
-	MPHexEditorEx_ERR_BACKUP_CREATE,	"Cannot create backup %s. (%s)"
 	MPHexEditor_UNDO_APPEND,	"Append buffer"
 	MPHexEditor_UNDO_INSNIBBLE,	"Insert nibble"
 	MPHexEditor_UNDO_DELNIBBLE,	"Delete nibble"

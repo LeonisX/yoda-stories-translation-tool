@@ -3052,8 +3052,7 @@ begin
   end;
 end;
 
-procedure TCustomMPHexEditor.SaveRangeToStream(Strm: TStream; const APosition,
-  ACount: integer);
+procedure TCustomMPHexEditor.SaveRangeToStream(Strm: TStream; const APosition, ACount: integer);
 begin
   WaitCursor;
   try
@@ -3065,8 +3064,7 @@ begin
   end;
 end;
 
-procedure TCustomMPHexEditor.SaveToFile(const Filename: string;
-  const aUnModify: boolean = True);
+procedure TCustomMPHexEditor.SaveToFile(const Filename: string; const aUnModify: boolean = True);
 var
   LfstFile: TFileStream;
 begin

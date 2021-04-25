@@ -1,8 +1,10 @@
 package md.leonis.ystt.utils;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Path;
 import java.util.Arrays;
 
 public class PaletteUtils {
@@ -37,10 +39,13 @@ public class PaletteUtils {
     These numbers are respectively the Red, Green and Blue values (the so-called RGB palette).
     For example, the color white would be '255 255 255' and black '0 0 0' (255 is the most bright, 0 the less bright)
     */
+    public static void saveToFile(int[] gamePalette, Path path) throws IOException {
+        saveToFile(gamePalette, path.toFile());
+    }
 
-    public static void saveToFile(int[] gamePalette, String fileName) throws IOException {
+    public static void saveToFile(int[] gamePalette, File file) throws IOException {
 
-        FileWriter fileWriter = new FileWriter(fileName);
+        FileWriter fileWriter = new FileWriter(file);
         PrintWriter printWriter = new PrintWriter(fileWriter);
         printWriter.println("JASC-PAL");
         printWriter.println("0100");

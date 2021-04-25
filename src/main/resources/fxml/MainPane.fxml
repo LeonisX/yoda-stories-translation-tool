@@ -203,13 +203,13 @@
                                 <Button fx:id="saveSoundsListToFileButton" layoutX="14.0" layoutY="36.0"
                                         mnemonicParsing="false" onAction="#saveSoundsListToFileButtonClick"
                                         text="Save list to file"/>
-                                <TextArea layoutX="150.0" layoutY="14.0" prefHeight="400.0" prefWidth="300.0" fx:id="soundsTextArea" editable="false" />
+                                <TextArea layoutX="150.0" layoutY="14.0" prefHeight="430.0" prefWidth="300.0" fx:id="soundsTextArea" editable="false" />
                             </AnchorPane>
                         </Tab>
                         <Tab text="Tiles/Sprites">
                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                                <ScrollPane layoutX="166.0" layoutY="13.0" prefHeight="382.0" prefWidth="545.0">
-                                        <FlowPane fx:id="tilesFlowPane" columnHalignment="CENTER" prefHeight="380.0" prefWidth="527.0"
+                                <ScrollPane layoutX="166.0" layoutY="13.0" prefHeight="422.0" prefWidth="545.0">
+                                        <FlowPane fx:id="tilesFlowPane" columnHalignment="CENTER" prefHeight="420.0" prefWidth="527.0"
                                                   prefWrapLength="540.0" hgap="1.0" vgap="1.0" />
                                 </ScrollPane>
                                 <Label layoutX="12.0" layoutY="18.0" text="Tiles count:"/>
@@ -234,12 +234,12 @@
                                            onMouseEntered="#clipboardImageViewMouseEntered"
                                            onMouseExited="#clipboardImageViewMouseExited"
                                            onMouseMoved="#clipboardImageViewMouseMoved"/>
-                                <Label layoutX="824.0" layoutY="342.0" text="Clipboard image"/>
-                                <Button fx:id="loadClipboardImage" layoutX="764.0" layoutY="367.0" minWidth="64.0"
+                                <Label layoutX="824.0" layoutY="382.0" text="Clipboard image"/>
+                                <Button fx:id="loadClipboardImage" layoutX="764.0" layoutY="407.0" minWidth="64.0"
                                         mnemonicParsing="false" onAction="#loadClipboardImageClick" text="Load"/>
-                                <Button fx:id="saveClipboardImage" layoutX="836.0" layoutY="367.0" minWidth="64.0"
+                                <Button fx:id="saveClipboardImage" layoutX="836.0" layoutY="407.0" minWidth="64.0"
                                         mnemonicParsing="false" onAction="#saveClipboardImageClick" text="Save"/>
-                                <Button fx:id="clearClipboardImage" layoutX="908.0" layoutY="367.0" minWidth="64.0"
+                                <Button fx:id="clearClipboardImage" layoutX="908.0" layoutY="407.0" minWidth="64.0"
                                         mnemonicParsing="false" onAction="#clearClipboardImageClick" text="Clear"/>
                                 <Rectangle fx:id="clipboardRectangle" fill="TRANSPARENT" height="32.0" layoutX="194.0"
                                            layoutY="80.0" smooth="false" stroke="BLACK" strokeType="OUTSIDE" width="32.0" visible="false" mouseTransparent="true"/>
@@ -320,9 +320,6 @@
                                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                                 <Label layoutX="14.0" layoutY="14.0" text="Maps count:"/>
                                                 <Label fx:id="mapsCountLabel" layoutX="98.0" layoutY="14.0"/>
-                                                <Button fx:id="saveMapsToFilesButton" layoutX="14.0" layoutY="40.0"
-                                                        mnemonicParsing="false" onAction="#saveMapsToFilesButtonClick"
-                                                        text="Save maps to files"/>
                                                 <CheckBox fx:id="normalSaveCheckBox" layoutX="25.0" layoutY="73.0"
                                                           mnemonicParsing="false" selected="true" text="Normal save"/>
                                                 <CheckBox fx:id="groupByFlagsCheckBox" layoutX="25.0" layoutY="98.0"
@@ -335,8 +332,11 @@
                                                 <CheckBox fx:id="dumpTextCheckBox" layoutX="25.0" layoutY="174.0"
                                                           mnemonicParsing="false" selected="true" text="Dump text"/>
                                                 <CheckBox fx:id="saveUnusedTilesCheckBox" layoutX="25.0" layoutY="199.0"
-                                                          mnemonicParsing="false" text="Save unused tiles??"/>
-                                                <ListView fx:id="mapsListView" layoutX="171.0" layoutY="15.0" prefHeight="366.0"
+                                                          mnemonicParsing="false" text="Save non-map tiles"/>
+                                                <Button fx:id="saveMapsToFilesButton" layoutX="14.0" layoutY="40.0"
+                                                        mnemonicParsing="false" onAction="#saveMapsToFilesButtonClick"
+                                                        text="Save maps to files"/>
+                                                <ListView fx:id="mapsListView" layoutX="171.0" layoutY="15.0" prefHeight="400.0"
                                                           prefWidth="93.0"/>
                                                 <Canvas fx:id="mapCanvas" height="576.0" width="576.0" layoutX="271.0" layoutY="15.0"/>
                                             </AnchorPane>
@@ -345,7 +345,7 @@
                                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0"
                                                         prefWidth="200.0">
                                                 <TableView fx:id="mapsTableView" layoutX="14.0" layoutY="14.0"
-                                                           prefHeight="370.0" prefWidth="1105.0">
+                                                           prefHeight="400.0" prefWidth="1105.0">
                                                     <columns>
                                                         <TableColumn prefWidth="60.0" text="Map">
                                                             <columns>
@@ -548,62 +548,6 @@
                                         <Tab text="Map Editor">
                                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0"
                                                         prefWidth="200.0">
-                                                <ListView layoutX="171.0" layoutY="15.0" prefHeight="366.0"
-                                                          prefWidth="93.0"/>
-                                                <ImageView fx:id="mapEditorImageView" fitHeight="576.0" fitWidth="576.0"
-                                                           layoutX="662.0" layoutY="14.0" pickOnBounds="true"
-                                                           preserveRatio="true"/>
-                                                <ScrollPane layoutX="112.0" layoutY="14.0" prefHeight="382.0"
-                                                            prefWidth="543.0">
-                                                    <GridPane fx:id="mapEditorGridPane">
-                                                        <columnConstraints>
-                                                            <ColumnConstraints hgrow="SOMETIMES" minWidth="32.0"
-                                                                               prefWidth="32.0"/>
-                                                            <ColumnConstraints hgrow="SOMETIMES" minWidth="32.0"
-                                                                               prefWidth="32.0"/>
-                                                            <ColumnConstraints hgrow="SOMETIMES" minWidth="32.0"
-                                                                               prefWidth="32.0"/>
-                                                            <ColumnConstraints hgrow="SOMETIMES" minWidth="32.0"
-                                                                               prefWidth="32.0"/>
-                                                            <ColumnConstraints hgrow="SOMETIMES" minWidth="32.0"
-                                                                               prefWidth="32.0"/>
-                                                            <ColumnConstraints hgrow="SOMETIMES" minWidth="32.0"
-                                                                               prefWidth="32.0"/>
-                                                            <ColumnConstraints hgrow="SOMETIMES" minWidth="32.0"
-                                                                               prefWidth="32.0"/>
-                                                            <ColumnConstraints hgrow="SOMETIMES" minWidth="32.0"
-                                                                               prefWidth="32.0"/>
-                                                            <ColumnConstraints hgrow="SOMETIMES" minWidth="32.0"
-                                                                               prefWidth="32.0"/>
-                                                            <ColumnConstraints hgrow="SOMETIMES" minWidth="32.0"
-                                                                               prefWidth="32.0"/>
-                                                            <ColumnConstraints hgrow="SOMETIMES" minWidth="32.0"
-                                                                               prefWidth="32.0"/>
-                                                            <ColumnConstraints hgrow="SOMETIMES" minWidth="32.0"
-                                                                               prefWidth="32.0"/>
-                                                            <ColumnConstraints hgrow="SOMETIMES" minWidth="32.0"
-                                                                               prefWidth="32.0"/>
-                                                            <ColumnConstraints hgrow="SOMETIMES" minWidth="32.0"
-                                                                               prefWidth="32.0"/>
-                                                            <ColumnConstraints hgrow="SOMETIMES" minWidth="32.0"
-                                                                               prefWidth="32.0"/>
-                                                            <ColumnConstraints hgrow="SOMETIMES" minWidth="32.0"
-                                                                               prefWidth="32.0"/>
-                                                        </columnConstraints>
-                                                        <rowConstraints>
-                                                            <RowConstraints minHeight="10.0" prefHeight="30.0"
-                                                                            vgrow="SOMETIMES"/>
-                                                        </rowConstraints>
-                                                    </GridPane>
-                                                </ScrollPane>
-                                                <ScrollPane layoutX="476.0" layoutY="158.0" prefHeight="261.0"
-                                                            prefWidth="283.0">
-                                                    <FlowPane fx:id="mapEditorFlowPane" columnHalignment="CENTER"
-                                                              prefHeight="200.0" prefWidth="269.0"
-                                                              prefWrapLength="548.0"/>
-                                                </ScrollPane>
-                                                <ListView fx:id="mapEditorListView" layoutX="14.0" layoutY="109.0"
-                                                          prefHeight="270.0" prefWidth="93.0"/>
                                                 <TitledPane animated="false" layoutX="14.0" layoutY="15.0"
                                                             prefHeight="92.0" prefWidth="93.0" text="Map layer">
                                                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0"
@@ -622,6 +566,17 @@
                                                                      text="Bottom" toggleGroup="$mapLayerToggleGroup"/>
                                                     </AnchorPane>
                                                 </TitledPane>
+                                                <ListView fx:id="mapEditorListView" layoutX="14.0" layoutY="109.0"
+                                                          prefHeight="270.0" prefWidth="93.0"/>
+                                                <Button fx:id="undoMapEdit" layoutX="14.0" layoutY="386.0" minWidth="93.0"
+                                                        mnemonicParsing="false" onAction="#undoMapEditClick" text="Undo"/>
+                                                <Canvas fx:id="mapEditorCanvas" height="576.0" width="576.0" layoutX="115.0" layoutY="15.0"/>
+                                                <ScrollPane layoutX="700.0" layoutY="15.0" prefHeight="392.0"
+                                                            prefWidth="481.0">
+                                                    <FlowPane fx:id="mapEditorTilesFlowPane" columnHalignment="CENTER"
+                                                              prefHeight="390.0" prefWidth="463.0"
+                                                              prefWrapLength="482.0"  hgap="1.0" vgap="1.0"/>
+                                                </ScrollPane>
                                             </AnchorPane>
                                         </Tab>
                                         <Tab text="Text Translation">

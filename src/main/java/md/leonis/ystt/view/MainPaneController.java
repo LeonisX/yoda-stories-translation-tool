@@ -17,7 +17,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
@@ -35,6 +34,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
@@ -116,14 +116,15 @@ public class MainPaneController {
     public Canvas mapCanvas;
     public TableView<Zone> mapsTableView;
 
-    public ImageView mapEditorImageView;
-    public GridPane mapEditorGridPane;
-    public FlowPane mapEditorFlowPane;
-    public ListView mapEditorListView;
     public RadioButton topRadioButton;
-    public ToggleGroup mapLayerToggleGroup;
     public RadioButton middleRadioButton;
     public RadioButton bottomRadioButton;
+    public ToggleGroup mapLayerToggleGroup;
+    public ListView<String> mapEditorListView;
+    public Canvas mapEditorCanvas;
+    public FlowPane mapEditorTilesFlowPane;
+    public Button undoMapEdit;
+
     public Button dumpTextToDocx;
     public Button loadTranslatedText;
     public Button replaceTextInDta;
@@ -167,7 +168,7 @@ public class MainPaneController {
     List<String> ts, ts2;
 
     int prevTile = -1;
-    int prevTileX, prevTileY;
+    long prevTileAddress;
 
     private File clipboardFile;
 
@@ -186,7 +187,6 @@ public class MainPaneController {
         Button18Click(Self);*/
 
         spath = Paths.get(".");
-        opath = spath.resolve(OUTPUT);
 
         /*var k: Word;
 
@@ -236,6 +236,8 @@ public class MainPaneController {
             JavaFxUtils.showAlert("DTA file processing error", e);
         }
 
+        opath = spath.resolve(OUTPUT + '-' + section.revisionId);
+
         try {
             mapTileFlags(tilesContextMenu.getItems());
             updateUI();
@@ -265,14 +267,11 @@ public class MainPaneController {
 
         // Common information, sections
         internalVersionLabel.setText(section.version);
-        nameLabel.setText(section.dtaRevision);
+        nameLabel.setText(section.revision);
         sizeLabel.setText(section.dump.size() + " / " + section.exeDump.size());
         crc32Label.setText(section.dtaCrc32 + " / " + section.exeCrc32);
 
-        List<SectionMetrics> metrics = section.sections.values().stream()
-                .sorted(Comparator.comparing(SectionMetrics::getStartOffset)).collect(Collectors.toList());
-
-        commonInformationTableView.setItems(FXCollections.observableList(metrics));
+        commonInformationTableView.setItems(FXCollections.observableList(section.sectionsList));
 
         // Title image, palette
         drawTitleImage();
@@ -293,6 +292,10 @@ public class MainPaneController {
         mapsListView.getSelectionModel().selectedItemProperty().addListener(mapsListViewChangeListener);
         mapsListView.getSelectionModel().select(0);
         mapsTableView.setItems(FXCollections.observableList(section.maps));
+        mapEditorListView.setItems(FXCollections.observableList(section.maps.stream().map(m -> "Map #" + m.getId()).collect(Collectors.toList())));
+        mapEditorListView.getSelectionModel().selectedItemProperty().addListener(mapsEditorListViewChangeListener);
+        mapEditorListView.getSelectionModel().select(0);
+        drawMapEditorTiles();
 
         // Puzzles
         puzzlesCountLabel.setText(Integer.toString(section.puzzlesCount));
@@ -343,6 +346,22 @@ public class MainPaneController {
         }
     }
 
+    private void drawMapEditorTiles() {
+
+        try {
+            for (int i = 0; i < section.tilesCount; i++) {
+                ImageView image = new ImageView(GetWTile(i));
+                image.setUserData(i);
+                image.setOnMouseEntered(mouseEnteredHandler);
+                image.setOnMouseExited(mouseExitedHandler);
+                image.setOnContextMenuRequested(e -> tilesContextMenu.show((Node) e.getSource(), e.getScreenX(), e.getScreenY()));
+                mapEditorTilesFlowPane.getChildren().add(image);
+            }
+        } catch (Exception e) {
+            JavaFxUtils.showAlert("Tiles display error", e);
+        }
+    }
+
     EventHandler<MouseEvent> mouseEnteredHandler = new EventHandler<MouseEvent>() {
 
         @Override
@@ -374,7 +393,7 @@ public class MainPaneController {
         return tileFlagsMap.get(flag).getText();
     }
 
-    //TODO select flag in context menu
+    //TODO select flag in context menu; may be not need
     private void SetFlagMenuItem(String flag) {
     /*
     var i: Word;
@@ -397,20 +416,47 @@ public class MainPaneController {
 
         @Override
         public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-            drawMap(mapsListView.getSelectionModel().getSelectedIndex());
+            if (mapsListView.getSelectionModel().getSelectedIndex() >= 0) {
+                drawViewMap(mapsListView.getSelectionModel().getSelectedIndex());
+            }
         }
     };
 
-    private void drawMap(int id) {
+    private void drawViewMap(int id) {
         try {
             //ReadIZON(id, false);
-            ReadMap(id, normalSaveCheckBox.isSelected() || groupByFlagsCheckBox.isSelected() || groupByPlanetTypeCheckBox.isSelected(), false);
+            ReadMap(mapCanvas, id, true, normalSaveCheckBox.isSelected() || groupByFlagsCheckBox.isSelected() || groupByPlanetTypeCheckBox.isSelected());
         } catch (Exception e) {
             JavaFxUtils.showAlert(String.format("Map %s display error", id), e);
         }
     }
 
-    private void ReadMap(int id, boolean show, boolean save) throws IOException {
+    ChangeListener<String> mapsEditorListViewChangeListener = new ChangeListener<String>() {
+
+        @Override
+        public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+            if (mapEditorListView.getSelectionModel().getSelectedIndex() >= 0) {
+                drawEditorMap(mapEditorListView.getSelectionModel().getSelectedIndex());
+                //TODO move map editor tiles, undo button
+            }
+        }
+    };
+
+    private void drawEditorMap(int id) {
+        try {
+            //ReadIZON(id, false);
+            ReadMap(mapEditorCanvas, id, true, normalSaveCheckBox.isSelected() || groupByFlagsCheckBox.isSelected() || groupByPlanetTypeCheckBox.isSelected());
+        } catch (Exception e) {
+            JavaFxUtils.showAlert(String.format("Map %s display error", id), e);
+        }
+    }
+
+    //TODO
+    public void undoMapEditClick(ActionEvent actionEvent) {
+    }
+
+    //TODO refactor this
+    private void ReadMap(Canvas canvas, int id, boolean show, boolean save) throws IOException {
 
         section.SetPosition(section.maps.get(id).getPosition());   // go to map data
         int pn = section.ReadWord();               // number:word; //2 bytes - serial number of the map starting with 0
@@ -431,18 +477,18 @@ public class MainPaneController {
         statusLabel.setText("Map: " + pn + " (" + Section.PLANETS[planet] + ")");
 
         if (show) {
-            mapCanvas.setWidth(w * TILE_SIZE);
-            mapCanvas.setHeight(h * TILE_SIZE);
+            canvas.setWidth(w * TILE_SIZE);
+            canvas.setHeight(h * TILE_SIZE);
 
-            mapCanvas.getGraphicsContext2D().setFill(Color.rgb(1, 1, 1));
-            mapCanvas.getGraphicsContext2D().fillRect(0, 0, mapCanvas.getWidth(), mapCanvas.getHeight());
+            canvas.getGraphicsContext2D().setFill(Color.rgb(1, 1, 1));
+            canvas.getGraphicsContext2D().fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
             for (int y = 0; y < h; y++) {
                 for (int x = 0; x < w; x++) {
                     //W*H*6 bytes: map data
-                    drawTileOnMap(x, y);
-                    drawTileOnMap(x, y);
-                    drawTileOnMap(x, y);
+                    drawTileOnMap(canvas, x, y);
+                    drawTileOnMap(canvas, x, y);
+                    drawTileOnMap(canvas, x, y);
                 }
             }
         }
@@ -452,34 +498,34 @@ public class MainPaneController {
         if (normalSaveCheckBox.isSelected() && save) {
             Path path = opath.resolve("Maps");
             IOUtils.createDirectories(path);
-            BMPWriter.write8bit(mapCanvas, path.resolve(StringUtils.leftPad(Integer.toString(id), 3, '0')));
+            BMPWriter.write8bit(canvas, path.resolve(StringUtils.leftPad(Integer.toString(id), 3, '0')));
         }
 
         if (groupByFlagsCheckBox.isSelected() && save) {
             Path path = opath.resolve("MapsByFlags").resolve(IntToBin(flag));
             IOUtils.createDirectories(path);
-            BMPWriter.write8bit(mapCanvas, path.resolve(StringUtils.leftPad(Integer.toString(id), 3, '0')));
+            BMPWriter.write8bit(canvas, path.resolve(StringUtils.leftPad(Integer.toString(id), 3, '0')));
         }
 
         if (groupByPlanetTypeCheckBox.isSelected() && save) {
             Path path = opath.resolve("MapsByPlanetType").resolve(Section.PLANETS[planet]);
             IOUtils.createDirectories(path);
-            BMPWriter.write8bit(mapCanvas, path.resolve(StringUtils.leftPad(Integer.toString(id), 3, '0')));
+            BMPWriter.write8bit(canvas, path.resolve(StringUtils.leftPad(Integer.toString(id), 3, '0')));
         }
     }
 
-    private void drawTileOnMap(int x, int y) {
+    private void drawTileOnMap(Canvas canvas, int x, int y) {
 
         int k = section.ReadWord();
-        if (k != 0xFFFF) {
+        if (k < section.tilesCount) {
             section.tiles[k] = true;
-            GetWTile(k, mapCanvas, x * TILE_SIZE, y * TILE_SIZE, null);
+            GetWTile(k, canvas, x * TILE_SIZE, y * TILE_SIZE, null);
         }
     }
 
     private void ReadIZON(int id, boolean save) throws IOException {
 
-        ReadMap(id, normalSaveCheckBox.isSelected() || groupByFlagsCheckBox.isSelected() || groupByPlanetTypeCheckBox.isSelected(), save);
+        ReadMap(mapCanvas, id, normalSaveCheckBox.isSelected() || groupByFlagsCheckBox.isSelected() || groupByPlanetTypeCheckBox.isSelected(), save);
 
         //TODO
         //MapProgressBar.Position :=id;
@@ -535,7 +581,7 @@ public class MainPaneController {
                 //DumpText(section.GetPosition(), size);
             }
             if (dumpActionsCheckBox.isSelected()) {
-                String fileName = StringUtils.leftPad("000" + id, 3, "0") + '-' + StringUtils.leftPad("000" + k, 3, "0");
+                String fileName = StringUtils.leftPad("" + id, 3, "0") + '-' + StringUtils.leftPad("" + k, 3, "0");
                 Path path = opath.resolve("IACT").resolve(fileName);
                 DumpData(path, section.GetPosition(), size);
             } else {
@@ -607,7 +653,12 @@ public class MainPaneController {
             ImageView imageView = (ImageView) children.get(i);
             imageView.setImage(GetWTile(i));
         }
-        //TODO redraw clipboard,  other images
+        children = mapEditorTilesFlowPane.getChildren();
+        for (int i = 0; i < children.size(); i++) {
+            ImageView imageView = (ImageView) children.get(i);
+            imageView.setImage(GetWTile(i));
+        }
+        //TODO redraw clipboard,  other images//TODO redraw clipboard,  other images
     }
 
     //TODO
@@ -622,9 +673,20 @@ public class MainPaneController {
     public void aboutMenuItemClick() {
     }
 
+    public void dumpAllSectionsButtonClick() {
 
-    //TODO
-    public void dumpAllSectionsButtonClick(ActionEvent actionEvent) {
+        try {
+            Path path = opath.resolve("Dumps");
+            IOUtils.createDirectories(path);
+            for (SectionMetrics s : section.sectionsList) {
+                KnownSections name = s.getSection();
+                DumpData(path.resolve(name + ".bin"), section.GetStartOffset(name), section.GetFullSize(name));
+                Section.Log.debug(name + " is saved");
+            }
+            // TODO Showmessage('OK');
+        } catch (Exception e) {
+            JavaFxUtils.showAlert("Sections dumping error", e);
+        }
     }
 
     //TODO
@@ -646,10 +708,11 @@ public class MainPaneController {
         // TODO Log.Debug('Title screen saved')
 
         try {
+            Path path = opath.resolve("stup" + E_BMP);
             if (titleScreenImageView.getUserData() != null) {
-                BMPWriter.write((BMPImage) titleScreenImageView.getUserData(), new File("D:\\Working\\_Yoda\\YExplorer\\out\\output-eng-2\\STUPti.bmp"));
+                BMPWriter.write((BMPImage) titleScreenImageView.getUserData(), path);
             } else {
-                BMPWriter.write8bit(titleScreenImageView, new File("D:\\Working\\_Yoda\\YExplorer\\out\\output-eng-2\\STUPi.bmp"));
+                BMPWriter.write8bit(titleScreenImageView, path.toFile());
             }
         } catch (Exception e) {
             JavaFxUtils.showAlert("Title screen saving error", e);
@@ -658,10 +721,8 @@ public class MainPaneController {
 
     public void loadFromBitmapButtonClick() {
 
-        //TODO LoadBMP('output/STUP.bmp',bmp);
-
         try {
-            BMPImage titleImage = BMPReader.readExt(new File("D:\\Working\\_Yoda\\YExplorer\\out\\output-eng-2\\STUP.bmp"));
+            BMPImage titleImage = BMPReader.readExt(opath.resolve("stup" + E_BMP));
 
             //TODO notify if not indexed
             WritableImage image = new WritableImage(titleImage.getWidth(), titleImage.getHeight());
@@ -675,7 +736,7 @@ public class MainPaneController {
 
     public void savePaletteButtonButtonClick() {
         try {
-            BMPWriter.write8bit(paletteCanvas, new File("D:\\Working\\_Yoda\\YExplorer\\out\\output-eng-2\\palette.bmp"));
+            BMPWriter.write8bit(paletteCanvas, opath.resolve("palette" + E_BMP));
         } catch (Exception e) {
             JavaFxUtils.showAlert("Palette loading error", e);
         }
@@ -683,7 +744,7 @@ public class MainPaneController {
 
     public void dumpPaletteButtonButtonClick() {
         try {
-            PaletteUtils.saveToFile(gamePalette, "D:\\Working\\_Yoda\\YExplorer\\out\\output-eng-2\\palette.pal");
+            PaletteUtils.saveToFile(gamePalette, opath.resolve("palette.pal"));
         } catch (Exception e) {
             JavaFxUtils.showAlert("Palette saving error", e);
         }
@@ -691,7 +752,7 @@ public class MainPaneController {
 
     public void saveSoundsListToFileButtonClick() {
         try {
-            IOUtils.saveTextFile(section.sounds, Paths.get("D:\\Working\\_Yoda\\YExplorer\\out\\output-eng-2\\SNDSn.txt"));
+            IOUtils.saveTextFile(section.sounds, opath.resolve("snds.txt"));
         } catch (Exception e) {
             JavaFxUtils.showAlert("Sounds list saving error", e);
         }
@@ -720,7 +781,7 @@ public class MainPaneController {
             section.SetPosition(KnownSections.TILE);
             for (int i = 0; i < section.tilesCount; i++) {
 
-                long attr = section.ReadLongWord(); // attributes
+                long attr = section.GetTileFlag(i); // attributes
                 //ReadPicture(section, 0);
                 //CopyPicture(TileImage, 0, 0);
                 //TODO Application.ProcessMessages;
@@ -733,7 +794,8 @@ public class MainPaneController {
                 }
 
                 if (groupByAttributesFilenamesCheckBox.isSelected()) {
-                    Path path = attrPath.resolve(IntToBin(attr) + " (" + attr + ")");
+                    String binaryAttr = StringUtils.right(StringUtils.leftPad(Long.toBinaryString(attr), 32, '0'), 32);
+                    Path path = attrPath.resolve(binaryAttr + " (" + attr + ")");
                     IOUtils.createDirectories(path);
                     BMPWriter.write(GetTile(i), path.resolve(StringUtils.leftPad(Integer.toString(i), 4, "0") + E_BMP).toFile());
                 }
@@ -891,6 +953,8 @@ public class MainPaneController {
         if (dumpTextCheckBox.isSelected()) {
             IOUtils.saveTextFile(texts, opath.resolve("iact.txt"));
         }
+        //TODO uncomment, if need
+        //ViewMap(MapsListStringGrid.Row);
     }
 
 
@@ -904,32 +968,35 @@ public class MainPaneController {
 
     function idDeprecatedWords(text: String): Boolean;
 const arr: Array[1..100] of String = (
-            'el:', 'ckup L', 'MS S', 'ЂОЅ', 'n 2', 'Redra', 'Remov', 'Redr', 'plac', 'Sho',
-            'Show', 'opI', 'ne ', 'Red', 'Set', 'wRandN', 'up L', 'Remove~', 'ng, ', 'opIt',
-            'Redraw', 'ckup', 'Y: 12 ', 'Bump', 'Pick', 'Bum', 'Has', 'ђ0n', 'Pickup L', 'SetHer',
-            'BumpTi', 'Repla', 'MS San', 'Remove,', 'd my j', 'WaitF', 'SetH', 'SetHe', 'RandNu', 'eIte',
-            'n 1 an', 'њњћ', 'LчЅ', '6,12', '0, 1', 'Door', 'aySo', 'c X:', 'Game', 'Р©µ',
-            'Remove', 'a l', 'ndNu', 'PlayS', 'Force ', ' Lev', 'ter:', 'ter:F', 'ЂЫ№', 'o Na',
-            't•±', '4kЯ', 'w on o', 'ndN', 'HotS', 'ЂУґ', 'perial', '12 Y', 'Name', 'sta',
-            'Wait', 'securi', '''s don', 'cku', 'ДFВ', 'rTim', 'Wai', 'шн±', 'Backgr', 'e''s',
-            'MS ', ' ’µ', 'h th', 'n''t th', 'u ta', 's! What ', 'Pic', '¤K‡', 'Wait', 'Coun',
-            '#####', 'ґъm', 'up ', 'Sav', 'яяяяяяяя', 'Rep', 'ёDґ', '!!!', 'ф$‚', 'Coun'
-            );
-    var i: byte;
-    begin
-    result := false;
-        for i := 1 to Length(arr) do
-            if arr[i] = text then result := true;
-        if not result then result := AnsiStartsStr('ShowT', text);
-        if not result then result := AnsiStartsStr('awArea', text);
-        if not result then result := AnsiStartsStr('HasI', text);
-        if not result then result := AnsiStartsStr('ZX', text);
-        if not result then result := AnsiStartsStr(' X:', text);
-        if not result then result := AnsiStartsStr(',', text);
+'el:', 'ckup L', 'MS S', 'ЂОЅ', 'n 2', '######', '######', '######', 'plac', 'Sho',
+'Show', 'opI', 'ne ', 'Red', 'Set', '######', 'up L', '######', 'ng, ', 'opIt',
+'######', 'ckup', 'Y: 12 ', 'Bump', 'Pick', 'Bum', 'Has', 'ђ0n', 'Pickup L', 'SetHer',
+'BumpTi', 'Repla', 'MS San', '######', 'd my j', 'WaitF', 'SetH', 'SetHe', '######', 'eIte',
+'n 1 an', 'њњћ', 'LчЅ', '6,12', '0, 1', 'Door', 'aySo', 'c X:', 'Game', 'Р©µ',
+'######', 'a l', '######', 'PlayS', 'Force ', ' Lev', 'ter:', 'ter:F', 'ЂЫ№', 'o Na',
+'t•±', '4kЯ', 'w on o', 'ndN', 'HotS', 'ЂУґ', 'perial', '12 Y', 'Name', 'sta',
+'Wait', 'securi', '''s don', 'cku', 'ДFВ', 'rTim', 'Wai', 'шн±', 'Backgr', 'e''s',
+'MS ', ' ’µ', 'h th', 'n''t th', 'u ta', 's! What ', 'Pic', '¤K‡', 'Wait', 'Coun',
+'#####', 'ґъm', 'up ', 'Sav', 'яяяяяяяя', 'Rep', 'ёDґ', '!!!', 'ф$‚', 'Coun'
+);
 
-        if text[1] = ',' then result := true;
-        if text[1] = ':' then result := true;
-    end;
+var i: byte;
+begin
+  result := false;
+  for i := 1 to Length(arr) do if arr[i] = text then result := true;
+  if not result then result := AnsiStartsStr('Remov', text) and (Length(text) <= 7);
+  if not result then result := AnsiStartsStr('Redr', text) and (Length(text) <= 6);
+  if not result then result := AnsiStartsStr('ShowT', text);
+  if not result then result := AnsiStartsStr('awArea', text);
+  if not result then result := AnsiContainsStr(text, 'ndN');
+  if not result then result := AnsiStartsStr('HasI', text);
+  if not result then result := AnsiStartsStr('ZX', text);
+  if not result then result := AnsiStartsStr(' X:', text);
+  if not result then result := AnsiStartsStr(',', text);
+
+  if text[1] = ',' then result := true;
+  if text[1] = ':' then result := true;
+end;
 
     procedure TMainForm.DumpText(index: Cardinal; size: Word);
     var idx, tempIndex: Cardinal;
@@ -1287,6 +1354,7 @@ const arr: Array[1..100] of String = (
     name := name + chr(k);              // Character name, ended with $00 <= 16
     k := DTA.ReadByte;
     end;
+    texts.Add(name);
     seq := '';
   if Length(name) mod 2 = 0 then seq := seq + IntToHex(DTA.ReadByte, 2) + ' ';
     k := DTA.ReadByte;
@@ -1451,33 +1519,34 @@ const arr: Array[1..100] of String = (
 
 
     procedure TMainForm.Adddtiles1Click(Sender: TObject);
-    var count: Byte;
-    size: Cardinal;
-    begin
-    count := StrToInt(InputBox('Add tile(s)', 'How many tiles to add?', '0'));
+var count: Byte;
+  size: Cardinal;
+begin
+  count := StrToInt(InputBox('Add tile(s)', 'How many tiles to add?', '0'));
   if count > 0 then
-            begin
+  begin
     DTA.SetPosition(DTA.GetDataOffset(knownSections[4]) + DTA.tilesCount * $404);
     size := $404 * count;
     DTA.InsertEmptyArea(size);
     DTA.SetPosition(DTA.GetDataOffset(knownSections[4]) - 4);
     DTA.WriteLongWord(DTA.GetDataSize(knownSections[4]) + size);
     ScanFileAndUpdate;
-    end;
-    end;
+    prevTile := -1;
+  end;
+end;
 
-
-    procedure TMainForm.Deletetile1Click(Sender: TObject);
-    begin
+procedure TMainForm.Deletetile1Click(Sender: TObject);
+begin
   if MessageDlg('Are you sure to delete current tile?', mtConfirmation, [mbYes, mbNo], 0) = mrYes then
-    begin
+  begin
     DTA.SetPosition(DTA.GetDataOffset(knownSections[4]) + selectedCell * $404);
     DTA.DeleteArea($404);
     DTA.SetPosition(DTA.GetDataOffset(knownSections[4]) - 4);
     DTA.WriteLongWord(DTA.GetDataSize(knownSections[4]) - $404);
     ScanFileAndUpdate;
-    end;
-    end;
+    prevTile := -1;
+  end;
+end;
 
 
     procedure TMainForm.MapsListStringGridSelectCell(Sender: TObject; ACol, ARow: Integer; var CanSelect: Boolean);
@@ -2051,33 +2120,37 @@ const arr: Array[1..100] of String = (
   DTA.SetPosition(TMap(DTA.maps.Objects[MapsListStringGrid.Row]).mapOffset);   // go to map data
   DTA.ReadString(10);
     w := DTA.ReadWord;                // width:word; //2 bytes: map width (W)
-    h := DTA.ReadWord;                // height:word; //2 bytes: map height (H)
-  DTA.ReadString(8);
+    //h := DTA.ReadWord;                // height:word; //2 bytes: map height (H)
+  //DTA.ReadString(8);
+  DTA.ReadString(10);
   DTA.MovePosition((top * w + left) * 6);
   if concrete then DTA.MovePosition(RadioGroup1.ItemIndex * 2);
     end;
 
 
     procedure TMainForm.MapImageDragDrop(Sender, Source: TObject; X, Y: Integer);
-    begin
-    prevTileX := x div 32;
-    prevTileY := y div 32;
-    SelectMapTile(x, y, true);
-    prevTile := DTA.ReadWord;
+begin
+  SelectMapTile(x, y, true);
+  prevTileAddress := DTA.GetPosition;
+  prevTile := DTA.ReadWord;
   DTA.MovePosition(-2);
   DTA.WriteWord(selectedCell);
-    ViewMap(MapsListStringGrid.Row);
-    end;
+  Highlight(DTA.GetPosition - 2, 2);
+  ViewMap(MapsListStringGrid.Row);
+end;
 
 
     procedure TMainForm.MapImageMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-    var pnt: TPoint;
-    t1, t2, t3: Word;
-    begin
-    SelectMapTile(x, y, false);
-    t1 := DTA.ReadWord;
-    t2 := DTA.ReadWord;
-    t3 := DTA.ReadWord;
+var pnt: TPoint;
+begin
+  SelectMapTile(x, y, false);
+  Highlight(DTA.GetPosition, 6);
+  if (Button = mbRight) and GetCursorPos(pnt) and TabSheet18.Visible then
+  begin
+    Undo1.Enabled := prevTile <> -1;
+    MapPopupMenu.Popup(pnt.X - 7, pnt.Y - 10);
+  end;
+end;
 
     StatusBar.Panels[0].Text := '$' + IntToHex(t1, 4) + ' $' + IntToHex(t2, 4) + ' $' + IntToHex(t3, 4) + ' (bottom, middle, top)';
 
@@ -2092,30 +2165,46 @@ const arr: Array[1..100] of String = (
 
 
     procedure TMainForm.Undo1Click(Sender: TObject);
-    begin
+begin
   if prevTile <> -1 then
-            begin
-    SelectMapTile(prevTileX, prevTileY, true);
+  begin
+    DTA.SetPosition(prevTileAddress);
     DTA.WriteWord(prevTile);
+    Highlight(DTA.GetPosition - 2, 2);
     prevTile := -1;
     ViewMap(MapsListStringGrid.Row);
-    end;
-    end;
+  end;
+end;
 
 
     procedure TMainForm.Empty1Click(Sender: TObject);
-    var
-    pt : tPoint;
-    begin
-    pt := ScreenToClient(Mouse.CursorPos);
-    prevTileX := pt.x div 32;
-    prevTileY := pt.y div 32;
-    SelectMapTile(prevTileX, prevTileY, true);
-    prevTile := DTA.ReadWord;
+var pt : tPoint;
+begin
+  pt := ScreenToClient(Mouse.CursorPos);
+  SelectMapTile(pt.x div 32, pt.y div 32, true);
+  prevTileAddress := DTA.GetPosition;
+  prevTile := DTA.ReadWord;
   DTA.MovePosition(-2);
   DTA.WriteWord($FFFF);
-    ViewMap(MapsListStringGrid.Row);
-    end;*/
+  Highlight(DTA.GetPosition - 2, 2);
+  ViewMap(MapsListStringGrid.Row);
+end;
+
+procedure TMainForm.Save1Click(Sender: TObject);
+begin
+  Hex.LoadFromStream(DTA.data);
+  Hex.Save;
+  ShowMessage('OK');
+end;
+
+procedure TMainForm.Save2Click(Sender: TObject);
+begin
+  if SaveDTADialog.Execute then
+  begin
+    Hex.LoadFromStream(DTA.data);
+    Hex.SaveToFile(SaveDTADialog.FileName, true);
+  end;
+end;*/
 
 
     /*procedure TMainForm.HEXMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
@@ -2169,4 +2258,5 @@ const arr: Array[1..100] of String = (
     private void fillMapTile(Canvas canvas, int xOffset, int yOffset, Color color) {
         ImageUtils.fillCanvas(canvas, xOffset, yOffset, color);
     }
+
 }

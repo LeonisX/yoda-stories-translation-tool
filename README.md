@@ -2,21 +2,23 @@
 
 Utility Yoda Stories Translation Tool
 
-**Current status: starting only**
+**Current status: read only, partially dumping**
 
-**Current stage: project development**
+**Current stage: port from Delphi**
 
 An original version: https://github.com/LeonisX/YExplorer
 
 ## TODO
 
-* Maps editor
-* Dump all
+* Dump puzzles
+* Characters - show in UI (table), dump
+* Names - show in UI (list), dump
 * Dump texts to DOCX (separators, IACT/PUZ2 labels, ignore them, allow blocked text)
-* Replace tiles, maps
+* Replace tiles, maps, Undo
 * Replace text from DOCX
 * Log
 * HEX
+* Тяжёлые процессы дампинга лучше вынести в отдельный поток
 
 * Prepare translated DTA & dump it here
 

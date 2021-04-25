@@ -9,6 +9,7 @@ package net.sf.image4j.codec.bmp;
 import java.awt.image.*;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.WritableImage;
@@ -539,8 +540,8 @@ public class BMPReader {
      * @return the decoded image read from the source file
      * @throws java.io.IOException if an error occurs
      */
-    public static BufferedImage read(java.io.File file) throws IOException {
-        java.io.FileInputStream fin = new java.io.FileInputStream(file);
+    public static BufferedImage read(File file) throws IOException {
+        FileInputStream fin = new FileInputStream(file);
         try {
             return read(new BufferedInputStream(fin));
         } finally {
@@ -563,8 +564,8 @@ public class BMPReader {
         return d.getBufferedImage();
     }
 
-  public static WritableImage readWI(java.io.File file) throws IOException {
-    java.io.FileInputStream fin = new java.io.FileInputStream(file);
+  public static WritableImage readWI(File file) throws IOException {
+    FileInputStream fin = new FileInputStream(file);
     try {
       return SwingFXUtils.toFXImage(read(new BufferedInputStream(fin)), null);
     } finally {
@@ -575,6 +576,10 @@ public class BMPReader {
     }
   }
 
+    public static BMPImage readExt(Path path) throws IOException {
+        return readExt(path.toFile());
+    }
+    
     /**
      * Reads and decodes BMP data from the source file, together with metadata.
      *
@@ -583,8 +588,8 @@ public class BMPReader {
      * @throws java.io.IOException if an error occurs
      * @since 0.7
      */
-    public static BMPImage readExt(java.io.File file) throws IOException {
-        java.io.FileInputStream fin = new java.io.FileInputStream(file);
+    public static BMPImage readExt(File file) throws IOException {
+        FileInputStream fin = new FileInputStream(file);
         try {
             return readExt(new BufferedInputStream(fin));
         } finally {
