@@ -415,8 +415,7 @@ public class MainPaneController {
     }
 
     private void ReadMap(int id, boolean show, boolean save) throws IOException {
-    /*var s: String;
-    k, w, h, i, j, flag, planet: Word;*/
+
         section.SetPosition(section.maps.get(id).getPosition());   // go to map data
         int pn = section.ReadWord();               // number:word; //2 bytes - serial number of the map starting with 0
         if (pn != id) {
@@ -443,7 +442,7 @@ public class MainPaneController {
             mapCanvas.getGraphicsContext2D().fillRect(0, 0, mapCanvas.getWidth(), mapCanvas.getHeight());
 
             for (int y = 0; y < h; y++) {
-                for (int x = 0; x < h; x++) {
+                for (int x = 0; x < w; x++) {
                     //W*H*6 bytes: map data
                     drawTileOnMap(x, y);
                     drawTileOnMap(x, y);
@@ -478,7 +477,7 @@ public class MainPaneController {
         int k = section.ReadWord();
         if (k != 0xFFFF) {
             section.tiles[k] = true;
-            GetWTile(k, mapCanvas, x * 32, y * 32);
+            GetWTile(k, mapCanvas, x * 32, y * 32, null);
         }
     }
 
@@ -643,23 +642,24 @@ public class MainPaneController {
     public void replacePETextInDtaClick() {
     }
 
-
-    //TODO error processing
-    public void saveToBitmapButtonClick() throws IOException {
+    public void saveToBitmapButtonClick() {
 
         // TODO Log.Clear;
         // TODO IOUtils.createDirectories("");
         // TODO Log.Debug('Title screen saved')
 
-        if (titleScreenImageView.getUserData() != null) {
-            BMPEncoder.write((BMPImage) titleScreenImageView.getUserData(), new File("D:\\Working\\_Yoda\\YExplorer\\out\\output-eng-2\\STUPti.bmp"));
-        } else {
-            BMPEncoder.write8bit(titleScreenImageView, new File("D:\\Working\\_Yoda\\YExplorer\\out\\output-eng-2\\STUPi.bmp"));
+        try {
+            if (titleScreenImageView.getUserData() != null) {
+                BMPEncoder.write((BMPImage) titleScreenImageView.getUserData(), new File("D:\\Working\\_Yoda\\YExplorer\\out\\output-eng-2\\STUPti.bmp"));
+            } else {
+                BMPEncoder.write8bit(titleScreenImageView, new File("D:\\Working\\_Yoda\\YExplorer\\out\\output-eng-2\\STUPi.bmp"));
+            }
+        } catch (Exception e) {
+            JavaFxUtils.showAlert("Title screen saving error", e);
         }
     }
 
-    //TODO error processing
-    public void loadFromBitmapButtonClick(ActionEvent actionEvent) throws IOException {
+    public void loadFromBitmapButtonClick() {
 
         //TODO LoadBMP('output/STUP.bmp',bmp);
 
@@ -669,13 +669,6 @@ public class MainPaneController {
             //TODO notify if not indexed
             WritableImage image = new WritableImage(titleImage.getWidth(), titleImage.getHeight());
             SwingFXUtils.toFXImage(titleImage.getImage(), image);
-
-            for (int y = 0; y < image.getWidth(); y++) {
-                for (int x = 0; x < image.getHeight(); x++) {
-                    Color color = image.getPixelReader().getColor(x, y);
-                    //titleScreenCanvas.getGraphicsContext2D().getPixelWriter().setColor(x, y, color);
-                }
-            }
             titleScreenImageView.setImage(image);
             titleScreenImageView.setUserData(titleImage);
         } catch (Exception e) {
@@ -707,6 +700,7 @@ public class MainPaneController {
         }
     }
 
+    //TODO need refactor
     public void saveTilesToSeparateFilesClick() {
 
         try {
@@ -761,8 +755,30 @@ public class MainPaneController {
         }
     }
 
-    //TODO
-    public void saveTilesToOneFileClick(ActionEvent actionEvent) {
+    public void saveTilesToOneFileClick() {
+
+        try {
+            int width = Integer.parseInt(tilesInARowTextField.getText());
+            int height = (int) Math.ceil(section.tilesCount * 1.0 / width);
+
+            Canvas canvas = new Canvas(width * 32, height * 32);
+
+            int k = 0;
+            for (int y = 0; y < height; y++) {
+                for (int x = 0; x < width; x++) {
+                    if ((y * width + x) < section.tilesCount) {
+                        GetWTile(k, canvas, x * 32, y * 32, currentFillColor);
+                        k++;
+                    }
+                }
+            }
+
+            Path path = opath.resolve(String.format("tiles%sx%s%s", width, height, E_BMP));
+            BMPEncoder.write8bit(canvas, path);
+            Section.Log.debug("OK");
+        } catch (Exception e) {
+            JavaFxUtils.showAlert("Error saving tiles to a single file", e);
+        }
     }
 
     public void clipboardImageViewMouseEntered(MouseEvent mouseEvent) {
@@ -1123,19 +1139,6 @@ const arr: Array[1..100] of String = (
     end;
     end;
 
-    procedure TMainForm.Button3Click(Sender: TObject);
-    begin
-  if SaveClipboardDialog.Execute then ClipboardImage.Picture.SaveToFile(SaveClipboardDialog.FileName);
-    end;
-
-    procedure TMainForm.Button4Click(Sender: TObject);
-    begin
-    if OpenClipboardDialog.Execute then
-    begin
-      ClipboardImage.Picture.LoadFromFile(OpenClipboardDialog.FileName);
-    ZeroColorRGDo(true);
-    end;
-    end;
 
     procedure TMainForm.Button5Click(Sender: TObject);
     var r: TRect;
@@ -1181,11 +1184,13 @@ const arr: Array[1..100] of String = (
     end;
     end;
 
+//Save DTA
     procedure TMainForm.Button6Click(Sender: TObject);
     begin
   if SaveDTADialog.Execute then DTA.SaveToFile(SaveDTADialog.FileName);
     end;
 
+// Load from BMP
     procedure TMainForm.Button7Click(Sender: TObject);
     var p: PByteArray;
     i, j: Word;
@@ -1207,27 +1212,6 @@ const arr: Array[1..100] of String = (
     end;
     end;
 
-    procedure TMainForm.Button8Click(Sender: TObject);
-    var w, h, i, j: Word;
-    begin
-    w := StrToInt(Edit1.text);
-    h := DTA.tilesCount div w + 1;
-    BMP2 := TBitmap.Create;
-    BMP2.PixelFormat := pf8bit;
-    FillInternalPalette(BMP2, currentFillColor);
-    BMP2.Width := w * 32;
-    BMP2.Height := h * 32;
-
-  for i := 0 to h - 1 do
-            for j := 0 to w - 1 do
-            if i * w + j < DTA.tilesCount then
-    begin
-    GetTile(dta, i * w + j, bmp);
-    DrawBMP(BMP2, j * 32, i * 32, BMP);
-    end;
-
-  BMP2.SaveToFile(opath + 'tiles' + inttostr(w) +'x' + inttostr(h) + '.bmp');
-    end;
 
     procedure TMainForm.Button9Click(Sender: TObject);
     var i: Word;
@@ -2174,17 +2158,16 @@ const arr: Array[1..100] of String = (
         return image;
     }
 
-    private void GetWTile(int tileId, Canvas canvas, int xOffset, int yOffset) {
+    private void GetWTile(int tileId, Canvas canvas, int xOffset, int yOffset, Color transparentColor) {
 
         int index = section.GetPosition();
         //System.out.println(String.format("%s %s/%s", tileId, xOffset, yOffset));
         section.SetPosition(section.GetDataOffset(KnownSections.TILE) + tileId * 0x404 + 4);
-        ImageUtils.drawOnCanvas(canvas, xOffset, yOffset);
+        ImageUtils.drawOnCanvas(canvas, xOffset, yOffset, transparentColor);
         section.SetPosition(index);
     }
 
     private void fillMapTile(Canvas canvas, int xOffset, int yOffset, Color color) {
-
-        ImageUtils.drawOnCanvas(canvas, xOffset, yOffset, color);
+        ImageUtils.fillCanvas(canvas, xOffset, yOffset, color);
     }
 }

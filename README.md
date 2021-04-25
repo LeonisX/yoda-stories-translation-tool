@@ -33,11 +33,26 @@ An original version: https://github.com/LeonisX/YExplorer
 
 * TODO tests!!!!!!!!!!!!!!!
 
+* UnsignedInt, ... - изучить доступные решения. идея простая - возвращать number, но если минус, то тип на порядок больше.
+* Article about unsigned (hex editor, port from delphi, mathematic, before java 8, current solutions, examples)
+
 * Remove all text from DTA, save puz2, iacts together, verify if all phrases was found
 * Paste from clipboard (good idea)
 * Validate loaded BMP palette
 * In Map we save offset before title (ex. IZX3). But IACT - we save offset after title. Need to unify all. 
 * PUZ2 - если смотреть в дампах, то там перед текстом попадается левый текст, вроде: Bogus text; Unused text, right; Look elsewhere for this text. 
+
+### Insigned:
+
+* https://github.com/robig/axis2-adb/tree/master/src/main/java/org/apache/axis2/databinding/types
+* https://github.com/google/guava/tree/master/guava/src/com/google/common/primitives
+* https://github.com/jOOQ/jOOU/tree/main/jOOU/src/main/java/org/joou
+* https://github.com/OPCFoundation/UA-Java-Legacy/tree/master/src/main/java/org/opcfoundation/ua/builtintypes
+* http://faculty.nps.edu/brutzman/vrtp/javadoc/dis-java-vrml/mil/navy/nps/util/package-summary.html
+* https://stackoverflow.com/questions/430346/why-doesnt-java-support-unsigned-ints
+* https://stackoverflow.com/questions/8345603/is-javas-lack-of-unsigned-primitive-types-a-characteristic-of-java-the-platform
+* https://habr.com/ru/post/225901/
+* https://www.teamdev.com/downloads/jniwrapper/javadoc/com/jniwrapper/package-summary.html
 
 ### BMP
 

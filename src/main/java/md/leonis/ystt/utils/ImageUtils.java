@@ -60,7 +60,7 @@ public class ImageUtils {
         }
     }
 
-    public static void drawOnCanvas(Canvas canvas, int xOffset, int yOffset) {
+    public static void drawOnCanvas(Canvas canvas, int xOffset, int yOffset, Color transparentColor) {
 
         for (int y = 0; y < 32; y++) {
             for (int x = 0; x < 32; x++) {
@@ -68,17 +68,19 @@ public class ImageUtils {
                 if (colorIndex != 0) {
                     Color color = Config.palette[colorIndex];
                     canvas.getGraphicsContext2D().getPixelWriter().setColor(xOffset + x, yOffset + y, color);
+                } else if (null != transparentColor) {
+                    canvas.getGraphicsContext2D().getPixelWriter().setColor(xOffset + x, yOffset + y, transparentColor);
                 }
                 /*titleScreenCanvas.getGraphicsContext2D().getPixelWriter().setArgb(x, y, palette[index]);*/
             }
         }
     }
 
-    public static void drawOnCanvas(Canvas canvas, int xOffset, int yOffset, Color color) {
+    public static void fillCanvas(Canvas canvas, int xOffset, int yOffset, Color fillColor) {
 
         for (int y = 0; y < 32; y++) {
             for (int x = 0; x < 32; x++) {
-                canvas.getGraphicsContext2D().getPixelWriter().setColor(xOffset + x, yOffset + y, color);
+                canvas.getGraphicsContext2D().getPixelWriter().setColor(xOffset + x, yOffset + y, fillColor);
             }
         }
     }
