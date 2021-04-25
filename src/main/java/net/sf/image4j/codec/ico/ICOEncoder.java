@@ -19,7 +19,7 @@ import java.util.List;
 import javax.imageio.ImageWriter;
 
 import net.sf.image4j.io.LittleEndianOutputStream;
-import net.sf.image4j.codec.bmp.BMPEncoder;
+import net.sf.image4j.codec.bmp.BMPWriter;
 import net.sf.image4j.util.ConvertUtil;
 import net.sf.image4j.codec.bmp.InfoHeader;
 
@@ -182,7 +182,7 @@ public class ICOEncoder {
       BufferedImage imgc = b == -1 ? img : convert(img, b);
       converted.add(imgc);
       //create info header
-      InfoHeader ih = BMPEncoder.createInfoHeader(imgc);
+      InfoHeader ih = BMPWriter.createInfoHeader(imgc);
       //create icon entry
       IconEntry e = createIconEntry(ih);
       
@@ -222,7 +222,7 @@ public class ICOEncoder {
         //color map
         if (ih.sBitCount <= 8) {
           IndexColorModel icm = (IndexColorModel) imgc.getColorModel();
-          BMPEncoder.writeColorMap(icm, out);
+          BMPWriter.writeColorMap(icm, out);
         }
         //xor bitmap
         writeXorBitmap(imgc, ih, out);
@@ -278,9 +278,9 @@ public class ICOEncoder {
     //bit count 2
     ret.sBitCount = ih.sBitCount;
     //sizeInBytes 4 - size of infoHeader + xor bitmap + and bitbmap
-    int cmapSize = BMPEncoder.getColorMapSize(ih.sBitCount);
-    int xorSize = BMPEncoder.getBitmapSize(ih.iWidth, ih.iHeight, ih.sBitCount);
-    int andSize = BMPEncoder.getBitmapSize(ih.iWidth, ih.iHeight, 1);
+    int cmapSize = BMPWriter.getColorMapSize(ih.sBitCount);
+    int xorSize = BMPWriter.getBitmapSize(ih.iWidth, ih.iHeight, ih.sBitCount);
+    int andSize = BMPWriter.getBitmapSize(ih.iWidth, ih.iHeight, 1);
     int size = ih.iSize  + cmapSize + xorSize + andSize;
     ret.iSizeInBytes = size;
     //fileOffset 4
@@ -302,7 +302,7 @@ public class ICOEncoder {
       int w = img.getWidth();
       int h = img.getHeight();
       
-      int bytesPerLine = BMPEncoder.getBytesPerLine1(w);
+      int bytesPerLine = BMPWriter.getBytesPerLine1(w);
       
       byte[] line = new byte[bytesPerLine];
       
@@ -330,7 +330,7 @@ public class ICOEncoder {
       int h = img.getHeight();
       int w = img.getWidth();
       //calculate number of bytes per line, including 32-bit padding
-      int bytesPerLine = BMPEncoder.getBytesPerLine1(w);
+      int bytesPerLine = BMPWriter.getBytesPerLine1(w);
       
       byte[] line = new byte[bytesPerLine];
       for (int i = 0; i < bytesPerLine; i++) {
@@ -348,7 +348,7 @@ public class ICOEncoder {
       int w = img.getWidth();
       int h = img.getHeight();
       
-      int bytesPerLine = BMPEncoder.getBytesPerLine1(w);
+      int bytesPerLine = BMPWriter.getBytesPerLine1(w);
       
       byte[] line = new byte[bytesPerLine];
       
@@ -380,20 +380,20 @@ public class ICOEncoder {
     Raster raster = img.getRaster();
     switch (ih.sBitCount) {
       case 1:
-        BMPEncoder.write1(raster, out);
+        BMPWriter.write1(raster, out);
         break;
       case 4:
-        BMPEncoder.write4(raster, out);
+        BMPWriter.write4(raster, out);
         break;
       case 8:
-        BMPEncoder.write8(raster, out);
+        BMPWriter.write8(raster, out);
         break;
       case 24:
-        BMPEncoder.write24(raster, out);
+        BMPWriter.write24(raster, out);
         break;
       case 32:
         Raster alpha = img.getAlphaRaster();
-        BMPEncoder.write32(raster, alpha, out);
+        BMPWriter.write32(raster, alpha, out);
         break;
     }
   }

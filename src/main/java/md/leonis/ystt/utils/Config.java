@@ -8,6 +8,7 @@ import md.leonis.ystt.model.Release;
 import md.leonis.ystt.model.Section;
 import md.leonis.ystt.oldmodel.*;
 
+import java.awt.image.IndexColorModel;
 import java.io.*;
 import java.lang.reflect.Type;
 import java.util.Arrays;
@@ -93,6 +94,12 @@ public class Config {
     public static byte[] ra = new byte[256];
     public static byte[] ga = new byte[256];
     public static byte[] ba = new byte[256];
+
+    public static IndexColorModel icm;
+
+    public static Color transparentColor = Color.rgb(0xF4, 0xF4, 0xF4);
+
+
 
     static {
         updatePalette();
@@ -180,6 +187,12 @@ public class Config {
             ga[id] = (byte) g;
             ba[id] = (byte) b;
         }
+
+        ra[0] = (byte) (transparentColor.getRed() * 255);
+        ga[0] = (byte) (transparentColor.getGreen() * 255);
+        ba[0] = (byte) (transparentColor.getBlue() * 255);
+
+        icm = new IndexColorModel(8, 256, ra, ga, ba);
     }
 
     //TODO input

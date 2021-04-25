@@ -33,14 +33,14 @@ import static md.leonis.ystt.utils.Config.*;
  *
  * @author Ian McDonagh
  */
-public class BMPEncoder {
+public class BMPWriter {
 
 
 
     /**
      * Creates a new instance of BMPEncoder
      */
-    private BMPEncoder() {
+    private BMPWriter() {
     }
 
 
@@ -129,6 +129,11 @@ public class BMPEncoder {
     // 8 bit only
     public static void write8bit(ImageView imageView, File file) throws IOException {
         write8bit(imageView.getImage(), file);
+    }
+
+    // 8 bit only
+    public static void write8bit(BufferedImage bi, Path path) throws IOException {
+        write8bit(bi, path.toFile());
     }
 
     // 8 bit only

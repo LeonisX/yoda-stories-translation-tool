@@ -14,8 +14,6 @@ import java.io.*;
 import java.util.*;
 import java.util.logging.*;
 
-import javax.imageio.ImageIO;
-
 import net.sf.image4j.codec.bmp.*;
 import net.sf.image4j.io.*;
 
@@ -179,7 +177,7 @@ public class ICODecoder {
 
 					// read XOR bitmap
 					// BMPDecoder bmp = new BMPDecoder(is);
-					InfoHeader infoHeader = BMPDecoder.readInfoHeader(in, info);
+					InfoHeader infoHeader = BMPReader.readInfoHeader(in, info);
 					InfoHeader andHeader = new InfoHeader(infoHeader);
 					andHeader.iHeight = (int) (infoHeader.iHeight / 2);
 					InfoHeader xorHeader = new InfoHeader(infoHeader);
@@ -191,7 +189,7 @@ public class ICODecoder {
 					// for now, just read all the raster data (xor + and)
 					// and store as separate images
 
-					BufferedImage xor = BMPDecoder.read(xorHeader, in);
+					BufferedImage xor = BMPReader.read(xorHeader, in);
 					// If we want to be sure we've decoded the XOR mask
 					// correctly,
 					// we can write it out as a PNG to a temp file here.
@@ -258,7 +256,7 @@ public class ICODecoder {
 						}
 
 					} else {
-						BufferedImage and = BMPDecoder.read(andHeader, in,
+						BufferedImage and = BMPReader.read(andHeader, in,
 								andColorTable);
 						// img.add(and);
 

@@ -10,6 +10,7 @@ An original version: https://github.com/LeonisX/YExplorer
 
 ## TODO
 
+* Maps editor
 * Dump all
 * Dump texts to DOCX (separators, IACT/PUZ2 labels, ignore them, allow blocked text)
 * Replace tiles, maps

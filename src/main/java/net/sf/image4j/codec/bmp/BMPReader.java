@@ -19,7 +19,7 @@ import net.sf.image4j.io.*;
  *
  * @author Ian McDonagh
  */
-public class BMPDecoder {
+public class BMPReader {
 
     private final BufferedImage img;
     private final InfoHeader infoHeader;
@@ -30,7 +30,7 @@ public class BMPDecoder {
      * @param in the source <tt>InputStream</tt> from which to read the BMP data
      * @throws java.io.IOException if an error occurs
      */
-    public BMPDecoder(java.io.InputStream in) throws IOException {
+    public BMPReader(java.io.InputStream in) throws IOException {
         LittleEndianInputStream lis = new LittleEndianInputStream(new CountingInputStream(in));
 
         /* header [14] */
@@ -559,7 +559,7 @@ public class BMPDecoder {
      * @throws java.io.IOException if an error occurs
      */
     public static BufferedImage read(java.io.InputStream in) throws IOException {
-        BMPDecoder d = new BMPDecoder(in);
+        BMPReader d = new BMPReader(in);
         return d.getBufferedImage();
     }
 
@@ -604,7 +604,7 @@ public class BMPDecoder {
      * @since 0.7
      */
     public static BMPImage readExt(java.io.InputStream in) throws IOException {
-        BMPDecoder d = new BMPDecoder(in);
+        BMPReader d = new BMPReader(in);
         BMPImage ret = new BMPImage(d.getBufferedImage(), d.getInfoHeader());
         return ret;
     }

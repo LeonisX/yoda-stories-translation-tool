@@ -8,7 +8,6 @@ import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;
 import java.awt.image.WritableRaster;
 
-import static md.leonis.ystt.utils.Config.*;
 import static md.leonis.ystt.utils.Config.section;
 
 public class ImageUtils {
@@ -30,17 +29,13 @@ public class ImageUtils {
         return image;
     }
 
-
-    //TODO use transparent color
-    public static BufferedImage readBPicture(int width, int height, Color transparentColor) {
-
-        IndexColorModel icm = new IndexColorModel(8, 256, ra, ga, ba);
+    public static BufferedImage readBPicture(int width, int height, IndexColorModel icm) {
 
         BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_INDEXED, icm);
 
         WritableRaster raster = image.getRaster();
 
-        for (int y = height - 1; y >= 0; y--) {
+        for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
                 int b = section.dump.getByte();
                 raster.setSample(x, y, 0, b);

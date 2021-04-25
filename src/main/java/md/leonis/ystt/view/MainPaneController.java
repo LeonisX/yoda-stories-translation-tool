@@ -27,8 +27,8 @@ import md.leonis.ystt.model.Section;
 import md.leonis.ystt.model.Zone;
 import md.leonis.ystt.model.SectionMetrics;
 import md.leonis.ystt.utils.*;
-import net.sf.image4j.codec.bmp.BMPDecoder;
-import net.sf.image4j.codec.bmp.BMPEncoder;
+import net.sf.image4j.codec.bmp.BMPReader;
+import net.sf.image4j.codec.bmp.BMPWriter;
 import net.sf.image4j.codec.bmp.BMPImage;
 import org.apache.commons.lang3.StringUtils;
 
@@ -156,13 +156,11 @@ public class MainPaneController {
     private static final String E_BMP = ".bmp";
     private static final int TILE_SIZE = 32;
 
-    private List<String> texts;
+    private final List<String> texts = new ArrayList<>();
 
     int pn;
     Path spath, opath;
     int selectedCell, selectedTileX, selectedTileY;
-    // TODO
-    Color currentFillColor;
 
     // Insert text
     //TODO
@@ -224,9 +222,7 @@ public class MainPaneController {
     @FXML
     void initialize() {
 
-        currentFillColor = Color.rgb(0xF4, 0xF4, 0xF4);
-
-        noColorMenuItem.setUserData(currentFillColor);
+        noColorMenuItem.setUserData(Config.transparentColor);
         fuchsiaMenuItem.setUserData(Color.FUCHSIA);
         blackMenuItem.setUserData(Color.BLACK);
         whiteMenuItem.setUserData(Color.WHITE);
@@ -435,8 +431,8 @@ public class MainPaneController {
         statusLabel.setText("Map: " + pn + " (" + Section.PLANETS[planet] + ")");
 
         if (show) {
-            mapCanvas.setWidth(w * 32);
-            mapCanvas.setHeight(h * 32);
+            mapCanvas.setWidth(w * TILE_SIZE);
+            mapCanvas.setHeight(h * TILE_SIZE);
 
             mapCanvas.getGraphicsContext2D().setFill(Color.rgb(1, 1, 1));
             mapCanvas.getGraphicsContext2D().fillRect(0, 0, mapCanvas.getWidth(), mapCanvas.getHeight());
@@ -456,19 +452,19 @@ public class MainPaneController {
         if (normalSaveCheckBox.isSelected() && save) {
             Path path = opath.resolve("Maps");
             IOUtils.createDirectories(path);
-            BMPEncoder.write8bit(mapCanvas, path.resolve(StringUtils.leftPad(Integer.toString(id), 3, '0')));
+            BMPWriter.write8bit(mapCanvas, path.resolve(StringUtils.leftPad(Integer.toString(id), 3, '0')));
         }
 
         if (groupByFlagsCheckBox.isSelected() && save) {
             Path path = opath.resolve("MapsByFlags").resolve(IntToBin(flag));
             IOUtils.createDirectories(path);
-            BMPEncoder.write8bit(mapCanvas, path.resolve(StringUtils.leftPad(Integer.toString(id), 3, '0')));
+            BMPWriter.write8bit(mapCanvas, path.resolve(StringUtils.leftPad(Integer.toString(id), 3, '0')));
         }
 
         if (groupByPlanetTypeCheckBox.isSelected() && save) {
             Path path = opath.resolve("MapsByPlanetType").resolve(Section.PLANETS[planet]);
             IOUtils.createDirectories(path);
-            BMPEncoder.write8bit(mapCanvas, path.resolve(StringUtils.leftPad(Integer.toString(id), 3, '0')));
+            BMPWriter.write8bit(mapCanvas, path.resolve(StringUtils.leftPad(Integer.toString(id), 3, '0')));
         }
     }
 
@@ -477,7 +473,7 @@ public class MainPaneController {
         int k = section.ReadWord();
         if (k != 0xFFFF) {
             section.tiles[k] = true;
-            GetWTile(k, mapCanvas, x * 32, y * 32, null);
+            GetWTile(k, mapCanvas, x * TILE_SIZE, y * TILE_SIZE, null);
         }
     }
 
@@ -604,7 +600,8 @@ public class MainPaneController {
     }
 
     public void transparentColorMenuItemClick() {
-        currentFillColor = (Color) transparentColorToggleGroup.getSelectedToggle().getUserData();
+        Config.transparentColor = (Color) transparentColorToggleGroup.getSelectedToggle().getUserData();
+        Config.updatePalette();
         ObservableList<Node> children = tilesFlowPane.getChildren();
         for (int i = 0; i < children.size(); i++) {
             ImageView imageView = (ImageView) children.get(i);
@@ -650,9 +647,9 @@ public class MainPaneController {
 
         try {
             if (titleScreenImageView.getUserData() != null) {
-                BMPEncoder.write((BMPImage) titleScreenImageView.getUserData(), new File("D:\\Working\\_Yoda\\YExplorer\\out\\output-eng-2\\STUPti.bmp"));
+                BMPWriter.write((BMPImage) titleScreenImageView.getUserData(), new File("D:\\Working\\_Yoda\\YExplorer\\out\\output-eng-2\\STUPti.bmp"));
             } else {
-                BMPEncoder.write8bit(titleScreenImageView, new File("D:\\Working\\_Yoda\\YExplorer\\out\\output-eng-2\\STUPi.bmp"));
+                BMPWriter.write8bit(titleScreenImageView, new File("D:\\Working\\_Yoda\\YExplorer\\out\\output-eng-2\\STUPi.bmp"));
             }
         } catch (Exception e) {
             JavaFxUtils.showAlert("Title screen saving error", e);
@@ -664,7 +661,7 @@ public class MainPaneController {
         //TODO LoadBMP('output/STUP.bmp',bmp);
 
         try {
-            BMPImage titleImage = BMPDecoder.readExt(new File("D:\\Working\\_Yoda\\YExplorer\\out\\output-eng-2\\STUP.bmp"));
+            BMPImage titleImage = BMPReader.readExt(new File("D:\\Working\\_Yoda\\YExplorer\\out\\output-eng-2\\STUP.bmp"));
 
             //TODO notify if not indexed
             WritableImage image = new WritableImage(titleImage.getWidth(), titleImage.getHeight());
@@ -678,7 +675,7 @@ public class MainPaneController {
 
     public void savePaletteButtonButtonClick() {
         try {
-            BMPEncoder.write8bit(paletteCanvas, new File("D:\\Working\\_Yoda\\YExplorer\\out\\output-eng-2\\palette.bmp"));
+            BMPWriter.write8bit(paletteCanvas, new File("D:\\Working\\_Yoda\\YExplorer\\out\\output-eng-2\\palette.bmp"));
         } catch (Exception e) {
             JavaFxUtils.showAlert("Palette loading error", e);
         }
@@ -720,8 +717,7 @@ public class MainPaneController {
                 IOUtils.createDirectories(attrPath);
             }
 
-            KnownSections title = KnownSections.TILE; // TILE
-            section.SetPosition(title);
+            section.SetPosition(KnownSections.TILE);
             for (int i = 0; i < section.tilesCount; i++) {
 
                 long attr = section.ReadLongWord(); // attributes
@@ -733,17 +729,17 @@ public class MainPaneController {
 
                 if (decimalFilenamesCheckBox.isSelected()) {
                     Path path = tilesPath.resolve(StringUtils.leftPad(Integer.toString(i), 4, "0") + E_BMP);
-                    BMPEncoder.write(GetTile(i), path.toFile());
+                    BMPWriter.write(GetTile(i), path.toFile());
                 }
 
                 if (groupByAttributesFilenamesCheckBox.isSelected()) {
                     Path path = attrPath.resolve(IntToBin(attr) + " (" + attr + ")");
                     IOUtils.createDirectories(path);
-                    BMPEncoder.write(GetTile(i), path.resolve(StringUtils.leftPad(Integer.toString(i), 4, "0") + E_BMP).toFile());
+                    BMPWriter.write(GetTile(i), path.resolve(StringUtils.leftPad(Integer.toString(i), 4, "0") + E_BMP).toFile());
                 }
 
                 if (hexFilenamesCheckBox.isSelected()) {
-                    BMPEncoder.write(GetTile(i), hexPath.resolve(section.intToHex(i, 4) + E_BMP).toFile());
+                    BMPWriter.write(GetTile(i), hexPath.resolve(section.intToHex(i, 4) + E_BMP).toFile());
                 }
                 //TilesProgressBar.Position := i;
                 //TilesProgressLabel.Caption := Format('%.2f %%', [((i + 1) / DTA.tilesCount) * 100]);
@@ -761,20 +757,20 @@ public class MainPaneController {
             int width = Integer.parseInt(tilesInARowTextField.getText());
             int height = (int) Math.ceil(section.tilesCount * 1.0 / width);
 
-            Canvas canvas = new Canvas(width * 32, height * 32);
+            Canvas canvas = new Canvas(width * TILE_SIZE, height * TILE_SIZE);
 
             int k = 0;
             for (int y = 0; y < height; y++) {
                 for (int x = 0; x < width; x++) {
                     if ((y * width + x) < section.tilesCount) {
-                        GetWTile(k, canvas, x * 32, y * 32, currentFillColor);
+                        GetWTile(k, canvas, x * TILE_SIZE, y * TILE_SIZE, Config.transparentColor);
                         k++;
                     }
                 }
             }
 
             Path path = opath.resolve(String.format("tiles%sx%s%s", width, height, E_BMP));
-            BMPEncoder.write8bit(canvas, path);
+            BMPWriter.write8bit(canvas, path);
             Section.Log.debug("OK");
         } catch (Exception e) {
             JavaFxUtils.showAlert("Error saving tiles to a single file", e);
@@ -811,7 +807,7 @@ public class MainPaneController {
             File file = JavaFxUtils.showBMPLoadDialog("Load Clipboard image", initialDir, initialFile);
             if (file != null) {
                 clipboardFile = file;
-                Image image = BMPDecoder.readWI(file);
+                Image image = BMPReader.readWI(file);
                 clipboardImageView.setImage(image);
                 clipboardImageView.setFitHeight(image.getHeight());
                 clipboardImageView.setFitWidth(image.getWidth());
@@ -828,7 +824,7 @@ public class MainPaneController {
                 String initialDir = (null == clipboardFile) ? null : clipboardFile.getParent();
                 File file = JavaFxUtils.showBMPSaveDialog("Save Clipboard image", initialDir, initialFile);
                 if (file != null) {
-                    BMPEncoder.write8bit(clipboardImageView, file);
+                    BMPWriter.write8bit(clipboardImageView, file);
                 }
             }
         } catch (Exception e) {
@@ -840,58 +836,61 @@ public class MainPaneController {
         clipboardImageView.setImage(null);
     }
 
-    public void saveMapsToFilesButtonClick() {
-        /*var i: Word;
-        begin
-        CreateDir(opath);
-        if MapSaveCheckBox.Checked then CreateDir(opath + 'Maps');
-        if MapFlagSaveCheckBox.Checked then CreateDir(opath + 'MapsByFlags');
-        if MapPlanetSaveCheckBox.Checked then CreateDir(opath + 'MapsByPlanetType');
-        if ActionsCheckBox.Checked then
-        begin
-        CreateDir(opath + 'IZAX');
-        CreateDir(opath + 'IZX2');
-        CreateDir(opath + 'IZX3');
-        CreateDir(opath + 'IZX4');
-        CreateDir(opath + 'IACT');
-        CreateDir(opath + 'OIE');
-        end;
+    public void saveMapsToFilesButtonClick() throws IOException {
 
-        bmp.PixelFormat := pf8bit;
-        bmp.Width := TileSize;
-        bmp.Height := TileSize;
-        FillInternalPalette(BMP, $FE00FE);
+        if (normalSaveCheckBox.isSelected()) {
+            IOUtils.createDirectories(opath.resolve("Maps"));
+        }
+        if (groupByFlagsCheckBox.isSelected()) {
+            IOUtils.createDirectories(opath.resolve("MapsByFlags"));
+        }
+        if (groupByPlanetTypeCheckBox.isSelected()) {
+            IOUtils.createDirectories(opath.resolve("MapsByPlanetType"));
+        }
+        if (dumpActionsCheckBox.isSelected()) {
+            IOUtils.createDirectories(opath.resolve("IZAX"));
+            IOUtils.createDirectories(opath.resolve("IZX2"));
+            IOUtils.createDirectories(opath.resolve("IZX3"));
+            IOUtils.createDirectories(opath.resolve("IZX4"));
+            IOUtils.createDirectories(opath.resolve("IACT"));
+            IOUtils.createDirectories(opath.resolve("OIE"));
+        }
 
-        MapProgressBar.Position := 0;
-        MapProgressBar.Max := DTA.mapsCount;
+        //TODO
+        //MapProgressBar.Position := 0;
+        //MapProgressBar.Max := DTA.mapsCount;
 
-        if CheckBox2.Checked then texts.Clear;
+        if (dumpTextCheckBox.isSelected()) {
+            texts.clear();
+        }
 
-        Log.Clear;
-        Log.Debug('Maps (zones):');
-        Log.NewLine;
-        Log.Debug('Total count: ' + IntToStr(DTA.mapsCount));
-        Log.NewLine;
+        //Section.Log.Clear;
+        Section.Log.debug("Maps (zones):");
+        Section.Log.newLine();
+        Section.Log.debug("Total count: " + section.mapsCount);
+        Section.Log.newLine();
         //DTA.SetIndex(knownSections[5]);          // ZONE
-        for i:=0 to DTA.mapsCount - 1 do ReadIZON(i, true);
+        for (int i = 0; i < section.mapsCount; i++) {
+            ReadIZON(i, true);
+        }
 
-        if CheckBox1.Checked then
-        begin
-        Log.NewLine;
-        Log.Debug('Unused tiles:');
-        Log.NewLine;
-        CreateDir(opath + 'TilesUnused');
-        for i:=0 to DTA.tilesCount -1 do
-            if not DTA.tiles[i] then
-                begin
-        Log.Debug(inttostr(i));
-        GetTile(dta, i, bmp);
-        SaveBMP(opath + 'TilesUnused\' + rightstr('000' + inttostr(i) ,4) + eBMP, bmp);
-        end;
-        end;
+        if (saveUnusedTilesCheckBox.isSelected()) {
+            Section.Log.newLine();
+            Section.Log.debug("Unused tiles:");
+            Section.Log.newLine();
+            Path unusedTilesPath = opath.resolve("TilesUnused");
+            IOUtils.createDirectories(unusedTilesPath);
+            for (int i = 0; i < section.tilesCount; i++) {
+                if (!section.tiles[i]) {
+                    Section.Log.debug(i);
+                    BMPWriter.write8bit(GetTile(i), unusedTilesPath.resolve(StringUtils.leftPad(Integer.toString(i), 4, '0') + E_BMP));
+                }
+            }
+        }
 
-        if CheckBox2.Checked then texts.SaveToFile(opath + 'iact.txt');
-        end;*/
+        if (dumpTextCheckBox.isSelected()) {
+            IOUtils.saveTextFile(texts, opath.resolve("iact.txt"));
+        }
     }
 
 
@@ -2144,7 +2143,7 @@ const arr: Array[1..100] of String = (
 
         int index = section.GetPosition();
         section.SetPosition(section.GetDataOffset(KnownSections.TILE) + tileId * 0x404 + 4);
-        BufferedImage image = ImageUtils.readBPicture(32, 32, currentFillColor);
+        BufferedImage image = ImageUtils.readBPicture(TILE_SIZE, TILE_SIZE, Config.icm);
         section.SetPosition(index);
         return image;
     }
@@ -2153,7 +2152,7 @@ const arr: Array[1..100] of String = (
 
         int index = section.GetPosition();
         section.SetPosition(section.GetDataOffset(KnownSections.TILE) + tileId * 0x404 + 4);
-        WritableImage image = ImageUtils.readWPicture(32, 32, currentFillColor);
+        WritableImage image = ImageUtils.readWPicture(TILE_SIZE, TILE_SIZE, Config.transparentColor);
         section.SetPosition(index);
         return image;
     }

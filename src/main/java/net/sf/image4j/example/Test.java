@@ -9,6 +9,9 @@
 
 package net.sf.image4j.example;
 
+import net.sf.image4j.codec.bmp.BMPReader;
+import net.sf.image4j.codec.bmp.BMPWriter;
+
 import java.io.IOException;
 
 /**
@@ -64,7 +67,7 @@ public class Test {
         
         // write BMP
         System.out.println("    writing '"+name+".bmp'");
-        net.sf.image4j.codec.bmp.BMPEncoder.write(img, bmpFile);
+        BMPWriter.write(img, bmpFile);
         
         // write PNG
         System.out.println("    writing '"+name+".png'");
@@ -86,7 +89,7 @@ public class Test {
         
         //read BMP
         System.out.println("    reading '"+name+"'");
-        java.awt.image.BufferedImage image = net.sf.image4j.codec.bmp.BMPDecoder.read(file);
+        java.awt.image.BufferedImage image = BMPReader.read(file);
         images2.add(image);
       }
       
