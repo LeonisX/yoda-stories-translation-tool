@@ -673,6 +673,29 @@ public class MainPaneController {
 
     public void saveMenuItemClick() {
         //TODO
+        /*
+    procedure TMainForm.Button6Click(Sender: TObject);
+    begin
+  if SaveDTADialog.Execute then DTA.SaveToFile(SaveDTADialog.FileName);
+    end;
+        */
+        /*// Save
+        procedure TMainForm.Save1Click(Sender: TObject);
+        begin
+        Hex.LoadFromStream(DTA.data);
+        Hex.Save;
+        ShowMessage('OK');
+        end;
+
+// Save...
+        procedure TMainForm.Save2Click(Sender: TObject);
+        begin
+        if SaveDTADialog.Execute then
+        begin
+        Hex.LoadFromStream(DTA.data);
+        Hex.SaveToFile(SaveDTADialog.FileName, true);
+        end;
+        end;*/
     }
 
     public void closeMenuItemClick() {
@@ -765,6 +788,19 @@ public class MainPaneController {
 
         try {
             BMPImage titleImage = BMPReader.readExt(opath.resolve("stup" + E_BMP));
+
+            section.SetPosition(section.GetDataOffset(KnownSections.STUP));
+
+            // Update in memory
+            for (int y = 0; y < titleImage.getHeight(); y++) {
+                for (int x = 0; x < titleImage.getWidth(); x++) {
+
+                    int sample = titleImage.getImage().getRaster().getSample(x, y, 0);
+                    //section.SetPosition(section.GetDataOffset(KnownSections.STUP) + y * titleImage.getWidth() + x);
+                    //TODO need to test this
+                    section.WriteByte(new Integer(sample).byteValue());
+                }
+            }
 
             //TODO notify if not indexed
             WritableImage image = new WritableImage(titleImage.getWidth(), titleImage.getHeight());
@@ -1094,7 +1130,6 @@ public class MainPaneController {
         DumpData(opath.resolve("CHAR").resolve(StringUtils.leftPad(Integer.toString(c.getId()), 3, '0')), c.getPosition(), c.getSize());
     }
 
-
     private void ReadCHWP() throws IOException {
 
         //  size := DTA.ReadLongWord;
@@ -1258,6 +1293,7 @@ public class MainPaneController {
     end;
 
 
+// Clear
     procedure TMainForm.Button5Click(Sender: TObject);
     var r: TRect;
     begin
@@ -1267,12 +1303,14 @@ public class MainPaneController {
   ClipboardImage.Canvas.FillRect(r);
     end;
 
+
     procedure TMainForm.ClipboardImageMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     begin
     selectedTileX := x div 32 * 32;
     selectedTileY := y div 32 * 32;
   ClipboardImage.BeginDrag(false, 8);
     end;
+
 
     procedure TMainForm.TilesDrawGridDragOver(Sender, Source: TObject; X,
                                               Y: Integer; State: TDragState; var Accept: Boolean);
@@ -1302,33 +1340,7 @@ public class MainPaneController {
     end;
     end;
 
-//Save DTA
-    procedure TMainForm.Button6Click(Sender: TObject);
-    begin
-  if SaveDTADialog.Execute then DTA.SaveToFile(SaveDTADialog.FileName);
-    end;
 
-// Load from BMP
-    procedure TMainForm.Button7Click(Sender: TObject);
-    var p: PByteArray;
-    i, j: Word;
-    begin
-  if OpenClipboardDialog.Execute then
-    begin
-    TitleImage.Picture.LoadFromFile(OpenClipboardDialog.FileName);
-    // Update in memory
-    for i := 0 to TitleImage.Height - 1 do
-    begin
-    p := TitleImage.Picture.Bitmap.ScanLine[i];
-      for j := 0 to TitleImage.Width - 1 do
-    begin
-        DTA.SetPosition(DTA.GetDataOffset(knownSections[2]) + i * TitleImage.Width + j);
-        DTA.WriteByte(p[j]);
-    end;
-    end;
-    TilesDrawGrid.Repaint;
-    end;
-    end;
 
     procedure TMainForm.ReadTGEN;
     var size: Integer;
@@ -1541,12 +1553,14 @@ end;
     end;
 
 
+// Get original
     procedure TMainForm.Button1Click(Sender: TObject);
     begin
   if Opendialog1.Execute then ReadColumn(1, StringGrid1);
     end;
 
 
+// Get translated
     procedure TMainForm.Button12Click(Sender: TObject);
     begin
  if Opendialog1.Execute then ReadColumn(2, StringGrid1);
@@ -1562,6 +1576,7 @@ end;
 
 
 
+// all StringGridDrawCell, multiline output
 
     procedure TMainForm.StringGridDrawCell(Sender: TObject; ACol, ARow: Integer; Rect: TRect; State: TGridDrawState);
     var
@@ -1656,6 +1671,8 @@ end;
     Application.ProcessMessages;
     end;
 
+
+// Maps Replace text
 
     procedure TMainForm.Button14Click(Sender: TObject);
     var
@@ -1761,19 +1778,22 @@ end;
     end;
 
 
+// puzzles
+// Get original
     procedure TMainForm.Button16Click(Sender: TObject);
     begin
   if Opendialog1.Execute then ReadColumn(1, StringGrid4);
     end;
 
 
+// Get translated
     procedure TMainForm.Button17Click(Sender: TObject);
     begin
   if Opendialog1.Execute then ReadColumn(2, StringGrid4);
     end;
 
 
-
+// Replace text
     procedure TMainForm.Button19Click(Sender: TObject);
     var
     i, tw, oldSize, newSize: Word;
@@ -1879,12 +1899,14 @@ end;
     end;
 
 
+// Names
+// Get original
     procedure TMainForm.Button20Click(Sender: TObject);
     begin
   if Opendialog1.Execute then ReadColumn(1, StringGrid2);
     end;
 
-
+// Get translated
     procedure TMainForm.Button21Click(Sender: TObject);
     begin
   if Opendialog1.Execute then ReadColumn(2, StringGrid2);
@@ -1920,6 +1942,7 @@ end;
     Showmessage(msg);
     end else ShowMessage('OK, founded all names.');
     end;
+
 
 //Replace text (Names)
     procedure TMainForm.Button23Click(Sender: TObject);
@@ -2075,21 +2098,7 @@ begin
   ViewMap(MapsListStringGrid.Row);
 end;
 
-procedure TMainForm.Save1Click(Sender: TObject);
-begin
-  Hex.LoadFromStream(DTA.data);
-  Hex.Save;
-  ShowMessage('OK');
-end;
-
-procedure TMainForm.Save2Click(Sender: TObject);
-begin
-  if SaveDTADialog.Execute then
-  begin
-    Hex.LoadFromStream(DTA.data);
-    Hex.SaveToFile(SaveDTADialog.FileName, true);
-  end;
-end;*/
+*/
 
 
     /*procedure TMainForm.HEXMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);

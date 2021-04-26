@@ -610,7 +610,6 @@ public class BMPReader {
      */
     public static BMPImage readExt(java.io.InputStream in) throws IOException {
         BMPReader d = new BMPReader(in);
-        BMPImage ret = new BMPImage(d.getBufferedImage(), d.getInfoHeader());
-        return ret;
+        return new BMPImage(d.getBufferedImage(), d.getInfoHeader());
     }
 }
