@@ -19,6 +19,7 @@ import java.util.stream.Stream;
 
 import static md.leonis.ystt.utils.Config.gamePalette;
 
+//TODO think how to use SizeSequence
 public class Section {
 
     // ShortInt                 -128..127                                   byte        8
@@ -43,18 +44,15 @@ public class Section {
     public boolean[] tiles;
     //TODO zonesList
     public List<Zone> maps = new ArrayList<>();
-    //public Map<Integer, Zone> maps = new HashMap<>();
     public String exeCrc32;
     public String dtaCrc32;
     public String revision;
     public String revisionId;
     public String version;
-    public byte soundsCount;
     public List<String> sounds = new ArrayList<>();
     public int tilesCount;
     //TODO zonesCount, or delete, we have list and size
-    public int mapsCount;
-    public int puzzlesCount;
+    public List<Puzzle> puzzles = new ArrayList<>();
     public int charsCount;
     public int namesCount;
 
@@ -79,22 +77,21 @@ public class Section {
     //TODO do we need this?
     public void clear() {
 
-        sections = new HashMap<>();
-        sectionsList = new ArrayList<>();
-        maps = new ArrayList<>();
-        //maps = new HashMap<>();
+        sections.clear();
+        sectionsList.clear();
+
         tiles = new boolean[0];
         version = "";
-        soundsCount = 0;
-        sounds = new ArrayList<>();
+        //soundsCount = 0;
+        sounds.clear();
         tilesCount = 0;
-        mapsCount = 0;
-        puzzlesCount = 0;
+        maps.clear();
+        puzzles.clear();
         charsCount = 0;
         namesCount = 0;
     }
 
-    public void Add(KnownSections section, int dataSize, int fullSize, int dataOffset, int startOffset) {
+    public void addSection(KnownSections section, int dataSize, int fullSize, int dataOffset, int startOffset) {
         SectionMetrics sectionMetrics = new SectionMetrics(section, dataSize, fullSize, startOffset, dataOffset);
         sections.put(section, sectionMetrics);
         sectionsList.add(sectionMetrics);
@@ -176,7 +173,7 @@ public class Section {
                         ScanTGEN(sections); //встречается в германском образе. Что такое - не знаю.
                         break;
                     case ENDF:
-                        Add(sections, 4, 8, dump.getIndex(), dump.getIndex() - 4);
+                        addSection(sections, 4, 8, dump.getIndex(), dump.getIndex() - 4);
                         keepReading = false;
                         break;
                 }
@@ -225,7 +222,7 @@ public class Section {
 
         int sz = (int) ReadLongWord();            //4 байта - длина блока TGEN
         //Add(sectionName, 4 + sz, index);
-        Add(sectionName, sz, sz + 4 + 4, GetPosition(), GetPosition() - 4 - 4);
+        addSection(sectionName, sz, sz + 4 + 4, GetPosition(), GetPosition() - 4 - 4);
         MovePosition(sz);
         Log.debug(sectionName + " - what is it?...");
     }
@@ -234,7 +231,7 @@ public class Section {
     public void ScanTNAM(KnownSections sectionName) {
 
         int sz = (int) ReadLongWord();           //4 bytes - length of section TNAM
-        Add(sectionName, sz, sz + 4 + 4, GetPosition(), GetPosition() - 4 - 4);
+        addSection(sectionName, sz, sz + 4 + 4, GetPosition(), GetPosition() - 4 - 4);
         //MoveIndex(sz);
         int count = 0;
         while (InBound(sectionName)) {
@@ -252,7 +249,7 @@ public class Section {
     public void ScanCAUX(KnownSections sectionName) {
 
         int sz = (int) ReadLongWord();           //4 bytes - length of section CAUX
-        Add(sectionName, sz, sz + 4 + 4, GetPosition(), GetPosition() - 4 - 4);
+        addSection(sectionName, sz, sz + 4 + 4, GetPosition(), GetPosition() - 4 - 4);
         MovePosition(sz);
         int count = (sz - 2) / 4;
         Log.debug(sectionName + ": " + count);
@@ -262,7 +259,7 @@ public class Section {
     public void ScanCHWP(KnownSections sectionName) {
 
         int sz = (int) ReadLongWord();           //4 bytes - length of section CHWP
-        Add(sectionName, sz, sz + 4 + 4, GetPosition(), GetPosition() - 4 - 4);
+        addSection(sectionName, sz, sz + 4 + 4, GetPosition(), GetPosition() - 4 - 4);
         MovePosition(sz);
         int count = (sz - 2) / 6;
         Log.debug(sectionName + ": " + count);
@@ -272,7 +269,7 @@ public class Section {
     public void ScanCHAR(KnownSections sectionName) {
 
         int sz = (int) ReadLongWord();           //4 bytes - length of section CHAR
-        Add(sectionName, sz, sz + 4 + 4, GetPosition(), GetPosition() - 4 - 4);
+        addSection(sectionName, sz, sz + 4 + 4, GetPosition(), GetPosition() - 4 - 4);
         charsCount = 0;
         while (InBound(sectionName)) {
             if (ReadWord() == 0xFFFF) {         //2 bytes - index of character
@@ -288,26 +285,29 @@ public class Section {
 
     public void ScanPUZ2(KnownSections sectionName) {
 
-        int sz = (int) ReadLongWord();           //4 bytes - length of section PUZ2
-        Add(sectionName, sz, sz + 4 + 4, GetPosition(), GetPosition() - 4 - 4);
-        puzzlesCount = 0;
+        int sz = (int) ReadLongWord();           //4 bytes - full length of section PUZ2
+        addSection(sectionName, sz, sz + 4 + 4, GetPosition(), GetPosition() - 4 - 4);
+        //puzzlesCount = 0;
+        puzzles.clear();
         while (InBound(sectionName)) {
-            if (ReadWord() == 0xFFFF) {    //2 bytes - index of puzzle (from 0)
+            int id = ReadWord();
+            if (id == 0xFFFF) {    //2 bytes - index of puzzle (from 0)
                 break;
             }
             ReadString(4);              //4 bytes - 'IPUZ'
-            int psz = (int) ReadLongWord();        //4 bytes - rest of current puzzle length
-            ReadString(psz);
-            puzzlesCount++;
+            int size = (int) ReadLongWord();        //4 bytes - rest of current puzzle length
+            puzzles.add(new Puzzle(id, GetPosition(), size));
+            ReadString(size);
+            //puzzlesCount++;
         }
-        Log.debug("Puzzles: " + puzzlesCount);
+        Log.debug("Puzzles: " + puzzles.size());
     }
 
     public void ScanZONE(KnownSections sectionName) {
 
         //Signature: String[4];       // 4 bytes: "ZONE" - уже прочитано
         int ind = GetPosition();
-        mapsCount = ReadWord();        // 2 bytes - maps count $0291 = 657 items
+        int mapsCount = ReadWord();        // 2 bytes - maps count $0291 = 657 items
         // Next repeated data of TZone
         for (int i = 0; i < mapsCount; i++) {
             ReadWord();                //unknown:word;          01 00 - unknown 2 bytes
@@ -316,7 +316,7 @@ public class Section {
             MovePosition(sz);
         }
 
-        Add(sectionName, GetPosition() - ind, GetPosition() - ind + 4, ind, ind - 4);
+        addSection(sectionName, GetPosition() - ind, GetPosition() - ind + 4, ind, ind - 4);
         Log.debug("Maps (zones): " + mapsCount);
         //Log.NewLine();
 
@@ -440,7 +440,7 @@ public class Section {
     public void ScanTILE(KnownSections sectionName) {
 
         int sz = (int) ReadLongWord();             //4 bytes - length of section TILE
-        Add(sectionName, sz, sz + 4 + 4, GetPosition(), GetPosition() - 4 - 4);
+        addSection(sectionName, sz, sz + 4 + 4, GetPosition(), GetPosition() - 4 - 4);
         MovePosition(sz);
         tilesCount = sz / 0x404;
         tiles = new boolean[tilesCount];
@@ -454,29 +454,27 @@ public class Section {
     public void ScanSNDS(KnownSections sectionName) {
 
         int sz = (int) ReadLongWord();             //4 bytes - length of section SNDS
-        Add(sectionName, sz, sz + 4 + 4, GetPosition(), GetPosition() - 4 - 4);
-        soundsCount = 0;
+        addSection(sectionName, sz, sz + 4 + 4, GetPosition(), GetPosition() - 4 - 4);
         ReadWord();
         while (InBound(sectionName)) {
             int msz = ReadWord(); // length
             sounds.add(ReadString(msz).trim());
-            soundsCount++;
         }
 
-        Log.debug("Sounds, melodies: " + soundsCount);
+        Log.debug("Sounds, melodies: " + sounds.size());
     }
 
     public void ScanSTUP(KnownSections sectionName) {
 
         int sz = (int) ReadLongWord();             //4 bytes - length of section STUP
-        Add(sectionName, sz, sz + 4 + 4, GetPosition(), GetPosition() - 4 - 4);
+        addSection(sectionName, sz, sz + 4 + 4, GetPosition(), GetPosition() - 4 - 4);
         MovePosition(sz);
         Log.debug("Title screen: exists");
     }
 
     public void ScanVERS(KnownSections sectionName) {
 
-        Add(sectionName, 4, 4 + 4, GetPosition(), GetPosition() - 4);
+        addSection(sectionName, 4, 4 + 4, GetPosition(), GetPosition() - 4);
         long ver = dump.getLongWord();
         if (ver == 0x0200) {
             version = "2.0";
@@ -494,7 +492,7 @@ public class Section {
         }
 
         int result = 0;
-        for (int i = 0; i < mapsCount; i++) {
+        for (int i = 0; i < maps.size(); i++) {
             Log.debug("-izon #" + i + ": " + intToHex(offset, 4) + '~' + intToHex(maps.get(i).getIzon().getPosition(), 4));
             if (offset < maps.get(i).getIzon().getPosition()) {
                 break;
@@ -504,6 +502,7 @@ public class Section {
         return result;
     }
 
+    //TODO unused?????????????????
     public int GetIACT(int offset) {
 
         Log.debug("GetIACT. Offset: " + intToHex(offset, 4));
@@ -688,7 +687,7 @@ public class Section {
     public String longToHex(long value, int size) {
 
         String result = Long.toHexString(value);
-        return StringUtils.leftPad(result, size - result.length());
+        return StringUtils.leftPad(result, size, '0');
     }
 
     //TODO
@@ -717,6 +716,10 @@ public class Section {
 
         public static void message(String message) {
             System.out.println("MESSAGE: " + message);
+        }
+
+        //TODO
+        public static void clear() {
         }
     }
 }

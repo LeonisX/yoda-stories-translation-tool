@@ -3,7 +3,7 @@ package md.leonis.ystt.model;
 import java.util.ArrayList;
 import java.util.List;
 
-//TODO may be keep IACT, PUZ2 text count
+//TODO keep IACT, PUZ2 text count
 public class Zone implements Movable {
 
     private int id;

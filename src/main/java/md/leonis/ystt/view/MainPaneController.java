@@ -21,20 +21,16 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
 import javafx.stage.WindowEvent;
-import md.leonis.ystt.model.KnownSections;
-import md.leonis.ystt.model.Section;
-import md.leonis.ystt.model.Zone;
-import md.leonis.ystt.model.SectionMetrics;
+import md.leonis.ystt.model.*;
 import md.leonis.ystt.utils.*;
+import net.sf.image4j.codec.bmp.BMPImage;
 import net.sf.image4j.codec.bmp.BMPReader;
 import net.sf.image4j.codec.bmp.BMPWriter;
-import net.sf.image4j.codec.bmp.BMPImage;
 import org.apache.commons.lang3.StringUtils;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.math.BigInteger;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
@@ -278,7 +274,7 @@ public class MainPaneController {
         drawPalette();
 
         // Sounds
-        soundsCountLabel.setText(Integer.toString(section.soundsCount));
+        soundsCountLabel.setText(Integer.toString(section.sounds.size()));
         soundsTextArea.setText(String.join("\n", section.sounds));
 
         // Tiles, sprites
@@ -287,7 +283,7 @@ public class MainPaneController {
         tilesContextMenu.setOnShown(this::selectTileMenuItem);
 
         // Maps
-        mapsCountLabel.setText(Integer.toString(section.mapsCount));
+        mapsCountLabel.setText(Integer.toString(section.maps.size()));
         mapsListView.setItems(FXCollections.observableList(section.maps.stream().map(m -> "Map #" + m.getId()).collect(Collectors.toList())));
         mapsListView.getSelectionModel().selectedItemProperty().addListener(mapsListViewChangeListener);
         mapsListView.getSelectionModel().select(0);
@@ -298,7 +294,7 @@ public class MainPaneController {
         drawMapEditorTiles();
 
         // Puzzles
-        puzzlesCountLabel.setText(Integer.toString(section.puzzlesCount));
+        puzzlesCountLabel.setText(Integer.toString(section.puzzles.size()));
 
         charactersCountLabel.setText(Integer.toString(section.charsCount));
 
@@ -929,10 +925,10 @@ public class MainPaneController {
         //Section.Log.Clear;
         Section.Log.debug("Maps (zones):");
         Section.Log.newLine();
-        Section.Log.debug("Total count: " + section.mapsCount);
+        Section.Log.debug("Total count: " + section.maps.size());
         Section.Log.newLine();
         //DTA.SetIndex(knownSections[5]);          // ZONE
-        for (int i = 0; i < section.mapsCount; i++) {
+        for (int i = 0; i < section.maps.size(); i++) {
             ReadIZON(i, true);
         }
 
@@ -963,95 +959,6 @@ public class MainPaneController {
         return Long.toBinaryString(value);
     }
 
-
-    /*
-
-    function idDeprecatedWords(text: String): Boolean;
-const arr: Array[1..100] of String = (
-'el:', 'ckup L', 'MS S', 'ЂОЅ', 'n 2', '######', '######', '######', 'plac', 'Sho',
-'Show', 'opI', 'ne ', 'Red', 'Set', '######', 'up L', '######', 'ng, ', 'opIt',
-'######', 'ckup', 'Y: 12 ', 'Bump', 'Pick', 'Bum', 'Has', 'ђ0n', 'Pickup L', 'SetHer',
-'BumpTi', 'Repla', 'MS San', '######', 'd my j', 'WaitF', 'SetH', 'SetHe', '######', 'eIte',
-'n 1 an', 'њњћ', 'LчЅ', '6,12', '0, 1', 'Door', 'aySo', 'c X:', 'Game', 'Р©µ',
-'######', 'a l', '######', 'PlayS', 'Force ', ' Lev', 'ter:', 'ter:F', 'ЂЫ№', 'o Na',
-'t•±', '4kЯ', 'w on o', 'ndN', 'HotS', 'ЂУґ', 'perial', '12 Y', 'Name', 'sta',
-'Wait', 'securi', '''s don', 'cku', 'ДFВ', 'rTim', 'Wai', 'шн±', 'Backgr', 'e''s',
-'MS ', ' ’µ', 'h th', 'n''t th', 'u ta', 's! What ', 'Pic', '¤K‡', 'Wait', 'Coun',
-'#####', 'ґъm', 'up ', 'Sav', 'яяяяяяяя', 'Rep', 'ёDґ', '!!!', 'ф$‚', 'Coun'
-);
-
-var i: byte;
-begin
-  result := false;
-  for i := 1 to Length(arr) do if arr[i] = text then result := true;
-  if not result then result := AnsiStartsStr('Remov', text) and (Length(text) <= 7);
-  if not result then result := AnsiStartsStr('Redr', text) and (Length(text) <= 6);
-  if not result then result := AnsiStartsStr('ShowT', text);
-  if not result then result := AnsiStartsStr('awArea', text);
-  if not result then result := AnsiContainsStr(text, 'ndN');
-  if not result then result := AnsiStartsStr('HasI', text);
-  if not result then result := AnsiStartsStr('ZX', text);
-  if not result then result := AnsiStartsStr(' X:', text);
-  if not result then result := AnsiStartsStr(',', text);
-
-  if text[1] = ',' then result := true;
-  if text[1] = ':' then result := true;
-end;
-
-    procedure TMainForm.DumpText(index: Cardinal; size: Word);
-    var idx, tempIndex: Cardinal;
-    sz, j: Word;
-    phase, b: Byte;
-    s: String;
-    begin
-    idx := index;
-    //phase := 1;
-        while DTA.GetPosition < idx + size - 2 do
-    begin
-    //Log.Debug('Start new scan: ' + IntToHex(DTA.GetIndex, 6));
-    tempIndex := DTA.GetPosition;
-    sz := DTA.ReadWord;
-    //Log.Debug('Size: ' + IntToHex(sz, 4));
-        if (sz < $0300) and (sz > $0002) then            // correct max size
-    begin
-    phase := 2;                 // size correct, maybe text?
-    Application.ProcessMessages;
-    s := '';
-        if DTA.GetPosition + sz <= idx + size + 4 then
-        for j := 1 to sz do
-    begin
-    b := DTA.ReadByte;
-    s := s + inttohex(b,2) + ' ';
-        if (b < $20) and (b <> $0D) and (b <> $0A) then phase := 1;
-        if (b = ord('\')) or (b = ord('@')) or (b = ord('^')) or (b = ord('¶')) or (b = ord('<')) or (b = ord('»'))  or (b = ord('(')) or (b = ord(')')) then phase := 1;
-    end
-      else phase := 1;
-        if phase = 2 then
-            begin
-    s := '';
-        DTA.SetPosition(tempIndex + 2);
-        for j := 1 to sz do
-    begin
-    b := DTA.ReadByte;
-    s := s + chr(b);
-    end;
-    s := AnsiReplaceStr(s, chr($0D) + chr($0A), '[CR]');
-    s := AnsiReplaceStr(s, '[CR][CR]', '[CR2]');
-    s := AnsiReplaceStr(s, chr($A5), '_');
-        if not idDeprecatedWords(s) then
-    begin
-        texts.Add(s);
-    tempIndex := DTA.GetPosition - 1;
-    end;
-    //phase := 1;
-    end;
-    end;
-        DTA.SetPosition(tempIndex + 1);
-    end;
-
-        DTA.SetPosition(idx);
-    end;*/
-
     public void dumpTextToDocxCLick(ActionEvent actionEvent) {
 
     }
@@ -1062,8 +969,138 @@ end;
     public void replaceTextInDtaClick(ActionEvent actionEvent) {
     }
 
-    public void savePuzzlesToFilesButtonClick(ActionEvent actionEvent) {
+    public void savePuzzlesToFilesButtonClick() {
+
+        try {
+            IOUtils.createDirectories(opath.resolve("PUZ2"));
+            Section.Log.clear();
+            Section.Log.debug("Puzzles (2):");
+            Section.Log.newLine();
+            Section.Log.debug("Total count: " + section.puzzles.size());
+            Section.Log.newLine();
+            texts.clear();
+            for (int i = 0; i < section.puzzles.size(); i++) {
+                ReadPUZ2(section.puzzles.get(i));
+            }
+            IOUtils.saveTextFile(texts, opath.resolve("puz2.txt"));
+        } catch (Exception e) {
+            JavaFxUtils.showAlert("Error saving puzzles to the files", e);
+        }
     }
+
+    private void ReadPUZ2(Puzzle puzzle) throws IOException {
+
+        Section.Log.debug("Puzzle #" + puzzle.getId() + "; Size: 0x" + section.intToHex(puzzle.getSize(), 4));
+        DumpText(puzzle.getPosition(), puzzle.getSize());
+        DumpData(opath.resolve("PUZ2").resolve(StringUtils.leftPad(Integer.toString(puzzle.getId()), 4, '0')), puzzle.getPosition(), puzzle.getSize());
+    }
+
+    private boolean idDeprecatedWords(String text) {
+
+        //TODO static
+        List<String> arr = Arrays.asList(
+                "el:", "ckup L", "MS S", "ЂОЅ", "n 2", "######", "######", "######", "plac", "Sho",
+                "Show", "opI", "ne ", "Red", "Set", "######", "up L", "######", "ng, ", "opIt",
+                "######", "ckup", "Y: 12 ", "Bump", "Pick", "Bum", "Has", "ђ0n", "Pickup L", "SetHer",
+                "BumpTi", "Repla", "MS San", "######", "d my j", "WaitF", "SetH", "SetHe", "######", "eIte",
+                "n 1 an", "њњћ", "LчЅ", "6,12", "0, 1", "Door", "aySo", "c X:", "Game", "Р©µ",
+                "######", "a l", "######", "PlayS", "Force ", " Lev", "ter:", "ter:F", "ЂЫ№", "o Na",
+                "t•±", "4kЯ", "w on o", "ndN", "HotS", "ЂУґ", "perial", "12 Y", "Name", "sta",
+                "Wait", "securi", "'s don", "cku", "ДFВ", "rTim", "Wai", "шн±", "Backgr", "e's",
+                "MS ", " ’µ", "h th", "n't th", "u ta", "s! What ", "Pic", "¤K‡", "Wait", "Coun",
+                "#####", "ґъm", "up ", "Sav", "яяяяяяяя", "Rep", "ёDґ", "!!!", "ф$‚", "Coun"
+        );
+
+        boolean result = arr.contains(text);
+
+        if (!result) {
+            result = text.startsWith("Remov") && text.length() <= 7;
+        }
+        if (!result) {
+            result = text.startsWith("Redr") && text.length() <= 6;
+        }
+        if (!result) {
+            result = text.startsWith("ShowT");
+        }
+        if (!result) {
+            result = text.startsWith("awArea");
+        }
+        if (!result) {
+            result = text.contains("ndN");
+        }
+        if (!result) {
+            result = text.startsWith("HasI");
+        }
+        if (!result) {
+            result = text.startsWith("ZX");
+        }
+        if (!result) {
+            result = text.startsWith(" X:");
+        }
+        if (!result) {
+            result = text.startsWith(",");
+        }
+
+        if (text.startsWith(",") || text.startsWith(":")) {
+            result = true;
+        }
+        return result;
+    }
+
+    char[] restrictedChars = {
+            (char) 0x00, (char) 0x01, (char) 0x02, (char) 0x03, (char) 0x04, (char) 0x05, (char) 0x06, (char) 0x07,
+            (char) 0x08, (char) 0x09, /*(char) 0x0A,*/ (char) 0x0B, (char) 0x0C, /*(char) 0x0D,*/ (char) 0x0E, (char) 0x0F,
+            (char) 0x10, (char) 0x11, (char) 0x12, (char) 0x13, (char) 0x14, (char) 0x15, (char) 0x16, (char) 0x17,
+            (char) 0x18, (char) 0x19, (char) 0x1A, (char) 0x1B, (char) 0x1C, (char) 0x1D, (char) 0x1E, (char) 0x1F,
+            '\\', '@', '^', '¶', '<', '»', '(', ')'
+    };
+
+    //TODO need refactor
+    //TODO dump puzzle, phrases metrics
+    private void DumpText(int position, int size) {
+
+        //phase := 1;
+        section.SetPosition(position);
+        while (section.GetPosition() < position + size - 2) {
+            //System.out.println(String.format("%s: %s", section.intToHex(section.GetPosition(), 4), section.intToHex(position + size - 2, 4)));
+
+            //Section.Log.debug("Start new scan: " + section.intToHex(section.GetPosition(), 6));
+            int tempIndex = section.GetPosition();
+            int sz = section.ReadWord();
+            //Section.Log.debug("Supposed size: " + section.intToHex(sz, 4));
+            if ((sz < 0x0300) && (sz > 0x0002)) { // correct max size
+                byte phase = 2;                   // size correct, maybe text?
+                // TODO Application.ProcessMessages;
+
+                String supposedString = "";
+
+                if (section.GetPosition() + sz <= position + size) {
+                    supposedString = section.ReadString(sz);
+                    if (StringUtils.containsAny(supposedString, restrictedChars)) {
+                        phase = 1;
+                    }
+                } else {
+                    phase = 1;
+                }
+
+                System.out.println(phase + ": " + supposedString);
+
+                if (phase == 2) {
+                    //TODO may be not need, if we dump to tables
+                    String s = supposedString.replace("\r\n", "[CR]"); // LF(\n), CR(\r)
+                    s = s.replace("[CR][CR]", "[CR2]");
+                    s = s.replace((char) (0xA5), '_');
+                    if (!idDeprecatedWords(s)) {
+                        texts.add(s);
+                        tempIndex = section.GetPosition() - 1;
+                    }
+                    //phase = 1;
+                }
+            }
+            section.SetPosition(tempIndex + 1);
+        }
+    }
+
 
     public void dumpPuzzlesTextToDocxCLick(ActionEvent actionEvent) {
     }
@@ -1278,35 +1315,6 @@ end;
     end;
     end;
 
-
-    procedure TMainForm.Button9Click(Sender: TObject);
-    var i: Word;
-    begin
-    CreateDir(opath);
-    CreateDir(opath + 'PUZ2');
-    Log.Clear;
-  Log.Debug('Puzzles (2):');
-    Log.NewLine;
-  Log.Debug('Total count: ' + IntToStr(DTA.puzzlesCount));
-    Log.NewLine;
-    texts.Clear;
-  DTA.SetPosition(DTA.GetDataOffset(knownSections[6]));            // PUZ2
-  for i:=0 to DTA.puzzlesCount - 1 do ReadPUZ2;
-  texts.SaveToFile(opath + 'puz2.txt');
-    end;
-
-
-    procedure TMainForm.ReadPUZ2;
-    var pz: Word;
-    psz: LongWord;
-    begin
-    pz := DTA.ReadWord;             //2 bytes - index of puzzle (from 0)
-  DTA.ReadString(4);              //4 bytes - 'IPUZ'
-    psz := DTA.ReadLongWord;        //4 bytes - rest of current puzzle length
-    DumpText(DTA.GetPosition, psz);
-  Log.Debug('Puzzle #' + IntToStr(pz) + '; Size: $' + IntToHex(psz, 4));
-    DumpData(opath + 'PUZ2\' + rightstr('000' + inttostr(pz), 4), DTA.GetPosition, psz);
-            end;
 
 
 // Dump characters
