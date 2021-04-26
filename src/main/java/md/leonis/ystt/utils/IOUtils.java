@@ -88,4 +88,22 @@ public class IOUtils {
             //LOGGER.error("Can't create directory: {}", path.toString(), e);
         }
     }
+
+    public static Path findUnusedFileName(Path rootPath, String name, String ext) {
+
+        Path path = rootPath.resolve(name + ext);
+        if (!Files.exists(path)) {
+            return path;
+        } else {
+
+            byte b = 2;
+            while (true) {
+                path = rootPath.resolve(name + " (" + b + ')' + ext);
+                if (!Files.exists(path)) {
+                    return path;
+                }
+                b++;
+            }
+        }
+    }
 }

@@ -10,8 +10,9 @@ An original version: https://github.com/LeonisX/YExplorer
 
 ## TODO
 
-* Characters - show in UI (table), dump
 * Names - show in UI (list), dump
+* Names with tiles
+* Characters - show in UI (table), dump
 * Dump texts to DOCX (separators, IACT/PUZ2 labels, ignore them, allow blocked text)
 * Replace tiles, maps, Undo
 * Replace text from DOCX

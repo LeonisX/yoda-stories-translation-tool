@@ -1,5 +1,6 @@
 package md.leonis.ystt.model;
 
+//TODO movable too
 public class SectionMetrics {
 
     private final KnownSections section;

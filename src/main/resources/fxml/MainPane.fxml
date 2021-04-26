@@ -698,11 +698,12 @@
                                         <Tab text="General Information">
                                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0"
                                                         prefWidth="200.0">
-                                                <Label layoutX="14.0" layoutY="14.0" text="Puzzles count:"/>
+                                                <Label layoutX="14.0" layoutY="14.0" text="Names count:"/>
                                                 <Label fx:id="namesCountLabel" layoutX="98.0" layoutY="14.0"/>
                                                 <Button fx:id="saveNamesToFilesButton" layoutX="14.0" layoutY="40.0"
-                                                        mnemonicParsing="false" onAction="#saveNamesToFilesButtonClick"
+                                                        mnemonicParsing="false" onAction="#saveNamesToFileButtonClick"
                                                         text="Save names to files"/>
+                                                <TextArea layoutX="150.0" layoutY="14.0" prefHeight="405.0" prefWidth="300.0" fx:id="namesTextArea" editable="false" />
                                             </AnchorPane>
                                         </Tab>
                                         <Tab text="Text Translation">

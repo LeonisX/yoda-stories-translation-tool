@@ -342,6 +342,9 @@ public class BMPWriter {
     }
 
 
+    public static void write(BufferedImage img, Path path) throws IOException {
+        write(img, path.toFile());
+    }
     /**
      * Encodes and writes BMP data the output file
      *

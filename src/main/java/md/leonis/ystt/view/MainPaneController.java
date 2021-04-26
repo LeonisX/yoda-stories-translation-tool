@@ -139,6 +139,7 @@ public class MainPaneController {
     public Label namesCountLabel;
 
     public Button saveNamesToFilesButton;
+    public TextArea namesTextArea;
     public Button dumpNamesTextToDocx;
     public Button loadNamesTranslatedText;
     public Button replaceNamesTextInDta;
@@ -298,7 +299,8 @@ public class MainPaneController {
 
         charactersCountLabel.setText(Integer.toString(section.charsCount));
 
-        namesCountLabel.setText(Integer.toString(section.namesCount));
+        namesCountLabel.setText(Integer.toString(section.names.size()));
+        namesTextArea.setText(section.names.stream().map(Name::getName).collect(Collectors.joining("\n")));
     }
 
     private void drawTitleImage() {
@@ -1007,7 +1009,27 @@ public class MainPaneController {
     public void saveCharactersToFilesButtonClick(ActionEvent actionEvent) {
     }
 
-    public void saveNamesToFilesButtonClick(ActionEvent actionEvent) {
+    public void saveNamesToFileButtonClick() {
+
+        try {
+            ReadTNAM();
+        } catch (Exception e) {
+            JavaFxUtils.showAlert("Error saving names to a file", e);
+        }
+    }
+
+    private void ReadTNAM() throws IOException {
+
+        Section.Log.clear();
+        Section.Log.debug("Names:");
+        Section.Log.newLine();
+        Section.Log.debug("Total count: " + section.names.size());
+        Section.Log.newLine();
+        IOUtils.createDirectories(opath.resolve("Names"));
+        for (Name n : section.names) {
+            BMPWriter.write(GetTile(n.getTileId()), IOUtils.findUnusedFileName(opath.resolve("Names"), n.getName(), E_BMP));
+        }
+        IOUtils.saveTextFile(section.names.stream().map(Name::getName).collect(Collectors.toList()), opath.resolve("names.txt"));
     }
 
     public void dumpNamesTextToDocxCLick(ActionEvent actionEvent) {
@@ -1301,47 +1323,6 @@ public class MainPaneController {
             DumpData(opath + 'CAUX\' + rightstr('00' + inttostr(ch), 3), DTA.GetPosition, 2);
             end;
 
-            function GetFileName(name: String): String;
-    var s: String;
-    b: Byte;
-    begin
-  if not FileExists(opath + 'Names\' + name  + eBMP) then  result := ''
-            else begin
-            b := 2;
-            while FileExists(opath + 'Names\' + name + ' (' + inttostr(b) + ')' + eBMP) do inc(b);
-    s := ' (' + inttostr(b) + ')';
-    end;
-    result := opath + 'Names\' + name + s + eBMP;
-    end;
-
-
-    procedure TMainForm.ReadTNAM;
-    var k: Word;
-    s: String;
-    begin
-    Log.Clear;
-  Log.Debug('Names:');
-    Log.NewLine;
-  Log.Debug('Total count: ' + IntToStr(DTA.namesCount));
-    Log.NewLine;
-    texts.Clear;
-  DTA.SetPosition(DTA.GetDataOffset(knownSections[10]));            // TNAM
-    BMP.Width := TileSize;
-    BMP.Height := TileSize;
-    CreateDir(opath);
-    CreateDir(opath + 'Names');
-    repeat
-    k := DTA.ReadWord; //2 байта - номер персонажа (тайла)
-    if k = $FFFF then break;
-    s := DTA.ReadString(24); //24 байта - длина до конца текущего имени
-    s := leftstr(s, pos(chr(0), s) - 1);
-    texts.Add(s);
-    GetTile(dta, k, bmp);
-    bmp.SaveToFile(GetFileName(s));
-//        bmp.SaveToFile(opath + 'Names\' + s + eBMP);
-    until false;
-  texts.SaveToFile(opath + 'names.txt');
-    end;
 
     procedure TMainForm.ReadTGEN;
     var size: Integer;
@@ -1353,11 +1334,6 @@ public class MainPaneController {
     seek(SrcFile,filepos(SrcFile) + size);
     end;
 
-
-    procedure TMainForm.Button11Click(Sender: TObject);
-    begin
-            ReadTNAM;
-    end;
 
     procedure TMainForm.WhiteMenuItemClick(Sender: TObject);
     begin
@@ -1909,6 +1885,7 @@ end;
     end;
 
 
+//Check phase positions (may be not need)
     procedure TMainForm.Button22Click(Sender: TObject);
     var i: Word;
     s, msg: String;
@@ -1938,6 +1915,7 @@ end;
     end else ShowMessage('OK, founded all names.');
     end;
 
+//Replace text (Names)
     procedure TMainForm.Button23Click(Sender: TObject);
     var currentPos: Cardinal;
     i: Word;

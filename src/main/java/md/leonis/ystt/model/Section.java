@@ -49,10 +49,9 @@ public class Section {
     public String version;
     public List<String> sounds = new ArrayList<>();
     public int tilesCount;
-    //TODO zonesCount, or delete, we have list and size
     public List<Puzzle> puzzles = new ArrayList<>();
     public int charsCount;
-    public int namesCount;
+    public List<Name> names = new ArrayList<>();
 
     public Section() {
     }
@@ -86,7 +85,7 @@ public class Section {
         maps.clear();
         puzzles.clear();
         charsCount = 0;
-        namesCount = 0;
+        names.clear();
     }
 
     public void addSection(KnownSections section, int dataSize, int fullSize, int dataOffset, int startOffset) {
@@ -231,16 +230,16 @@ public class Section {
         int sz = (int) ReadLongWord();           //4 bytes - length of section TNAM
         addSection(sectionName, sz, sz + 4 + 4, GetPosition(), GetPosition() - 4 - 4);
         //MoveIndex(sz);
-        int count = 0;
         while (InBound(sectionName)) {
-            if (ReadWord() == 0xFFFF) {//2 байта - номер персонажа (тайла)
+            int tileId = ReadWord();
+            if (tileId == 0xFFFF) {//2 байта - номер персонажа (тайла)
                 break;
             }
-            ReadString(24);             //24 bytes - rest of current name length
-            count++;
+            int position = GetPosition();
+            String name = ReadString(24);             //24 bytes - rest of current name length
+            names.add(new Name(position, tileId, name.substring(0, name.indexOf(0x00))));
         }
-        namesCount = count;
-        Log.debug(sectionName + ": " + count);
+        Log.debug(sectionName + ": " + names.size());
     }
 
     // 77 * 4 = 308 + size(4) + 'CAUX' + FFFF = 318
@@ -298,7 +297,9 @@ public class Section {
             ReadString(size);
             //puzzlesCount++;
         }
+        int position = GetPosition();
         puzzles.forEach(this::DumpText);
+        SetPosition(position);
         Log.debug("Puzzles: " + puzzles.size());
     }
 
