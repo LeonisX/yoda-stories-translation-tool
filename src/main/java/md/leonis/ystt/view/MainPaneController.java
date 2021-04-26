@@ -9,6 +9,7 @@ import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
@@ -139,7 +140,7 @@ public class MainPaneController {
     public Label namesCountLabel;
 
     public Button saveNamesToFilesButton;
-    public TextArea namesTextArea;
+    public TableView<Name> namesTableView;
     public Button dumpNamesTextToDocx;
     public Button loadNamesTranslatedText;
     public Button replaceNamesTextInDta;
@@ -297,10 +298,29 @@ public class MainPaneController {
         // Puzzles
         puzzlesCountLabel.setText(Integer.toString(section.puzzles.size()));
 
+        // Characters
         charactersCountLabel.setText(Integer.toString(section.charsCount));
 
+        // Names
         namesCountLabel.setText(Integer.toString(section.names.size()));
-        namesTextArea.setText(section.names.stream().map(Name::getName).collect(Collectors.joining("\n")));
+        @SuppressWarnings("all")
+        TableColumn<Name, Integer> column = (TableColumn<Name, Integer>) namesTableView.getColumns().get(0);
+        column.setCellFactory(c -> {
+
+            final ImageView imageView = new ImageView();
+
+            TableCell<Name, Integer> cell = new TableCell<Name, Integer>() {
+                public void updateItem(Integer tileId, boolean empty) {
+                    if (tileId != null) {
+                        imageView.setImage(GetWTile(tileId));
+                    }
+                }
+            };
+            cell.setGraphic(imageView);
+            cell.setAlignment(Pos.CENTER);
+            return cell;
+        });
+        namesTableView.setItems(FXCollections.observableList(section.names));
     }
 
     private void drawTitleImage() {

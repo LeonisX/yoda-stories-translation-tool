@@ -4,12 +4,11 @@
 <?import javafx.scene.canvas.Canvas?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.control.cell.*?>
-<?import javafx.scene.image.*?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.shape.*?>
 <?import javafx.scene.text.Font?>
-<?import md.leonis.ystt.view.FormattedTableCellFactory?>
-<?import md.leonis.ystt.view.FormattedHexTableCellFactory?>
+<?import md.leonis.ystt.view.*?>
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
             xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="md.leonis.ystt.view.MainPaneController">
@@ -99,8 +98,8 @@
                                                 <PropertyValueFactory property="section"/>
                                             </cellValueFactory>
                                             <cellFactory>
-                                                <FormattedTableCellFactory alignment="center">
-                                                </FormattedTableCellFactory>
+                                                <StringCellFactory alignment="center">
+                                                </StringCellFactory>
                                             </cellFactory>
                                         </TableColumn>
                                         <TableColumn editable="false" prefWidth="75.0" text="Start Offset">
@@ -108,8 +107,8 @@
                                                 <PropertyValueFactory property="startOffset"/>
                                             </cellValueFactory>
                                             <cellFactory>
-                                                <FormattedHexTableCellFactory alignment="right">
-                                                </FormattedHexTableCellFactory>
+                                                <HexCellFactory alignment="right">
+                                                </HexCellFactory>
                                             </cellFactory>
                                         </TableColumn>
                                         <TableColumn editable="false" prefWidth="75.0" text="Data Offset">
@@ -117,8 +116,8 @@
                                                 <PropertyValueFactory property="dataOffset"/>
                                             </cellValueFactory>
                                             <cellFactory>
-                                                <FormattedHexTableCellFactory alignment="right">
-                                                </FormattedHexTableCellFactory>
+                                                <HexCellFactory alignment="right">
+                                                </HexCellFactory>
                                             </cellFactory>
                                         </TableColumn>
                                         <TableColumn editable="false" prefWidth="75.0" text="Data Size">
@@ -126,8 +125,8 @@
                                                 <PropertyValueFactory property="dataSize"/>
                                             </cellValueFactory>
                                             <cellFactory>
-                                                <FormattedTableCellFactory alignment="right">
-                                                </FormattedTableCellFactory>
+                                                <StringCellFactory alignment="right">
+                                                </StringCellFactory>
                                             </cellFactory>
                                         </TableColumn>
                                         <TableColumn editable="false" prefWidth="75.0" text="Full Size">
@@ -135,8 +134,8 @@
                                                 <PropertyValueFactory property="fullSize"/>
                                             </cellValueFactory>
                                             <cellFactory>
-                                                <FormattedTableCellFactory alignment="right">
-                                                </FormattedTableCellFactory>
+                                                <StringCellFactory alignment="right">
+                                                </StringCellFactory>
                                             </cellFactory>
                                         </TableColumn>
                                     </columns>
@@ -354,8 +353,8 @@
                                                                         <PropertyValueFactory property="id"/>
                                                                     </cellValueFactory>
                                                                     <cellFactory>
-                                                                        <FormattedTableCellFactory alignment="right">
-                                                                        </FormattedTableCellFactory>
+                                                                        <StringCellFactory alignment="right">
+                                                                        </StringCellFactory>
                                                                     </cellFactory>
                                                                 </TableColumn>
                                                                 <TableColumn prefWidth="79.0" text="Offset">
@@ -363,8 +362,8 @@
                                                                         <PropertyValueFactory property="position"/>
                                                                     </cellValueFactory>
                                                                     <cellFactory>
-                                                                        <FormattedHexTableCellFactory alignment="right">
-                                                                        </FormattedHexTableCellFactory>
+                                                                        <HexCellFactory alignment="right">
+                                                                        </HexCellFactory>
                                                                     </cellFactory>
                                                                 </TableColumn>
                                                                 <TableColumn prefWidth="45.0" text="Size">
@@ -372,8 +371,8 @@
                                                                         <PropertyValueFactory property="size"/>
                                                                     </cellValueFactory>
                                                                     <cellFactory>
-                                                                        <FormattedTableCellFactory alignment="right">
-                                                                        </FormattedTableCellFactory>
+                                                                        <StringCellFactory alignment="right">
+                                                                        </StringCellFactory>
                                                                     </cellFactory>
                                                                 </TableColumn>
                                                             </columns>
@@ -385,8 +384,8 @@
                                                                         <PropertyValueFactory property="izonPosition"/>
                                                                     </cellValueFactory>
                                                                     <cellFactory>
-                                                                        <FormattedHexTableCellFactory alignment="right">
-                                                                        </FormattedHexTableCellFactory>
+                                                                        <HexCellFactory alignment="right">
+                                                                        </HexCellFactory>
                                                                     </cellFactory>
                                                                 </TableColumn>
                                                                 <TableColumn prefWidth="45.0" text="Size">
@@ -394,8 +393,8 @@
                                                                         <PropertyValueFactory property="izonSize"/>
                                                                     </cellValueFactory>
                                                                     <cellFactory>
-                                                                        <FormattedTableCellFactory alignment="right">
-                                                                        </FormattedTableCellFactory>
+                                                                        <StringCellFactory alignment="right">
+                                                                        </StringCellFactory>
                                                                     </cellFactory>
                                                                 </TableColumn>
                                                             </columns>
@@ -407,8 +406,8 @@
                                                                         <PropertyValueFactory property="oiePosition"/>
                                                                     </cellValueFactory>
                                                                     <cellFactory>
-                                                                        <FormattedHexTableCellFactory alignment="right">
-                                                                        </FormattedHexTableCellFactory>
+                                                                        <HexCellFactory alignment="right">
+                                                                        </HexCellFactory>
                                                                     </cellFactory>
                                                                 </TableColumn>
                                                                 <TableColumn prefWidth="45.0" text="Size">
@@ -416,8 +415,8 @@
                                                                         <PropertyValueFactory property="oieSize"/>
                                                                     </cellValueFactory>
                                                                     <cellFactory>
-                                                                        <FormattedTableCellFactory alignment="right">
-                                                                        </FormattedTableCellFactory>
+                                                                        <StringCellFactory alignment="right">
+                                                                        </StringCellFactory>
                                                                     </cellFactory>
                                                                 </TableColumn>
                                                                 <TableColumn prefWidth="45.0" text="Count">
@@ -425,8 +424,8 @@
                                                                         <PropertyValueFactory property="oieCount"/>
                                                                     </cellValueFactory>
                                                                     <cellFactory>
-                                                                        <FormattedTableCellFactory alignment="right">
-                                                                        </FormattedTableCellFactory>
+                                                                        <StringCellFactory alignment="right">
+                                                                        </StringCellFactory>
                                                                     </cellFactory>
                                                                 </TableColumn>
                                                             </columns>
@@ -438,8 +437,8 @@
                                                                         <PropertyValueFactory property="izaxPosition"/>
                                                                     </cellValueFactory>
                                                                     <cellFactory>
-                                                                        <FormattedHexTableCellFactory alignment="right">
-                                                                        </FormattedHexTableCellFactory>
+                                                                        <HexCellFactory alignment="right">
+                                                                        </HexCellFactory>
                                                                     </cellFactory>
                                                                 </TableColumn>
                                                                 <TableColumn prefWidth="45.0" text="Size">
@@ -447,8 +446,8 @@
                                                                         <PropertyValueFactory property="izaxSize"/>
                                                                     </cellValueFactory>
                                                                     <cellFactory>
-                                                                        <FormattedTableCellFactory alignment="right">
-                                                                        </FormattedTableCellFactory>
+                                                                        <StringCellFactory alignment="right">
+                                                                        </StringCellFactory>
                                                                     </cellFactory>
                                                                 </TableColumn>
                                                             </columns>
@@ -460,8 +459,8 @@
                                                                         <PropertyValueFactory property="izx2Position"/>
                                                                     </cellValueFactory>
                                                                     <cellFactory>
-                                                                        <FormattedHexTableCellFactory alignment="right">
-                                                                        </FormattedHexTableCellFactory>
+                                                                        <HexCellFactory alignment="right">
+                                                                        </HexCellFactory>
                                                                     </cellFactory>
                                                                 </TableColumn>
                                                                 <TableColumn prefWidth="45.0" text="Size">
@@ -469,8 +468,8 @@
                                                                         <PropertyValueFactory property="izx2Size"/>
                                                                     </cellValueFactory>
                                                                     <cellFactory>
-                                                                        <FormattedTableCellFactory alignment="right">
-                                                                        </FormattedTableCellFactory>
+                                                                        <StringCellFactory alignment="right">
+                                                                        </StringCellFactory>
                                                                     </cellFactory>
                                                                 </TableColumn>
                                                             </columns>
@@ -482,8 +481,8 @@
                                                                         <PropertyValueFactory property="izx3Position"/>
                                                                     </cellValueFactory>
                                                                     <cellFactory>
-                                                                        <FormattedHexTableCellFactory alignment="right">
-                                                                        </FormattedHexTableCellFactory>
+                                                                        <HexCellFactory alignment="right">
+                                                                        </HexCellFactory>
                                                                     </cellFactory>
                                                                 </TableColumn>
                                                                 <TableColumn prefWidth="45.0" text="Size">
@@ -491,8 +490,8 @@
                                                                         <PropertyValueFactory property="izx3Size"/>
                                                                     </cellValueFactory>
                                                                     <cellFactory>
-                                                                        <FormattedTableCellFactory alignment="right">
-                                                                        </FormattedTableCellFactory>
+                                                                        <StringCellFactory alignment="right">
+                                                                        </StringCellFactory>
                                                                     </cellFactory>
                                                                 </TableColumn>
                                                             </columns>
@@ -504,8 +503,8 @@
                                                                         <PropertyValueFactory property="izx4Position"/>
                                                                     </cellValueFactory>
                                                                     <cellFactory>
-                                                                        <FormattedHexTableCellFactory alignment="right">
-                                                                        </FormattedHexTableCellFactory>
+                                                                        <HexCellFactory alignment="right">
+                                                                        </HexCellFactory>
                                                                     </cellFactory>
                                                                 </TableColumn>
                                                                 <TableColumn prefWidth="45.0" text="Size">
@@ -513,8 +512,8 @@
                                                                         <PropertyValueFactory property="izx4Size"/>
                                                                     </cellValueFactory>
                                                                     <cellFactory>
-                                                                        <FormattedTableCellFactory alignment="right">
-                                                                        </FormattedTableCellFactory>
+                                                                        <StringCellFactory alignment="right">
+                                                                        </StringCellFactory>
                                                                     </cellFactory>
                                                                 </TableColumn>
                                                             </columns>
@@ -526,8 +525,8 @@
                                                                         <PropertyValueFactory property="iactPosition"/>
                                                                     </cellValueFactory>
                                                                     <cellFactory>
-                                                                        <FormattedHexTableCellFactory alignment="right">
-                                                                        </FormattedHexTableCellFactory>
+                                                                        <HexCellFactory alignment="right">
+                                                                        </HexCellFactory>
                                                                     </cellFactory>
                                                                 </TableColumn>
                                                                 <TableColumn prefWidth="45.0" text="Size">
@@ -535,8 +534,8 @@
                                                                         <PropertyValueFactory property="iactSize"/>
                                                                     </cellValueFactory>
                                                                     <cellFactory>
-                                                                        <FormattedTableCellFactory alignment="right">
-                                                                        </FormattedTableCellFactory>
+                                                                        <StringCellFactory alignment="right">
+                                                                        </StringCellFactory>
                                                                     </cellFactory>
                                                                 </TableColumn>
                                                             </columns>
@@ -703,7 +702,25 @@
                                                 <Button fx:id="saveNamesToFilesButton" layoutX="14.0" layoutY="40.0"
                                                         mnemonicParsing="false" onAction="#saveNamesToFileButtonClick"
                                                         text="Save names to files"/>
-                                                <TextArea layoutX="150.0" layoutY="14.0" prefHeight="405.0" prefWidth="300.0" fx:id="namesTextArea" editable="false" />
+                                                <TableView fx:id="namesTableView" layoutX="150.0" layoutY="14.0" prefHeight="405.0" prefWidth="210.0">
+                                                    <columns>
+                                                        <TableColumn editable="false" prefWidth="50.0" text="Image">
+                                                            <cellValueFactory>
+                                                                <PropertyValueFactory property="tileId"/>
+                                                            </cellValueFactory>
+                                                        </TableColumn>
+                                                        <TableColumn editable="false" prefWidth="140.0" text="Name">
+                                                            <cellValueFactory>
+                                                                <PropertyValueFactory property="name"/>
+                                                            </cellValueFactory>
+                                                            <cellFactory>
+                                                                <StringCellFactory alignment="left">
+                                                                </StringCellFactory>
+                                                            </cellFactory>
+                                                        </TableColumn>
+                                                    </columns>
+                                                </TableView>
+
                                             </AnchorPane>
                                         </Tab>
                                         <Tab text="Text Translation">

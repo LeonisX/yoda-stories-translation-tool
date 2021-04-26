@@ -1,7 +1,5 @@
 package md.leonis.ystt.view;
 
-import java.text.Format;
-
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.TableCell;
@@ -9,7 +7,9 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.text.TextAlignment;
 import javafx.util.Callback;
 
-public class FormattedTableCellFactory<S, T> implements Callback<TableColumn<S, T>, TableCell<S, T>> {
+import java.text.Format;
+
+public class HexCellFactory<S, T> implements Callback<TableColumn<S, T>, TableCell<S, T>> {
 
     private TextAlignment alignment;
     private Format format;
@@ -50,7 +50,7 @@ public class FormattedTableCellFactory<S, T> implements Callback<TableColumn<S, 
                     super.setText(null);
                     super.setGraphic((Node) item);
                 } else {
-                    super.setText(item.toString());
+                    super.setText("0x" + item.toString());
                     super.setGraphic(null);
                 }
             }
