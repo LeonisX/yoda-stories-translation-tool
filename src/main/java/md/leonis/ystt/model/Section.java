@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static md.leonis.ystt.utils.Config.gamePalette;
@@ -252,12 +253,40 @@ public class Section {
             if (id == 0xFFFF) {         //2 bytes - index of character
                 break;
             }
-            ReadString(4);              //4 bytes - 'ICHA'
-            int csz = (int) ReadLongWord();        //4 bytes - rest of current character length
-            ReadString(csz);
-            //            Char(int id, int position, List<Integer> tileIds, String name)
-            //TODO
-            chars.add(new Char(id, -1, new ArrayList<>(), "name"));
+            String icha = ReadString(4);            //4 bytes - 'ICHA'
+            assert "ICHA".equals(icha);
+            int csz = (int) ReadLongWord();        //4 bytes - rest of current character length; always 74
+            assert csz == 74;
+            //ReadString(csz);
+
+            int position = GetPosition();
+
+            StringBuilder name = new StringBuilder();
+            int b = ReadByte();
+            while (b != 0) {
+                name.append((char) b);                          // Character name, ended with $00 <= 16
+                b = ReadByte();
+            }
+            if (name.length() % 2 == 0) {
+                section.ReadByte();
+            }
+            int k = ReadByte();
+            int n = ReadByte();
+            while (k != 0xFF && n != 0xFF) {                       // unknown data 2 bytes * x, ended with $FF FF
+                k = ReadByte();
+                n = ReadByte();
+            }
+            long empty = ReadLongWord();                             // 4 bytes 00 00 00 00
+            assert 0 == empty;
+            List<Integer> tileIds = new ArrayList<>();
+            while (GetPosition() < position + csz) {
+                int tileId = ReadWord();                // REST - sequence of tiles # (2 bytes), or $FF FF
+                if (tileId != 0xFFFF) {
+                    tileIds.add(tileId);
+                }
+            }
+            tileIds = tileIds.stream().distinct().sorted().collect(Collectors.toList());
+            chars.add(new Char(id, position, csz, tileIds, name.toString()));
         }
         Log.debug("Characters: " + chars.size());
     }
@@ -394,8 +423,6 @@ public class Section {
                 } else {
                     phase = 1;
                 }
-
-                System.out.println(phase + ": " + phrase);
 
                 if (phase == 2) {
                     //TODO may be not need, if we dump to tables

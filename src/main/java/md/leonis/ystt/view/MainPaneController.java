@@ -302,19 +302,18 @@ public class MainPaneController {
         // Characters
         charactersCountLabel.setText(Integer.toString(section.chars.size()));
         @SuppressWarnings("all")
-        TableColumn<Char, List<Integer>> charsColumn = (TableColumn<Char, List<Integer>>) charactesTableView.getColumns().get(0);
+        TableColumn<Char, List<Integer>> charsColumn = (TableColumn<Char, List<Integer>>) charactesTableView.getColumns().get(1);
         charsColumn.setCellFactory(c -> {
 
-            final Canvas canvas = new Canvas();
+            Canvas canvas = new Canvas();
 
             TableCell<Char, List<Integer>> cell = new TableCell<Char, List<Integer>>() {
                 public void updateItem(List<Integer> tileIds, boolean empty) {
                     if (tileIds != null) {
-                        canvas.setHeight(tileIds.size() * TILE_SIZE);
+                        canvas.setWidth(tileIds.size() * TILE_SIZE);
                         canvas.setHeight(TILE_SIZE);
                         for (int i = 0; i < tileIds.size(); i++) {
-                            Integer tileId = tileIds.get(i);
-                            GetWTile(tileId, canvas, i * TILE_SIZE, 0, null);
+                            GetWTile(tileIds.get(i), canvas, i * TILE_SIZE, 0, null);
                         }
                     }
                 }
@@ -323,7 +322,7 @@ public class MainPaneController {
             cell.setAlignment(Pos.CENTER);
             return cell;
         });
-        namesTableView.setItems(FXCollections.observableList(section.names));
+        charactesTableView.setItems(FXCollections.observableList(section.chars));
 
         // Names
         namesCountLabel.setText(Integer.toString(section.names.size()));
@@ -1063,12 +1062,10 @@ public class MainPaneController {
             Section.Log.newLine();
             Section.Log.debug("Total count: " + section.chars.size());
             Section.Log.newLine();
-            //TODO
-            texts.clear();
 
             section.SetPosition(section.GetDataOffset(KnownSections.CHAR));
             for (int i = 0; i < section.chars.size(); i++) {
-                ReadCHAR();
+                ReadCHAR(section.chars.get(i));
             }
             section.SetPosition(section.GetDataOffset(KnownSections.CHWP));
             for (int i = 0; i < section.chars.size(); i++) {
@@ -1080,52 +1077,21 @@ public class MainPaneController {
             for (int i = 0; i < section.chars.size(); i++) {
                 ReadCAUX();
             }
-            IOUtils.saveTextFile(texts, opath.resolve("chars.txt"));
+            IOUtils.saveTextFile(section.chars.stream().map(Char::getName).collect(Collectors.toList()), opath.resolve("chars.txt"));
         } catch (Exception e) {
             JavaFxUtils.showAlert("Error saving characters to the files", e);
         }
     }
 
-    private void ReadCHAR() throws IOException {
+    private void ReadCHAR(Char c) throws IOException {
 
-        int id = section.ReadWord();                        //2 bytes - index of character
-        String icha = section.ReadString(4);            //4 bytes - 'ICHA'
-        assert "ICHA".equals(icha);
-        long csz = section.ReadLongWord();                  //4 bytes - rest of current character length; always 74
-        assert csz == 74;
-        int idx = section.GetPosition();
+        for (Integer integer : c.getTileIds()) {
+            Path path = opath.resolve("Characters").resolve(c.getName());
+            IOUtils.createDirectories(path);
+            BMPWriter.write(GetTile(integer), path.resolve(StringUtils.leftPad(Integer.toString(integer), 4, '0') + E_BMP));
+        }
 
-        StringBuilder name = new StringBuilder();
-        int k = section.ReadByte();
-        while (k != 0) {
-            name.append((char) k);                          // Character name, ended with $00 <= 16
-            k = section.ReadByte();
-        }
-        texts.add(name.toString());
-        StringBuilder seq = new StringBuilder();
-        if (name.length() % 2 == 0) {
-            seq.append(section.intToHex(section.ReadByte(), 2)).append(' ');
-        }
-        k = section.ReadByte();
-        int n = section.ReadByte();
-        while ((k != 0xFF) && (n != 0xFF)) {                // unknown data 2 bytes * x, ended with $FF FF
-            seq.append(section.intToHex(k, 2)).append(' ').append(section.intToHex(n, 2)).append(' ');
-            k = section.ReadByte();
-            n = section.ReadByte();
-        }
-        section.ReadLongWord();                             // 4 bytes 00 00 00 00
-        while (section.GetPosition() < idx + csz) {
-            int tileId = section.ReadWord();                // REST - sequence of tiles # (2 bytes), or $FF FF
-            if (tileId != 0xFFFF) {
-                Path path = opath.resolve("Characters").resolve(name.toString());
-                IOUtils.createDirectories(path);
-
-                BMPWriter.write(GetTile(tileId), path.resolve(StringUtils.leftPad(Integer.toString(tileId), 4, '0') + E_BMP));
-            }
-        }
-        //ReadString(csz);
-        Section.Log.debug(seq + "      : " + name.toString());
-        DumpData(opath.resolve("CHAR").resolve(StringUtils.leftPad(Integer.toString(id), 3, '0')), idx, (int) csz);
+        DumpData(opath.resolve("CHAR").resolve(StringUtils.leftPad(Integer.toString(c.getId()), 3, '0')), c.getPosition(), c.getSize());
     }
 
 

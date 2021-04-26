@@ -680,16 +680,24 @@
                                 <Button fx:id="saveCharactersToFilesButton" layoutX="14.0" layoutY="40.0"
                                         mnemonicParsing="false" onAction="#saveCharactersToFilesButtonClick"
                                         text="Save characters to files"/>
-                                <Label layoutX="14.0" layoutY="78.0"
-                                       text="WARNING!!! Characters don't need to translate. Don't waste your time :)"
-                                       textFill="#8d0909">
+                                <TextArea layoutX="14.0" layoutY="78.0" prefWidth="137" prefHeight="140" wrapText="true" editable="false"
+                                       text="Characters don't need to be translated. Don't waste your time :)" >
                                     <font>
-                                        <Font name="System Bold" size="12.0"/>
+                                        <Font name="System Bold" size="12.0" />
                                     </font>
-                                </Label>
-                                <TableView fx:id="charactesTableView" layoutX="160.0" layoutY="14.0" prefHeight="395.0" prefWidth="310.0">
+                                </TextArea>
+                                <TableView fx:id="charactesTableView" layoutX="160.0" layoutY="14.0" prefHeight="420.0" prefWidth="760.0">
                                     <columns>
-                                        <TableColumn editable="false" prefWidth="150.0" text="Image">
+                                        <TableColumn editable="false" prefWidth="20.0" text="ID">
+                                            <cellValueFactory>
+                                                <PropertyValueFactory property="id"/>
+                                            </cellValueFactory>
+                                            <cellFactory>
+                                                <StringCellFactory alignment="center">
+                                                </StringCellFactory>
+                                            </cellFactory>
+                                        </TableColumn>
+                                        <TableColumn editable="false" prefWidth="580.0" text="Image">
                                             <cellValueFactory>
                                                 <PropertyValueFactory property="tileIds"/>
                                             </cellValueFactory>

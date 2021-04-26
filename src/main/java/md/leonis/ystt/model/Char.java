@@ -6,12 +6,14 @@ public class Char implements Movable {
 
     private int id;
     private int position; // position on text
+    private int size;
     private List<Integer> tileIds;
     private String name;
 
-    public Char(int id, int position, List<Integer> tileIds, String name) {
+    public Char(int id, int position, int size, List<Integer> tileIds, String name) {
         this.id = id;
         this.position = position;
+        this.size = size;
         this.tileIds = tileIds;
         this.name = name;
     }
@@ -32,6 +34,14 @@ public class Char implements Movable {
     @Override
     public void setPosition(int position) {
         this.position = position;
+    }
+
+    public int getSize() {
+        return size;
+    }
+
+    public void setSize(int size) {
+        this.size = size;
     }
 
     public List<Integer> getTileIds() {
