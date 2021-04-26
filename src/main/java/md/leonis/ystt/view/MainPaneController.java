@@ -978,11 +978,12 @@ public class MainPaneController {
             Section.Log.newLine();
             Section.Log.debug("Total count: " + section.puzzles.size());
             Section.Log.newLine();
-            texts.clear();
             for (int i = 0; i < section.puzzles.size(); i++) {
                 ReadPUZ2(section.puzzles.get(i));
             }
-            IOUtils.saveTextFile(texts, opath.resolve("puz2.txt"));
+            List<String> phrases = section.puzzles.stream().flatMap(p -> p.getPhrases().stream()
+                    .map(Phrase::getPhrase)).collect(Collectors.toList());
+            IOUtils.saveTextFile(phrases, opath.resolve("puz2.txt"));
         } catch (Exception e) {
             JavaFxUtils.showAlert("Error saving puzzles to the files", e);
         }
@@ -991,116 +992,8 @@ public class MainPaneController {
     private void ReadPUZ2(Puzzle puzzle) throws IOException {
 
         Section.Log.debug("Puzzle #" + puzzle.getId() + "; Size: 0x" + section.intToHex(puzzle.getSize(), 4));
-        DumpText(puzzle.getPosition(), puzzle.getSize());
         DumpData(opath.resolve("PUZ2").resolve(StringUtils.leftPad(Integer.toString(puzzle.getId()), 4, '0')), puzzle.getPosition(), puzzle.getSize());
     }
-
-    private boolean idDeprecatedWords(String text) {
-
-        //TODO static
-        List<String> arr = Arrays.asList(
-                "el:", "ckup L", "MS S", "ЂОЅ", "n 2", "######", "######", "######", "plac", "Sho",
-                "Show", "opI", "ne ", "Red", "Set", "######", "up L", "######", "ng, ", "opIt",
-                "######", "ckup", "Y: 12 ", "Bump", "Pick", "Bum", "Has", "ђ0n", "Pickup L", "SetHer",
-                "BumpTi", "Repla", "MS San", "######", "d my j", "WaitF", "SetH", "SetHe", "######", "eIte",
-                "n 1 an", "њњћ", "LчЅ", "6,12", "0, 1", "Door", "aySo", "c X:", "Game", "Р©µ",
-                "######", "a l", "######", "PlayS", "Force ", " Lev", "ter:", "ter:F", "ЂЫ№", "o Na",
-                "t•±", "4kЯ", "w on o", "ndN", "HotS", "ЂУґ", "perial", "12 Y", "Name", "sta",
-                "Wait", "securi", "'s don", "cku", "ДFВ", "rTim", "Wai", "шн±", "Backgr", "e's",
-                "MS ", " ’µ", "h th", "n't th", "u ta", "s! What ", "Pic", "¤K‡", "Wait", "Coun",
-                "#####", "ґъm", "up ", "Sav", "яяяяяяяя", "Rep", "ёDґ", "!!!", "ф$‚", "Coun"
-        );
-
-        boolean result = arr.contains(text);
-
-        if (!result) {
-            result = text.startsWith("Remov") && text.length() <= 7;
-        }
-        if (!result) {
-            result = text.startsWith("Redr") && text.length() <= 6;
-        }
-        if (!result) {
-            result = text.startsWith("ShowT");
-        }
-        if (!result) {
-            result = text.startsWith("awArea");
-        }
-        if (!result) {
-            result = text.contains("ndN");
-        }
-        if (!result) {
-            result = text.startsWith("HasI");
-        }
-        if (!result) {
-            result = text.startsWith("ZX");
-        }
-        if (!result) {
-            result = text.startsWith(" X:");
-        }
-        if (!result) {
-            result = text.startsWith(",");
-        }
-
-        if (text.startsWith(",") || text.startsWith(":")) {
-            result = true;
-        }
-        return result;
-    }
-
-    char[] restrictedChars = {
-            (char) 0x00, (char) 0x01, (char) 0x02, (char) 0x03, (char) 0x04, (char) 0x05, (char) 0x06, (char) 0x07,
-            (char) 0x08, (char) 0x09, /*(char) 0x0A,*/ (char) 0x0B, (char) 0x0C, /*(char) 0x0D,*/ (char) 0x0E, (char) 0x0F,
-            (char) 0x10, (char) 0x11, (char) 0x12, (char) 0x13, (char) 0x14, (char) 0x15, (char) 0x16, (char) 0x17,
-            (char) 0x18, (char) 0x19, (char) 0x1A, (char) 0x1B, (char) 0x1C, (char) 0x1D, (char) 0x1E, (char) 0x1F,
-            '\\', '@', '^', '¶', '<', '»', '(', ')'
-    };
-
-    //TODO need refactor
-    //TODO dump puzzle, phrases metrics
-    private void DumpText(int position, int size) {
-
-        //phase := 1;
-        section.SetPosition(position);
-        while (section.GetPosition() < position + size - 2) {
-            //System.out.println(String.format("%s: %s", section.intToHex(section.GetPosition(), 4), section.intToHex(position + size - 2, 4)));
-
-            //Section.Log.debug("Start new scan: " + section.intToHex(section.GetPosition(), 6));
-            int tempIndex = section.GetPosition();
-            int sz = section.ReadWord();
-            //Section.Log.debug("Supposed size: " + section.intToHex(sz, 4));
-            if ((sz < 0x0300) && (sz > 0x0002)) { // correct max size
-                byte phase = 2;                   // size correct, maybe text?
-                // TODO Application.ProcessMessages;
-
-                String supposedString = "";
-
-                if (section.GetPosition() + sz <= position + size) {
-                    supposedString = section.ReadString(sz);
-                    if (StringUtils.containsAny(supposedString, restrictedChars)) {
-                        phase = 1;
-                    }
-                } else {
-                    phase = 1;
-                }
-
-                System.out.println(phase + ": " + supposedString);
-
-                if (phase == 2) {
-                    //TODO may be not need, if we dump to tables
-                    String s = supposedString.replace("\r\n", "[CR]"); // LF(\n), CR(\r)
-                    s = s.replace("[CR][CR]", "[CR2]");
-                    s = s.replace((char) (0xA5), '_');
-                    if (!idDeprecatedWords(s)) {
-                        texts.add(s);
-                        tempIndex = section.GetPosition() - 1;
-                    }
-                    //phase = 1;
-                }
-            }
-            section.SetPosition(tempIndex + 1);
-        }
-    }
-
 
     public void dumpPuzzlesTextToDocxCLick(ActionEvent actionEvent) {
     }

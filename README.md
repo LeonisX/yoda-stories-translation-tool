@@ -10,7 +10,6 @@ An original version: https://github.com/LeonisX/YExplorer
 
 ## TODO
 
-* Dump puzzles
 * Characters - show in UI (table), dump
 * Names - show in UI (list), dump
 * Dump texts to DOCX (separators, IACT/PUZ2 labels, ignore them, allow blocked text)

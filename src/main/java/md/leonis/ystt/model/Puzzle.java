@@ -8,7 +8,7 @@ public class Puzzle implements Movable {
     private int id;
     private int position;
     private int size;
-    private List<SizePosition> phrases = new ArrayList<>();
+    private List<Phrase> phrases = new ArrayList<>();
 
     public Puzzle(int id, int position, int size) {
         this.id = id;
@@ -42,11 +42,11 @@ public class Puzzle implements Movable {
         this.size = size;
     }
 
-    public List<SizePosition> getPhrases() {
+    public List<Phrase> getPhrases() {
         return phrases;
     }
 
-    public void setPhrases(List<SizePosition> phrases) {
+    public void setPhrases(List<Phrase> phrases) {
         this.phrases = phrases;
     }
 }

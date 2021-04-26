@@ -11,13 +11,11 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Stream;
 
 import static md.leonis.ystt.utils.Config.gamePalette;
+import static md.leonis.ystt.utils.Config.section;
 
 //TODO think how to use SizeSequence
 public class Section {
@@ -300,7 +298,115 @@ public class Section {
             ReadString(size);
             //puzzlesCount++;
         }
+        puzzles.forEach(this::DumpText);
         Log.debug("Puzzles: " + puzzles.size());
+    }
+
+    private boolean idDeprecatedWords(String text) {
+
+        //TODO static
+        List<String> arr = Arrays.asList(
+                "el:", "ckup L", "MS S", "ЂОЅ", "n 2", "######", "######", "######", "plac", "Sho",
+                "Show", "opI", "ne ", "Red", "Set", "######", "up L", "######", "ng, ", "opIt",
+                "######", "ckup", "Y: 12 ", "Bump", "Pick", "Bum", "Has", "ђ0n", "Pickup L", "SetHer",
+                "BumpTi", "Repla", "MS San", "######", "d my j", "WaitF", "SetH", "SetHe", "######", "eIte",
+                "n 1 an", "њњћ", "LчЅ", "6,12", "0, 1", "Door", "aySo", "c X:", "Game", "Р©µ",
+                "######", "a l", "######", "PlayS", "Force ", " Lev", "ter:", "ter:F", "ЂЫ№", "o Na",
+                "t•±", "4kЯ", "w on o", "ndN", "HotS", "ЂУґ", "perial", "12 Y", "Name", "sta",
+                "Wait", "securi", "'s don", "cku", "ДFВ", "rTim", "Wai", "шн±", "Backgr", "e's",
+                "MS ", " ’µ", "h th", "n't th", "u ta", "s! What ", "Pic", "¤K‡", "Wait", "Coun",
+                "#####", "ґъm", "up ", "Sav", "яяяяяяяя", "Rep", "ёDґ", "!!!", "ф$‚", "Coun"
+        );
+
+        boolean result = arr.contains(text);
+
+        if (!result) {
+            result = text.startsWith("Remov") && text.length() <= 7;
+        }
+        if (!result) {
+            result = text.startsWith("Redr") && text.length() <= 6;
+        }
+        if (!result) {
+            result = text.startsWith("ShowT");
+        }
+        if (!result) {
+            result = text.startsWith("awArea");
+        }
+        if (!result) {
+            result = text.contains("ndN");
+        }
+        if (!result) {
+            result = text.startsWith("HasI");
+        }
+        if (!result) {
+            result = text.startsWith("ZX");
+        }
+        if (!result) {
+            result = text.startsWith(" X:");
+        }
+        if (!result) {
+            result = text.startsWith(",");
+        }
+
+        if (text.startsWith(",") || text.startsWith(":")) {
+            result = true;
+        }
+        return result;
+    }
+
+    char[] restrictedChars = {
+            (char) 0x00, (char) 0x01, (char) 0x02, (char) 0x03, (char) 0x04, (char) 0x05, (char) 0x06, (char) 0x07,
+            (char) 0x08, (char) 0x09, /*(char) 0x0A,*/ (char) 0x0B, (char) 0x0C, /*(char) 0x0D,*/ (char) 0x0E, (char) 0x0F,
+            (char) 0x10, (char) 0x11, (char) 0x12, (char) 0x13, (char) 0x14, (char) 0x15, (char) 0x16, (char) 0x17,
+            (char) 0x18, (char) 0x19, (char) 0x1A, (char) 0x1B, (char) 0x1C, (char) 0x1D, (char) 0x1E, (char) 0x1F,
+            '\\', '@', '^', '¶', '<', '»', '(', ')'
+    };
+
+    //TODO need refactor
+    //TODO dump puzzle, phrases metrics
+    private void DumpText(Puzzle puzzle) {
+
+        //phase := 1;
+        section.SetPosition(puzzle.getPosition());
+        while (GetPosition() < puzzle.getPosition() + puzzle.getSize() - 2) {
+            //System.out.println(String.format("%s: %s", section.intToHex(section.GetPosition(), 4), section.intToHex(position + size - 2, 4)));
+
+            //Section.Log.debug("Start new scan: " + section.intToHex(section.GetPosition(), 6));
+            int tempIndex = GetPosition();
+            int sz = ReadWord();
+            //Section.Log.debug("Supposed size: " + section.intToHex(sz, 4));
+            if ((sz < 0x0300) && (sz > 0x0002)) { // correct max size
+                byte phase = 2;                   // size correct, maybe text?
+                // TODO Application.ProcessMessages;
+
+                String phrase = "";
+                int position = -1;
+
+                if (GetPosition() + sz <= puzzle.getPosition() + puzzle.getSize()) {
+                    position = GetPosition();
+                    phrase = ReadString(sz);
+                    if (StringUtils.containsAny(phrase, restrictedChars)) {
+                        phase = 1;
+                    }
+                } else {
+                    phase = 1;
+                }
+
+                System.out.println(phase + ": " + phrase);
+
+                if (phase == 2) {
+                    //TODO may be not need, if we dump to tables
+                    phrase = phrase.replace("\r\n", "[CR]"); // LF(\n), CR(\r)
+                    phrase = phrase.replace("[CR][CR]", "[CR2]");
+                    phrase = phrase.replace((char) (0xA5), '_');
+                    if (!idDeprecatedWords(phrase)) {
+                        puzzle.getPhrases().add(new Phrase(position, phrase));
+                        tempIndex = section.GetPosition() - 1;
+                    }
+                }
+            }
+            section.SetPosition(tempIndex + 1);
+        }
     }
 
     public void ScanZONE(KnownSections sectionName) {
