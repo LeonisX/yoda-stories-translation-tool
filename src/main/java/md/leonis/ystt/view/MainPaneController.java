@@ -137,8 +137,9 @@ public class MainPaneController {
 
     public Label charactersCountLabel;
     public Button saveCharactersToFilesButton;
-    public Label namesCountLabel;
+    public TableView<Char> charactesTableView;
 
+    public Label namesCountLabel;
     public Button saveNamesToFilesButton;
     public TableView<Name> namesTableView;
     public Button dumpNamesTextToDocx;
@@ -299,13 +300,36 @@ public class MainPaneController {
         puzzlesCountLabel.setText(Integer.toString(section.puzzles.size()));
 
         // Characters
-        charactersCountLabel.setText(Integer.toString(section.charsCount));
+        charactersCountLabel.setText(Integer.toString(section.chars.size()));
+        @SuppressWarnings("all")
+        TableColumn<Char, List<Integer>> charsColumn = (TableColumn<Char, List<Integer>>) charactesTableView.getColumns().get(0);
+        charsColumn.setCellFactory(c -> {
+
+            final Canvas canvas = new Canvas();
+
+            TableCell<Char, List<Integer>> cell = new TableCell<Char, List<Integer>>() {
+                public void updateItem(List<Integer> tileIds, boolean empty) {
+                    if (tileIds != null) {
+                        canvas.setHeight(tileIds.size() * TILE_SIZE);
+                        canvas.setHeight(TILE_SIZE);
+                        for (int i = 0; i < tileIds.size(); i++) {
+                            Integer tileId = tileIds.get(i);
+                            GetWTile(tileId, canvas, i * TILE_SIZE, 0, null);
+                        }
+                    }
+                }
+            };
+            cell.setGraphic(canvas);
+            cell.setAlignment(Pos.CENTER);
+            return cell;
+        });
+        namesTableView.setItems(FXCollections.observableList(section.names));
 
         // Names
         namesCountLabel.setText(Integer.toString(section.names.size()));
         @SuppressWarnings("all")
-        TableColumn<Name, Integer> column = (TableColumn<Name, Integer>) namesTableView.getColumns().get(0);
-        column.setCellFactory(c -> {
+        TableColumn<Name, Integer> namesColumn = (TableColumn<Name, Integer>) namesTableView.getColumns().get(0);
+        namesColumn.setCellFactory(c -> {
 
             final ImageView imageView = new ImageView();
 
@@ -618,6 +642,7 @@ public class MainPaneController {
     private void DumpData(Path path, int offset, int size) throws IOException {
         byte[] array = Arrays.copyOfRange(section.dump.getDump(), offset, offset + size);
         IOUtils.saveBytes(path, array);
+        section.SetPosition(offset + size);
     }
 
 
@@ -1026,7 +1051,96 @@ public class MainPaneController {
     public void replacePuzzlesTextInDtaClick(ActionEvent actionEvent) {
     }
 
-    public void saveCharactersToFilesButtonClick(ActionEvent actionEvent) {
+    public void saveCharactersToFilesButtonClick() {
+
+        try {
+            IOUtils.createDirectories(opath.resolve("CHAR"));
+            IOUtils.createDirectories(opath.resolve("Characters"));
+            IOUtils.createDirectories(opath.resolve("CAUX"));
+            IOUtils.createDirectories(opath.resolve("CHWP"));
+            Section.Log.clear();
+            Section.Log.debug("Characters:");
+            Section.Log.newLine();
+            Section.Log.debug("Total count: " + section.chars.size());
+            Section.Log.newLine();
+            //TODO
+            texts.clear();
+
+            section.SetPosition(section.GetDataOffset(KnownSections.CHAR));
+            for (int i = 0; i < section.chars.size(); i++) {
+                ReadCHAR();
+            }
+            section.SetPosition(section.GetDataOffset(KnownSections.CHWP));
+            for (int i = 0; i < section.chars.size(); i++) {
+                ReadCHWP();
+            }
+            section.SetPosition(section.GetDataOffset(KnownSections.CAUX));
+            //incorrect CAUX offset!!!!!!!!!!!!!!
+            //Showmessage(inttohex(DTA.GetIndex,6));
+            for (int i = 0; i < section.chars.size(); i++) {
+                ReadCAUX();
+            }
+            IOUtils.saveTextFile(texts, opath.resolve("chars.txt"));
+        } catch (Exception e) {
+            JavaFxUtils.showAlert("Error saving characters to the files", e);
+        }
+    }
+
+    private void ReadCHAR() throws IOException {
+
+        int id = section.ReadWord();                        //2 bytes - index of character
+        String icha = section.ReadString(4);            //4 bytes - 'ICHA'
+        assert "ICHA".equals(icha);
+        long csz = section.ReadLongWord();                  //4 bytes - rest of current character length; always 74
+        assert csz == 74;
+        int idx = section.GetPosition();
+
+        StringBuilder name = new StringBuilder();
+        int k = section.ReadByte();
+        while (k != 0) {
+            name.append((char) k);                          // Character name, ended with $00 <= 16
+            k = section.ReadByte();
+        }
+        texts.add(name.toString());
+        StringBuilder seq = new StringBuilder();
+        if (name.length() % 2 == 0) {
+            seq.append(section.intToHex(section.ReadByte(), 2)).append(' ');
+        }
+        k = section.ReadByte();
+        int n = section.ReadByte();
+        while ((k != 0xFF) && (n != 0xFF)) {                // unknown data 2 bytes * x, ended with $FF FF
+            seq.append(section.intToHex(k, 2)).append(' ').append(section.intToHex(n, 2)).append(' ');
+            k = section.ReadByte();
+            n = section.ReadByte();
+        }
+        section.ReadLongWord();                             // 4 bytes 00 00 00 00
+        while (section.GetPosition() < idx + csz) {
+            int tileId = section.ReadWord();                // REST - sequence of tiles # (2 bytes), or $FF FF
+            if (tileId != 0xFFFF) {
+                Path path = opath.resolve("Characters").resolve(name.toString());
+                IOUtils.createDirectories(path);
+
+                BMPWriter.write(GetTile(tileId), path.resolve(StringUtils.leftPad(Integer.toString(tileId), 4, '0') + E_BMP));
+            }
+        }
+        //ReadString(csz);
+        Section.Log.debug(seq + "      : " + name.toString());
+        DumpData(opath.resolve("CHAR").resolve(StringUtils.leftPad(Integer.toString(id), 3, '0')), idx, (int) csz);
+    }
+
+
+    private void ReadCHWP() throws IOException {
+
+        //  size := DTA.ReadLongWord;
+        int ch = section.ReadWord();
+        DumpData(opath.resolve("CHWP").resolve(StringUtils.leftPad(Integer.toString(ch), 3, '0')), section.GetPosition(), 4);
+    }
+
+    private void ReadCAUX() throws IOException {
+
+        //  size:=DTA.ReadLongWord;
+        int ch = section.ReadWord();
+        DumpData(opath.resolve("CAUX").resolve(StringUtils.leftPad(Integer.toString(ch), 3, '0')), section.GetPosition(), 2);
     }
 
     public void saveNamesToFileButtonClick() {
@@ -1249,100 +1363,6 @@ public class MainPaneController {
     TilesDrawGrid.Repaint;
     end;
     end;
-
-
-
-// Dump characters
-            procedure TMainForm.Button10Click(Sender: TObject);
-    var i: Word;
-    begin
-    CreateDir(opath);
-    CreateDir(opath + 'CHAR');
-    CreateDir(opath + 'Characters');
-    CreateDir(opath + 'CAUX');
-    CreateDir(opath + 'CHWP');
-    Log.Clear;
-  Log.Debug('Characters:');
-    Log.NewLine;
-  Log.Debug('Total count: ' + IntToStr(DTA.charsCount));
-    Log.NewLine;
-    texts.Clear;
-  DTA.SetPosition(DTA.GetDataOffset(knownSections[7]));            // CHAR
-  for i:=0 to DTA.charsCount - 1 do ReadCHAR;
-  DTA.SetPosition(DTA.GetDataOffset(knownSections[8]));            // CHWP
-  for i:=0 to DTA.charsCount - 1 do ReadCHWP;
-  DTA.SetPosition(DTA.GetDataOffset(knownSections[9]));            // CAUX
-    //incorrect CAUX offset!!!!!!!!!!!!!!
-    //Showmessage(inttohex(DTA.GetIndex,6));
-  for i:=0 to DTA.charsCount - 1 do ReadCAUX;
-  texts.SaveToFile(opath + 'chars.txt');
-    end;
-
-
-    procedure TMainForm.ReadCHAR;
-    var csz, idx: Longword;
-    ch, tl: Word;
-    name, seq: String;
-    k, n: Byte;
-    begin
-    ch := DTA.ReadWord;             //2 bytes - index of character
-  DTA.ReadString(4);              //4 bytes - 'ICHA'
-    csz := DTA.ReadLongWord;        //4 bytes - rest of current character length; always 74
-    idx := DTA.GetPosition;
-    // тут сделать обработку текста, спрайтиков
-    name := '';
-    k := DTA.ReadByte;
-  while k <> 0 do
-    begin
-    name := name + chr(k);              // Character name, ended with $00 <= 16
-    k := DTA.ReadByte;
-    end;
-    texts.Add(name);
-    seq := '';
-  if Length(name) mod 2 = 0 then seq := seq + IntToHex(DTA.ReadByte, 2) + ' ';
-    k := DTA.ReadByte;
-    n := DTA.ReadByte;
-  while (k <> $FF) and (n <> $FF) do    // unknown data 2 bytes * x, ended with $FF FF
-    begin
-    seq := seq + IntToHex(k, 2) + ' ' + IntToHex(n, 2) + ' ';
-    k := DTA.ReadByte;
-    n := DTA.ReadByte;
-    end;
-    DTA.ReadLongWord;                     // 4 bytes 00 00 00 00
-  while DTA.GetPosition < idx + csz do
-    begin
-    tl := DTA.ReadWord;                 // REST - sequence of tiles # (2 bytes), or $FF FF
-    if tl <> $FFFF then
-            begin
-    CreateDir(opath + 'Characters\' + name);
-            GetTile(dta, tl, bmp);
-      bmp.SaveToFile(opath + 'Characters\' + name + '\' + rightstr('000' + inttostr(tl), 4) + eBMP);
-    end;
-    end;
-    //ReadString(csz);
-  Log.Debug(seq + '      : ' + name);
-  DTA.SetPosition(idx);
-    DumpData(opath + 'CHAR\' + rightstr('00' + inttostr(ch), 3), DTA.GetPosition, csz);
-            end;
-
-            procedure TMainForm.ReadCHWP;
-            var //size:longword;
-            ch: Word;
-            begin
-//  size := DTA.ReadLongWord;
-            ch := DTA.ReadWord;
-            DumpData(opath + 'CHWP\' + rightstr('00' + inttostr(ch), 3), DTA.GetPosition, 4);
-            end;
-
-            procedure TMainForm.ReadCAUX;
-            var //size:longword;
-            ch: Word;
-            begin
-//  size:=DTA.ReadLongWord;
-            ch := DTA.ReadWord;
-            DumpData(opath + 'CAUX\' + rightstr('00' + inttostr(ch), 3), DTA.GetPosition, 2);
-            end;
-
 
     procedure TMainForm.ReadTGEN;
     var size: Integer;

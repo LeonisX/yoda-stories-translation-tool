@@ -687,6 +687,24 @@
                                         <Font name="System Bold" size="12.0"/>
                                     </font>
                                 </Label>
+                                <TableView fx:id="charactesTableView" layoutX="160.0" layoutY="14.0" prefHeight="395.0" prefWidth="310.0">
+                                    <columns>
+                                        <TableColumn editable="false" prefWidth="150.0" text="Image">
+                                            <cellValueFactory>
+                                                <PropertyValueFactory property="tileIds"/>
+                                            </cellValueFactory>
+                                        </TableColumn>
+                                        <TableColumn editable="false" prefWidth="140.0" text="Name">
+                                            <cellValueFactory>
+                                                <PropertyValueFactory property="name"/>
+                                            </cellValueFactory>
+                                            <cellFactory>
+                                                <StringCellFactory alignment="left">
+                                                </StringCellFactory>
+                                            </cellFactory>
+                                        </TableColumn>
+                                    </columns>
+                                </TableView>
                             </AnchorPane>
                         </Tab>
                         <Tab text="Names">
@@ -702,7 +720,7 @@
                                                 <Button fx:id="saveNamesToFilesButton" layoutX="14.0" layoutY="40.0"
                                                         mnemonicParsing="false" onAction="#saveNamesToFileButtonClick"
                                                         text="Save names to files"/>
-                                                <TableView fx:id="namesTableView" layoutX="150.0" layoutY="14.0" prefHeight="405.0" prefWidth="210.0">
+                                                <TableView fx:id="namesTableView" layoutX="150.0" layoutY="14.0" prefHeight="395.0" prefWidth="210.0">
                                                     <columns>
                                                         <TableColumn editable="false" prefWidth="50.0" text="Image">
                                                             <cellValueFactory>

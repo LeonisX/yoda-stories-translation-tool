@@ -50,7 +50,7 @@ public class Section {
     public List<String> sounds = new ArrayList<>();
     public int tilesCount;
     public List<Puzzle> puzzles = new ArrayList<>();
-    public int charsCount;
+    public List<Char> chars = new ArrayList<>();
     public List<Name> names = new ArrayList<>();
 
     public Section() {
@@ -84,7 +84,7 @@ public class Section {
         tilesCount = 0;
         maps.clear();
         puzzles.clear();
-        charsCount = 0;
+        chars.clear();
         names.clear();
     }
 
@@ -242,14 +242,24 @@ public class Section {
         Log.debug(sectionName + ": " + names.size());
     }
 
-    // 77 * 4 = 308 + size(4) + 'CAUX' + FFFF = 318
-    public void ScanCAUX(KnownSections sectionName) {
+    // 78 Characters
+    public void ScanCHAR(KnownSections sectionName) {
 
-        int sz = (int) ReadLongWord();           //4 bytes - length of section CAUX
+        int sz = (int) ReadLongWord();           //4 bytes - length of section CHAR
         addSection(sectionName, sz, sz + 4 + 4, GetPosition(), GetPosition() - 4 - 4);
-        MovePosition(sz);
-        int count = (sz - 2) / 4;
-        Log.debug(sectionName + ": " + count);
+        while (InBound(sectionName)) {
+            int id = ReadWord();
+            if (id == 0xFFFF) {         //2 bytes - index of character
+                break;
+            }
+            ReadString(4);              //4 bytes - 'ICHA'
+            int csz = (int) ReadLongWord();        //4 bytes - rest of current character length
+            ReadString(csz);
+            //            Char(int id, int position, List<Integer> tileIds, String name)
+            //TODO
+            chars.add(new Char(id, -1, new ArrayList<>(), "name"));
+        }
+        Log.debug("Characters: " + chars.size());
     }
 
     // 77 * 6 = 462 + size(4) + 'CHWP' + FFFF = 472
@@ -262,22 +272,14 @@ public class Section {
         Log.debug(sectionName + ": " + count);
     }
 
-    // 78 Characters
-    public void ScanCHAR(KnownSections sectionName) {
+    // 77 * 4 = 308 + size(4) + 'CAUX' + FFFF = 318
+    public void ScanCAUX(KnownSections sectionName) {
 
-        int sz = (int) ReadLongWord();           //4 bytes - length of section CHAR
+        int sz = (int) ReadLongWord();           //4 bytes - length of section CAUX
         addSection(sectionName, sz, sz + 4 + 4, GetPosition(), GetPosition() - 4 - 4);
-        charsCount = 0;
-        while (InBound(sectionName)) {
-            if (ReadWord() == 0xFFFF) {         //2 bytes - index of character
-                break;
-            }
-            ReadString(4);              //4 bytes - 'ICHA'
-            int csz = (int) ReadLongWord();        //4 bytes - rest of current character length
-            ReadString(csz);
-            charsCount++;
-        }
-        Log.debug("Characters: " + charsCount);
+        MovePosition(sz);
+        int count = (sz - 2) / 4;
+        Log.debug(sectionName + ": " + count);
     }
 
     public void ScanPUZ2(KnownSections sectionName) {
