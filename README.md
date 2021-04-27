@@ -43,7 +43,27 @@ An original version: https://github.com/LeonisX/YExplorer
 * In Map we save offset before title (ex. IZX3). But IACT - we save offset after title. Need to unify all. 
 * PUZ2 - если смотреть в дампах, то там перед текстом попадается левый текст, вроде: Bogus text; Unused text, right; Look elsewhere for this text. 
 
-### Insigned:
+### Other YS / DA solutions
+
+**yodesk.ksy**
+
+* https://github.com/cyco/WebFun
+* https://github.com/cyco/kaitai_struct_formats/blob/add-yodesk/game/yodesk.ksy
+* https://github.com/kaitai-io/kaitai_struct_formats/pull/403
+
+* https://github.com/a-kr/jsyoda
+* https://github.com/mikepthomas/yoda-stories
+* https://github.com/shinyquagsire23/DesktopAdventures
+* https://github.com/IceReaper/DesktopAdventuresToolkit
+* https://github.com/digitall/scummvm-deskadv
+
+* https://github.com/auselen/SWYodaStories
+* https://github.com/Archenoth/yodesk-notes
+* https://github.com/cyco/deskfun-preview
+
+* https://github.com/kirbysayshi/yoda-stories-docker
+
+### Unsigned:
 
 * https://github.com/robig/axis2-adb/tree/master/src/main/java/org/apache/axis2/databinding/types
 * https://github.com/google/guava/tree/master/guava/src/com/google/common/primitives
