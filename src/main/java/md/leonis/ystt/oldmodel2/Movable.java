@@ -1,4 +1,4 @@
-package md.leonis.ystt.model;
+package md.leonis.ystt.oldmodel2;
 
 //TODO getChildren() -> list of movable children - add to all movable with children
 public interface Movable {

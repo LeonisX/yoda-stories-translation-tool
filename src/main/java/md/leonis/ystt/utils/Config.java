@@ -4,8 +4,8 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import javafx.scene.paint.Color;
-import md.leonis.ystt.model.Release;
-import md.leonis.ystt.model.Section;
+import md.leonis.ystt.oldmodel2.Release;
+import md.leonis.ystt.oldmodel2.Section;
 import md.leonis.ystt.oldmodel.*;
 
 import java.awt.image.IndexColorModel;

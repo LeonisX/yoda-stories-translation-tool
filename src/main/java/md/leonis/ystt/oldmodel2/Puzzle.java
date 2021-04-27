@@ -1,17 +1,27 @@
-package md.leonis.ystt.model;
+package md.leonis.ystt.oldmodel2;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Iact implements Movable {
+public class Puzzle implements Movable {
 
+    private int id;
     private int position;
     private int size;
     private List<Phrase> phrases = new ArrayList<>();
 
-    public Iact(int position, int size) {
+    public Puzzle(int id, int position, int size) {
+        this.id = id;
         this.position = position;
         this.size = size;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     @Override

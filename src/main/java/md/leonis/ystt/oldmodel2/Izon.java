@@ -1,4 +1,4 @@
-package md.leonis.ystt.model;
+package md.leonis.ystt.oldmodel2;
 
 // IZON, IZAX, IZX2, IZX3, IZX4
 public class Izon implements Movable {

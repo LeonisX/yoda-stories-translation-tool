@@ -1,4 +1,4 @@
-package md.leonis.ystt.model;
+package md.leonis.ystt.oldmodel2;
 
 import java.util.ArrayList;
 import java.util.List;

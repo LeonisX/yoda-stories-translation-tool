@@ -1,4 +1,4 @@
-package md.leonis.ystt.model;
+package md.leonis.ystt.oldmodel2;
 
 import md.leonis.bin.ByteOrder;
 import md.leonis.bin.Dump;

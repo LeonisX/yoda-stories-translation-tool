@@ -22,7 +22,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
 import javafx.stage.WindowEvent;
-import md.leonis.ystt.model.*;
+import md.leonis.ystt.oldmodel2.*;
 import md.leonis.ystt.utils.*;
 import net.sf.image4j.codec.bmp.BMPImage;
 import net.sf.image4j.codec.bmp.BMPReader;

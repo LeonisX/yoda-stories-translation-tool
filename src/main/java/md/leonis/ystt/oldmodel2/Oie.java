@@ -1,4 +1,4 @@
-package md.leonis.ystt.model;
+package md.leonis.ystt.oldmodel2;
 
 // Object info entry
 public class Oie implements Movable {
