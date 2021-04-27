@@ -14,9 +14,7 @@ public class ZoneAuxiliary2 extends KaitaiStruct {
     private byte[] marker;
     private long size;
     private int numProvidedItems;
-    /**
-     * Items that can be gained when the zone is solved.
-     */
+    // Items that can be gained when the zone is solved.
     private ArrayList<Integer> providedItems;
 
     private final Yodesk _root;
@@ -43,21 +41,38 @@ public class ZoneAuxiliary2 extends KaitaiStruct {
 
     private void _read() {
         this.marker = this._io.readBytes(4);
-        if (!(Arrays.equals(marker(), new byte[] { 73, 90, 88, 50 }))) {
-            throw new KaitaiStream.ValidationNotEqualError(new byte[] { 73, 90, 88, 50 }, marker(), _io(), "/types/zone_auxiliary_2/seq/0");
+        if (!(Arrays.equals(marker(), new byte[]{73, 90, 88, 50}))) { // IZX2
+            throw new KaitaiStream.ValidationNotEqualError(new byte[]{73, 90, 88, 50}, marker(), _io(), "/types/zone_auxiliary_2/seq/0");
         }
         this.size = this._io.readU4le();
         this.numProvidedItems = this._io.readU2le();
-        providedItems = new ArrayList<>(((Number) (numProvidedItems())).intValue());
-        for (int i = 0; i < numProvidedItems(); i++) {
+        providedItems = new ArrayList<>(numProvidedItems);
+        for (int i = 0; i < numProvidedItems; i++) {
             this.providedItems.add(this._io.readU2le());
         }
     }
 
-    public byte[] marker() { return marker; }
-    public long size() { return size; }
-    public int numProvidedItems() { return numProvidedItems; }
-    public ArrayList<Integer> providedItems() { return providedItems; }
-    public Yodesk _root() { return _root; }
-    public Zone _parent() { return _parent; }
+    public byte[] marker() {
+        return marker;
+    }
+
+    public long size() {
+        return size;
+    }
+
+    public int numProvidedItems() {
+        return numProvidedItems;
+    }
+
+    public ArrayList<Integer> providedItems() {
+        return providedItems;
+    }
+
+    public Yodesk _root() {
+        return _root;
+    }
+
+    public Zone _parent() {
+        return _parent;
+    }
 }

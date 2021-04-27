@@ -46,22 +46,23 @@ public enum InstructionOpcode {
 
     private final long id;
 
+    private static final Map<Long, InstructionOpcode> byId = new HashMap<>(38);
+
+    static {
+        for (InstructionOpcode e : InstructionOpcode.values()) {
+            byId.put(e.id(), e);
+        }
+    }
+
+    public static InstructionOpcode byId(long id) {
+        return byId.get(id);
+    }
+
     InstructionOpcode(long id) {
         this.id = id;
     }
 
     public long id() {
         return id;
-    }
-
-    private static final Map<Long, InstructionOpcode> byId = new HashMap<>(38);
-
-    static {
-        for (InstructionOpcode e : InstructionOpcode.values())
-            byId.put(e.id(), e);
-    }
-
-    public static InstructionOpcode byId(long id) {
-        return byId.get(id);
     }
 }

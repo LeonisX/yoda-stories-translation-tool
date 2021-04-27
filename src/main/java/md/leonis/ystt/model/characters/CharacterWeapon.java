@@ -10,13 +10,11 @@ import java.io.IOException;
 public class CharacterWeapon extends KaitaiStruct {
 
     private int index;
-    /**
-     * If the character referenced by index is a monster, this is a
-     * reference to their weapon, otherwise this is the index of the
-     * weapon's sound
-     */
+    // If the character referenced by index is a monster, this is a reference to their weapon,
+    // otherwise this is the index of the weapon's sound
     private Integer reference;
     private Integer health;
+
     private final Yodesk _root;
     private final CharacterWeapons _parent;
 
@@ -43,15 +41,27 @@ public class CharacterWeapon extends KaitaiStruct {
         this.index = this._io.readU2le();
         if (index() != 65535) {
             this.reference = this._io.readU2le();
-        }
-        if (index() != 65535) {
             this.health = this._io.readU2le();
         }
     }
 
-    public int index() { return index; }
-    public Integer reference() { return reference; }
-    public Integer health() { return health; }
-    public Yodesk _root() { return _root; }
-    public CharacterWeapons _parent() { return _parent; }
+    public int index() {
+        return index;
+    }
+
+    public Integer reference() {
+        return reference;
+    }
+
+    public Integer health() {
+        return health;
+    }
+
+    public Yodesk _root() {
+        return _root;
+    }
+
+    public CharacterWeapons _parent() {
+        return _parent;
+    }
 }

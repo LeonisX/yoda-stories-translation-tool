@@ -38,7 +38,7 @@ public class ZoneAuxiliary4 extends KaitaiStruct {
 
     private void _read() {
         this.marker = this._io.readBytes(4);
-        if (!(Arrays.equals(marker(), new byte[]{73, 90, 88, 52}))) {
+        if (!(Arrays.equals(marker(), new byte[]{73, 90, 88, 52}))) { // IZX4
             throw new KaitaiStream.ValidationNotEqualError(new byte[]{73, 90, 88, 52}, marker(), _io(), "/types/zone_auxiliary_4/seq/0");
         }
         this.size = this._io.readU4le();

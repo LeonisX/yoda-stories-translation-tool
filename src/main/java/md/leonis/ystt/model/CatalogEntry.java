@@ -41,7 +41,7 @@ public class CatalogEntry extends KaitaiStruct {
     private void _read() {
 
         this.type = new String(this._io.readBytes(4), StandardCharsets.US_ASCII);
-        if ( ((!(type()).equals("VERS")) && (!(type()).equals("ZONE"))) ) {
+        if (!type().equals("VERS") && !type().equals("ZONE")) {
             this.size = this._io.readU4le();
         }
         switch (type()) {
@@ -54,7 +54,7 @@ public class CatalogEntry extends KaitaiStruct {
                 break;
             }
             case "STUP": {
-                this.content = new SetupImage(this._io, this, _root);
+                this.content = new StartupImage(this._io, this, _root);
                 break;
             }
             case "ENDF": {
@@ -96,9 +96,23 @@ public class CatalogEntry extends KaitaiStruct {
         }
     }
 
-    public String type() { return type; }
-    public Long size() { return size; }
-    public KaitaiStruct content() { return content; }
-    public Yodesk _root() { return _root; }
-    public Yodesk _parent() { return _parent; }
+    public String type() {
+        return type;
+    }
+
+    public Long size() {
+        return size;
+    }
+
+    public KaitaiStruct content() {
+        return content;
+    }
+
+    public Yodesk _root() {
+        return _root;
+    }
+
+    public Yodesk _parent() {
+        return _parent;
+    }
 }

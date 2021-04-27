@@ -35,13 +35,21 @@ public class CharFrame extends KaitaiStruct {
     }
 
     private void _read() {
-        tiles = new ArrayList<>(((Number) (8)).intValue());
+        tiles = new ArrayList<>(8);
         for (int i = 0; i < 8; i++) {
             this.tiles.add(this._io.readU2le());
         }
     }
 
-    public ArrayList<Integer> tiles() { return tiles; }
-    public Yodesk _root() { return _root; }
-    public Character _parent() { return _parent; }
+    public ArrayList<Integer> tiles() {
+        return tiles;
+    }
+
+    public Yodesk _root() {
+        return _root;
+    }
+
+    public Character _parent() {
+        return _parent;
+    }
 }

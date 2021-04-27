@@ -37,18 +37,22 @@ public class CharacterWeapons extends KaitaiStruct {
 
     private void _read() {
         this.weapons = new ArrayList<>();
-        {
-            CharacterWeapon _it;
-            int i = 0;
-            do {
-                _it = new CharacterWeapon(this._io, this, _root);
-                this.weapons.add(_it);
-                i++;
-            } while (!(_it.index() == 65535));
-        }
+        CharacterWeapon _it;
+        do {
+            _it = new CharacterWeapon(this._io, this, _root);
+            this.weapons.add(_it);
+        } while (_it.index() != 65535);
     }
 
-    public ArrayList<CharacterWeapon> weapons() { return weapons; }
-    public Yodesk _root() { return _root; }
-    public CatalogEntry _parent() { return _parent; }
+    public ArrayList<CharacterWeapon> weapons() {
+        return weapons;
+    }
+
+    public Yodesk _root() {
+        return _root;
+    }
+
+    public CatalogEntry _parent() {
+        return _parent;
+    }
 }

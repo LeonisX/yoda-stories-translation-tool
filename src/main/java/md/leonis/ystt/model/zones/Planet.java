@@ -12,12 +12,24 @@ public enum Planet {
     SWAMP(5);
 
     private final long id;
-    Planet(long id) { this.id = id; }
-    public long id() { return id; }
+
     private static final Map<Long, Planet> byId = new HashMap<>(5);
+
     static {
-        for (Planet e : Planet.values())
+        for (Planet e : Planet.values()) {
             byId.put(e.id(), e);
+        }
     }
-    public static Planet byId(long id) { return byId.get(id); }
+
+    public static Planet byId(long id) {
+        return byId.get(id);
+    }
+
+    Planet(long id) {
+        this.id = id;
+    }
+
+    public long id() {
+        return id;
+    }
 }

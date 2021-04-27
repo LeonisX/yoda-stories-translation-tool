@@ -44,15 +44,24 @@ public enum ConditionOpcode {
 
     private final long id;
 
-    private static final Map<Long, ConditionOpcode> byId = new HashMap<Long, ConditionOpcode>(36);
+    private static final Map<Long, ConditionOpcode> byId = new HashMap<>(36);
 
     static {
-        for (ConditionOpcode e : ConditionOpcode.values())
+        for (ConditionOpcode e : ConditionOpcode.values()) {
             byId.put(e.id(), e);
+        }
     }
-    public static ConditionOpcode byId(long id) { return byId.get(id); }
 
-    ConditionOpcode(long id) { this.id = id; }
-    public long id() { return id; }
+    public static ConditionOpcode byId(long id) {
+        return byId.get(id);
+    }
+
+    ConditionOpcode(long id) {
+        this.id = id;
+    }
+
+    public long id() {
+        return id;
+    }
 
 }

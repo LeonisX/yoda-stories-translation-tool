@@ -15,20 +15,20 @@ import java.util.ArrayList;
  * generated worlds.
  * This spec describes the file format used for all assets of the Windows
  * version of the game.
- * 
+ * <p>
  * The file format follows the TLV (type-length-value) pattern to build a
  * central catalog containing the most important (and globally accessible)
  * assets of the game (e.g. puzzles, zones, tiles, etc.). The same pattern is
  * also found in some catalog entries to encode arrays of variable-length
  * structures.
- * 
+ * <p>
  * With every new game, Yoda Stories generates a new world. This is done by
  * picking a random sample of puzzles from `PUZ2`. One of the chosen puzzles
  * will be the goal, which when solved wins the game.
  * Each puzzle provides an item when solved and some require one to be completed.
  * During world generation a global world map of 10x10 sectors is filled with
  * zones based on the selected puzzles.
- * 
+ * <p>
  * To add variety and interactivity to each zone the game includes a simple
  * scripting engine. Zones can declare actions that when executed can for
  * example set, move or delete tiles, drop items or activate enemies.
@@ -60,18 +60,23 @@ public class Yodesk extends KaitaiStruct {
 
     private void _read() {
         this.catalog = new ArrayList<>();
-        {
-            CatalogEntry _it;
-            int i = 0;
-            do {
-                _it = new CatalogEntry(this._io, this, _root);
-                this.catalog.add(_it);
-                i++;
-            } while (!(_it.type().equals("ENDF")));
-        }
+
+        CatalogEntry _it;
+        do {
+            _it = new CatalogEntry(this._io, this, _root);
+            this.catalog.add(_it);
+        } while (!_it.type().equals("ENDF"));
     }
 
-    public ArrayList<CatalogEntry> catalog() { return catalog; }
-    public Yodesk _root() { return _root; }
-    public KaitaiStruct _parent() { return _parent; }
+    public ArrayList<CatalogEntry> catalog() {
+        return catalog;
+    }
+
+    public Yodesk _root() {
+        return _root;
+    }
+
+    public KaitaiStruct _parent() {
+        return _parent;
+    }
 }

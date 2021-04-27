@@ -38,7 +38,7 @@ public class ZoneSpot extends KaitaiStruct {
     }
 
     private void _read() {
-        column = new ArrayList<Integer>(((Number) (3)).intValue());
+        column = new ArrayList<>(3);
         for (int i = 0; i < 3; i++) {
             this.column.add(this._io.readU2le());
         }

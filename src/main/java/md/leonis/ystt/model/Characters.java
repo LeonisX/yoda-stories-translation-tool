@@ -35,19 +35,25 @@ public class Characters extends KaitaiStruct {
     }
 
     private void _read() {
+
         this.characters = new ArrayList<>();
-        {
-            Character _it;
-            int i = 0;
-            do {
-                _it = new Character(this._io, this, _root);
-                this.characters.add(_it);
-                i++;
-            } while (!(_it.index() == 65535));
-        }
+
+        Character _it;
+        do {
+            _it = new Character(this._io, this, _root);
+            this.characters.add(_it);
+        } while (_it.index() != 65535);
     }
 
-    public ArrayList<Character> characters() { return characters; }
-    public Yodesk _root() { return _root; }
-    public CatalogEntry _parent() { return _parent; }
+    public ArrayList<Character> characters() {
+        return characters;
+    }
+
+    public Yodesk _root() {
+        return _root;
+    }
+
+    public CatalogEntry _parent() {
+        return _parent;
+    }
 }

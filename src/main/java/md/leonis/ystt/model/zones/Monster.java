@@ -16,15 +16,10 @@ public class Monster extends KaitaiStruct {
     private int character;
     private int x;
     private int y;
-    /**
-     * References the item (loot - 1) that will be dropped if the monster
-     * is killed. If set to `0xFFFF` the current zone's quest item will be
-     * dropped.
-     */
+    // References the item (loot - 1) that will be dropped if the monster is killed.
+    // If set to `0xFFFF` the current zone's quest item will be dropped.
     private int loot;
-    /**
-     * If this field is anything other than 0 the monster may drop an item when killed.
-     */
+    // If this field is anything other than 0 the monster may drop an item when killed.
     private long dropsLoot;
     private ArrayList<Waypoint> waypoints;
 
@@ -56,18 +51,41 @@ public class Monster extends KaitaiStruct {
         this.y = this._io.readU2le();
         this.loot = this._io.readU2le();
         this.dropsLoot = this._io.readU4le();
-        waypoints = new ArrayList<>(((Number) (4)).intValue());
+        waypoints = new ArrayList<>(4);
         for (int i = 0; i < 4; i++) {
             this.waypoints.add(new Waypoint(this._io, this, _root));
         }
     }
 
-    public int character() { return character; }
-    public int x() { return x; }
-    public int y() { return y; }
-    public int loot() { return loot; }
-    public long dropsLoot() { return dropsLoot; }
-    public ArrayList<Waypoint> waypoints() { return waypoints; }
-    public Yodesk _root() { return _root; }
-    public ZoneAuxiliary _parent() { return _parent; }
+    public int character() {
+        return character;
+    }
+
+    public int x() {
+        return x;
+    }
+
+    public int y() {
+        return y;
+    }
+
+    public int loot() {
+        return loot;
+    }
+
+    public long dropsLoot() {
+        return dropsLoot;
+    }
+
+    public ArrayList<Waypoint> waypoints() {
+        return waypoints;
+    }
+
+    public Yodesk _root() {
+        return _root;
+    }
+
+    public ZoneAuxiliary _parent() {
+        return _parent;
+    }
 }

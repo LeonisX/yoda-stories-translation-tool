@@ -13,9 +13,7 @@ public class ZoneAuxiliary3 extends KaitaiStruct {
 
     private byte[] marker;
     private long size;
-    /**
-     * NPCs that can be placed in the zone to trade items with the hero.
-     */
+    // NPCs that can be placed in the zone to trade items with the hero.
     private int numNpcs;
     private ArrayList<Integer> npcs;
     private final Yodesk _root;
@@ -42,21 +40,38 @@ public class ZoneAuxiliary3 extends KaitaiStruct {
 
     private void _read() {
         this.marker = this._io.readBytes(4);
-        if (!(Arrays.equals(marker(), new byte[] { 73, 90, 88, 51 }))) {
-            throw new KaitaiStream.ValidationNotEqualError(new byte[] { 73, 90, 88, 51 }, marker(), _io(), "/types/zone_auxiliary_3/seq/0");
+        if (!(Arrays.equals(marker(), new byte[]{73, 90, 88, 51}))) { // IZX3
+            throw new KaitaiStream.ValidationNotEqualError(new byte[]{73, 90, 88, 51}, marker(), _io(), "/types/zone_auxiliary_3/seq/0");
         }
         this.size = this._io.readU4le();
         this.numNpcs = this._io.readU2le();
-        npcs = new ArrayList<Integer>(((Number) (numNpcs())).intValue());
-        for (int i = 0; i < numNpcs(); i++) {
+        npcs = new ArrayList<>(numNpcs);
+        for (int i = 0; i < numNpcs; i++) {
             this.npcs.add(this._io.readU2le());
         }
     }
 
-    public byte[] marker() { return marker; }
-    public long size() { return size; }
-    public int numNpcs() { return numNpcs; }
-    public ArrayList<Integer> npcs() { return npcs; }
-    public Yodesk _root() { return _root; }
-    public Zone _parent() { return _parent; }
+    public byte[] marker() {
+        return marker;
+    }
+
+    public long size() {
+        return size;
+    }
+
+    public int numNpcs() {
+        return numNpcs;
+    }
+
+    public ArrayList<Integer> npcs() {
+        return npcs;
+    }
+
+    public Yodesk _root() {
+        return _root;
+    }
+
+    public Zone _parent() {
+        return _parent;
+    }
 }

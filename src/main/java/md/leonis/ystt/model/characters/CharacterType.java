@@ -12,11 +12,21 @@ public enum CharacterType {
     private final long id;
 
     private static final Map<Long, CharacterType> byId = new HashMap<>(3);
+
     static {
         for (CharacterType e : CharacterType.values())
             byId.put(e.id(), e);
     }
-    public static CharacterType byId(long id) { return byId.get(id); }
-    CharacterType(long id) { this.id = id; }
-    public long id() { return id; }
+
+    public static CharacterType byId(long id) {
+        return byId.get(id);
+    }
+
+    CharacterType(long id) {
+        this.id = id;
+    }
+
+    public long id() {
+        return id;
+    }
 }

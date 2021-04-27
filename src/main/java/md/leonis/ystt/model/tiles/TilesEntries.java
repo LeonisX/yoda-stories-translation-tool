@@ -35,17 +35,22 @@ public class TilesEntries extends KaitaiStruct {
     }
 
     private void _read() {
-        this.tiles = new ArrayList<Tile>();
-        {
-            int i = 0;
-            while (!this._io.isEof()) {
-                this.tiles.add(new Tile(this._io, this, _root));
-                i++;
-            }
+        this.tiles = new ArrayList<>();
+
+        while (!this._io.isEof()) {
+            this.tiles.add(new Tile(this._io, this, _root));
         }
     }
 
-    public ArrayList<Tile> tiles() { return tiles; }
-    public Yodesk _root() { return _root; }
-    public Tiles _parent() { return _parent; }
+    public ArrayList<Tile> tiles() {
+        return tiles;
+    }
+
+    public Yodesk _root() {
+        return _root;
+    }
+
+    public Tiles _parent() {
+        return _parent;
+    }
 }

@@ -33,6 +33,11 @@ public class Endf extends KaitaiStruct {
     private void _read() {
     }
 
-    public Yodesk _root() { return _root; }
-    public CatalogEntry _parent() { return _parent; }
+    public Yodesk _root() {
+        return _root;
+    }
+
+    public CatalogEntry _parent() {
+        return _parent;
+    }
 }

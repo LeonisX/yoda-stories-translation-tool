@@ -46,14 +46,25 @@ public class Sounds extends KaitaiStruct {
 
     private void _read() {
         this.count = this._io.readS2le();
-        sounds = new ArrayList<>(((Number) (-(count()))).intValue());
+        sounds = new ArrayList<>(((Number) (-count())).intValue());
         for (int i = 0; i < -(count()); i++) {
             this.sounds.add(new PrefixedStrz(this._io, this, _root));
         }
     }
 
-    public short count() { return count; }
-    public ArrayList<PrefixedStrz> sounds() { return sounds; }
-    public Yodesk _root() { return _root; }
-    public CatalogEntry _parent() { return _parent; }
+    public short count() {
+        return count;
+    }
+
+    public ArrayList<PrefixedStrz> sounds() {
+        return sounds;
+    }
+
+    public Yodesk _root() {
+        return _root;
+    }
+
+    public CatalogEntry _parent() {
+        return _parent;
+    }
 }

@@ -8,8 +8,6 @@ import md.leonis.ystt.model.Yodesk;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public class Instruction extends KaitaiStruct {
 
@@ -42,7 +40,7 @@ public class Instruction extends KaitaiStruct {
 
     private void _read() {
         this.opcode = InstructionOpcode.byId(this._io.readU2le());
-        arguments = new ArrayList<>(((Number) (5)).intValue());
+        arguments = new ArrayList<>(5);
         for (int i = 0; i < 5; i++) {
             this.arguments.add(this._io.readS2le());
         }
@@ -50,10 +48,27 @@ public class Instruction extends KaitaiStruct {
         this.text = new String(this._io.readBytes(lenText()), StandardCharsets.US_ASCII);
     }
 
-    public InstructionOpcode opcode() { return opcode; }
-    public ArrayList<Short> arguments() { return arguments; }
-    public int lenText() { return lenText; }
-    public String text() { return text; }
-    public Yodesk _root() { return _root; }
-    public Action _parent() { return _parent; }
+    public InstructionOpcode opcode() {
+        return opcode;
+    }
+
+    public ArrayList<Short> arguments() {
+        return arguments;
+    }
+
+    public int lenText() {
+        return lenText;
+    }
+
+    public String text() {
+        return text;
+    }
+
+    public Yodesk _root() {
+        return _root;
+    }
+
+    public Action _parent() {
+        return _parent;
+    }
 }

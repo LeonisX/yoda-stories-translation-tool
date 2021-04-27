@@ -36,12 +36,23 @@ public class Tiles extends KaitaiStruct {
 
     private void _read() {
         this._raw_tiles = this._io.readBytes(_parent().size());
-        KaitaiStream _io__raw_tiles = new ByteBufferKaitaiStream(_raw_tiles);
-        this.tiles = new TilesEntries(_io__raw_tiles, this, _root);
+        KaitaiStream _io_raw_tiles = new ByteBufferKaitaiStream(_raw_tiles);
+        this.tiles = new TilesEntries(_io_raw_tiles, this, _root);
     }
 
-    public TilesEntries tiles() { return tiles; }
-    public Yodesk _root() { return _root; }
-    public CatalogEntry _parent() { return _parent; }
-    public byte[] _raw_tiles() { return _raw_tiles; }
+    public TilesEntries tiles() {
+        return tiles;
+    }
+
+    public Yodesk _root() {
+        return _root;
+    }
+
+    public CatalogEntry _parent() {
+        return _parent;
+    }
+
+    public byte[] _raw_tiles() {
+        return _raw_tiles;
+    }
 }

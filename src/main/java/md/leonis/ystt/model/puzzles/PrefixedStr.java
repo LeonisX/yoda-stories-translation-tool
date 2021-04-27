@@ -40,8 +40,19 @@ public class PrefixedStr extends KaitaiStruct {
         this.content = new String(this._io.readBytes(lenContent()), StandardCharsets.US_ASCII);
     }
 
-    public int lenContent() { return lenContent; }
-    public String content() { return content; }
-    public Yodesk _root() { return _root; }
-    public Puzzle _parent() { return _parent; }
+    public int lenContent() {
+        return lenContent;
+    }
+
+    public String content() {
+        return content;
+    }
+
+    public Yodesk _root() {
+        return _root;
+    }
+
+    public Puzzle _parent() {
+        return _parent;
+    }
 }

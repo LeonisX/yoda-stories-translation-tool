@@ -42,8 +42,19 @@ public class TileName extends KaitaiStruct {
         }
     }
 
-    public int tileId() { return tileId; }
-    public String name() { return name; }
-    public Yodesk _root() { return _root; }
-    public TileNames _parent() { return _parent; }
+    public int tileId() {
+        return tileId;
+    }
+
+    public String name() {
+        return name;
+    }
+
+    public Yodesk _root() {
+        return _root;
+    }
+
+    public TileNames _parent() {
+        return _parent;
+    }
 }

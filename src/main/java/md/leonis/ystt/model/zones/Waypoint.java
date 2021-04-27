@@ -39,8 +39,19 @@ public class Waypoint extends KaitaiStruct {
         this.y = this._io.readU4le();
     }
 
-    public long x() { return x; }
-    public long y() { return y; }
-    public Yodesk _root() { return _root; }
-    public Monster _parent() { return _parent; }
+    public long x() {
+        return x;
+    }
+
+    public long y() {
+        return y;
+    }
+
+    public Yodesk _root() {
+        return _root;
+    }
+
+    public Monster _parent() {
+        return _parent;
+    }
 }

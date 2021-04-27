@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public enum ZoneType {
+
     NONE(0),
     EMPTY(1),
     BLOCKADE_NORTH(2),
@@ -24,12 +25,24 @@ public enum ZoneType {
     FIND_UNIQUE_WEAPON(18);
 
     private final long id;
-    ZoneType(long id) { this.id = id; }
-    public long id() { return id; }
+
     private static final Map<Long, ZoneType> byId = new HashMap<Long, ZoneType>(18);
+
     static {
-        for (ZoneType e : ZoneType.values())
+        for (ZoneType e : ZoneType.values()) {
             byId.put(e.id(), e);
+        }
     }
-    public static ZoneType byId(long id) { return byId.get(id); }
+
+    public static ZoneType byId(long id) {
+        return byId.get(id);
+    }
+
+    ZoneType(long id) {
+        this.id = id;
+    }
+
+    public long id() {
+        return id;
+    }
 }

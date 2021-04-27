@@ -41,8 +41,19 @@ public class CharacterAuxiliary extends KaitaiStruct {
         }
     }
 
-    public int index() { return index; }
-    public Short damage() { return damage; }
-    public Yodesk _root() { return _root; }
-    public CharacterAuxiliaries _parent() { return _parent; }
+    public int index() {
+        return index;
+    }
+
+    public Short damage() {
+        return damage;
+    }
+
+    public Yodesk _root() {
+        return _root;
+    }
+
+    public CharacterAuxiliaries _parent() {
+        return _parent;
+    }
 }

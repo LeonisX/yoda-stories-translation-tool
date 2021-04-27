@@ -16,11 +16,20 @@ public enum MovementType {
     private static final Map<Long, MovementType> byId = new HashMap<>(5);
 
     static {
-        for (MovementType e : MovementType.values())
+        for (MovementType e : MovementType.values()) {
             byId.put(e.id(), e);
+        }
     }
-    public static MovementType byId(long id) { return byId.get(id); }
 
-    MovementType(long id) { this.id = id; }
-    public long id() { return id; }
+    public static MovementType byId(long id) {
+        return byId.get(id);
+    }
+
+    MovementType(long id) {
+        this.id = id;
+    }
+
+    public long id() {
+        return id;
+    }
 }

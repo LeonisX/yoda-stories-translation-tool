@@ -185,152 +185,255 @@ public class TileAttributes extends KaitaiStruct {
      * value 0 in `pixels` is treated as transparent. Otherwise
      * it is drawn as black.
      */
-    public boolean hasTransparency() { return hasTransparency; }
+    public boolean hasTransparency() {
+        return hasTransparency;
+    }
 
     /**
      * Tile is usually placed on the lowest layer of a zone
      */
-    public boolean isFloor() { return isFloor; }
+    public boolean isFloor() {
+        return isFloor;
+    }
 
     /**
      * Object, tile is usually placed on the middle layer of a zone
      */
-    public boolean isObject() { return isObject; }
+    public boolean isObject() {
+        return isObject;
+    }
 
     /**
      * If set and the tile is placed on the object layer it can be
      * dragged and pushed around by the hero.
      */
-    public boolean isDraggable() { return isDraggable; }
+    public boolean isDraggable() {
+        return isDraggable;
+    }
 
     /**
      * Tile is usually placed on the top layer (roof)
      */
-    public boolean isRoof() { return isRoof; }
+    public boolean isRoof() {
+        return isRoof;
+    }
 
     /**
      * Locator, tile is used in world map view overview
      */
-    public boolean isLocator() { return isLocator; }
+    public boolean isLocator() {
+        return isLocator;
+    }
 
     /**
      * Identifies tiles that are mapped to weapons
      */
-    public boolean isWeapon() { return isWeapon; }
-    public boolean isItem() { return isItem; }
+    public boolean isWeapon() {
+        return isWeapon;
+    }
+
+    public boolean isItem() {
+        return isItem;
+    }
 
     /**
      * Tile forms part of a character
      */
-    public boolean isCharacter() { return isCharacter; }
-    public long unused() { return unused; }
+    public boolean isCharacter() {
+        return isCharacter;
+    }
+
+    public long unused() {
+        return unused;
+    }
 
     /**
      * These tiles are doorways, monsters can't go
      */
-    public Boolean isDoorway() { return isDoorway; }
-    public Boolean unused1() { return unused1; }
+    public Boolean isDoorway() {
+        return isDoorway;
+    }
+
+    public Boolean unused1() {
+        return unused1;
+    }
 
     /**
      * Marks the spaceport on the map
      */
-    public Boolean isTown() { return isTown; }
+    public Boolean isTown() {
+        return isTown;
+    }
 
     /**
      * Marks a discovered, but unsolved puzzle on the map
      */
-    public Boolean isUnsolvedPuzzle() { return isUnsolvedPuzzle; }
+    public Boolean isUnsolvedPuzzle() {
+        return isUnsolvedPuzzle;
+    }
 
     /**
      * Marks a solved puzzle on the map
      */
-    public Boolean isSolvedPuzzle() { return isSolvedPuzzle; }
+    public Boolean isSolvedPuzzle() {
+        return isSolvedPuzzle;
+    }
 
     /**
      * Marks a place of travel on the map that has not been solved
      */
-    public Boolean isUnsolvedTravel() { return isUnsolvedTravel; }
+    public Boolean isUnsolvedTravel() {
+        return isUnsolvedTravel;
+    }
 
     /**
      * Marks a solved place of travel on the map
      */
-    public Boolean isSolvedTravel() { return isSolvedTravel; }
+    public Boolean isSolvedTravel() {
+        return isSolvedTravel;
+    }
 
     /**
      * Marks a sector on the map that blocks access to northern zones
      */
-    public Boolean isUnsolvedBlockadeNorth() { return isUnsolvedBlockadeNorth; }
+    public Boolean isUnsolvedBlockadeNorth() {
+        return isUnsolvedBlockadeNorth;
+    }
 
     /**
      * Marks a sector on the map that blocks access to southern zones
      */
-    public Boolean isUnsolvedBlockadeSouth() { return isUnsolvedBlockadeSouth; }
+    public Boolean isUnsolvedBlockadeSouth() {
+        return isUnsolvedBlockadeSouth;
+    }
 
     /**
      * Marks a sector on the map that blocks access to western zones
      */
-    public Boolean isUnsolvedBlockadeWest() { return isUnsolvedBlockadeWest; }
+    public Boolean isUnsolvedBlockadeWest() {
+        return isUnsolvedBlockadeWest;
+    }
 
     /**
      * Marks a sector on the map that blocks access to eastern zones
      */
-    public Boolean isUnsolvedBlockadeEast() { return isUnsolvedBlockadeEast; }
+    public Boolean isUnsolvedBlockadeEast() {
+        return isUnsolvedBlockadeEast;
+    }
 
     /**
      * Marks a solved sector on the map that used to block access to
      * northern zones
      */
-    public Boolean isSolvedBlockadeNorth() { return isSolvedBlockadeNorth; }
+    public Boolean isSolvedBlockadeNorth() {
+        return isSolvedBlockadeNorth;
+    }
 
     /**
      * Marks a solved sector on the map that used to block access to
      * southern zones
      */
-    public Boolean isSolvedBlockadeSouth() { return isSolvedBlockadeSouth; }
+    public Boolean isSolvedBlockadeSouth() {
+        return isSolvedBlockadeSouth;
+    }
 
     /**
      * Marks a solved sector on the map that used to block access to
      * western zones
      */
-    public Boolean isSolvedBlockadeWest() { return isSolvedBlockadeWest; }
+    public Boolean isSolvedBlockadeWest() {
+        return isSolvedBlockadeWest;
+    }
 
     /**
      * Marks a solved sector on the map that used to block access to
      * eastern zones
      */
-    public Boolean isSolvedBlockadeEast() { return isSolvedBlockadeEast; }
+    public Boolean isSolvedBlockadeEast() {
+        return isSolvedBlockadeEast;
+    }
 
     /**
      * The final puzzle of the world. Solving this wins the game
      */
-    public Boolean isUnsolvedGoal() { return isUnsolvedGoal; }
+    public Boolean isUnsolvedGoal() {
+        return isUnsolvedGoal;
+    }
 
     /**
      * Overlay to mark the current position on the map
      */
-    public Boolean isLocationIndicator() { return isLocationIndicator; }
-    public Boolean isKeycard() { return isKeycard; }
-    public Boolean isTool() { return isTool; }
-    public Boolean isPart() { return isPart; }
-    public Boolean isValuable() { return isValuable; }
-    public Boolean isMap() { return isMap; }
-    public Boolean unused2() { return unused2; }
-    public Boolean isEdible() { return isEdible; }
+    public Boolean isLocationIndicator() {
+        return isLocationIndicator;
+    }
+
+    public Boolean isKeycard() {
+        return isKeycard;
+    }
+
+    public Boolean isTool() {
+        return isTool;
+    }
+
+    public Boolean isPart() {
+        return isPart;
+    }
+
+    public Boolean isValuable() {
+        return isValuable;
+    }
+
+    public Boolean isMap() {
+        return isMap;
+    }
+
+    public Boolean unused2() {
+        return unused2;
+    }
+
+    public Boolean isEdible() {
+        return isEdible;
+    }
 
     /**
      * Item is a low intensity blaster (like the blaster pistol)
      */
-    public Boolean isLowBlaster() { return isLowBlaster; }
+    public Boolean isLowBlaster() {
+        return isLowBlaster;
+    }
 
     /**
      * Item is a high intensity blaster (like the blaster rifle)
      */
-    public Boolean isHighBlaster() { return isHighBlaster; }
-    public Boolean isLightsaber() { return isLightsaber; }
-    public Boolean isTheForce() { return isTheForce; }
-    public Boolean isHero() { return isHero; }
-    public Boolean isEnemy() { return isEnemy; }
-    public Boolean isNpc() { return isNpc; }
-    public Yodesk _root() { return _root; }
-    public Tile _parent() { return _parent; }
+    public Boolean isHighBlaster() {
+        return isHighBlaster;
+    }
+
+    public Boolean isLightsaber() {
+        return isLightsaber;
+    }
+
+    public Boolean isTheForce() {
+        return isTheForce;
+    }
+
+    public Boolean isHero() {
+        return isHero;
+    }
+
+    public Boolean isEnemy() {
+        return isEnemy;
+    }
+
+    public Boolean isNpc() {
+        return isNpc;
+    }
+
+    public Yodesk _root() {
+        return _root;
+    }
+
+    public Tile _parent() {
+        return _parent;
+    }
 }

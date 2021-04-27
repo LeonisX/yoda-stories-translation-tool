@@ -33,21 +33,31 @@ public class Tile extends KaitaiStruct {
         this._root = _root;
         _read();
     }
+
     private void _read() {
         this._raw_attributes = this._io.readBytes(4);
-        KaitaiStream _io__raw_attributes = new ByteBufferKaitaiStream(_raw_attributes);
-        this.attributes = new TileAttributes(_io__raw_attributes, this, _root);
-        this.pixels = this._io.readBytes((32 * 32));
+        KaitaiStream _io_raw_attributes = new ByteBufferKaitaiStream(_raw_attributes);
+        this.attributes = new TileAttributes(_io_raw_attributes, this, _root);
+        this.pixels = this._io.readBytes(32 * 32);
     }
 
-    public TileAttributes attributes() { return attributes; }
-    public byte[] pixels() { return pixels; }
-    public Yodesk _root() { return _root; }
-    public TilesEntries _parent() { return _parent; }
-    public byte[] _raw_attributes() { return _raw_attributes; }
+    public TileAttributes attributes() {
+        return attributes;
+    }
 
+    public byte[] pixels() {
+        return pixels;
+    }
 
+    public Yodesk _root() {
+        return _root;
+    }
 
+    public TilesEntries _parent() {
+        return _parent;
+    }
 
-
+    public byte[] _raw_attributes() {
+        return _raw_attributes;
+    }
 }

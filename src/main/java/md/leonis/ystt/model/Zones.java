@@ -37,7 +37,7 @@ public class Zones extends KaitaiStruct {
 
     private void _read() {
         this.numZones = this._io.readU2le();
-        zones = new ArrayList<>(((Number) (numZones())).intValue());
+        zones = new ArrayList<>(numZones());
         for (int i = 0; i < numZones(); i++) {
             this.zones.add(new Zone(this._io, this, _root));
         }

@@ -76,28 +76,51 @@ public class Action extends KaitaiStruct {
 
     private void _read() {
         this.marker = this._io.readBytes(4);
-        if (!(Arrays.equals(marker(), new byte[] { 73, 65, 67, 84 }))) {
-            throw new KaitaiStream.ValidationNotEqualError(new byte[] { 73, 65, 67, 84 }, marker(), _io(), "/types/action/seq/0");
+        if (!(Arrays.equals(marker(), new byte[]{73, 65, 67, 84}))) { // IACT
+            throw new KaitaiStream.ValidationNotEqualError(new byte[]{73, 65, 67, 84}, marker(), _io(), "/types/action/seq/0");
         }
         this.size = this._io.readU4le();
         this.numConditions = this._io.readU2le();
-        conditions = new ArrayList<>(((Number) (numConditions())).intValue());
-        for (int i = 0; i < numConditions(); i++) {
+        conditions = new ArrayList<>(numConditions);
+        for (int i = 0; i < numConditions; i++) {
             this.conditions.add(new Condition(this._io, this, _root));
         }
         this.numInstructions = this._io.readU2le();
-        instructions = new ArrayList<>(((Number) (numInstructions())).intValue());
-        for (int i = 0; i < numInstructions(); i++) {
+        instructions = new ArrayList<>(numConditions);
+        for (int i = 0; i < numConditions; i++) {
             this.instructions.add(new Instruction(this._io, this, _root));
         }
     }
 
-    public byte[] marker() { return marker; }
-    public long size() { return size; }
-    public int numConditions() { return numConditions; }
-    public ArrayList<Condition> conditions() { return conditions; }
-    public int numInstructions() { return numInstructions; }
-    public ArrayList<Instruction> instructions() { return instructions; }
-    public Yodesk _root() { return _root; }
-    public Zone _parent() { return _parent; }
+    public byte[] marker() {
+        return marker;
+    }
+
+    public long size() {
+        return size;
+    }
+
+    public int numConditions() {
+        return numConditions;
+    }
+
+    public ArrayList<Condition> conditions() {
+        return conditions;
+    }
+
+    public int numInstructions() {
+        return numInstructions;
+    }
+
+    public ArrayList<Instruction> instructions() {
+        return instructions;
+    }
+
+    public Yodesk _root() {
+        return _root;
+    }
+
+    public Zone _parent() {
+        return _parent;
+    }
 }

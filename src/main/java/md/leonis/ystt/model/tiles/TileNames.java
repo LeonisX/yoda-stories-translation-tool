@@ -12,9 +12,8 @@ import java.util.ArrayList;
 public class TileNames extends KaitaiStruct {
 
     /**
-     * List of tile ids and their corresponding names. These are shown in
-     * the inventory or used in dialogs (see `speak_hero` and `speak_npc`
-     * opcodes).
+     * List of tile ids and their corresponding names. These are shown in the
+     * inventory or used in dialogs (see `speak_hero` and `speak_npc` opcodes).
      */
     private ArrayList<TileName> names;
 
@@ -41,19 +40,25 @@ public class TileNames extends KaitaiStruct {
     }
 
     private void _read() {
-        this.names = new ArrayList<TileName>();
-        {
-            TileName _it;
-            int i = 0;
-            do {
-                _it = new TileName(this._io, this, _root);
-                this.names.add(_it);
-                i++;
-            } while (!(_it.tileId() == 65535));
-        }
+        this.names = new ArrayList<>();
+
+        TileName _it;
+        do {
+            _it = new TileName(this._io, this, _root);
+            this.names.add(_it);
+
+        } while (_it.tileId() != 65535);
     }
 
-    public ArrayList<TileName> names() { return names; }
-    public Yodesk _root() { return _root; }
-    public CatalogEntry _parent() { return _parent; }
+    public ArrayList<TileName> names() {
+        return names;
+    }
+
+    public Yodesk _root() {
+        return _root;
+    }
+
+    public CatalogEntry _parent() {
+        return _parent;
+    }
 }

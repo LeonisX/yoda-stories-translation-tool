@@ -14,7 +14,7 @@ public class Zone extends KaitaiStruct {
 
     /**
      * Planet this zone can be placed on.
-     *
+     * <p>
      * During world generation the goal puzzle dictates which planet is
      * chosen. Apart from `swamp` zones, only the zones with type `empty`
      * or the chosen type are loaded when a game is in progress.
@@ -24,29 +24,19 @@ public class Zone extends KaitaiStruct {
     private int index;
     private byte[] marker;
     private long size2;
-    /**
-     * Width of the zone in tiles. Either 9 or 18.
-     */
+    // Width of the zone in tiles. Either 9 or 18.
     private int width;
-    /**
-     * Height of the zone in tiles. Either 9 or 18.
-     */
+    // Height of the zone in tiles. Either 9 or 18.
     private int height;
     private ZoneType type;
-    /**
-     * Scripting register shared between the zone and its rooms.
-     */
+    // Scripting register shared between the zone and its rooms.
     private int sharedCounter;
-    /**
-     * Repetition of the `planet` field
-     */
+    // Repetition of the `planet` field
     private int planetAgain;
     /**
-     * `tile_ids` is made up of three interleaved tile layers ordered from
-     * bottom (floor) to top (roof).
+     * `tile_ids` is made up of three interleaved tile layers ordered from bottom (floor) to top (roof).
      * Tiles are often references via 3 coordinates (xyz), which
-     * corresponds to an index into this array calculated as `n = y * width
-     * * 3 + x * 3 = z`.
+     * corresponds to an index into this array calculated as `n = y * width * 3 + x * 3 = z`.
      */
     private ArrayList<ZoneSpot> tileIds;
     private int numHotspots;
@@ -85,24 +75,24 @@ public class Zone extends KaitaiStruct {
         this.size = this._io.readU4le();
         this.index = this._io.readU2le();
         this.marker = this._io.readBytes(4);
-        if (!(Arrays.equals(marker(), new byte[] { 73, 90, 79, 78 }))) {
-            throw new KaitaiStream.ValidationNotEqualError(new byte[] { 73, 90, 79, 78 }, marker(), _io(), "/types/zone/seq/3");
+        if (!(Arrays.equals(marker(), new byte[]{73, 90, 79, 78}))) { // IZON
+            throw new KaitaiStream.ValidationNotEqualError(new byte[]{73, 90, 79, 78}, marker(), _io(), "/types/zone/seq/3");
         }
         this.size2 = this._io.readU4le();
         this.width = this._io.readU2le();
         this.height = this._io.readU2le();
         this.type = ZoneType.byId(this._io.readU4le());
         this.sharedCounter = this._io.readU2le();
-        if (!(sharedCounter() == 65535)) {
+        if (sharedCounter() != 65535) {
             throw new KaitaiStream.ValidationNotEqualError(65535, sharedCounter(), _io(), "/types/zone/seq/8");
         }
         this.planetAgain = this._io.readU2le();
-        tileIds = new ArrayList<>(((Number) ((width() * height()))).intValue());
-        for (int i = 0; i < (width() * height()); i++) {
+        tileIds = new ArrayList<>(width * height);
+        for (int i = 0; i < width * height; i++) {
             this.tileIds.add(new ZoneSpot(this._io, this, _root));
         }
         this.numHotspots = this._io.readU2le();
-        hotspots = new ArrayList<>(((Number) (numHotspots())).intValue());
+        hotspots = new ArrayList<>(numHotspots);
         for (int i = 0; i < numHotspots(); i++) {
             this.hotspots.add(new Hotspot(this._io, this, _root));
         }
@@ -111,31 +101,93 @@ public class Zone extends KaitaiStruct {
         this.izx3 = new ZoneAuxiliary3(this._io, this, _root);
         this.izx4 = new ZoneAuxiliary4(this._io, this, _root);
         this.numActions = this._io.readU2le();
-        actions = new ArrayList<>(((Number) (numActions())).intValue());
+        actions = new ArrayList<>(numActions);
         for (int i = 0; i < numActions(); i++) {
             this.actions.add(new Action(this._io, this, _root));
         }
     }
 
-    public Planet planet() { return planet; }
-    public long size() { return size; }
-    public int index() { return index; }
-    public byte[] marker() { return marker; }
-    public long size2() { return size2; }
-    public int width() { return width; }
-    public int height() { return height; }
-    public ZoneType type() { return type; }
-    public int sharedCounter() { return sharedCounter; }
-    public int planetAgain() { return planetAgain; }
-    public ArrayList<ZoneSpot> tileIds() { return tileIds; }
-    public int numHotspots() { return numHotspots; }
-    public ArrayList<Hotspot> hotspots() { return hotspots; }
-    public ZoneAuxiliary izax() { return izax; }
-    public ZoneAuxiliary2 izx2() { return izx2; }
-    public ZoneAuxiliary3 izx3() { return izx3; }
-    public ZoneAuxiliary4 izx4() { return izx4; }
-    public int numActions() { return numActions; }
-    public ArrayList<Action> actions() { return actions; }
-    public Yodesk _root() { return _root; }
-    public Zones _parent() { return _parent; }
+    public Planet planet() {
+        return planet;
+    }
+
+    public long size() {
+        return size;
+    }
+
+    public int index() {
+        return index;
+    }
+
+    public byte[] marker() {
+        return marker;
+    }
+
+    public long size2() {
+        return size2;
+    }
+
+    public int width() {
+        return width;
+    }
+
+    public int height() {
+        return height;
+    }
+
+    public ZoneType type() {
+        return type;
+    }
+
+    public int sharedCounter() {
+        return sharedCounter;
+    }
+
+    public int planetAgain() {
+        return planetAgain;
+    }
+
+    public ArrayList<ZoneSpot> tileIds() {
+        return tileIds;
+    }
+
+    public int numHotspots() {
+        return numHotspots;
+    }
+
+    public ArrayList<Hotspot> hotspots() {
+        return hotspots;
+    }
+
+    public ZoneAuxiliary izax() {
+        return izax;
+    }
+
+    public ZoneAuxiliary2 izx2() {
+        return izx2;
+    }
+
+    public ZoneAuxiliary3 izx3() {
+        return izx3;
+    }
+
+    public ZoneAuxiliary4 izx4() {
+        return izx4;
+    }
+
+    public int numActions() {
+        return numActions;
+    }
+
+    public ArrayList<Action> actions() {
+        return actions;
+    }
+
+    public Yodesk _root() {
+        return _root;
+    }
+
+    public Zones _parent() {
+        return _parent;
+    }
 }
