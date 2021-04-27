@@ -608,7 +608,7 @@ public class MainPaneController {
     }
 
     private void ReadIACT(int id) throws IOException {
-        byte k = 0;
+        int k = 0;
         section.SetPosition(section.maps.get(id).getIactPosition());
 
         while (section.ReadString(4).equals("IACT")) {
@@ -617,10 +617,6 @@ public class MainPaneController {
 //    HEX.CenterCursorPosition;
 //    Application.ProcessMessages;
             int size = (int) section.ReadLongWord();  //4 bytes: length (X)
-            if (dumpTextCheckBox.isSelected()) {
-                //TODO
-                //DumpText(section.GetPosition(), size);
-            }
             if (dumpActionsCheckBox.isSelected()) {
                 String fileName = StringUtils.leftPad("" + id, 3, "0") + '-' + StringUtils.leftPad("" + k, 3, "0");
                 Path path = opath.resolve("IACT").resolve(fileName);
@@ -1000,10 +996,6 @@ public class MainPaneController {
         //MapProgressBar.Position := 0;
         //MapProgressBar.Max := DTA.mapsCount;
 
-        if (dumpTextCheckBox.isSelected()) {
-            texts.clear();
-        }
-
         //Section.Log.Clear;
         Section.Log.debug("Maps (zones):");
         Section.Log.newLine();
@@ -1029,7 +1021,9 @@ public class MainPaneController {
         }
 
         if (dumpTextCheckBox.isSelected()) {
-            IOUtils.saveTextFile(texts, opath.resolve("iact.txt"));
+            List<String> phrases = section.maps.stream().flatMap(m -> m.getIacts().stream().flatMap(p -> p.getPhrases().stream()
+                    .map(Phrase::getPhrase))).collect(Collectors.toList());
+            IOUtils.saveTextFile(phrases, opath.resolve("iact.txt"));
         }
         //TODO uncomment, if need
         //ViewMap(MapsListStringGrid.Row);

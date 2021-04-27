@@ -329,7 +329,7 @@ public class Section {
             //puzzlesCount++;
         }
         int position = GetPosition();
-        puzzles.forEach(this::DumpText);
+        puzzles.forEach(p -> DumpText(p.getPosition(), p.getSize(), p.getPhrases()));
         SetPosition(position);
         Log.debug("Puzzles: " + puzzles.size());
     }
@@ -338,6 +338,7 @@ public class Section {
 
         //TODO static
         List<String> arr = Arrays.asList(
+                //TODO remove unneeded
                 "el:", "ckup L", "MS S", "ЂОЅ", "n 2", "######", "######", "######", "plac", "Sho",
                 "Show", "opI", "ne ", "Red", "Set", "######", "up L", "######", "ng, ", "opIt",
                 "######", "ckup", "Y: 12 ", "Bump", "Pick", "Bum", "Has", "ђ0n", "Pickup L", "SetHer",
@@ -347,7 +348,9 @@ public class Section {
                 "t•±", "4kЯ", "w on o", "ndN", "HotS", "ЂУґ", "perial", "12 Y", "Name", "sta",
                 "Wait", "securi", "'s don", "cku", "ДFВ", "rTim", "Wai", "шн±", "Backgr", "e's",
                 "MS ", " ’µ", "h th", "n't th", "u ta", "s! What ", "Pic", "¤K‡", "Wait", "Coun",
-                "#####", "ґъm", "up ", "Sav", "яяяяяяяя", "Rep", "ёDґ", "!!!", "ф$‚", "Coun"
+                "#####", "ґъm", "up ", "Sav", "яяяяяяяя", "Rep", "ёDґ", "!!!", "ф$‚", "Coun",
+
+                "�0n", "œœž", "L÷½", "€Î½", "Ð©µ", "€Û¹", "4kß", "€Ó´", "ÄFÂ", "øí±", "ô$‚", "¸D´", "ÿÿÿÿÿÿÿÿ", "´úm"
         );
 
         boolean result = arr.contains(text);
@@ -395,12 +398,11 @@ public class Section {
     };
 
     //TODO need refactor
-    //TODO dump puzzle, phrases metrics
-    private void DumpText(Puzzle puzzle) {
+    private void DumpText(int position, int size, List<Phrase> phrases) {
 
         //phase := 1;
-        section.SetPosition(puzzle.getPosition());
-        while (GetPosition() < puzzle.getPosition() + puzzle.getSize() - 2) {
+        section.SetPosition(position);
+        while (GetPosition() < position + size - 2) {
             //System.out.println(String.format("%s: %s", section.intToHex(section.GetPosition(), 4), section.intToHex(position + size - 2, 4)));
 
             //Section.Log.debug("Start new scan: " + section.intToHex(section.GetPosition(), 6));
@@ -412,10 +414,10 @@ public class Section {
                 // TODO Application.ProcessMessages;
 
                 String phrase = "";
-                int position = -1;
+                int phasePosition = -1;
 
-                if (GetPosition() + sz <= puzzle.getPosition() + puzzle.getSize()) {
-                    position = GetPosition();
+                if (GetPosition() + sz <= position + size) {
+                    phasePosition = GetPosition();
                     phrase = ReadString(sz);
                     if (StringUtils.containsAny(phrase, restrictedChars)) {
                         phase = 1;
@@ -424,13 +426,21 @@ public class Section {
                     phase = 1;
                 }
 
+                //TODO revert back. need only for tests
+                //phrase = phrase.replace("�", "¢");
+
+                //TODO - may be good solution to implement this:
+                // phrase = phrase.replace("¢", "[ITEM]");
+
+                //System.out.println(phase + ": " + phrase);
+
                 if (phase == 2) {
                     //TODO may be not need, if we dump to tables
                     phrase = phrase.replace("\r\n", "[CR]"); // LF(\n), CR(\r)
                     phrase = phrase.replace("[CR][CR]", "[CR2]");
                     phrase = phrase.replace((char) (0xA5), '_');
                     if (!idDeprecatedWords(phrase)) {
-                        puzzle.getPhrases().add(new Phrase(position, phrase));
+                        phrases.add(new Phrase(phasePosition, phrase));
                         tempIndex = section.GetPosition() - 1;
                     }
                 }
@@ -551,18 +561,24 @@ public class Section {
         MovePosition(8);          //8 bytes: IZX4 data
     }
 
-    public void ScanIACT(int id) {
+    public void ScanIACT(int zoneId) {
 
         int idx = dump.getIndex();
-        maps.get(id).setIactPosition(GetPosition());
+        maps.get(zoneId).setIactPosition(GetPosition());
 
         while (true) {
             //Log.debug(idx);
             String title = ReadString(4); //4 bytes: "IACT"
             if (title.equals("IACT")) {
-                int position = GetPosition();
                 int size = (int) ReadLongWord();   //4 bytes: length (X)
-                maps.get(id).getIacts().add(new Izon(position, size));
+                Iact iact = new Iact(GetPosition(), size);
+
+                //TODO push, pop
+                int pos = GetPosition();
+                DumpText(iact.getPosition(), iact.getSize(), iact.getPhrases());
+                SetPosition(pos);
+
+                maps.get(zoneId).getIacts().add(iact);
                 Log.debug(title + ' ' + intToHex(size, 4));
                 MovePosition(size);
             } else {
@@ -570,7 +586,7 @@ public class Section {
             }
         }
         MovePosition(-4);
-        maps.get(id).setIactSize(GetPosition() - idx);
+        maps.get(zoneId).setIactSize(GetPosition() - idx);
     }
 
     public void ScanTILE(KnownSections sectionName) {

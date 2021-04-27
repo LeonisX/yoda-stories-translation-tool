@@ -3,6 +3,7 @@ package md.leonis.bin;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -57,7 +58,7 @@ public class Dump {
     public String readString(int length) {
         byte[] slice = Arrays.copyOfRange(dump, index, index + length);
         index += length;
-        return new String(slice);
+        return new String(slice, Charset.forName("Cp1252"));
     }
 
     public boolean checkZeroes(int length) {

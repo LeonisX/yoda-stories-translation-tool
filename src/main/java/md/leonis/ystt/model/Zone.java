@@ -23,7 +23,7 @@ public class Zone implements Movable {
     //TODO may be remove - need to test that this size is sum of all iacts sizes;
     private int iactSize;
 
-    private List<Izon> iacts = new ArrayList<>();
+    private List<Iact> iacts = new ArrayList<>();
 
     public Zone(int id) {
         this.id = id;
@@ -103,11 +103,11 @@ public class Zone implements Movable {
         this.izx4 = izx4;
     }
 
-    public List<Izon> getIacts() {
+    public List<Iact> getIacts() {
         return iacts;
     }
 
-    public void setIacts(List<Izon> iacts) {
+    public void setIacts(List<Iact> iacts) {
         this.iacts = iacts;
     }
 

@@ -1,6 +1,5 @@
 package md.leonis.ystt.model;
 
-// IZON, IZAX, IZX2, IZX3, IZX4, IACT
 public class Phrase implements Movable {
 
     private int position;
