@@ -2,17 +2,27 @@ package md.leonis.ystt.oldmodel2;
 
 public enum KnownSections {
 
-    VERS, // 1
-    STUP, // 2
-    SNDS, // 3
-    TILE, // 4
-    ZONE, // 5
-    PUZ2, // 6
-    CHAR, // 7
-    CHWP, // 8
-    CAUX, // 9
-    TNAM, // 10
-    TGEN, // 11
-    ENDF  // 12
+    VERS(false),    // 1
+    STUP(true),     // 2
+    SNDS(true),     // 3
+    TILE(true),     // 4
+    ZONE(false),    // 5
+    PUZ2(true),     // 6
+    CHAR(true),     // 7
+    CHWP(true),     // 8
+    CAUX(true),     // 9
+    TNAM(true),     // 10
+    TGEN(true),     // 11
+    ENDF(true),     // 12
+    UNKN(true);     // Unknown section
 
+    private final boolean withSize;
+
+    KnownSections(boolean withSize) {
+        this.withSize = withSize;
+    }
+
+    public boolean isWithSize() {
+        return withSize;
+    }
 }

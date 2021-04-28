@@ -91,47 +91,29 @@
                                 <Label fx:id="crc32Label" layoutX="107.0" layoutY="35.0"/>
                                 <Label fx:id="sizeLabel" layoutX="107.0" layoutY="52.0"/>
                                 <Label fx:id="internalVersionLabel" layoutX="107.0" layoutY="69.0"/>
-                                <TableView fx:id="commonInformationTableView" layoutX="14.0" layoutY="95.0" prefHeight="315.0" prefWidth="379.0">
+                                <TableView fx:id="commonInformationTableView" layoutX="14.0" layoutY="95.0" prefHeight="315.0" prefWidth="240.0">
                                     <columns>
                                         <TableColumn editable="false" prefWidth="75.0" text="Section">
                                             <cellValueFactory>
-                                                <PropertyValueFactory property="section"/>
+                                                <PropertyValueFactory property="type"/>
                                             </cellValueFactory>
                                             <cellFactory>
                                                 <StringCellFactory alignment="center">
                                                 </StringCellFactory>
                                             </cellFactory>
                                         </TableColumn>
-                                        <TableColumn editable="false" prefWidth="75.0" text="Start Offset">
+                                        <TableColumn editable="false" prefWidth="90.0" text="Offset">
                                             <cellValueFactory>
-                                                <PropertyValueFactory property="startOffset"/>
+                                                <PropertyValueFactory property="position"/>
                                             </cellValueFactory>
                                             <cellFactory>
                                                 <HexCellFactory alignment="right">
                                                 </HexCellFactory>
                                             </cellFactory>
                                         </TableColumn>
-                                        <TableColumn editable="false" prefWidth="75.0" text="Data Offset">
+                                        <TableColumn editable="false" prefWidth="70.0" text="Size">
                                             <cellValueFactory>
-                                                <PropertyValueFactory property="dataOffset"/>
-                                            </cellValueFactory>
-                                            <cellFactory>
-                                                <HexCellFactory alignment="right">
-                                                </HexCellFactory>
-                                            </cellFactory>
-                                        </TableColumn>
-                                        <TableColumn editable="false" prefWidth="75.0" text="Data Size">
-                                            <cellValueFactory>
-                                                <PropertyValueFactory property="dataSize"/>
-                                            </cellValueFactory>
-                                            <cellFactory>
-                                                <StringCellFactory alignment="right">
-                                                </StringCellFactory>
-                                            </cellFactory>
-                                        </TableColumn>
-                                        <TableColumn editable="false" prefWidth="75.0" text="Full Size">
-                                            <cellValueFactory>
-                                                <PropertyValueFactory property="fullSize"/>
+                                                <PropertyValueFactory property="size"/>
                                             </cellValueFactory>
                                             <cellFactory>
                                                 <StringCellFactory alignment="right">

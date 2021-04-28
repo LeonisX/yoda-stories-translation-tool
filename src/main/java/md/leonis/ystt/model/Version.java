@@ -11,7 +11,8 @@ public class Version extends KaitaiStruct {
     /**
      * Version of the file. This value is always set to 512.
      */
-    private long version;
+    private long ver;
+    private String version;
 
     private final Yodesk _root;
     private final CatalogEntry _parent;
@@ -36,10 +37,19 @@ public class Version extends KaitaiStruct {
     }
 
     private void _read() {
-        this.version = this._io.readU4le();
+        this.ver = this._io.readU4le();
+        if (ver == 0x0200) {
+            version = "2.0";
+        } else {
+            version = "x.x";
+        }
     }
 
-    public long version() {
+    public long ver() {
+        return ver;
+    }
+
+    public String version() {
         return version;
     }
 

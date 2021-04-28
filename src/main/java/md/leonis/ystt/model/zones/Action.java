@@ -86,8 +86,8 @@ public class Action extends KaitaiStruct {
             this.conditions.add(new Condition(this._io, this, _root));
         }
         this.numInstructions = this._io.readU2le();
-        instructions = new ArrayList<>(numConditions);
-        for (int i = 0; i < numConditions; i++) {
+        instructions = new ArrayList<>(numInstructions);
+        for (int i = 0; i < numInstructions; i++) {
             this.instructions.add(new Instruction(this._io, this, _root));
         }
     }

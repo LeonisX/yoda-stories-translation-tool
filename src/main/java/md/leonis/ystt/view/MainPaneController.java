@@ -22,6 +22,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
 import javafx.stage.WindowEvent;
+import md.leonis.ystt.model.CatalogEntry;
 import md.leonis.ystt.oldmodel2.*;
 import md.leonis.ystt.utils.*;
 import net.sf.image4j.codec.bmp.BMPImage;
@@ -37,8 +38,7 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static md.leonis.ystt.utils.Config.gamePalette;
-import static md.leonis.ystt.utils.Config.section;
+import static md.leonis.ystt.utils.Config.*;
 import static md.leonis.ystt.utils.ImageUtils.readWPicture;
 
 public class MainPaneController {
@@ -63,7 +63,7 @@ public class MainPaneController {
     public Label sizeLabel;
     public Label crc32Label;
     public Label nameLabel;
-    public TableView<SectionMetrics> commonInformationTableView;
+    public TableView<CatalogEntry> commonInformationTableView;
     public Button dumpAllSectionsButton;
 
     public Button dumpPETextToDocx;
@@ -173,18 +173,6 @@ public class MainPaneController {
 
     public MainPaneController() {
 
-        //TODO
-        /*OpenDialog1.FileName :='D:\YExplorer\iact-e.txt';
-        ReadColumn(1, StringGrid1);
-        OpenDialog1.FileName :='D:\YExplorer\iact-d.txt';
-        ReadColumn(2, StringGrid1);
-        Button13Click(Self);
-        OpenDialog1.FileName :='D:\YExplorer\puz2-e.txt';
-        ReadColumn(1, StringGrid4);
-        OpenDialog1.FileName :='D:\YExplorer\puz2-d.txt';
-        ReadColumn(2, StringGrid4);
-        Button18Click(Self);*/
-
         spath = Paths.get(".");
 
         /*var k: Word;
@@ -265,23 +253,23 @@ public class MainPaneController {
     private void updateUI() {
 
         // Common information, sections
-        internalVersionLabel.setText(section.version);
+        internalVersionLabel.setText(yodesk.getVersion().version());
         nameLabel.setText(section.revision);
         sizeLabel.setText(section.dump.size() + " / " + section.exeDump.size());
         crc32Label.setText(section.dtaCrc32 + " / " + section.exeCrc32);
 
-        commonInformationTableView.setItems(FXCollections.observableList(section.sectionsList));
+        commonInformationTableView.setItems(FXCollections.observableList(yodesk.catalog()));
 
         // Title image, palette
         drawTitleImage();
         drawPalette();
 
         // Sounds
-        soundsCountLabel.setText(Integer.toString(section.sounds.size()));
-        soundsTextArea.setText(String.join("\n", section.sounds));
+        soundsCountLabel.setText(Integer.toString(yodesk.getSounds().sounds().size()));
+        soundsTextArea.setText(String.join("\n", yodesk.getSounds().titles()));
 
         // Tiles, sprites
-        tilesCountLabel.setText(Integer.toString(section.tilesCount));
+        tilesCountLabel.setText(Integer.toString(yodesk.getTiles().tiles().size()));
         drawTiles();
         tilesContextMenu.setOnShown(this::selectTileMenuItem);
 
@@ -374,7 +362,7 @@ public class MainPaneController {
     private void drawTiles() {
 
         try {
-            for (int i = 0; i < section.tilesCount; i++) {
+            for (int i = 0; i < yodesk.getTiles().tiles().size(); i++) {
                 ImageView image = new ImageView(GetWTile(i));
                 image.setUserData(i);
                 image.setOnMouseEntered(mouseEnteredHandler);
@@ -390,7 +378,7 @@ public class MainPaneController {
     private void drawMapEditorTiles() {
 
         try {
-            for (int i = 0; i < section.tilesCount; i++) {
+            for (int i = 0; i < yodesk.getTiles().tiles().size(); i++) {
                 ImageView image = new ImageView(GetWTile(i));
                 image.setUserData(i);
                 image.setOnMouseEntered(mouseEnteredHandler);
@@ -558,7 +546,7 @@ public class MainPaneController {
     private void drawTileOnMap(Canvas canvas, int x, int y) {
 
         int k = section.ReadWord();
-        if (k < section.tilesCount) {
+        if (k < yodesk.getTiles().tiles().size()) {
             section.tiles[k] = true;
             GetWTile(k, canvas, x * TILE_SIZE, y * TILE_SIZE, null);
         }
@@ -632,6 +620,10 @@ public class MainPaneController {
     private void ReadOIE(int id) throws IOException {
         Path path = opath.resolve("OIE").resolve(Integer.toString(id));
         DumpData(path, section.maps.get(id).getOie().getPosition(), section.maps.get(id).getOie().getSize());
+    }
+
+    private void DumpData(Path path, CatalogEntry entry) throws IOException {
+        IOUtils.saveBytes(path, entry.bytes());
     }
 
     private void DumpData(Path path, int offset, int size) throws IOException {
@@ -739,9 +731,9 @@ public class MainPaneController {
         try {
             Path path = opath.resolve("Dumps");
             IOUtils.createDirectories(path);
-            for (SectionMetrics s : section.sectionsList) {
-                KnownSections name = s.getSection();
-                DumpData(path.resolve(name + ".bin"), section.GetStartOffset(name), section.GetFullSize(name));
+            for (CatalogEntry entry : yodesk.catalog()) {
+                KnownSections name = entry.section();
+                DumpData(path.resolve(name + ".bin"), entry);
                 Section.Log.debug(name + " is saved");
             }
             // TODO Showmessage('OK');
@@ -826,7 +818,7 @@ public class MainPaneController {
 
     public void saveSoundsListToFileButtonClick() {
         try {
-            IOUtils.saveTextFile(section.sounds, opath.resolve("snds.txt"));
+            IOUtils.saveTextFile(yodesk.getSounds().titles(), opath.resolve("snds.txt"));
         } catch (Exception e) {
             JavaFxUtils.showAlert("Sounds list saving error", e);
         }
@@ -853,7 +845,7 @@ public class MainPaneController {
             }
 
             section.SetPosition(KnownSections.TILE);
-            for (int i = 0; i < section.tilesCount; i++) {
+            for (int i = 0; i < yodesk.getTiles().tiles().size(); i++) {
 
                 long attr = section.GetTileFlag(i); // attributes
                 //ReadPicture(section, 0);
@@ -891,14 +883,14 @@ public class MainPaneController {
 
         try {
             int width = Integer.parseInt(tilesInARowTextField.getText());
-            int height = (int) Math.ceil(section.tilesCount * 1.0 / width);
+            int height = (int) Math.ceil(yodesk.getTiles().tiles().size() * 1.0 / width);
 
             Canvas canvas = new Canvas(width * TILE_SIZE, height * TILE_SIZE);
 
             int k = 0;
             for (int y = 0; y < height; y++) {
                 for (int x = 0; x < width; x++) {
-                    if ((y * width + x) < section.tilesCount) {
+                    if ((y * width + x) < yodesk.getTiles().tiles().size()) {
                         GetWTile(k, canvas, x * TILE_SIZE, y * TILE_SIZE, Config.transparentColor);
                         k++;
                     }
@@ -1012,7 +1004,7 @@ public class MainPaneController {
             Section.Log.newLine();
             Path unusedTilesPath = opath.resolve("TilesUnused");
             IOUtils.createDirectories(unusedTilesPath);
-            for (int i = 0; i < section.tilesCount; i++) {
+            for (int i = 0; i < yodesk.getTiles().tiles().size(); i++) {
                 if (!section.tiles[i]) {
                     Section.Log.debug(i);
                     BMPWriter.write8bit(GetTile(i), unusedTilesPath.resolve(StringUtils.leftPad(Integer.toString(i), 4, '0') + E_BMP));

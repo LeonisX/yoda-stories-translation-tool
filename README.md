@@ -10,6 +10,9 @@ An original version: https://github.com/LeonisX/YExplorer
 
 ## TODO
 
+
+* Kaitai: verify offsets and sizes (must be full)
+
 * Kaitai
 * Dump texts to DOCX (separators, IACT/PUZ2 labels, ignore them, allow blocked text)
 * Replace tiles, maps, Undo

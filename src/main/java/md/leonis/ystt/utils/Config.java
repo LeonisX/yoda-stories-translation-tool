@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import javafx.scene.paint.Color;
+import md.leonis.ystt.model.Yodesk;
 import md.leonis.ystt.oldmodel2.Release;
 import md.leonis.ystt.oldmodel2.Section;
 import md.leonis.ystt.oldmodel.*;
@@ -149,6 +150,7 @@ public class Config {
     public static int[][] battleSpells = {{4, 9, 14, 3, 1}, {10, 12, 17, 7}, {}, {3, 11, 18, 6, 13}};
     public static int[][] overworldSpells = {{4, 15}, {10, 16, 2}, {}, {10, 2, 11, 5, 8}};
 
+    public static Yodesk yodesk;
 
     public static Section section;
 
@@ -358,6 +360,8 @@ public class Config {
     }
 
     public static void loadGameFiles(File selectedFile) throws IOException {
+
+        yodesk = Yodesk.fromFile(Section.getDtaPath(selectedFile.toPath().getParent()).toString());
 
         section = new Section();
         section.LoadFileToArray(selectedFile);

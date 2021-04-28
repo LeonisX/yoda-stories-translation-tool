@@ -35,8 +35,8 @@ public class Section {
 
     //TODO getters
     //TODO may be lis will be better???
-    public Map<KnownSections, SectionMetrics> sections = new HashMap<>();
-    public List<SectionMetrics> sectionsList = new ArrayList<>();
+    private final Map<KnownSections, SectionMetrics> sections = new HashMap<>();
+    private final List<SectionMetrics> sectionsList = new ArrayList<>();
     //TODO dtaDump
     public Dump dump;
     public Dump exeDump;
@@ -47,9 +47,9 @@ public class Section {
     public String dtaCrc32;
     public String revision;
     public String revisionId;
-    public String version;
-    public List<String> sounds = new ArrayList<>();
-    public int tilesCount;
+    private String version;
+    private final List<String> sounds = new ArrayList<>();
+    private int tilesCount;
     public List<Puzzle> puzzles = new ArrayList<>();
     public List<Char> chars = new ArrayList<>();
     public List<Name> names = new ArrayList<>();
@@ -456,7 +456,7 @@ public class Section {
         int mapsCount = ReadWord();        // 2 bytes - maps count $0291 = 657 items
         // Next repeated data of TZone
         for (int i = 0; i < mapsCount; i++) {
-            ReadWord();                //unknown:word;          01 00 - unknown 2 bytes
+            ReadWord();                // planet          01 00 - unknown 2 bytes
             int sz = (int) ReadLongWord();        //size:longword;         size of current map (4b)
             Log.debug(i + " Offset:Size: " + intToHex(GetPosition() - 4, 4) + ':' + intToHex(sz, 4));
             MovePosition(sz);
@@ -741,7 +741,7 @@ public class Section {
         Config.updatePalette();
     }
 
-    public Path getDtaPath(Path dir) throws IOException {
+    public static Path getDtaPath(Path dir) throws IOException {
 
         try (Stream<Path> stream = Files.list(dir)) {
             return stream

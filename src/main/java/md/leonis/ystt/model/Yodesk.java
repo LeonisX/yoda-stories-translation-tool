@@ -1,14 +1,18 @@
 package md.leonis.ystt.model;
 // This is a generated file! Please edit source .ksy file and use kaitai-struct-compiler to rebuild
 
-import io.kaitai.struct.ByteBufferKaitaiStream;
-import io.kaitai.struct.KaitaiStruct;
 import io.kaitai.struct.KaitaiStream;
-import md.leonis.ystt.model.puzzles.Puzzle;
+import io.kaitai.struct.KaitaiStruct;
+import io.kaitai.struct.RandomAccessFileKaitaiStream;
+import md.leonis.ystt.model.characters.CharacterAuxiliaries;
+import md.leonis.ystt.model.characters.CharacterWeapons;
+import md.leonis.ystt.model.tiles.TileNames;
+import md.leonis.ystt.oldmodel2.KnownSections;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * [Star Wars: Yoda Stories](https://en.wikipedia.org/wiki/Star_Wars:_Yoda_Stories) is a unique tile based game with procedurally
@@ -36,11 +40,27 @@ import java.util.ArrayList;
 public class Yodesk extends KaitaiStruct {
 
     private ArrayList<CatalogEntry> catalog;
+    private final Map<KnownSections, CatalogEntry> sections = new HashMap<>();
+
+    private Version version;
+    private StartupImage startupImage;
+    private Sounds sounds;
+    private Tiles tiles;
+    private Zones zones;
+    private Puzzles puzzles;
+    private Characters characters;
+    private CharacterAuxiliaries characterAuxiliaries;
+    private CharacterWeapons characterWeapons;
+    private TileNames tileNames;
+    private Tgen tgen;
+    private Endf endf;
+    private UnknownCatalogEntry unknownCatalogEntry;
+
     private final Yodesk _root;
     private final KaitaiStruct _parent;
 
     public static Yodesk fromFile(String fileName) throws IOException {
-        return new Yodesk(new ByteBufferKaitaiStream(fileName));
+        return new Yodesk(new RandomAccessFileKaitaiStream(fileName));
     }
 
     public Yodesk(KaitaiStream _io) {
@@ -65,11 +85,16 @@ public class Yodesk extends KaitaiStruct {
         do {
             _it = new CatalogEntry(this._io, this, _root);
             this.catalog.add(_it);
-        } while (!_it.type().equals("ENDF"));
+            sections.put(_it.section(), _it);
+        } while (!_it.getType().equals("ENDF"));
     }
 
     public ArrayList<CatalogEntry> catalog() {
         return catalog;
+    }
+
+    public Map<KnownSections, CatalogEntry> sections() {
+        return sections;
     }
 
     public Yodesk _root() {
@@ -77,6 +102,130 @@ public class Yodesk extends KaitaiStruct {
     }
 
     public KaitaiStruct _parent() {
+        return _parent;
+    }
+
+    public ArrayList<CatalogEntry> getCatalog() {
+        return catalog;
+    }
+
+    public void setCatalog(ArrayList<CatalogEntry> catalog) {
+        this.catalog = catalog;
+    }
+
+    public Map<KnownSections, CatalogEntry> getSections() {
+        return sections;
+    }
+
+    public Version getVersion() {
+        return version;
+    }
+
+    public void setVersion(Version version) {
+        this.version = version;
+    }
+
+    public StartupImage getStartupImage() {
+        return startupImage;
+    }
+
+    public void setStartupImage(StartupImage startupImage) {
+        this.startupImage = startupImage;
+    }
+
+    public Sounds getSounds() {
+        return sounds;
+    }
+
+    public void setSounds(Sounds sounds) {
+        this.sounds = sounds;
+    }
+
+    public Tiles getTiles() {
+        return tiles;
+    }
+
+    public void setTiles(Tiles tiles) {
+        this.tiles = tiles;
+    }
+
+    public Zones getZones() {
+        return zones;
+    }
+
+    public void setZones(Zones zones) {
+        this.zones = zones;
+    }
+
+    public Puzzles getPuzzles() {
+        return puzzles;
+    }
+
+    public void setPuzzles(Puzzles puzzles) {
+        this.puzzles = puzzles;
+    }
+
+    public Characters getCharacters() {
+        return characters;
+    }
+
+    public void setCharacters(Characters characters) {
+        this.characters = characters;
+    }
+
+    public CharacterAuxiliaries getCharacterAuxiliaries() {
+        return characterAuxiliaries;
+    }
+
+    public void setCharacterAuxiliaries(CharacterAuxiliaries characterAuxiliaries) {
+        this.characterAuxiliaries = characterAuxiliaries;
+    }
+
+    public CharacterWeapons getCharacterWeapons() {
+        return characterWeapons;
+    }
+
+    public void setCharacterWeapons(CharacterWeapons characterWeapons) {
+        this.characterWeapons = characterWeapons;
+    }
+
+    public TileNames getTileNames() {
+        return tileNames;
+    }
+
+    public void setTileNames(TileNames tileNames) {
+        this.tileNames = tileNames;
+    }
+
+    public Tgen getTgen() {
+        return tgen;
+    }
+
+    public void setTgen(Tgen tgen) {
+        this.tgen = tgen;
+    }
+
+    public Endf getEndf() {
+        return endf;
+    }
+
+    public void setEndf(Endf endf) {
+        this.endf = endf;
+    }
+
+    public UnknownCatalogEntry getUnknownCatalogEntry() {
+        return unknownCatalogEntry;
+    }
+
+    public void setUnknownCatalogEntry(UnknownCatalogEntry unknownCatalogEntry) {
+        this.unknownCatalogEntry = unknownCatalogEntry;
+    }
+
+    public Yodesk get_root() {
+        return _root;
+    }
+
+    public KaitaiStruct get_parent() {
         return _parent;
     }
 }

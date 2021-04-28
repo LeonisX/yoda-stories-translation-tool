@@ -3,17 +3,20 @@ package md.leonis.ystt.model;
 import io.kaitai.struct.ByteBufferKaitaiStream;
 import io.kaitai.struct.KaitaiStream;
 import io.kaitai.struct.KaitaiStruct;
+import md.leonis.ystt.model.tiles.Tile;
 import md.leonis.ystt.model.tiles.TilesEntries;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class Tiles extends KaitaiStruct {
 
-    private TilesEntries tiles;
+    private TilesEntries tilesEntries;
+    private ArrayList<Tile> tiles;
+    private byte[] _raw_tiles;
 
     private final Yodesk _root;
     private final CatalogEntry _parent;
-    private byte[] _raw_tiles;
 
     public static Tiles fromFile(String fileName) throws IOException {
         return new Tiles(new ByteBufferKaitaiStream(fileName));
@@ -35,12 +38,17 @@ public class Tiles extends KaitaiStruct {
     }
 
     private void _read() {
-        this._raw_tiles = this._io.readBytes(_parent().size());
+        this._raw_tiles = this._io.readBytes(_parent().getSize());
         KaitaiStream _io_raw_tiles = new ByteBufferKaitaiStream(_raw_tiles);
-        this.tiles = new TilesEntries(_io_raw_tiles, this, _root);
+        this.tilesEntries = new TilesEntries(_io_raw_tiles, this, _root);
+        this.tiles = tilesEntries.tiles();
     }
 
-    public TilesEntries tiles() {
+    public TilesEntries tilesEntries() {
+        return tilesEntries;
+    }
+
+    public ArrayList<Tile> tiles() {
         return tiles;
     }
 

@@ -37,7 +37,7 @@ public class StartupImage extends KaitaiStruct {
     }
 
     private void _read() {
-        this.pixels = this._io.readBytes(_parent().size());
+        this.pixels = this._io.readBytes(_parent().getSize());
     }
 
     public byte[] pixels() { return pixels; }

@@ -33,7 +33,7 @@ public class UnknownCatalogEntry extends KaitaiStruct {
     }
 
     private void _read() {
-        this.data = this._io.readBytes(_parent().size());
+        this.data = this._io.readBytes(_parent().getSize());
     }
 
     public byte[] data() {

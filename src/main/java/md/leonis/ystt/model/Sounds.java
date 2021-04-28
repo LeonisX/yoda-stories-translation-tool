@@ -21,6 +21,7 @@ public class Sounds extends KaitaiStruct {
 
     private short count;
     private ArrayList<PrefixedStrz> sounds;
+    private ArrayList<String> soundsTitles;
 
     private final Yodesk _root;
     private final CatalogEntry _parent;
@@ -47,8 +48,11 @@ public class Sounds extends KaitaiStruct {
     private void _read() {
         this.count = this._io.readS2le();
         sounds = new ArrayList<>(((Number) (-count())).intValue());
+        soundsTitles = new ArrayList<>(((Number) (-count())).intValue());
         for (int i = 0; i < -(count()); i++) {
-            this.sounds.add(new PrefixedStrz(this._io, this, _root));
+            PrefixedStrz prefixedStrz = new PrefixedStrz(this._io, this, _root);
+            sounds.add(prefixedStrz);
+            soundsTitles.add(prefixedStrz.content());
         }
     }
 
@@ -58,6 +62,10 @@ public class Sounds extends KaitaiStruct {
 
     public ArrayList<PrefixedStrz> sounds() {
         return sounds;
+    }
+
+    public ArrayList<String> titles() {
+        return soundsTitles;
     }
 
     public Yodesk _root() {

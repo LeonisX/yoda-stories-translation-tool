@@ -12,6 +12,7 @@ import java.util.ArrayList;
 public class TilesEntries extends KaitaiStruct {
 
     private ArrayList<Tile> tiles;
+
     private final Yodesk _root;
     private final Tiles _parent;
 

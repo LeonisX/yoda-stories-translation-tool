@@ -50,7 +50,7 @@ public class HexCellFactory<S, T> implements Callback<TableColumn<S, T>, TableCe
                     super.setText(null);
                     super.setGraphic((Node) item);
                 } else {
-                    super.setText("0x" + item.toString());
+                    super.setText("0x" + Long.toHexString((int) item).toUpperCase());
                     super.setGraphic(null);
                 }
             }
