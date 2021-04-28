@@ -1,10 +1,9 @@
-package md.leonis.ystt.model.tiles;
+package md.leonis.ystt.model;
 
 import io.kaitai.struct.ByteBufferKaitaiStream;
 import io.kaitai.struct.KaitaiStream;
 import io.kaitai.struct.KaitaiStruct;
-import md.leonis.ystt.model.CatalogEntry;
-import md.leonis.ystt.model.Yodesk;
+import md.leonis.ystt.model.tiles.TileName;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -47,18 +46,18 @@ public class TileNames extends KaitaiStruct {
             _it = new TileName(this._io, this, _root);
             this.names.add(_it);
 
-        } while (_it.tileId() != 65535);
+        } while (_it.getTileId() != 65535);
     }
 
-    public ArrayList<TileName> names() {
+    public ArrayList<TileName> getNames() {
         return names;
     }
 
-    public Yodesk _root() {
+    public Yodesk get_root() {
         return _root;
     }
 
-    public CatalogEntry _parent() {
+    public CatalogEntry get_parent() {
         return _parent;
     }
 }

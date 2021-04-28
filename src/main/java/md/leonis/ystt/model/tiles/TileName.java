@@ -3,6 +3,7 @@ package md.leonis.ystt.model.tiles;
 import io.kaitai.struct.ByteBufferKaitaiStream;
 import io.kaitai.struct.KaitaiStream;
 import io.kaitai.struct.KaitaiStruct;
+import md.leonis.ystt.model.TileNames;
 import md.leonis.ystt.model.Yodesk;
 
 import java.io.IOException;
@@ -37,24 +38,24 @@ public class TileName extends KaitaiStruct {
 
     private void _read() {
         this.tileId = this._io.readU2le();
-        if (tileId() != 65535) {
+        if (tileId != 65535) {
             this.name = new String(KaitaiStream.bytesTerminate(this._io.readBytes(24), (byte) 0, false), StandardCharsets.US_ASCII);
         }
     }
 
-    public int tileId() {
+    public int getTileId() {
         return tileId;
     }
 
-    public String name() {
+    public String getName() {
         return name;
     }
 
-    public Yodesk _root() {
+    public Yodesk get_root() {
         return _root;
     }
 
-    public TileNames _parent() {
+    public TileNames get_parent() {
         return _parent;
     }
 }

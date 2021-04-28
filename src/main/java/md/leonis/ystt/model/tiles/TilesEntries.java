@@ -43,15 +43,15 @@ public class TilesEntries extends KaitaiStruct {
         }
     }
 
-    public ArrayList<Tile> tiles() {
+    public ArrayList<Tile> getTiles() {
         return tiles;
     }
 
-    public Yodesk _root() {
+    public Yodesk get_root() {
         return _root;
     }
 
-    public Tiles _parent() {
+    public Tiles get_parent() {
         return _parent;
     }
 }

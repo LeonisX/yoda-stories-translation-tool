@@ -429,11 +429,11 @@ public class TileAttributes extends KaitaiStruct {
         return isNpc;
     }
 
-    public Yodesk _root() {
+    public Yodesk get_root() {
         return _root;
     }
 
-    public Tile _parent() {
+    public Tile get_parent() {
         return _parent;
     }
 }

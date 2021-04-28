@@ -26,6 +26,7 @@ import md.leonis.ystt.model.CatalogEntry;
 import md.leonis.ystt.model.characters.Character;
 import md.leonis.ystt.model.characters.CharacterAuxiliary;
 import md.leonis.ystt.model.characters.CharacterWeapon;
+import md.leonis.ystt.model.tiles.TileName;
 import md.leonis.ystt.oldmodel2.*;
 import md.leonis.ystt.utils.*;
 import net.sf.image4j.codec.bmp.BMPImage;
@@ -144,7 +145,7 @@ public class MainPaneController {
 
     public Label namesCountLabel;
     public Button saveNamesToFilesButton;
-    public TableView<Name> namesTableView;
+    public TableView<TileName> namesTableView;
     public Button dumpNamesTextToDocx;
     public Button loadNamesTranslatedText;
     public Button replaceNamesTextInDta;
@@ -256,23 +257,23 @@ public class MainPaneController {
     private void updateUI() {
 
         // Common information, sections
-        internalVersionLabel.setText(yodesk.getVersion().version());
+        internalVersionLabel.setText(yodesk.getVersion().getVersion());
         nameLabel.setText(section.revision);
         sizeLabel.setText(section.dump.size() + " / " + section.exeDump.size());
         crc32Label.setText(section.dtaCrc32 + " / " + section.exeCrc32);
 
-        commonInformationTableView.setItems(FXCollections.observableList(yodesk.catalog()));
+        commonInformationTableView.setItems(FXCollections.observableList(yodesk.getCatalog()));
 
         // Title image, palette
         drawTitleImage();
         drawPalette();
 
         // Sounds
-        soundsCountLabel.setText(Integer.toString(yodesk.getSounds().sounds().size()));
-        soundsTextArea.setText(String.join("\n", yodesk.getSounds().titles()));
+        soundsCountLabel.setText(Integer.toString(yodesk.getSounds().getSounds().size()));
+        soundsTextArea.setText(String.join("\n", yodesk.getSounds().getSounds()));
 
         // Tiles, sprites
-        tilesCountLabel.setText(Integer.toString(yodesk.getTiles().tiles().size()));
+        tilesCountLabel.setText(Integer.toString(yodesk.getTiles().getTiles().size()));
         drawTiles();
         tilesContextMenu.setOnShown(this::selectTileMenuItem);
 
@@ -288,10 +289,10 @@ public class MainPaneController {
         drawMapEditorTiles();
 
         // Puzzles
-        puzzlesCountLabel.setText(Integer.toString(yodesk.getPuzzles().puzzles().size()));
+        puzzlesCountLabel.setText(Integer.toString(yodesk.getPuzzles().getPuzzles().size()));
 
         // Characters
-        charactersCountLabel.setText(Integer.toString(yodesk.getCharacters().characters().size()));
+        charactersCountLabel.setText(Integer.toString(yodesk.getCharacters().getCharacters().size()));
         @SuppressWarnings("all")
         TableColumn<Character, List<Integer>> charsColumn = (TableColumn<Character, List<Integer>>) charactesTableView.getColumns().get(1);
         charsColumn.setCellFactory(c -> {
@@ -313,17 +314,17 @@ public class MainPaneController {
             cell.setAlignment(Pos.CENTER);
             return cell;
         });
-        charactesTableView.setItems(FXCollections.observableList(yodesk.getCharacters().characters()));
+        charactesTableView.setItems(FXCollections.observableList(yodesk.getCharacters().getCharacters()));
 
         // Names
-        namesCountLabel.setText(Integer.toString(section.names.size()));
+        namesCountLabel.setText(Integer.toString(yodesk.getTileNames().getNames().size()));
         @SuppressWarnings("all")
-        TableColumn<Name, Integer> namesColumn = (TableColumn<Name, Integer>) namesTableView.getColumns().get(0);
+        TableColumn<TileName, Integer> namesColumn = (TableColumn<TileName, Integer>) namesTableView.getColumns().get(0);
         namesColumn.setCellFactory(c -> {
 
             final ImageView imageView = new ImageView();
 
-            TableCell<Name, Integer> cell = new TableCell<Name, Integer>() {
+            TableCell<TileName, Integer> cell = new TableCell<TileName, Integer>() {
                 public void updateItem(Integer tileId, boolean empty) {
                     if (tileId != null) {
                         imageView.setImage(GetWTile(tileId));
@@ -334,7 +335,7 @@ public class MainPaneController {
             cell.setAlignment(Pos.CENTER);
             return cell;
         });
-        namesTableView.setItems(FXCollections.observableList(section.names));
+        namesTableView.setItems(FXCollections.observableList(yodesk.getTileNames().getNames()));
     }
 
     private void drawTitleImage() {
@@ -365,7 +366,7 @@ public class MainPaneController {
     private void drawTiles() {
 
         try {
-            for (int i = 0; i < yodesk.getTiles().tiles().size(); i++) {
+            for (int i = 0; i < yodesk.getTiles().getTiles().size(); i++) {
                 ImageView image = new ImageView(GetWTile(i));
                 image.setUserData(i);
                 image.setOnMouseEntered(mouseEnteredHandler);
@@ -381,7 +382,7 @@ public class MainPaneController {
     private void drawMapEditorTiles() {
 
         try {
-            for (int i = 0; i < yodesk.getTiles().tiles().size(); i++) {
+            for (int i = 0; i < yodesk.getTiles().getTiles().size(); i++) {
                 ImageView image = new ImageView(GetWTile(i));
                 image.setUserData(i);
                 image.setOnMouseEntered(mouseEnteredHandler);
@@ -548,7 +549,7 @@ public class MainPaneController {
     private void drawTileOnMap(Canvas canvas, int x, int y) {
 
         int k = section.ReadWord();
-        if (k < yodesk.getTiles().tiles().size()) {
+        if (k < yodesk.getTiles().getTiles().size()) {
             section.tiles[k] = true;
             GetWTile2(k, canvas, x * TILE_SIZE, y * TILE_SIZE, null);
         }
@@ -625,7 +626,7 @@ public class MainPaneController {
     }
 
     private void DumpData(Path path, CatalogEntry entry) throws IOException {
-        IOUtils.saveBytes(path, entry.bytes());
+        IOUtils.saveBytes(path, entry.getBytes());
     }
 
     private void DumpData(Path path, int offset, int size) throws IOException {
@@ -733,8 +734,8 @@ public class MainPaneController {
         try {
             Path path = opath.resolve("Dumps");
             IOUtils.createDirectories(path);
-            for (CatalogEntry entry : yodesk.catalog()) {
-                KnownSections name = entry.section();
+            for (CatalogEntry entry : yodesk.getCatalog()) {
+                KnownSections name = entry.getSection();
                 DumpData(path.resolve(name + ".bin"), entry);
                 Section.Log.debug(name + " is saved");
             }
@@ -820,7 +821,7 @@ public class MainPaneController {
 
     public void saveSoundsListToFileButtonClick() {
         try {
-            IOUtils.saveTextFile(yodesk.getSounds().titles(), opath.resolve("snds.txt"));
+            IOUtils.saveTextFile(yodesk.getSounds().getSounds(), opath.resolve("snds.txt"));
         } catch (Exception e) {
             JavaFxUtils.showAlert("Sounds list saving error", e);
         }
@@ -847,7 +848,7 @@ public class MainPaneController {
             }
 
             section.SetPosition(KnownSections.TILE);
-            for (int i = 0; i < yodesk.getTiles().tiles().size(); i++) {
+            for (int i = 0; i < yodesk.getTiles().getTiles().size(); i++) {
 
                 long attr = section.GetTileFlag(i); // attributes
                 //ReadPicture(section, 0);
@@ -885,14 +886,14 @@ public class MainPaneController {
 
         try {
             int width = Integer.parseInt(tilesInARowTextField.getText());
-            int height = (int) Math.ceil(yodesk.getTiles().tiles().size() * 1.0 / width);
+            int height = (int) Math.ceil(yodesk.getTiles().getTiles().size() * 1.0 / width);
 
             Canvas canvas = new Canvas(width * TILE_SIZE, height * TILE_SIZE);
 
             int k = 0;
             for (int y = 0; y < height; y++) {
                 for (int x = 0; x < width; x++) {
-                    if ((y * width + x) < yodesk.getTiles().tiles().size()) {
+                    if ((y * width + x) < yodesk.getTiles().getTiles().size()) {
                         GetWTile2(k, canvas, x * TILE_SIZE, y * TILE_SIZE, Config.transparentColor);
                         k++;
                     }
@@ -1006,7 +1007,7 @@ public class MainPaneController {
             Section.Log.newLine();
             Path unusedTilesPath = opath.resolve("TilesUnused");
             IOUtils.createDirectories(unusedTilesPath);
-            for (int i = 0; i < yodesk.getTiles().tiles().size(); i++) {
+            for (int i = 0; i < yodesk.getTiles().getTiles().size(); i++) {
                 if (!section.tiles[i]) {
                     Section.Log.debug(i);
                     BMPWriter.write8bit(GetTile2(i), unusedTilesPath.resolve(StringUtils.leftPad(Integer.toString(i), 4, '0') + E_BMP));
@@ -1046,16 +1047,16 @@ public class MainPaneController {
             Section.Log.clear();
             Section.Log.debug("Puzzles (2):");
             Section.Log.newLine();
-            Section.Log.debug("Total count: " + yodesk.getPuzzles().puzzles().size());
+            Section.Log.debug("Total count: " + yodesk.getPuzzles().getPuzzles().size());
             Section.Log.newLine();
-            int position = yodesk.getPuzzles()._parent().getPosition();
-            for (int i = 0; i < yodesk.getPuzzles().puzzles().size(); i++) {
-                ReadPUZ2(yodesk.getPuzzles().puzzles().get(i), position);
-                position += yodesk.getPuzzles().puzzles().get(i).byteSize();
+            int position = yodesk.getPuzzles().get_parent().getPosition();
+            for (int i = 0; i < yodesk.getPuzzles().getPuzzles().size(); i++) {
+                ReadPUZ2(yodesk.getPuzzles().getPuzzles().get(i), position);
+                position += yodesk.getPuzzles().getPuzzles().get(i).byteSize();
             }
             //TODO rewrite code after tests
-            List<String> phrases = yodesk.getPuzzles().puzzles().stream()
-                    .flatMap(p -> p.strings().stream().filter(s -> !s.isEmpty())).map(s -> s.replace("\r\n", "[CR]").replace("[CR][CR]", "[CR2]")).collect(Collectors.toList());
+            List<String> phrases = yodesk.getPuzzles().getPuzzles().stream()
+                    .flatMap(p -> p.getStrings().stream().filter(s -> !s.isEmpty())).map(s -> s.replace("\r\n", "[CR]").replace("[CR][CR]", "[CR2]")).collect(Collectors.toList());
             IOUtils.saveTextFile(phrases, opath.resolve("puz2.txt"));
         } catch (Exception e) {
             JavaFxUtils.showAlert("Error saving puzzles to the files", e);
@@ -1065,8 +1066,8 @@ public class MainPaneController {
     //TODO md.leonis.ystt.model.puzzles.
     private void ReadPUZ2(md.leonis.ystt.model.puzzles.Puzzle puzzle, int position) throws IOException {
 
-        Section.Log.debug("Puzzle #" + puzzle.index() + "; Size: 0x" + section.longToHex(puzzle.byteSize(), 4));
-        DumpData(opath.resolve("PUZ2").resolve(StringUtils.leftPad(Integer.toString(puzzle.index()), 4, '0')), position, puzzle.byteSize());
+        Section.Log.debug("Puzzle #" + puzzle.getIndex() + "; Size: 0x" + section.longToHex(puzzle.byteSize(), 4));
+        DumpData(opath.resolve("PUZ2").resolve(StringUtils.leftPad(Integer.toString(puzzle.getIndex()), 4, '0')), position, puzzle.byteSize());
     }
 
     public void dumpPuzzlesTextToDocxCLick(ActionEvent actionEvent) {
@@ -1088,36 +1089,36 @@ public class MainPaneController {
             Section.Log.clear();
             Section.Log.debug("Characters:");
             Section.Log.newLine();
-            Section.Log.debug("Total count: " + yodesk.getCharacters().characters().size());
+            Section.Log.debug("Total count: " + yodesk.getCharacters().getCharacters().size());
             Section.Log.newLine();
 
             //TODO remove all these code:
             section.SetPosition(section.GetDataOffset(KnownSections.CHAR));
-            int position = yodesk.getCharacters()._parent().getDataPosition();
-            for (int i = 0; i < yodesk.getCharacters().characters().size(); i++) {
-                ReadCHAR(yodesk.getCharacters().characters().get(i), position);
-                position += yodesk.getCharacters().characters().get(i).byteSize();
+            int position = yodesk.getCharacters().get_parent().getDataPosition();
+            for (int i = 0; i < yodesk.getCharacters().getCharacters().size(); i++) {
+                ReadCHAR(yodesk.getCharacters().getCharacters().get(i), position);
+                position += yodesk.getCharacters().getCharacters().get(i).byteSize();
             }
 
-            position = yodesk.getCharacterWeapons()._parent().getDataPosition();
+            position = yodesk.getCharacterWeapons().get_parent().getDataPosition();
             //TODO remove all these code:
             section.SetPosition(section.GetDataOffset(KnownSections.CHWP));
-            for (int i = 0; i < yodesk.getCharacterWeapons().weapons().size(); i++) {
-                ReadCHWP(yodesk.getCharacterWeapons().weapons().get(i), position);
-                position += yodesk.getCharacterWeapons().weapons().get(i).byteSize();
+            for (int i = 0; i < yodesk.getCharacterWeapons().getWeapons().size(); i++) {
+                ReadCHWP(yodesk.getCharacterWeapons().getWeapons().get(i), position);
+                position += yodesk.getCharacterWeapons().getWeapons().get(i).byteSize();
             }
 
-            position = yodesk.getCharacterAuxiliaries()._parent().getDataPosition();
+            position = yodesk.getCharacterAuxiliaries().get_parent().getDataPosition();
             //TODO remove all these code:
             section.SetPosition(section.GetDataOffset(KnownSections.CAUX));
             //incorrect CAUX offset!!!!!!!!!!!!!!
             //Showmessage(inttohex(DTA.GetIndex,6));
-            for (int i = 0; i < yodesk.getCharacterAuxiliaries().auxiliaries().size(); i++) {
-                ReadCAUX(yodesk.getCharacterAuxiliaries().auxiliaries().get(i), position);
-                position += yodesk.getCharacterAuxiliaries().auxiliaries().get(i).byteSize();
+            for (int i = 0; i < yodesk.getCharacterAuxiliaries().getAuxiliaries().size(); i++) {
+                ReadCAUX(yodesk.getCharacterAuxiliaries().getAuxiliaries().get(i), position);
+                position += yodesk.getCharacterAuxiliaries().getAuxiliaries().get(i).byteSize();
             }
 
-            IOUtils.saveTextFile(yodesk.getCharacters().characters().stream().map(Character::getName).collect(Collectors.toList()), opath.resolve("chars.txt"));
+            IOUtils.saveTextFile(yodesk.getCharacters().getCharacters().stream().map(Character::getName).collect(Collectors.toList()), opath.resolve("chars.txt"));
         } catch (Exception e) {
             JavaFxUtils.showAlert("Error saving characters to the files", e);
         }
@@ -1138,14 +1139,14 @@ public class MainPaneController {
 
         //  size := DTA.ReadLongWord;
         //int ch = section.ReadWord();
-        DumpData(opath.resolve("CHWP").resolve(StringUtils.leftPad(Integer.toString(c.index()), 3, '0')), position, c.byteSize());
+        DumpData(opath.resolve("CHWP").resolve(StringUtils.leftPad(Integer.toString(c.getIndex()), 3, '0')), position, c.byteSize());
     }
 
     private void ReadCAUX(CharacterAuxiliary c, int position) throws IOException {
 
         //  size:=DTA.ReadLongWord;
         //int ch = section.ReadWord();
-        DumpData(opath.resolve("CAUX").resolve(StringUtils.leftPad(Integer.toString(c.index()), 3, '0')), position, c.byteSize());
+        DumpData(opath.resolve("CAUX").resolve(StringUtils.leftPad(Integer.toString(c.getIndex()), 3, '0')), position, c.byteSize());
     }
 
     public void saveNamesToFileButtonClick() {
@@ -1162,13 +1163,16 @@ public class MainPaneController {
         Section.Log.clear();
         Section.Log.debug("Names:");
         Section.Log.newLine();
-        Section.Log.debug("Total count: " + section.names.size());
+        Section.Log.debug("Total count: " + yodesk.getTileNames().getNames().size());
         Section.Log.newLine();
         IOUtils.createDirectories(opath.resolve("Names"));
-        for (Name n : section.names) {
-            BMPWriter.write(GetTile2(n.getTileId()), IOUtils.findUnusedFileName(opath.resolve("Names"), n.getName(), E_BMP));
+        for (TileName n : yodesk.getTileNames().getNames()) {
+            if (null != n.getName()) {
+                BMPWriter.write(GetTile2(n.getTileId()), IOUtils.findUnusedFileName(opath.resolve("Names"), n.getName(), E_BMP));
+            }
         }
-        IOUtils.saveTextFile(section.names.stream().map(Name::getName).collect(Collectors.toList()), opath.resolve("names.txt"));
+        IOUtils.saveTextFile(yodesk.getTileNames().getNames().stream().map(TileName::getName).filter(Objects::nonNull)
+                .collect(Collectors.toList()), opath.resolve("tilenames.txt"));
     }
 
     public void dumpNamesTextToDocxCLick(ActionEvent actionEvent) {
@@ -2138,7 +2142,7 @@ end;
     private BufferedImage GetTile2(int tileId) {
 
         int position = yodesk.getTiles().tilePixelsPosition(tileId);
-        return ImageUtils.readBPicture(yodesk.getTiles()._raw_tiles(), position, TILE_SIZE, TILE_SIZE, Config.icm0);
+        return ImageUtils.readBPicture(yodesk.getTiles().getRawTiles(), position, TILE_SIZE, TILE_SIZE, Config.icm0);
     }
 
     private WritableImage GetWTile(int tileId) {
@@ -2162,7 +2166,7 @@ end;
     private void GetWTile2(int tileId, Canvas canvas, int xOffset, int yOffset, Color transparentColor) {
 
         int position = yodesk.getTiles().tilePixelsPosition(tileId);
-        ImageUtils.drawOnCanvas(yodesk.getTiles()._raw_tiles(), position, canvas, xOffset, yOffset, transparentColor);
+        ImageUtils.drawOnCanvas(yodesk.getTiles().getRawTiles(), position, canvas, xOffset, yOffset, transparentColor);
     }
 
     private void fillMapTile(Canvas canvas, int xOffset, int yOffset, Color color) {

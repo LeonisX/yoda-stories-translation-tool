@@ -39,7 +39,7 @@ public class CharacterWeapon extends KaitaiStruct {
 
     private void _read() {
         this.index = this._io.readU2le();
-        if (index() != 65535) {
+        if (index != 65535) {
             this.reference = this._io.readU2le();
             this.health = this._io.readU2le();
         }
@@ -52,23 +52,23 @@ public class CharacterWeapon extends KaitaiStruct {
                         2;              // health
     }
 
-    public int index() {
+    public int getIndex() {
         return index;
     }
 
-    public Integer reference() {
+    public Integer getReference() {
         return reference;
     }
 
-    public Integer health() {
+    public Integer getHealth() {
         return health;
     }
 
-    public Yodesk _root() {
+    public Yodesk get_root() {
         return _root;
     }
 
-    public CharacterWeapons _parent() {
+    public CharacterWeapons get_parent() {
         return _parent;
     }
 }

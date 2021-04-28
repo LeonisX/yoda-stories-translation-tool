@@ -52,31 +52,31 @@ public class Hotspot extends KaitaiStruct {
         this.argument = this._io.readU2le();
     }
 
-    public HotspotType type() {
+    public HotspotType getType() {
         return type;
     }
 
-    public int x() {
+    public int getX() {
         return x;
     }
 
-    public int y() {
+    public int getY() {
         return y;
     }
 
-    public int enabled() {
+    public int getEnabled() {
         return enabled;
     }
 
-    public int argument() {
+    public int getArgument() {
         return argument;
     }
 
-    public Yodesk _root() {
+    public Yodesk get_root() {
         return _root;
     }
 
-    public Zone _parent() {
+    public Zone get_parent() {
         return _parent;
     }
 }

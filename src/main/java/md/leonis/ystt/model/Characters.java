@@ -45,15 +45,15 @@ public class Characters extends KaitaiStruct {
         } while (_it.getIndex() != 65535);
     }
 
-    public ArrayList<Character> characters() {
+    public ArrayList<Character> getCharacters() {
         return characters;
     }
 
-    public Yodesk _root() {
+    public Yodesk get_root() {
         return _root;
     }
 
-    public CatalogEntry _parent() {
+    public CatalogEntry get_parent() {
         return _parent;
     }
 }

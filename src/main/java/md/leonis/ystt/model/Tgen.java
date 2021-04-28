@@ -33,10 +33,18 @@ public class Tgen extends KaitaiStruct {
     }
 
     private void _read() {
-        this._raw_data = this._io.readBytes(_parent().getSize());
+        this._raw_data = this._io.readBytes(get_parent().getSize());
     }
 
-    public byte[] pixels() { return _raw_data; }
-    public Yodesk _root() { return _root; }
-    public CatalogEntry _parent() { return _parent; }
+    public byte[] get_raw_data() {
+        return _raw_data;
+    }
+
+    public Yodesk get_root() {
+        return _root;
+    }
+
+    public CatalogEntry get_parent() {
+        return _parent;
+    }
 }

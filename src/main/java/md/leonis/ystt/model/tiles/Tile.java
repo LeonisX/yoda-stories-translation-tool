@@ -47,23 +47,23 @@ public class Tile extends KaitaiStruct {
                 pixels.length;              // pixels
     }
 
-    public TileAttributes attributes() {
+    public TileAttributes getAttributes() {
         return attributes;
     }
 
-    public byte[] pixels() {
+    public byte[] getPixels() {
         return pixels;
     }
 
-    public Yodesk _root() {
+    public Yodesk get_root() {
         return _root;
     }
 
-    public TilesEntries _parent() {
+    public TilesEntries get_parent() {
         return _parent;
     }
 
-    public byte[] _raw_attributes() {
+    public byte[] get_raw_attributes() {
         return _raw_attributes;
     }
 }

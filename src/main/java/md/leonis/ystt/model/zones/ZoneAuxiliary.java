@@ -47,8 +47,8 @@ public class ZoneAuxiliary extends KaitaiStruct {
 
     private void _read() {
         this.marker = this._io.readBytes(4);
-        if (!(Arrays.equals(marker(), new byte[]{73, 90, 65, 88}))) { // IZAX
-            throw new KaitaiStream.ValidationNotEqualError(new byte[]{73, 90, 65, 88}, marker(), _io(), "/types/zone_auxiliary/seq/0");
+        if (!(Arrays.equals(marker, new byte[]{73, 90, 65, 88}))) { // IZAX
+            throw new KaitaiStream.ValidationNotEqualError(new byte[]{73, 90, 65, 88}, marker, _io(), "/types/zone_auxiliary/seq/0");
         }
         this.size = this._io.readU4le();
         this._unnamed2 = this._io.readU2le();
@@ -69,47 +69,47 @@ public class ZoneAuxiliary extends KaitaiStruct {
         }
     }
 
-    public byte[] marker() {
+    public byte[] getMarker() {
         return marker;
     }
 
-    public long size() {
+    public long getSize() {
         return size;
     }
 
-    public int _unnamed2() {
+    public int get_unnamed2() {
         return _unnamed2;
     }
 
-    public int numMonsters() {
+    public int getNumMonsters() {
         return numMonsters;
     }
 
-    public ArrayList<Monster> monsters() {
+    public ArrayList<Monster> getMonsters() {
         return monsters;
     }
 
-    public int numRequiredItems() {
+    public int getNumRequiredItems() {
         return numRequiredItems;
     }
 
-    public ArrayList<Integer> requiredItems() {
+    public ArrayList<Integer> getRequiredItems() {
         return requiredItems;
     }
 
-    public int numGoalItems() {
+    public int getNumGoalItems() {
         return numGoalItems;
     }
 
-    public ArrayList<Integer> goalItems() {
+    public ArrayList<Integer> getGoalItems() {
         return goalItems;
     }
 
-    public Yodesk _root() {
+    public Yodesk get_root() {
         return _root;
     }
 
-    public Zone _parent() {
+    public Zone get_parent() {
         return _parent;
     }
 }

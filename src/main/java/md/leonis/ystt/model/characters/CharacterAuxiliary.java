@@ -36,7 +36,7 @@ public class CharacterAuxiliary extends KaitaiStruct {
 
     private void _read() {
         this.index = this._io.readU2le();
-        if (index() != 65535) {
+        if (index != 65535) {
             this.damage = this._io.readS2le();
         }
     }
@@ -47,19 +47,19 @@ public class CharacterAuxiliary extends KaitaiStruct {
                         2;              // damage
     }
 
-    public int index() {
+    public int getIndex() {
         return index;
     }
 
-    public Short damage() {
+    public Short getDamage() {
         return damage;
     }
 
-    public Yodesk _root() {
+    public Yodesk get_root() {
         return _root;
     }
 
-    public CharacterAuxiliaries _parent() {
+    public CharacterAuxiliaries get_parent() {
         return _parent;
     }
 }

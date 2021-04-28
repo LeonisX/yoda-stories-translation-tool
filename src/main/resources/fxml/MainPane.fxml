@@ -721,7 +721,7 @@
                                                         text="Save names to files"/>
                                                 <TableView fx:id="namesTableView" layoutX="150.0" layoutY="14.0" prefHeight="395.0" prefWidth="210.0">
                                                     <columns>
-                                                        <TableColumn editable="false" prefWidth="50.0" text="Image">
+                                                        <TableColumn editable="false" prefWidth="50.0" text="Tile">
                                                             <cellValueFactory>
                                                                 <PropertyValueFactory property="tileId"/>
                                                             </cellValueFactory>

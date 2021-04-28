@@ -5,7 +5,6 @@ import io.kaitai.struct.KaitaiStream;
 import io.kaitai.struct.KaitaiStruct;
 import md.leonis.ystt.model.characters.CharacterAuxiliaries;
 import md.leonis.ystt.model.characters.CharacterWeapons;
-import md.leonis.ystt.model.tiles.TileNames;
 import md.leonis.ystt.model.zones.Zone;
 import md.leonis.ystt.oldmodel2.KnownSections;
 
@@ -97,9 +96,9 @@ public class CatalogEntry extends KaitaiStruct {
                     this.content = zones;
                     _parent.setZones(zones);
 
-                    this.size = zones.zones().stream().map(Zone::size).reduce(0L, Long::sum)
+                    this.size = zones.getZones().stream().map(Zone::getSize).reduce(0L, Long::sum)
                             + 2                                 // numZones
-                            + zones.zones().size() * (2 + 4);   // planet + size of every zone
+                            + zones.getZones().size() * (2 + 4);   // planet + size of every zone
 
                     _io.seek(position);
                     this.bytes = _io.readBytes(size);
@@ -165,11 +164,11 @@ public class CatalogEntry extends KaitaiStruct {
         return type;
     }
 
-    public KnownSections section() {
+    public KnownSections getSection() {
         return section;
     }
 
-    public Long getSize() {
+    public long getSize() {
         return size;
     }
 
@@ -181,19 +180,19 @@ public class CatalogEntry extends KaitaiStruct {
         return dataPosition;
     }
 
-    public byte[] bytes() {
+    public byte[] getBytes() {
         return bytes;
     }
 
-    public KaitaiStruct content() {
+    public KaitaiStruct getContent() {
         return content;
     }
 
-    public Yodesk _root() {
+    public Yodesk get_root() {
         return _root;
     }
 
-    public Yodesk _parent() {
+    public Yodesk get_parent() {
         return _parent;
     }
 }

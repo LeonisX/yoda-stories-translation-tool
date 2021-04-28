@@ -41,8 +41,8 @@ public class ZoneAuxiliary2 extends KaitaiStruct {
 
     private void _read() {
         this.marker = this._io.readBytes(4);
-        if (!(Arrays.equals(marker(), new byte[]{73, 90, 88, 50}))) { // IZX2
-            throw new KaitaiStream.ValidationNotEqualError(new byte[]{73, 90, 88, 50}, marker(), _io(), "/types/zone_auxiliary_2/seq/0");
+        if (!(Arrays.equals(marker, new byte[]{73, 90, 88, 50}))) { // IZX2
+            throw new KaitaiStream.ValidationNotEqualError(new byte[]{73, 90, 88, 50}, marker, _io(), "/types/zone_auxiliary_2/seq/0");
         }
         this.size = this._io.readU4le();
         this.numProvidedItems = this._io.readU2le();
@@ -52,27 +52,27 @@ public class ZoneAuxiliary2 extends KaitaiStruct {
         }
     }
 
-    public byte[] marker() {
+    public byte[] getMarker() {
         return marker;
     }
 
-    public long size() {
+    public long getSize() {
         return size;
     }
 
-    public int numProvidedItems() {
+    public int getNumProvidedItems() {
         return numProvidedItems;
     }
 
-    public ArrayList<Integer> providedItems() {
+    public ArrayList<Integer> getProvidedItems() {
         return providedItems;
     }
 
-    public Yodesk _root() {
+    public Yodesk get_root() {
         return _root;
     }
 
-    public Zone _parent() {
+    public Zone get_parent() {
         return _parent;
     }
 }

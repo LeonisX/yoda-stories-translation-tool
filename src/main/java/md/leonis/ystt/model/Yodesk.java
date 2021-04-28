@@ -6,7 +6,6 @@ import io.kaitai.struct.KaitaiStruct;
 import io.kaitai.struct.RandomAccessFileKaitaiStream;
 import md.leonis.ystt.model.characters.CharacterAuxiliaries;
 import md.leonis.ystt.model.characters.CharacterWeapons;
-import md.leonis.ystt.model.tiles.TileNames;
 import md.leonis.ystt.oldmodel2.KnownSections;
 
 import java.io.IOException;
@@ -85,27 +84,11 @@ public class Yodesk extends KaitaiStruct {
         do {
             _it = new CatalogEntry(this._io, this, _root);
             this.catalog.add(_it);
-            sections.put(_it.section(), _it);
+            sections.put(_it.getSection(), _it);
         } while (!_it.getType().equals("ENDF"));
 
-        assert characters.characters().size() == characterAuxiliaries.auxiliaries().size();
-        assert characters.characters().size() == characterWeapons.weapons().size();
-    }
-
-    public ArrayList<CatalogEntry> catalog() {
-        return catalog;
-    }
-
-    public Map<KnownSections, CatalogEntry> sections() {
-        return sections;
-    }
-
-    public Yodesk _root() {
-        return _root;
-    }
-
-    public KaitaiStruct _parent() {
-        return _parent;
+        assert characters.getCharacters().size() == characterAuxiliaries.getAuxiliaries().size();
+        assert characters.getCharacters().size() == characterWeapons.getWeapons().size();
     }
 
     public ArrayList<CatalogEntry> getCatalog() {

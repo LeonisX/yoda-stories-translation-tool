@@ -37,26 +37,26 @@ public class PrefixedStr extends KaitaiStruct {
 
     private void _read() {
         this.lenContent = this._io.readU2le();
-        this.content = new String(this._io.readBytes(lenContent()), StandardCharsets.US_ASCII);
+        this.content = new String(this._io.readBytes(lenContent), StandardCharsets.US_ASCII);
     }
 
     public int byteSize() {
         return 2 + lenContent;
     }
 
-    public int lenContent() {
+    public int getLenContent() {
         return lenContent;
     }
 
-    public String content() {
+    public String getContent() {
         return content;
     }
 
-    public Yodesk _root() {
+    public Yodesk get_root() {
         return _root;
     }
 
-    public Puzzle _parent() {
+    public Puzzle get_parent() {
         return _parent;
     }
 }

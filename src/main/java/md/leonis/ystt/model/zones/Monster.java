@@ -57,35 +57,35 @@ public class Monster extends KaitaiStruct {
         }
     }
 
-    public int character() {
+    public int getCharacter() {
         return character;
     }
 
-    public int x() {
+    public int getX() {
         return x;
     }
 
-    public int y() {
+    public int getY() {
         return y;
     }
 
-    public int loot() {
+    public int getLoot() {
         return loot;
     }
 
-    public long dropsLoot() {
+    public long getDropsLoot() {
         return dropsLoot;
     }
 
-    public ArrayList<Waypoint> waypoints() {
+    public ArrayList<Waypoint> getWaypoints() {
         return waypoints;
     }
 
-    public Yodesk _root() {
+    public Yodesk get_root() {
         return _root;
     }
 
-    public ZoneAuxiliary _parent() {
+    public ZoneAuxiliary get_parent() {
         return _parent;
     }
 }

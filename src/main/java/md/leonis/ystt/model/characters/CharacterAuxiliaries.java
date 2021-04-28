@@ -42,18 +42,18 @@ public class CharacterAuxiliaries extends KaitaiStruct {
         do {
             _it = new CharacterAuxiliary(this._io, this, _root);
             this.auxiliaries.add(_it);
-        } while (_it.index() != 65535);
+        } while (_it.getIndex() != 65535);
     }
 
-    public ArrayList<CharacterAuxiliary> auxiliaries() {
+    public ArrayList<CharacterAuxiliary> getAuxiliaries() {
         return auxiliaries;
     }
 
-    public Yodesk _root() {
+    public Yodesk get_root() {
         return _root;
     }
 
-    public CatalogEntry _parent() {
+    public CatalogEntry get_parent() {
         return _parent;
     }
 }

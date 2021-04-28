@@ -50,7 +50,7 @@ public enum InstructionOpcode {
 
     static {
         for (InstructionOpcode e : InstructionOpcode.values()) {
-            byId.put(e.id(), e);
+            byId.put(e.id, e);
         }
     }
 
@@ -62,7 +62,7 @@ public enum InstructionOpcode {
         this.id = id;
     }
 
-    public long id() {
+    public long getId() {
         return id;
     }
 }

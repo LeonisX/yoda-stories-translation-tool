@@ -48,30 +48,30 @@ public class Sounds extends KaitaiStruct {
 
     private void _read() {
         this.count = this._io.readS2le();
-        prefixedSounds = new ArrayList<>(((Number) (-count())).intValue());
-        for (int i = 0; i < -(count()); i++) {
+        prefixedSounds = new ArrayList<>(((Number) (-count)).intValue());
+        for (int i = 0; i < -(count); i++) {
             PrefixedStrz prefixedStrz = new PrefixedStrz(this._io, this, _root);
             prefixedSounds.add(prefixedStrz);
         }
     }
 
-    public short count() {
+    public List<String> getSounds() {
+        return prefixedSounds.stream().map(PrefixedStrz::getContent).collect(Collectors.toList());
+    }
+
+    public short getCount() {
         return count;
     }
 
-    public List<PrefixedStrz> sounds() {
+    public List<PrefixedStrz> getPrefixedSounds() {
         return prefixedSounds;
     }
 
-    public List<String> titles() {
-        return prefixedSounds.stream().map(PrefixedStrz::content).collect(Collectors.toList());
-    }
-
-    public Yodesk _root() {
+    public Yodesk get_root() {
         return _root;
     }
 
-    public CatalogEntry _parent() {
+    public CatalogEntry get_parent() {
         return _parent;
     }
 }

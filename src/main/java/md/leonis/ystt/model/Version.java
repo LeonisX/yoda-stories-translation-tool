@@ -45,19 +45,19 @@ public class Version extends KaitaiStruct {
         }
     }
 
-    public long ver() {
+    public long getVer() {
         return ver;
     }
 
-    public String version() {
+    public String getVersion() {
         return version;
     }
 
-    public Yodesk _root() {
+    public Yodesk get_root() {
         return _root;
     }
 
-    public CatalogEntry _parent() {
+    public CatalogEntry get_parent() {
         return _parent;
     }
 }

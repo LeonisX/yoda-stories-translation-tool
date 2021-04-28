@@ -28,7 +28,7 @@ public enum HotspotType {
 
     static {
         for (HotspotType e : HotspotType.values())
-            byId.put(e.id(), e);
+            byId.put(e.id, e);
     }
 
     public static HotspotType byId(long id) {
@@ -39,7 +39,7 @@ public enum HotspotType {
         this.id = id;
     }
 
-    public long id() {
+    public long getId() {
         return id;
     }
 }

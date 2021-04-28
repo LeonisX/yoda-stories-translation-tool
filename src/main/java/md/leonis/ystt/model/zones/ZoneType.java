@@ -26,11 +26,11 @@ public enum ZoneType {
 
     private final long id;
 
-    private static final Map<Long, ZoneType> byId = new HashMap<Long, ZoneType>(18);
+    private static final Map<Long, ZoneType> byId = new HashMap<>(18);
 
     static {
         for (ZoneType e : ZoneType.values()) {
-            byId.put(e.id(), e);
+            byId.put(e.id, e);
         }
     }
 
@@ -42,7 +42,7 @@ public enum ZoneType {
         this.id = id;
     }
 
-    public long id() {
+    public long getId() {
         return id;
     }
 }

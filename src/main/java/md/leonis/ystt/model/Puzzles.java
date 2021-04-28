@@ -42,18 +42,18 @@ public class Puzzles extends KaitaiStruct {
         do {
             _it = new Puzzle(this._io, this, _root);
             this.puzzles.add(_it);
-        } while (_it.index() != 65535);
+        } while (_it.getIndex() != 65535);
     }
 
-    public ArrayList<Puzzle> puzzles() {
+    public ArrayList<Puzzle> getPuzzles() {
         return puzzles;
     }
 
-    public Yodesk _root() {
+    public Yodesk get_root() {
         return _root;
     }
 
-    public CatalogEntry _parent() {
+    public CatalogEntry get_parent() {
         return _parent;
     }
 }

@@ -33,18 +33,18 @@ public class UnknownCatalogEntry extends KaitaiStruct {
     }
 
     private void _read() {
-        this.data = this._io.readBytes(_parent().getSize());
+        this.data = this._io.readBytes(get_parent().getSize());
     }
 
-    public byte[] data() {
+    public byte[] getData() {
         return data;
     }
 
-    public Yodesk _root() {
+    public Yodesk get_root() {
         return _root;
     }
 
-    public CatalogEntry _parent() {
+    public CatalogEntry get_parent() {
         return _parent;
     }
 }

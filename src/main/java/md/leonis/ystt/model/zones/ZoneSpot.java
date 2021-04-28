@@ -44,15 +44,15 @@ public class ZoneSpot extends KaitaiStruct {
         }
     }
 
-    public ArrayList<Integer> column() {
+    public ArrayList<Integer> getColumn() {
         return column;
     }
 
-    public Yodesk _root() {
+    public Yodesk get_root() {
         return _root;
     }
 
-    public Zone _parent() {
+    public Zone get_parent() {
         return _parent;
     }
 }

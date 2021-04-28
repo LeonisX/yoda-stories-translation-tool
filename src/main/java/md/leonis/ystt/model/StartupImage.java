@@ -37,10 +37,18 @@ public class StartupImage extends KaitaiStruct {
     }
 
     private void _read() {
-        this.pixels = this._io.readBytes(_parent().getSize());
+        this.pixels = this._io.readBytes(get_parent().getSize());
     }
 
-    public byte[] pixels() { return pixels; }
-    public Yodesk _root() { return _root; }
-    public CatalogEntry _parent() { return _parent; }
+    public byte[] getPixels() {
+        return pixels;
+    }
+
+    public Yodesk get_root() {
+        return _root;
+    }
+
+    public CatalogEntry get_parent() {
+        return _parent;
+    }
 }

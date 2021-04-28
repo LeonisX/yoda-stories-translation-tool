@@ -46,30 +46,30 @@ public class Condition extends KaitaiStruct {
             this.arguments.add(this._io.readS2le());
         }
         this.lenText = this._io.readU2le();
-        this.text = new String(this._io.readBytes(lenText()), StandardCharsets.US_ASCII);
+        this.text = new String(this._io.readBytes(lenText), StandardCharsets.US_ASCII);
     }
 
-    public ConditionOpcode opcode() {
+    public ConditionOpcode getOpcode() {
         return opcode;
     }
 
-    public ArrayList<Short> arguments() {
+    public ArrayList<Short> getArguments() {
         return arguments;
     }
 
-    public int lenText() {
+    public int getLenText() {
         return lenText;
     }
 
-    public String text() {
+    public String getText() {
         return text;
     }
 
-    public Yodesk _root() {
+    public Yodesk get_root() {
         return _root;
     }
 
-    public Action _parent() {
+    public Action get_parent() {
         return _parent;
     }
 }

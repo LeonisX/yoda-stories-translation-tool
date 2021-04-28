@@ -17,7 +17,7 @@ public enum MovementType {
 
     static {
         for (MovementType e : MovementType.values()) {
-            byId.put(e.id(), e);
+            byId.put(e.id, e);
         }
     }
 
@@ -29,7 +29,7 @@ public enum MovementType {
         this.id = id;
     }
 
-    public long id() {
+    public long getId() {
         return id;
     }
 }

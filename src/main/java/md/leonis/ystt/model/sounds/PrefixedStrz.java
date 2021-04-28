@@ -38,22 +38,22 @@ public class PrefixedStrz extends KaitaiStruct {
 
     private void _read() {
         this.lenContent = this._io.readU2le();
-        this.content = new String(KaitaiStream.bytesTerminate(this._io.readBytes(lenContent()), (byte) 0, false), StandardCharsets.US_ASCII);
+        this.content = new String(KaitaiStream.bytesTerminate(this._io.readBytes(lenContent), (byte) 0, false), StandardCharsets.US_ASCII);
     }
 
-    public int lenContent() {
+    public int getLenContent() {
         return lenContent;
     }
 
-    public String content() {
+    public String getContent() {
         return content;
     }
 
-    public Yodesk _root() {
+    public Yodesk get_root() {
         return _root;
     }
 
-    public Sounds _parent() {
+    public Sounds get_parent() {
         return _parent;
     }
 }

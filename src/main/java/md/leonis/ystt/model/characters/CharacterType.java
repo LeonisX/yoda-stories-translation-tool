@@ -15,7 +15,7 @@ public enum CharacterType {
 
     static {
         for (CharacterType e : CharacterType.values())
-            byId.put(e.id(), e);
+            byId.put(e.id, e);
     }
 
     public static CharacterType byId(long id) {
@@ -26,7 +26,7 @@ public enum CharacterType {
         this.id = id;
     }
 
-    public long id() {
+    public long getId() {
         return id;
     }
 }

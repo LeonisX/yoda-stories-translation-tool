@@ -76,8 +76,8 @@ public class Action extends KaitaiStruct {
 
     private void _read() {
         this.marker = this._io.readBytes(4);
-        if (!(Arrays.equals(marker(), new byte[]{73, 65, 67, 84}))) { // IACT
-            throw new KaitaiStream.ValidationNotEqualError(new byte[]{73, 65, 67, 84}, marker(), _io(), "/types/action/seq/0");
+        if (!(Arrays.equals(marker, new byte[]{73, 65, 67, 84}))) { // IACT
+            throw new KaitaiStream.ValidationNotEqualError(new byte[]{73, 65, 67, 84}, marker, _io(), "/types/action/seq/0");
         }
         this.size = this._io.readU4le();
         this.numConditions = this._io.readU2le();
@@ -92,35 +92,35 @@ public class Action extends KaitaiStruct {
         }
     }
 
-    public byte[] marker() {
+    public byte[] getMarker() {
         return marker;
     }
 
-    public long size() {
+    public long getSize() {
         return size;
     }
 
-    public int numConditions() {
+    public int getNumConditions() {
         return numConditions;
     }
 
-    public ArrayList<Condition> conditions() {
+    public ArrayList<Condition> getConditions() {
         return conditions;
     }
 
-    public int numInstructions() {
+    public int getNumInstructions() {
         return numInstructions;
     }
 
-    public ArrayList<Instruction> instructions() {
+    public ArrayList<Instruction> getInstructions() {
         return instructions;
     }
 
-    public Yodesk _root() {
+    public Yodesk get_root() {
         return _root;
     }
 
-    public Zone _parent() {
+    public Zone get_parent() {
         return _parent;
     }
 }

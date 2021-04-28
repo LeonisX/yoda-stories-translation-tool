@@ -49,7 +49,7 @@ public class Section {
     private int tilesCount;
     private final List<Puzzle> puzzles = new ArrayList<>();
     private final List<Char> chars = new ArrayList<>();
-    public List<Name> names = new ArrayList<>();
+    private final List<Name> names = new ArrayList<>();
 
     public Section() {
     }

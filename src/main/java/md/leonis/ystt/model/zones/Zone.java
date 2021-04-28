@@ -75,16 +75,16 @@ public class Zone extends KaitaiStruct {
         this.size = this._io.readU4le();
         this.index = this._io.readU2le();
         this.marker = this._io.readBytes(4);
-        if (!(Arrays.equals(marker(), new byte[]{73, 90, 79, 78}))) { // IZON
-            throw new KaitaiStream.ValidationNotEqualError(new byte[]{73, 90, 79, 78}, marker(), _io(), "/types/zone/seq/3");
+        if (!(Arrays.equals(marker, new byte[]{73, 90, 79, 78}))) { // IZON
+            throw new KaitaiStream.ValidationNotEqualError(new byte[]{73, 90, 79, 78}, marker, _io(), "/types/zone/seq/3");
         }
         this.size2 = this._io.readU4le();
         this.width = this._io.readU2le();
         this.height = this._io.readU2le();
         this.type = ZoneType.byId(this._io.readU4le());
         this.sharedCounter = this._io.readU2le();
-        if (sharedCounter() != 65535) {
-            throw new KaitaiStream.ValidationNotEqualError(65535, sharedCounter(), _io(), "/types/zone/seq/8");
+        if (sharedCounter != 65535) {
+            throw new KaitaiStream.ValidationNotEqualError(65535, sharedCounter, _io(), "/types/zone/seq/8");
         }
         this.planetAgain = this._io.readU2le();
         tileIds = new ArrayList<>(width * height);
@@ -93,7 +93,7 @@ public class Zone extends KaitaiStruct {
         }
         this.numHotspots = this._io.readU2le();
         hotspots = new ArrayList<>(numHotspots);
-        for (int i = 0; i < numHotspots(); i++) {
+        for (int i = 0; i < numHotspots; i++) {
             this.hotspots.add(new Hotspot(this._io, this, _root));
         }
         this.izax = new ZoneAuxiliary(this._io, this, _root);
@@ -102,92 +102,92 @@ public class Zone extends KaitaiStruct {
         this.izx4 = new ZoneAuxiliary4(this._io, this, _root);
         this.numActions = this._io.readU2le();
         actions = new ArrayList<>(numActions);
-        for (int i = 0; i < numActions(); i++) {
+        for (int i = 0; i < numActions; i++) {
             this.actions.add(new Action(this._io, this, _root));
         }
     }
 
-    public Planet planet() {
+    public Planet getPlanet() {
         return planet;
     }
 
-    public long size() {
+    public long getSize() {
         return size;
     }
 
-    public int index() {
+    public int getIndex() {
         return index;
     }
 
-    public byte[] marker() {
+    public byte[] getMarker() {
         return marker;
     }
 
-    public long size2() {
+    public long getSize2() {
         return size2;
     }
 
-    public int width() {
+    public int getWidth() {
         return width;
     }
 
-    public int height() {
+    public int getHeight() {
         return height;
     }
 
-    public ZoneType type() {
+    public ZoneType getType() {
         return type;
     }
 
-    public int sharedCounter() {
+    public int getSharedCounter() {
         return sharedCounter;
     }
 
-    public int planetAgain() {
+    public int getPlanetAgain() {
         return planetAgain;
     }
 
-    public ArrayList<ZoneSpot> tileIds() {
+    public ArrayList<ZoneSpot> getTileIds() {
         return tileIds;
     }
 
-    public int numHotspots() {
+    public int getNumHotspots() {
         return numHotspots;
     }
 
-    public ArrayList<Hotspot> hotspots() {
+    public ArrayList<Hotspot> getHotspots() {
         return hotspots;
     }
 
-    public ZoneAuxiliary izax() {
+    public ZoneAuxiliary getIzax() {
         return izax;
     }
 
-    public ZoneAuxiliary2 izx2() {
+    public ZoneAuxiliary2 getIzx2() {
         return izx2;
     }
 
-    public ZoneAuxiliary3 izx3() {
+    public ZoneAuxiliary3 getIzx3() {
         return izx3;
     }
 
-    public ZoneAuxiliary4 izx4() {
+    public ZoneAuxiliary4 getIzx4() {
         return izx4;
     }
 
-    public int numActions() {
+    public int getNumActions() {
         return numActions;
     }
 
-    public ArrayList<Action> actions() {
+    public ArrayList<Action> getActions() {
         return actions;
     }
 
-    public Yodesk _root() {
+    public Yodesk get_root() {
         return _root;
     }
 
-    public Zones _parent() {
+    public Zones get_parent() {
         return _parent;
     }
 }

@@ -45,15 +45,15 @@ public class CharFrame extends KaitaiStruct {
         return 2 * 8; // 8 tiles x 2 bytes
     }
 
-    public ArrayList<Integer> tiles() {
+    public ArrayList<Integer> getTiles() {
         return tiles;
     }
 
-    public Yodesk _root() {
+    public Yodesk get_root() {
         return _root;
     }
 
-    public Character _parent() {
+    public Character get_parent() {
         return _parent;
     }
 }

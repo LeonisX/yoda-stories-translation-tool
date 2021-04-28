@@ -13,7 +13,7 @@ public class Tiles extends KaitaiStruct {
 
     private TilesEntries tilesEntries;
     private ArrayList<Tile> tiles;
-    private byte[] _raw_tiles;
+    private byte[] rawTiles;
 
     private final Yodesk _root;
     private final CatalogEntry _parent;
@@ -38,10 +38,10 @@ public class Tiles extends KaitaiStruct {
     }
 
     private void _read() {
-        this._raw_tiles = this._io.readBytes(_parent().getSize());
-        KaitaiStream _io_raw_tiles = new ByteBufferKaitaiStream(_raw_tiles);
+        this.rawTiles = this._io.readBytes(get_parent().getSize());
+        KaitaiStream _io_raw_tiles = new ByteBufferKaitaiStream(rawTiles);
         this.tilesEntries = new TilesEntries(_io_raw_tiles, this, _root);
-        this.tiles = tilesEntries.tiles();
+        this.tiles = tilesEntries.getTiles();
     }
 
     public int tilePosition(int tileId) {
@@ -54,26 +54,26 @@ public class Tiles extends KaitaiStruct {
     }
 
     public int tilePixelsPosition(int tileId) {
-        return tilePosition(tileId) + tiles.get(tileId)._raw_attributes().length;
+        return tilePosition(tileId) + tiles.get(tileId).get_raw_attributes().length;
     }
 
-    public TilesEntries tilesEntries() {
+    public TilesEntries getTilesEntries() {
         return tilesEntries;
     }
 
-    public ArrayList<Tile> tiles() {
+    public ArrayList<Tile> getTiles() {
         return tiles;
     }
 
-    public Yodesk _root() {
+    public byte[] getRawTiles() {
+        return rawTiles;
+    }
+
+    public Yodesk get_root() {
         return _root;
     }
 
-    public CatalogEntry _parent() {
+    public CatalogEntry get_parent() {
         return _parent;
-    }
-
-    public byte[] _raw_tiles() {
-        return _raw_tiles;
     }
 }

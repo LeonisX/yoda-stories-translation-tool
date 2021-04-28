@@ -17,7 +17,7 @@ public enum Planet {
 
     static {
         for (Planet e : Planet.values()) {
-            byId.put(e.id(), e);
+            byId.put(e.id, e);
         }
     }
 
@@ -29,7 +29,7 @@ public enum Planet {
         this.id = id;
     }
 
-    public long id() {
+    public long getId() {
         return id;
     }
 }

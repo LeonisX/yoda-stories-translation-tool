@@ -38,30 +38,30 @@ public class ZoneAuxiliary4 extends KaitaiStruct {
 
     private void _read() {
         this.marker = this._io.readBytes(4);
-        if (!(Arrays.equals(marker(), new byte[]{73, 90, 88, 52}))) { // IZX4
-            throw new KaitaiStream.ValidationNotEqualError(new byte[]{73, 90, 88, 52}, marker(), _io(), "/types/zone_auxiliary_4/seq/0");
+        if (!(Arrays.equals(marker, new byte[]{73, 90, 88, 52}))) { // IZX4
+            throw new KaitaiStream.ValidationNotEqualError(new byte[]{73, 90, 88, 52}, marker, _io(), "/types/zone_auxiliary_4/seq/0");
         }
         this.size = this._io.readU4le();
         this._unnamed2 = this._io.readU2le();
     }
 
-    public byte[] marker() {
+    public byte[] getMarker() {
         return marker;
     }
 
-    public long size() {
+    public long getSize() {
         return size;
     }
 
-    public int _unnamed2() {
+    public int get_unnamed2() {
         return _unnamed2;
     }
 
-    public Yodesk _root() {
+    public Yodesk get_root() {
         return _root;
     }
 
-    public Zone _parent() {
+    public Zone get_parent() {
         return _parent;
     }
 }

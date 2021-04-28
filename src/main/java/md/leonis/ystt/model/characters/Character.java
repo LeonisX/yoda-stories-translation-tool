@@ -55,8 +55,8 @@ public class Character extends KaitaiStruct {
         if (index != 65535) {
             this.marker = this._io.readBytes(4);
 
-            if (!(Arrays.equals(marker(), new byte[]{73, 67, 72, 65}))) { // ICHA
-                throw new KaitaiStream.ValidationNotEqualError(new byte[]{73, 67, 72, 65}, marker(), _io(), "/types/character/seq/1");
+            if (!(Arrays.equals(marker, new byte[]{73, 67, 72, 65}))) { // ICHA
+                throw new KaitaiStream.ValidationNotEqualError(new byte[]{73, 67, 72, 65}, marker, _io(), "/types/character/seq/1");
             }
 
             this.size = this._io.readU4le();
@@ -92,9 +92,9 @@ public class Character extends KaitaiStruct {
         List<Integer> tileIds = new ArrayList<>();
 
         if (null != marker) {
-            tileIds.addAll(frame1.tiles());
-            tileIds.addAll(frame2.tiles());
-            tileIds.addAll(frame3.tiles());
+            tileIds.addAll(frame1.getTiles());
+            tileIds.addAll(frame2.getTiles());
+            tileIds.addAll(frame3.getTiles());
         }
 
         return tileIds.stream().filter(id -> id != 0xFFFF).distinct().sorted().collect(Collectors.toList());
@@ -104,11 +104,11 @@ public class Character extends KaitaiStruct {
         return index;
     }
 
-    public byte[] marker() {
+    public byte[] getMarker() {
         return marker;
     }
 
-    public Long size() {
+    public Long getSize() {
         return size;
     }
 
@@ -116,40 +116,39 @@ public class Character extends KaitaiStruct {
         return name;
     }
 
-    public CharacterType type() {
+    public CharacterType getType() {
         return type;
     }
 
-    public MovementType movementType() {
+    public MovementType getMovementType() {
         return movementType;
     }
 
-    public Integer probablyGarbage1() {
+    public Integer getProbablyGarbage1() {
         return probablyGarbage1;
     }
 
-    public Long probablyGarbage2() {
+    public Long getProbablyGarbage2() {
         return probablyGarbage2;
     }
 
-    public CharFrame frame1() {
+    public CharFrame getFrame1() {
         return frame1;
     }
 
-    public CharFrame frame2() {
+    public CharFrame getFrame2() {
         return frame2;
     }
 
-    public CharFrame frame3() {
+    public CharFrame getFrame3() {
         return frame3;
     }
 
-    public Yodesk _root() {
+    public Yodesk get_root() {
         return _root;
     }
 
-    public Characters _parent() {
+    public Characters get_parent() {
         return _parent;
     }
-
 }

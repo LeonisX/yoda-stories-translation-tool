@@ -48,7 +48,7 @@ public enum ConditionOpcode {
 
     static {
         for (ConditionOpcode e : ConditionOpcode.values()) {
-            byId.put(e.id(), e);
+            byId.put(e.id, e);
         }
     }
 
@@ -60,8 +60,7 @@ public enum ConditionOpcode {
         this.id = id;
     }
 
-    public long id() {
+    public long getId() {
         return id;
     }
-
 }
