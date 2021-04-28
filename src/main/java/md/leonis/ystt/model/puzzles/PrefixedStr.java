@@ -40,6 +40,10 @@ public class PrefixedStr extends KaitaiStruct {
         this.content = new String(this._io.readBytes(lenContent()), StandardCharsets.US_ASCII);
     }
 
+    public int byteSize() {
+        return 2 + lenContent;
+    }
+
     public int lenContent() {
         return lenContent;
     }

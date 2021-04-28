@@ -9,6 +9,8 @@ import md.leonis.ystt.model.Yodesk;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class Puzzle extends KaitaiStruct {
 
@@ -19,7 +21,7 @@ public class Puzzle extends KaitaiStruct {
     private Long _unnamed4;
     private Long _unnamed5;
     private Integer _unnamed6;
-    private ArrayList<PrefixedStr> strings;
+    private final List<PrefixedStr> prefixesStrings = new ArrayList<>(5);
     private Integer item1;
     private Integer item2;
 
@@ -62,14 +64,29 @@ public class Puzzle extends KaitaiStruct {
             this._unnamed5 = this._io.readU4le();
             this._unnamed6 = this._io.readU2le();
 
-            strings = new ArrayList<>(5);
             for (int i = 0; i < 5; i++) {
-                this.strings.add(new PrefixedStr(this._io, this, _root));
+                PrefixedStr prefixedStr = new PrefixedStr(this._io, this, _root);
+                this.prefixesStrings.add(prefixedStr);
             }
 
             this.item1 = this._io.readU2le();
             this.item2 = this._io.readU2le();
         }
+    }
+
+    public int byteSize() {
+
+        return (null == marker) ? 2 :       // if marker == null, then we have last puzzle with FFFF index only
+                2 +                         // index
+                marker.length +             // marker
+                4 +                         // size
+                4 +                         // type
+                4 +                         // _unnamed4
+                4 +                         // _unnamed5
+                4 +                         // _unnamed6
+                prefixesStrings.stream().mapToInt(PrefixedStr::byteSize).sum() + // prefixesStrings
+                2 +                         // item1
+                2;                          // item2
     }
 
     public int index() {
@@ -100,8 +117,12 @@ public class Puzzle extends KaitaiStruct {
         return _unnamed6;
     }
 
-    public ArrayList<PrefixedStr> strings() {
-        return strings;
+    public List<PrefixedStr> prefixesStrings() {
+        return prefixesStrings;
+    }
+
+    public List<String> strings() {
+        return prefixesStrings.stream().map(PrefixedStr::content).collect(Collectors.toList());
     }
 
     public Integer item1() {

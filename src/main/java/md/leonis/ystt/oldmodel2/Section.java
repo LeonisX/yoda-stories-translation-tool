@@ -50,7 +50,7 @@ public class Section {
     private String version;
     private final List<String> sounds = new ArrayList<>();
     private int tilesCount;
-    public List<Puzzle> puzzles = new ArrayList<>();
+    private final List<Puzzle> puzzles = new ArrayList<>();
     public List<Char> chars = new ArrayList<>();
     public List<Name> names = new ArrayList<>();
 

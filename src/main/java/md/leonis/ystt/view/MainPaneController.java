@@ -285,7 +285,7 @@ public class MainPaneController {
         drawMapEditorTiles();
 
         // Puzzles
-        puzzlesCountLabel.setText(Integer.toString(section.puzzles.size()));
+        puzzlesCountLabel.setText(Integer.toString(yodesk.getPuzzles().puzzles().size()));
 
         // Characters
         charactersCountLabel.setText(Integer.toString(section.chars.size()));
@@ -1044,23 +1044,27 @@ public class MainPaneController {
             Section.Log.clear();
             Section.Log.debug("Puzzles (2):");
             Section.Log.newLine();
-            Section.Log.debug("Total count: " + section.puzzles.size());
+            Section.Log.debug("Total count: " + yodesk.getPuzzles().puzzles().size());
             Section.Log.newLine();
-            for (int i = 0; i < section.puzzles.size(); i++) {
-                ReadPUZ2(section.puzzles.get(i));
+            int position = yodesk.getPuzzles()._parent().getPosition();
+            for (int i = 0; i < yodesk.getPuzzles().puzzles().size(); i++) {
+                ReadPUZ2(yodesk.getPuzzles().puzzles().get(i), position);
+                position += yodesk.getPuzzles().puzzles().get(i).byteSize();
             }
-            List<String> phrases = section.puzzles.stream().flatMap(p -> p.getPhrases().stream()
-                    .map(Phrase::getPhrase)).collect(Collectors.toList());
+            //TODO rewrite code after tests
+            List<String> phrases = yodesk.getPuzzles().puzzles().stream()
+                    .flatMap(p -> p.strings().stream().filter(s -> !s.isEmpty())).map(s -> s.replace("\r\n", "[CR]").replace("[CR][CR]", "[CR2]")).collect(Collectors.toList());
             IOUtils.saveTextFile(phrases, opath.resolve("puz2.txt"));
         } catch (Exception e) {
             JavaFxUtils.showAlert("Error saving puzzles to the files", e);
         }
     }
 
-    private void ReadPUZ2(Puzzle puzzle) throws IOException {
+    //TODO md.leonis.ystt.model.puzzles.
+    private void ReadPUZ2(md.leonis.ystt.model.puzzles.Puzzle puzzle, int position) throws IOException {
 
-        Section.Log.debug("Puzzle #" + puzzle.getId() + "; Size: 0x" + section.intToHex(puzzle.getSize(), 4));
-        DumpData(opath.resolve("PUZ2").resolve(StringUtils.leftPad(Integer.toString(puzzle.getId()), 4, '0')), puzzle.getPosition(), puzzle.getSize());
+        Section.Log.debug("Puzzle #" + puzzle.index() + "; Size: 0x" + section.longToHex(puzzle.byteSize(), 4));
+        DumpData(opath.resolve("PUZ2").resolve(StringUtils.leftPad(Integer.toString(puzzle.index()), 4, '0')), position, puzzle.byteSize());
     }
 
     public void dumpPuzzlesTextToDocxCLick(ActionEvent actionEvent) {

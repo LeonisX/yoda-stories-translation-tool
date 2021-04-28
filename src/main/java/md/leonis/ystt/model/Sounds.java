@@ -7,6 +7,8 @@ import md.leonis.ystt.model.sounds.PrefixedStrz;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * This section declares sounds used in the game. The actual audio data is
@@ -20,8 +22,7 @@ import java.util.ArrayList;
 public class Sounds extends KaitaiStruct {
 
     private short count;
-    private ArrayList<PrefixedStrz> sounds;
-    private ArrayList<String> soundsTitles;
+    private List<PrefixedStrz> prefixedSounds;
 
     private final Yodesk _root;
     private final CatalogEntry _parent;
@@ -47,12 +48,10 @@ public class Sounds extends KaitaiStruct {
 
     private void _read() {
         this.count = this._io.readS2le();
-        sounds = new ArrayList<>(((Number) (-count())).intValue());
-        soundsTitles = new ArrayList<>(((Number) (-count())).intValue());
+        prefixedSounds = new ArrayList<>(((Number) (-count())).intValue());
         for (int i = 0; i < -(count()); i++) {
             PrefixedStrz prefixedStrz = new PrefixedStrz(this._io, this, _root);
-            sounds.add(prefixedStrz);
-            soundsTitles.add(prefixedStrz.content());
+            prefixedSounds.add(prefixedStrz);
         }
     }
 
@@ -60,12 +59,12 @@ public class Sounds extends KaitaiStruct {
         return count;
     }
 
-    public ArrayList<PrefixedStrz> sounds() {
-        return sounds;
+    public List<PrefixedStrz> sounds() {
+        return prefixedSounds;
     }
 
-    public ArrayList<String> titles() {
-        return soundsTitles;
+    public List<String> titles() {
+        return prefixedSounds.stream().map(PrefixedStrz::content).collect(Collectors.toList());
     }
 
     public Yodesk _root() {
