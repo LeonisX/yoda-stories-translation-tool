@@ -8,7 +8,10 @@ import md.leonis.ystt.model.Yodesk;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class Character extends KaitaiStruct {
 
@@ -49,7 +52,7 @@ public class Character extends KaitaiStruct {
     private void _read() {
         this.index = this._io.readU2le();
 
-        if (index() != 65535) {
+        if (index != 65535) {
             this.marker = this._io.readBytes(4);
 
             if (!(Arrays.equals(marker(), new byte[]{73, 67, 72, 65}))) { // ICHA
@@ -68,7 +71,36 @@ public class Character extends KaitaiStruct {
         }
     }
 
-    public int index() {
+    public int byteSize() {
+
+        return (null == marker) ? 2 :               // if marker == null, then we have last character with FFFF index only
+                2 +                                 // index
+                        marker.length +             // marker
+                        4 +                         // size
+                        16 +                        // name
+                        2 +                         // type
+                        2 +                         // movementType
+                        2 +                         // probablyGarbage1
+                        4 +                         // probablyGarbage2
+                        frame1.byteSize() +         // frame1
+                        frame2.byteSize() +         // frame2
+                        frame3.byteSize();          // frame3
+    }
+
+    public List<Integer> getTileIds() {
+
+        List<Integer> tileIds = new ArrayList<>();
+
+        if (null != marker) {
+            tileIds.addAll(frame1.tiles());
+            tileIds.addAll(frame2.tiles());
+            tileIds.addAll(frame3.tiles());
+        }
+
+        return tileIds.stream().filter(id -> id != 0xFFFF).distinct().sorted().collect(Collectors.toList());
+    }
+
+    public int getIndex() {
         return index;
     }
 
@@ -80,7 +112,7 @@ public class Character extends KaitaiStruct {
         return size;
     }
 
-    public String name() {
+    public String getName() {
         return name;
     }
 
@@ -119,4 +151,5 @@ public class Character extends KaitaiStruct {
     public Characters _parent() {
         return _parent;
     }
+
 }

@@ -31,13 +31,10 @@ public class Section {
 
     public static final String[] PLANETS = {"", "desert", "snow", "forest", "unknown", "swamp"};
 
-    //TODO read palette from EXE
-
     //TODO getters
-    //TODO may be lis will be better???
     private final Map<KnownSections, SectionMetrics> sections = new HashMap<>();
     private final List<SectionMetrics> sectionsList = new ArrayList<>();
-    //TODO dtaDump
+    //TODO rename to dtaDump
     public Dump dump;
     public Dump exeDump;
     public boolean[] tiles;
@@ -51,7 +48,7 @@ public class Section {
     private final List<String> sounds = new ArrayList<>();
     private int tilesCount;
     private final List<Puzzle> puzzles = new ArrayList<>();
-    public List<Char> chars = new ArrayList<>();
+    private final List<Char> chars = new ArrayList<>();
     public List<Name> names = new ArrayList<>();
 
     public Section() {

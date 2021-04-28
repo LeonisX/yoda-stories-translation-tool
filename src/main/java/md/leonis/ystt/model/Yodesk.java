@@ -87,6 +87,9 @@ public class Yodesk extends KaitaiStruct {
             this.catalog.add(_it);
             sections.put(_it.section(), _it);
         } while (!_it.getType().equals("ENDF"));
+
+        assert characters.characters().size() == characterAuxiliaries.auxiliaries().size();
+        assert characters.characters().size() == characterWeapons.weapons().size();
     }
 
     public ArrayList<CatalogEntry> catalog() {

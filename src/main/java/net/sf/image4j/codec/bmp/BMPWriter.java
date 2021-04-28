@@ -87,8 +87,6 @@ public class BMPWriter {
             }
         }
 
-        IndexColorModel icm = new IndexColorModel(8, 256, ra, ga, ba);
-
         InfoHeader ih = new InfoHeader();
         ih.iColorsImportant = 0;
         ih.iCompression = 0;
@@ -103,7 +101,7 @@ public class BMPWriter {
         FileOutputStream fout = new FileOutputStream(file);
         try {
             BufferedOutputStream out = new BufferedOutputStream(fout);
-            write8bit(ih, icm, raster, out);
+            write8bit(ih, icm0, raster, out);
             out.flush();
         } finally {
             try {
@@ -166,8 +164,6 @@ public class BMPWriter {
             }
         }
 
-        IndexColorModel icm = new IndexColorModel(8, 256, ra, ga, ba);
-
         InfoHeader ih = new InfoHeader();
         ih.iColorsImportant = 0;
         ih.iCompression = 0;
@@ -182,7 +178,7 @@ public class BMPWriter {
         FileOutputStream fout = new FileOutputStream(file);
         try {
             BufferedOutputStream out = new BufferedOutputStream(fout);
-            write8bit(ih, icm, raster, out);
+            write8bit(ih, icm0, raster, out);
             out.flush();
         } finally {
             try {

@@ -76,17 +76,17 @@ public class Puzzle extends KaitaiStruct {
 
     public int byteSize() {
 
-        return (null == marker) ? 2 :       // if marker == null, then we have last puzzle with FFFF index only
-                2 +                         // index
-                marker.length +             // marker
-                4 +                         // size
-                4 +                         // type
-                4 +                         // _unnamed4
-                4 +                         // _unnamed5
-                4 +                         // _unnamed6
-                prefixesStrings.stream().mapToInt(PrefixedStr::byteSize).sum() + // prefixesStrings
-                2 +                         // item1
-                2;                          // item2
+        return (null == marker) ? 2 :               // if marker == null, then we have last puzzle with FFFF index only
+                2 +                                 // index
+                        marker.length +             // marker
+                        4 +                         // size
+                        4 +                         // type
+                        4 +                         // _unnamed4
+                        4 +                         // _unnamed5
+                        4 +                         // _unnamed6
+                        prefixesStrings.stream().mapToInt(PrefixedStr::byteSize).sum() + // prefixesStrings
+                        2 +                         // item1
+                        2;                          // item2
     }
 
     public int index() {

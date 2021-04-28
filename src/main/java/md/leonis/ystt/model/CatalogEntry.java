@@ -21,6 +21,7 @@ public class CatalogEntry extends KaitaiStruct {
     private KnownSections section;
     private long size;
     private int position;
+    private int dataPosition;
     private byte[] bytes;
     private KaitaiStruct content;
 
@@ -56,7 +57,7 @@ public class CatalogEntry extends KaitaiStruct {
             this.type = new String(this._io.readBytes(4), StandardCharsets.US_ASCII);
             section = KnownSections.valueOf(type);
 
-            System.out.println(section);
+            //System.out.println(section);
 
             if (section.equals(VERS)) {
                 this.size = 4;                                  // 4 bytes of value
@@ -66,6 +67,7 @@ public class CatalogEntry extends KaitaiStruct {
                 this.size = this._io.readU4le();
             }
 
+            dataPosition = this._io.pos();
             this.bytes = this._io.readBytes(size);
             KaitaiStream stream = new ByteBufferKaitaiStream(bytes);
 
@@ -173,6 +175,10 @@ public class CatalogEntry extends KaitaiStruct {
 
     public int getPosition() {
         return position;
+    }
+
+    public int getDataPosition() {
+        return dataPosition;
     }
 
     public byte[] bytes() {

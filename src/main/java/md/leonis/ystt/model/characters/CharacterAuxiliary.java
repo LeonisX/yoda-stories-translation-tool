@@ -41,6 +41,12 @@ public class CharacterAuxiliary extends KaitaiStruct {
         }
     }
 
+    public int byteSize() {
+        return (index == 65535) ? 2 :   // if index == 65535, then we have last CharacterWeapon with FFFF index only
+                2 +                     // index
+                        2;              // damage
+    }
+
     public int index() {
         return index;
     }

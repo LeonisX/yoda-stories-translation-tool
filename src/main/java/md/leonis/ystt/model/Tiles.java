@@ -44,6 +44,19 @@ public class Tiles extends KaitaiStruct {
         this.tiles = tilesEntries.tiles();
     }
 
+    public int tilePosition(int tileId) {
+
+        int position = 0;
+        for (int i = 0; i < tileId; i++) {
+            position += tiles.get(i).byteSize();
+        }
+        return position;
+    }
+
+    public int tilePixelsPosition(int tileId) {
+        return tilePosition(tileId) + tiles.get(tileId)._raw_attributes().length;
+    }
+
     public TilesEntries tilesEntries() {
         return tilesEntries;
     }

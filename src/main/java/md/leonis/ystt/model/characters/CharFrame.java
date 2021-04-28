@@ -41,6 +41,10 @@ public class CharFrame extends KaitaiStruct {
         }
     }
 
+    public int byteSize() {
+        return 2 * 8; // 8 tiles x 2 bytes
+    }
+
     public ArrayList<Integer> tiles() {
         return tiles;
     }

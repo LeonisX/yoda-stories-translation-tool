@@ -45,6 +45,23 @@ public class ImageUtils {
         return image;
     }
 
+    public static BufferedImage readBPicture(byte[] bytes, int position, int width, int height, IndexColorModel icm) {
+
+        BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_INDEXED, icm);
+
+        WritableRaster raster = image.getRaster();
+
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                int b = bytes[position] & 0xFF;
+                raster.setSample(x, y, 0, b);
+                position++;
+            }
+        }
+
+        return image;
+    }
+
     public static void drawPalette(Canvas canvas) {
 
         for (int y = 0; y < 16; y++) {
@@ -66,6 +83,23 @@ public class ImageUtils {
                 } else if (null != transparentColor) {
                     canvas.getGraphicsContext2D().getPixelWriter().setColor(xOffset + x, yOffset + y, transparentColor);
                 }
+                /*titleScreenCanvas.getGraphicsContext2D().getPixelWriter().setArgb(x, y, palette[index]);*/
+            }
+        }
+    }
+
+    public static void drawOnCanvas(byte[] bytes, int position, Canvas canvas, int xOffset, int yOffset, Color transparentColor) {
+
+        for (int y = 0; y < 32; y++) {
+            for (int x = 0; x < 32; x++) {
+                int colorIndex = bytes[position] & 0xFF;
+                if (colorIndex != 0) {
+                    Color color = Config.palette[colorIndex];
+                    canvas.getGraphicsContext2D().getPixelWriter().setColor(xOffset + x, yOffset + y, color);
+                } else if (null != transparentColor) {
+                    canvas.getGraphicsContext2D().getPixelWriter().setColor(xOffset + x, yOffset + y, transparentColor);
+                }
+                position++;
                 /*titleScreenCanvas.getGraphicsContext2D().getPixelWriter().setArgb(x, y, palette[index]);*/
             }
         }

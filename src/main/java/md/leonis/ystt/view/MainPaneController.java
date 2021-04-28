@@ -23,6 +23,9 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
 import javafx.stage.WindowEvent;
 import md.leonis.ystt.model.CatalogEntry;
+import md.leonis.ystt.model.characters.Character;
+import md.leonis.ystt.model.characters.CharacterAuxiliary;
+import md.leonis.ystt.model.characters.CharacterWeapon;
 import md.leonis.ystt.oldmodel2.*;
 import md.leonis.ystt.utils.*;
 import net.sf.image4j.codec.bmp.BMPImage;
@@ -137,7 +140,7 @@ public class MainPaneController {
 
     public Label charactersCountLabel;
     public Button saveCharactersToFilesButton;
-    public TableView<Char> charactesTableView;
+    public TableView<Character> charactesTableView;
 
     public Label namesCountLabel;
     public Button saveNamesToFilesButton;
@@ -288,20 +291,20 @@ public class MainPaneController {
         puzzlesCountLabel.setText(Integer.toString(yodesk.getPuzzles().puzzles().size()));
 
         // Characters
-        charactersCountLabel.setText(Integer.toString(section.chars.size()));
+        charactersCountLabel.setText(Integer.toString(yodesk.getCharacters().characters().size()));
         @SuppressWarnings("all")
-        TableColumn<Char, List<Integer>> charsColumn = (TableColumn<Char, List<Integer>>) charactesTableView.getColumns().get(1);
+        TableColumn<Character, List<Integer>> charsColumn = (TableColumn<Character, List<Integer>>) charactesTableView.getColumns().get(1);
         charsColumn.setCellFactory(c -> {
 
             Canvas canvas = new Canvas();
 
-            TableCell<Char, List<Integer>> cell = new TableCell<Char, List<Integer>>() {
+            TableCell<Character, List<Integer>> cell = new TableCell<Character, List<Integer>>() {
                 public void updateItem(List<Integer> tileIds, boolean empty) {
                     if (tileIds != null) {
                         canvas.setWidth(tileIds.size() * TILE_SIZE);
                         canvas.setHeight(TILE_SIZE);
                         for (int i = 0; i < tileIds.size(); i++) {
-                            GetWTile(tileIds.get(i), canvas, i * TILE_SIZE, 0, null);
+                            GetWTile2(tileIds.get(i), canvas, i * TILE_SIZE, 0, null);
                         }
                     }
                 }
@@ -310,7 +313,7 @@ public class MainPaneController {
             cell.setAlignment(Pos.CENTER);
             return cell;
         });
-        charactesTableView.setItems(FXCollections.observableList(section.chars));
+        charactesTableView.setItems(FXCollections.observableList(yodesk.getCharacters().characters()));
 
         // Names
         namesCountLabel.setText(Integer.toString(section.names.size()));
@@ -509,7 +512,7 @@ public class MainPaneController {
             canvas.setWidth(w * TILE_SIZE);
             canvas.setHeight(h * TILE_SIZE);
 
-            canvas.getGraphicsContext2D().setFill(Color.rgb(1, 1, 1));
+            canvas.getGraphicsContext2D().setFill(Color.rgb(7, 11, 0));
             canvas.getGraphicsContext2D().fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
             for (int y = 0; y < h; y++) {
@@ -523,23 +526,22 @@ public class MainPaneController {
         }
         // TODO Application.ProcessMessages;
 
-        //TODO complete
         if (normalSaveCheckBox.isSelected() && save) {
             Path path = opath.resolve("Maps");
             IOUtils.createDirectories(path);
-            BMPWriter.write8bit(canvas, path.resolve(StringUtils.leftPad(Integer.toString(id), 3, '0')));
+            BMPWriter.write8bit(canvas, path.resolve(StringUtils.leftPad(Integer.toString(id), 3, '0') + E_BMP));
         }
 
         if (groupByFlagsCheckBox.isSelected() && save) {
             Path path = opath.resolve("MapsByFlags").resolve(IntToBin(flag));
             IOUtils.createDirectories(path);
-            BMPWriter.write8bit(canvas, path.resolve(StringUtils.leftPad(Integer.toString(id), 3, '0')));
+            BMPWriter.write8bit(canvas, path.resolve(StringUtils.leftPad(Integer.toString(id), 3, '0') + E_BMP));
         }
 
         if (groupByPlanetTypeCheckBox.isSelected() && save) {
             Path path = opath.resolve("MapsByPlanetType").resolve(Section.PLANETS[planet]);
             IOUtils.createDirectories(path);
-            BMPWriter.write8bit(canvas, path.resolve(StringUtils.leftPad(Integer.toString(id), 3, '0')));
+            BMPWriter.write8bit(canvas, path.resolve(StringUtils.leftPad(Integer.toString(id), 3, '0') + E_BMP));
         }
     }
 
@@ -548,7 +550,7 @@ public class MainPaneController {
         int k = section.ReadWord();
         if (k < yodesk.getTiles().tiles().size()) {
             section.tiles[k] = true;
-            GetWTile(k, canvas, x * TILE_SIZE, y * TILE_SIZE, null);
+            GetWTile2(k, canvas, x * TILE_SIZE, y * TILE_SIZE, null);
         }
     }
 
@@ -856,18 +858,18 @@ public class MainPaneController {
 
                 if (decimalFilenamesCheckBox.isSelected()) {
                     Path path = tilesPath.resolve(StringUtils.leftPad(Integer.toString(i), 4, "0") + E_BMP);
-                    BMPWriter.write(GetTile(i), path.toFile());
+                    BMPWriter.write(GetTile2(i), path.toFile());
                 }
 
                 if (groupByAttributesFilenamesCheckBox.isSelected()) {
                     String binaryAttr = StringUtils.right(StringUtils.leftPad(Long.toBinaryString(attr), 32, '0'), 32);
                     Path path = attrPath.resolve(binaryAttr + " (" + attr + ")");
                     IOUtils.createDirectories(path);
-                    BMPWriter.write(GetTile(i), path.resolve(StringUtils.leftPad(Integer.toString(i), 4, "0") + E_BMP).toFile());
+                    BMPWriter.write(GetTile2(i), path.resolve(StringUtils.leftPad(Integer.toString(i), 4, "0") + E_BMP).toFile());
                 }
 
                 if (hexFilenamesCheckBox.isSelected()) {
-                    BMPWriter.write(GetTile(i), hexPath.resolve(section.intToHex(i, 4) + E_BMP).toFile());
+                    BMPWriter.write(GetTile2(i), hexPath.resolve(section.intToHex(i, 4) + E_BMP).toFile());
                 }
                 //TilesProgressBar.Position := i;
                 //TilesProgressLabel.Caption := Format('%.2f %%', [((i + 1) / DTA.tilesCount) * 100]);
@@ -891,7 +893,7 @@ public class MainPaneController {
             for (int y = 0; y < height; y++) {
                 for (int x = 0; x < width; x++) {
                     if ((y * width + x) < yodesk.getTiles().tiles().size()) {
-                        GetWTile(k, canvas, x * TILE_SIZE, y * TILE_SIZE, Config.transparentColor);
+                        GetWTile2(k, canvas, x * TILE_SIZE, y * TILE_SIZE, Config.transparentColor);
                         k++;
                     }
                 }
@@ -1007,7 +1009,7 @@ public class MainPaneController {
             for (int i = 0; i < yodesk.getTiles().tiles().size(); i++) {
                 if (!section.tiles[i]) {
                     Section.Log.debug(i);
-                    BMPWriter.write8bit(GetTile(i), unusedTilesPath.resolve(StringUtils.leftPad(Integer.toString(i), 4, '0') + E_BMP));
+                    BMPWriter.write8bit(GetTile2(i), unusedTilesPath.resolve(StringUtils.leftPad(Integer.toString(i), 4, '0') + E_BMP));
                 }
             }
         }
@@ -1086,52 +1088,64 @@ public class MainPaneController {
             Section.Log.clear();
             Section.Log.debug("Characters:");
             Section.Log.newLine();
-            Section.Log.debug("Total count: " + section.chars.size());
+            Section.Log.debug("Total count: " + yodesk.getCharacters().characters().size());
             Section.Log.newLine();
 
+            //TODO remove all these code:
             section.SetPosition(section.GetDataOffset(KnownSections.CHAR));
-            for (int i = 0; i < section.chars.size(); i++) {
-                ReadCHAR(section.chars.get(i));
+            int position = yodesk.getCharacters()._parent().getDataPosition();
+            for (int i = 0; i < yodesk.getCharacters().characters().size(); i++) {
+                ReadCHAR(yodesk.getCharacters().characters().get(i), position);
+                position += yodesk.getCharacters().characters().get(i).byteSize();
             }
+
+            position = yodesk.getCharacterWeapons()._parent().getDataPosition();
+            //TODO remove all these code:
             section.SetPosition(section.GetDataOffset(KnownSections.CHWP));
-            for (int i = 0; i < section.chars.size(); i++) {
-                ReadCHWP();
+            for (int i = 0; i < yodesk.getCharacterWeapons().weapons().size(); i++) {
+                ReadCHWP(yodesk.getCharacterWeapons().weapons().get(i), position);
+                position += yodesk.getCharacterWeapons().weapons().get(i).byteSize();
             }
+
+            position = yodesk.getCharacterAuxiliaries()._parent().getDataPosition();
+            //TODO remove all these code:
             section.SetPosition(section.GetDataOffset(KnownSections.CAUX));
             //incorrect CAUX offset!!!!!!!!!!!!!!
             //Showmessage(inttohex(DTA.GetIndex,6));
-            for (int i = 0; i < section.chars.size(); i++) {
-                ReadCAUX();
+            for (int i = 0; i < yodesk.getCharacterAuxiliaries().auxiliaries().size(); i++) {
+                ReadCAUX(yodesk.getCharacterAuxiliaries().auxiliaries().get(i), position);
+                position += yodesk.getCharacterAuxiliaries().auxiliaries().get(i).byteSize();
             }
-            IOUtils.saveTextFile(section.chars.stream().map(Char::getName).collect(Collectors.toList()), opath.resolve("chars.txt"));
+
+            IOUtils.saveTextFile(yodesk.getCharacters().characters().stream().map(Character::getName).collect(Collectors.toList()), opath.resolve("chars.txt"));
         } catch (Exception e) {
             JavaFxUtils.showAlert("Error saving characters to the files", e);
         }
     }
 
-    private void ReadCHAR(Char c) throws IOException {
+    private void ReadCHAR(Character c, int position) throws IOException {
 
         for (Integer integer : c.getTileIds()) {
             Path path = opath.resolve("Characters").resolve(c.getName());
             IOUtils.createDirectories(path);
-            BMPWriter.write(GetTile(integer), path.resolve(StringUtils.leftPad(Integer.toString(integer), 4, '0') + E_BMP));
+            BMPWriter.write(GetTile2(integer), path.resolve(StringUtils.leftPad(Integer.toString(integer), 4, '0') + E_BMP));
         }
 
-        DumpData(opath.resolve("CHAR").resolve(StringUtils.leftPad(Integer.toString(c.getId()), 3, '0')), c.getPosition(), c.getSize());
+        DumpData(opath.resolve("CHAR").resolve(StringUtils.leftPad(Integer.toString(c.getIndex()), 3, '0')), position, c.byteSize());
     }
 
-    private void ReadCHWP() throws IOException {
+    private void ReadCHWP(CharacterWeapon c, int position) throws IOException {
 
         //  size := DTA.ReadLongWord;
-        int ch = section.ReadWord();
-        DumpData(opath.resolve("CHWP").resolve(StringUtils.leftPad(Integer.toString(ch), 3, '0')), section.GetPosition(), 4);
+        //int ch = section.ReadWord();
+        DumpData(opath.resolve("CHWP").resolve(StringUtils.leftPad(Integer.toString(c.index()), 3, '0')), position, c.byteSize());
     }
 
-    private void ReadCAUX() throws IOException {
+    private void ReadCAUX(CharacterAuxiliary c, int position) throws IOException {
 
         //  size:=DTA.ReadLongWord;
-        int ch = section.ReadWord();
-        DumpData(opath.resolve("CAUX").resolve(StringUtils.leftPad(Integer.toString(ch), 3, '0')), section.GetPosition(), 2);
+        //int ch = section.ReadWord();
+        DumpData(opath.resolve("CAUX").resolve(StringUtils.leftPad(Integer.toString(c.index()), 3, '0')), position, c.byteSize());
     }
 
     public void saveNamesToFileButtonClick() {
@@ -1152,7 +1166,7 @@ public class MainPaneController {
         Section.Log.newLine();
         IOUtils.createDirectories(opath.resolve("Names"));
         for (Name n : section.names) {
-            BMPWriter.write(GetTile(n.getTileId()), IOUtils.findUnusedFileName(opath.resolve("Names"), n.getName(), E_BMP));
+            BMPWriter.write(GetTile2(n.getTileId()), IOUtils.findUnusedFileName(opath.resolve("Names"), n.getName(), E_BMP));
         }
         IOUtils.saveTextFile(section.names.stream().map(Name::getName).collect(Collectors.toList()), opath.resolve("names.txt"));
     }
@@ -2112,13 +2126,19 @@ end;
     end;*/
 
 
-    private BufferedImage GetTile(int tileId) {
+    /*private BufferedImage GetTile(int tileId) {
 
         int index = section.GetPosition();
         section.SetPosition(section.GetDataOffset(KnownSections.TILE) + tileId * 0x404 + 4);
         BufferedImage image = ImageUtils.readBPicture(TILE_SIZE, TILE_SIZE, Config.icm);
         section.SetPosition(index);
         return image;
+    }*/
+
+    private BufferedImage GetTile2(int tileId) {
+
+        int position = yodesk.getTiles().tilePixelsPosition(tileId);
+        return ImageUtils.readBPicture(yodesk.getTiles()._raw_tiles(), position, TILE_SIZE, TILE_SIZE, Config.icm0);
     }
 
     private WritableImage GetWTile(int tileId) {
@@ -2130,13 +2150,19 @@ end;
         return image;
     }
 
-    private void GetWTile(int tileId, Canvas canvas, int xOffset, int yOffset, Color transparentColor) {
+    /*private void GetWTile(int tileId, Canvas canvas, int xOffset, int yOffset, Color transparentColor) {
 
         int index = section.GetPosition();
         //System.out.println(String.format("%s %s/%s", tileId, xOffset, yOffset));
         section.SetPosition(section.GetDataOffset(KnownSections.TILE) + tileId * 0x404 + 4);
         ImageUtils.drawOnCanvas(canvas, xOffset, yOffset, transparentColor);
         section.SetPosition(index);
+    }*/
+
+    private void GetWTile2(int tileId, Canvas canvas, int xOffset, int yOffset, Color transparentColor) {
+
+        int position = yodesk.getTiles().tilePixelsPosition(tileId);
+        ImageUtils.drawOnCanvas(yodesk.getTiles()._raw_tiles(), position, canvas, xOffset, yOffset, transparentColor);
     }
 
     private void fillMapTile(Canvas canvas, int xOffset, int yOffset, Color color) {

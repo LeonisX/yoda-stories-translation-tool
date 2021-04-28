@@ -96,7 +96,12 @@ public class Config {
     public static byte[] ga = new byte[256];
     public static byte[] ba = new byte[256];
 
+    public static byte[] ra0 = new byte[256];
+    public static byte[] ga0 = new byte[256];
+    public static byte[] ba0 = new byte[256];
+
     public static IndexColorModel icm;
+    public static IndexColorModel icm0;
 
     public static Color transparentColor = Color.rgb(0xF4, 0xF4, 0xF4);
 
@@ -168,15 +173,6 @@ public class Config {
     public static void updatePalette() {
 
         for (int i = 0; i < 1024; i += 4) {
-            int r = gamePalette[i + 2];
-            int g = gamePalette[i + 1];
-            int b = gamePalette[i];
-            int a = ~gamePalette[i + 3];
-            // palette[i / 4] = (a << 24) | (r << 16) | (g << 8) | b;
-            palette[i / 4] = Color.rgb(r,g,b);
-        }
-
-        for (int i = 0; i < 1024; i += 4) {
             int id = i / 4;
             int r = gamePalette[i + 2];
             int g = gamePalette[i + 1];
@@ -188,6 +184,10 @@ public class Config {
             ra[id] = (byte) r;
             ga[id] = (byte) g;
             ba[id] = (byte) b;
+
+            ra0[id] = (byte) r;
+            ga0[id] = (byte) g;
+            ba0[id] = (byte) b;
         }
 
         ra[0] = (byte) (transparentColor.getRed() * 255);
@@ -195,6 +195,7 @@ public class Config {
         ba[0] = (byte) (transparentColor.getBlue() * 255);
 
         icm = new IndexColorModel(8, 256, ra, ga, ba);
+        icm0 = new IndexColorModel(8, 256, ra0, ga0, ba0);
     }
 
     //TODO input

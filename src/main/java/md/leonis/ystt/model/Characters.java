@@ -42,7 +42,7 @@ public class Characters extends KaitaiStruct {
         do {
             _it = new Character(this._io, this, _root);
             this.characters.add(_it);
-        } while (_it.index() != 65535);
+        } while (_it.getIndex() != 65535);
     }
 
     public ArrayList<Character> characters() {

@@ -91,9 +91,9 @@
                                 <Label fx:id="crc32Label" layoutX="107.0" layoutY="35.0"/>
                                 <Label fx:id="sizeLabel" layoutX="107.0" layoutY="52.0"/>
                                 <Label fx:id="internalVersionLabel" layoutX="107.0" layoutY="69.0"/>
-                                <TableView fx:id="commonInformationTableView" layoutX="14.0" layoutY="95.0" prefHeight="315.0" prefWidth="240.0">
+                                <TableView fx:id="commonInformationTableView" layoutX="14.0" layoutY="95.0" prefHeight="315.0" prefWidth="300.0">
                                     <columns>
-                                        <TableColumn editable="false" prefWidth="75.0" text="Section">
+                                        <TableColumn editable="false" prefWidth="60.0" text="Section">
                                             <cellValueFactory>
                                                 <PropertyValueFactory property="type"/>
                                             </cellValueFactory>
@@ -102,7 +102,7 @@
                                                 </StringCellFactory>
                                             </cellFactory>
                                         </TableColumn>
-                                        <TableColumn editable="false" prefWidth="90.0" text="Offset">
+                                        <TableColumn editable="false" prefWidth="81.0" text="Offset">
                                             <cellValueFactory>
                                                 <PropertyValueFactory property="position"/>
                                             </cellValueFactory>
@@ -111,13 +111,22 @@
                                                 </HexCellFactory>
                                             </cellFactory>
                                         </TableColumn>
-                                        <TableColumn editable="false" prefWidth="70.0" text="Size">
+                                        <TableColumn editable="false" prefWidth="60.0" text="Full Size">
                                             <cellValueFactory>
                                                 <PropertyValueFactory property="size"/>
                                             </cellValueFactory>
                                             <cellFactory>
                                                 <StringCellFactory alignment="right">
                                                 </StringCellFactory>
+                                            </cellFactory>
+                                        </TableColumn>
+                                        <TableColumn editable="false" prefWidth="81.0" text="Data Offset">
+                                            <cellValueFactory>
+                                                <PropertyValueFactory property="dataPosition"/>
+                                            </cellValueFactory>
+                                            <cellFactory>
+                                                <HexCellFactory alignment="right">
+                                                </HexCellFactory>
                                             </cellFactory>
                                         </TableColumn>
                                     </columns>
@@ -672,7 +681,7 @@
                                     <columns>
                                         <TableColumn editable="false" prefWidth="20.0" text="ID">
                                             <cellValueFactory>
-                                                <PropertyValueFactory property="id"/>
+                                                <PropertyValueFactory property="index"/>
                                             </cellValueFactory>
                                             <cellFactory>
                                                 <StringCellFactory alignment="center">
