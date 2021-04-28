@@ -26,8 +26,13 @@ import md.leonis.ystt.model.CatalogEntry;
 import md.leonis.ystt.model.characters.Character;
 import md.leonis.ystt.model.characters.CharacterAuxiliary;
 import md.leonis.ystt.model.characters.CharacterWeapon;
+import md.leonis.ystt.model.puzzles.Puzzle;
 import md.leonis.ystt.model.tiles.TileName;
-import md.leonis.ystt.oldmodel2.*;
+import md.leonis.ystt.model.zones.Condition;
+import md.leonis.ystt.model.zones.Instruction;
+import md.leonis.ystt.model.zones.Zone;
+import md.leonis.ystt.oldmodel2.KnownSections;
+import md.leonis.ystt.oldmodel2.Section;
 import md.leonis.ystt.utils.*;
 import net.sf.image4j.codec.bmp.BMPImage;
 import net.sf.image4j.codec.bmp.BMPReader;
@@ -37,6 +42,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
@@ -160,11 +166,13 @@ public class MainPaneController {
     private static final String E_BMP = ".bmp";
     private static final int TILE_SIZE = 32;
 
-    private final List<String> texts = new ArrayList<>();
-
     int pn;
     Path spath, opath;
     int selectedCell, selectedTileX, selectedTileY;
+
+
+    //TODO need to clear after DTA load
+    public boolean[] usedTiles;
 
     // Insert text
     //TODO
@@ -213,19 +221,14 @@ public class MainPaneController {
     @FXML
     void initialize() {
 
+        usedTiles = new boolean[yodesk.getTiles().getTiles().size()];
+
         noColorMenuItem.setUserData(Config.transparentColor);
         fuchsiaMenuItem.setUserData(Color.FUCHSIA);
         blackMenuItem.setUserData(Color.BLACK);
         whiteMenuItem.setUserData(Color.WHITE);
 
         //TODO log.Clear;
-
-        // Scan DTA
-        try {
-            section.readDTAMetricks();
-        } catch (Exception e) {
-            JavaFxUtils.showAlert("DTA file processing error", e);
-        }
 
         opath = spath.resolve(OUTPUT + '-' + section.revisionId);
 
@@ -259,7 +262,7 @@ public class MainPaneController {
         // Common information, sections
         internalVersionLabel.setText(yodesk.getVersion().getVersion());
         nameLabel.setText(section.revision);
-        sizeLabel.setText(section.dump.size() + " / " + section.exeDump.size());
+        sizeLabel.setText(section.dtaDump.size() + " / " + section.exeDump.size());
         crc32Label.setText(section.dtaCrc32 + " / " + section.exeCrc32);
 
         commonInformationTableView.setItems(FXCollections.observableList(yodesk.getCatalog()));
@@ -278,12 +281,12 @@ public class MainPaneController {
         tilesContextMenu.setOnShown(this::selectTileMenuItem);
 
         // Maps
-        mapsCountLabel.setText(Integer.toString(section.maps.size()));
-        mapsListView.setItems(FXCollections.observableList(section.maps.stream().map(m -> "Map #" + m.getId()).collect(Collectors.toList())));
+        mapsCountLabel.setText(Integer.toString(yodesk.getZones().getZones().size()));
+        mapsListView.setItems(FXCollections.observableList(yodesk.getZones().getZones().stream().map(m -> "Map #" + m.getIndex()).collect(Collectors.toList())));
         mapsListView.getSelectionModel().selectedItemProperty().addListener(mapsListViewChangeListener);
         mapsListView.getSelectionModel().select(0);
-        mapsTableView.setItems(FXCollections.observableList(section.maps));
-        mapEditorListView.setItems(FXCollections.observableList(section.maps.stream().map(m -> "Map #" + m.getId()).collect(Collectors.toList())));
+        mapsTableView.setItems(FXCollections.observableList(yodesk.getZones().getZones()));
+        mapEditorListView.setItems(FXCollections.observableList(yodesk.getZones().getZones().stream().map(m -> "Map #" + m.getIndex()).collect(Collectors.toList())));
         mapEditorListView.getSelectionModel().selectedItemProperty().addListener(mapsEditorListViewChangeListener);
         mapEditorListView.getSelectionModel().select(0);
         drawMapEditorTiles();
@@ -327,7 +330,7 @@ public class MainPaneController {
             TableCell<TileName, Integer> cell = new TableCell<TileName, Integer>() {
                 public void updateItem(Integer tileId, boolean empty) {
                     if (tileId != null) {
-                        imageView.setImage(GetWTile(tileId));
+                        imageView.setImage(GetWTile2(tileId));
                     }
                 }
             };
@@ -341,8 +344,7 @@ public class MainPaneController {
     private void drawTitleImage() {
 
         try {
-            section.SetPosition(section.GetDataOffset(KnownSections.STUP));
-            WritableImage image = readWPicture(288, 288, Color.BLACK);
+            WritableImage image = readWPicture(yodesk.getStartupImage().getPixels(), 0, 288, 288, Color.BLACK);
             titleScreenImageView.setImage(image);
         } catch (Exception e) {
             JavaFxUtils.showAlert("Title screen display error", e);
@@ -367,7 +369,7 @@ public class MainPaneController {
 
         try {
             for (int i = 0; i < yodesk.getTiles().getTiles().size(); i++) {
-                ImageView image = new ImageView(GetWTile(i));
+                ImageView image = new ImageView(GetWTile2(i));
                 image.setUserData(i);
                 image.setOnMouseEntered(mouseEnteredHandler);
                 image.setOnMouseExited(mouseExitedHandler);
@@ -383,7 +385,7 @@ public class MainPaneController {
 
         try {
             for (int i = 0; i < yodesk.getTiles().getTiles().size(); i++) {
-                ImageView image = new ImageView(GetWTile(i));
+                ImageView image = new ImageView(GetWTile2(i));
                 image.setUserData(i);
                 image.setOnMouseEntered(mouseEnteredHandler);
                 image.setOnMouseExited(mouseExitedHandler);
@@ -408,9 +410,11 @@ public class MainPaneController {
         }
     };
 
+    //TODO repair this
     private String getTileFlag(Node tile) {
         int id = ((Integer) (tile).getUserData());
-        return section.GetTileFlagS(id);
+        //return section.GetTileFlagS(id);
+        return "TODO repair me";
     }
 
     EventHandler<MouseEvent> mouseExitedHandler = new EventHandler<MouseEvent>() {
@@ -489,39 +493,27 @@ public class MainPaneController {
     }
 
     //TODO refactor this
-    private void ReadMap(Canvas canvas, int id, boolean show, boolean save) throws IOException {
+    private void ReadMap(Canvas canvas, int zoneId, boolean show, boolean save) throws IOException {
 
-        section.SetPosition(section.maps.get(id).getPosition());   // go to map data
-        int pn = section.ReadWord();               // number:word; //2 bytes - serial number of the map starting with 0
-        if (pn != id) {
-            JavaFxUtils.showAlert("Wrong Zone ID", String.format("%s <> %s", pn, id), Alert.AlertType.WARNING);
-        }
-        section.ReadString(4);                // izon:string[4]; //4 bytes: "IZON"
-        section.ReadLongWord();                 // longword; //4 bytes - size of block IZON (include 'IZON') until object info entry count
+        Zone zone = yodesk.getZones().getZones().get(zoneId);
 
-        //TODO Application.ProcessMessages;
-
-        int w = section.ReadWord();                // width:word; //2 bytes: map width (W)
-        int h = section.ReadWord();                // height:word; //2 bytes: map height (H)
-        int flag = section.ReadWord();             // flags:word; //2 byte: map flags (unknown meanings)* добавил байт снизу
-        section.ReadLongWord();                 // unused:longword; //5 bytes: unused (same values for every map)
-        int planet = section.ReadWord();           // planet:word; //1 byte: planet (0x01 = desert, 0x02 = snow, 0x03 = forest, 0x05 = swamp)* добавил следующий байт
-        Section.Log.debug("Map #" + pn + " offset: " + section.intToHex(section.GetPosition(), 8));
-        statusLabel.setText("Map: " + pn + " (" + Section.PLANETS[planet] + ")");
+        //TODO offset if need
+        Section.Log.debug("Map #" + zoneId + " offset: " + "section.intToHex(section.GetPosition(), 8)");
+        statusLabel.setText("Map: " + zoneId + " (" + zone.getPlanet().name() + ")");
 
         if (show) {
-            canvas.setWidth(w * TILE_SIZE);
-            canvas.setHeight(h * TILE_SIZE);
+            canvas.setWidth(zone.getWidth() * TILE_SIZE);
+            canvas.setHeight(zone.getHeight() * TILE_SIZE);
 
             canvas.getGraphicsContext2D().setFill(Color.rgb(7, 11, 0));
             canvas.getGraphicsContext2D().fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
-            for (int y = 0; y < h; y++) {
-                for (int x = 0; x < w; x++) {
+            for (int y = 0; y < zone.getHeight(); y++) {
+                for (int x = 0; x < zone.getWidth(); x++) {
                     //W*H*6 bytes: map data
-                    drawTileOnMap(canvas, x, y);
-                    drawTileOnMap(canvas, x, y);
-                    drawTileOnMap(canvas, x, y);
+                    drawTileOnMap(canvas, x, y, zone, 0);
+                    drawTileOnMap(canvas, x, y, zone, 1);
+                    drawTileOnMap(canvas, x, y, zone, 2);
                 }
             }
         }
@@ -530,28 +522,28 @@ public class MainPaneController {
         if (normalSaveCheckBox.isSelected() && save) {
             Path path = opath.resolve("Maps");
             IOUtils.createDirectories(path);
-            BMPWriter.write8bit(canvas, path.resolve(StringUtils.leftPad(Integer.toString(id), 3, '0') + E_BMP));
+            BMPWriter.write8bit(canvas, path.resolve(StringUtils.leftPad(Integer.toString(zoneId), 3, '0') + E_BMP));
         }
 
         if (groupByFlagsCheckBox.isSelected() && save) {
-            Path path = opath.resolve("MapsByFlags").resolve(IntToBin(flag));
+            Path path = opath.resolve("MapsByFlags").resolve(zone.getType().name());
             IOUtils.createDirectories(path);
-            BMPWriter.write8bit(canvas, path.resolve(StringUtils.leftPad(Integer.toString(id), 3, '0') + E_BMP));
+            BMPWriter.write8bit(canvas, path.resolve(StringUtils.leftPad(Integer.toString(zoneId), 3, '0') + E_BMP));
         }
 
         if (groupByPlanetTypeCheckBox.isSelected() && save) {
-            Path path = opath.resolve("MapsByPlanetType").resolve(Section.PLANETS[planet]);
+            Path path = opath.resolve("MapsByPlanetType").resolve(zone.getPlanet().name());
             IOUtils.createDirectories(path);
-            BMPWriter.write8bit(canvas, path.resolve(StringUtils.leftPad(Integer.toString(id), 3, '0') + E_BMP));
+            BMPWriter.write8bit(canvas, path.resolve(StringUtils.leftPad(Integer.toString(zoneId), 3, '0') + E_BMP));
         }
     }
 
-    private void drawTileOnMap(Canvas canvas, int x, int y) {
+    private void drawTileOnMap(Canvas canvas, int x, int y, Zone zone, int layer) {
 
-        int k = section.ReadWord();
-        if (k < yodesk.getTiles().getTiles().size()) {
-            section.tiles[k] = true;
-            GetWTile2(k, canvas, x * TILE_SIZE, y * TILE_SIZE, null);
+        int tileId = zone.getTileIds().get(y * zone.getWidth() + x).getColumn().get(layer);
+        if (tileId < yodesk.getTiles().getTiles().size()) {
+            usedTiles[tileId] = true;
+            GetWTile2(tileId, canvas, x * TILE_SIZE, y * TILE_SIZE, null);
         }
     }
 
@@ -568,17 +560,18 @@ public class MainPaneController {
         //k:=DTA.ReadWord;                             //2 bytes: object info entry count (X)
         //DTA.MoveIndex(k * 12);                       //X*12 bytes: object info data
 
-        if (dumpActionsCheckBox.isSelected() || dumpTextCheckBox.isSelected()) {
+        //TODO return after implement write() methods
+        /*if (dumpActionsCheckBox.isSelected() || dumpTextCheckBox.isSelected()) {
             ReadIZAX(id);
             ReadIZX2(id);
             ReadIZX3(id);
             ReadIZX4(id);
             ReadIACT(id);
             ReadOIE(id);
-        }
+        }*/
     }
 
-    private void ReadIZAX(int id) throws IOException {
+    /*private void ReadIZAX(int id) throws IOException {
         Path path = opath.resolve("IZAX").resolve(Integer.toString(id));
         DumpData(path, section.maps.get(id).getIzax().getPosition(), section.maps.get(id).getIzax().getSize());
     }
@@ -596,9 +589,9 @@ public class MainPaneController {
     private void ReadIZX4(int id) throws IOException {
         Path path = opath.resolve("IZX4").resolve(Integer.toString(id));
         DumpData(path, section.maps.get(id).getIzx4().getPosition(), section.maps.get(id).getIzx4().getSize());
-    }
+    }*/
 
-    private void ReadIACT(int id) throws IOException {
+    /*private void ReadIACT(int id) throws IOException {
         int k = 0;
         section.SetPosition(section.maps.get(id).getIactPosition());
 
@@ -618,21 +611,22 @@ public class MainPaneController {
             k++;
         }
 
-    }
+    }*/
 
-    private void ReadOIE(int id) throws IOException {
+    /*private void ReadOIE(int id) throws IOException {
         Path path = opath.resolve("OIE").resolve(Integer.toString(id));
         DumpData(path, section.maps.get(id).getOie().getPosition(), section.maps.get(id).getOie().getSize());
-    }
+    }*/
 
     private void DumpData(Path path, CatalogEntry entry) throws IOException {
         IOUtils.saveBytes(path, entry.getBytes());
     }
 
+    //TODO repair me
     private void DumpData(Path path, int offset, int size) throws IOException {
-        byte[] array = Arrays.copyOfRange(section.dump.getDump(), offset, offset + size);
+        /*byte[] array = Arrays.copyOfRange(section.dump.getDump(), offset, offset + size);
         IOUtils.saveBytes(path, array);
-        section.SetPosition(offset + size);
+        section.SetPosition(offset + size);*/
     }
 
 
@@ -707,12 +701,12 @@ public class MainPaneController {
         ObservableList<Node> children = tilesFlowPane.getChildren();
         for (int i = 0; i < children.size(); i++) {
             ImageView imageView = (ImageView) children.get(i);
-            imageView.setImage(GetWTile(i));
+            imageView.setImage(GetWTile2(i));
         }
         children = mapEditorTilesFlowPane.getChildren();
         for (int i = 0; i < children.size(); i++) {
             ImageView imageView = (ImageView) children.get(i);
-            imageView.setImage(GetWTile(i));
+            imageView.setImage(GetWTile2(i));
         }
         //TODO redraw clipboard,  other images//TODO redraw clipboard,  other images
     }
@@ -780,16 +774,13 @@ public class MainPaneController {
         try {
             BMPImage titleImage = BMPReader.readExt(opath.resolve("stup" + E_BMP));
 
-            section.SetPosition(section.GetDataOffset(KnownSections.STUP));
-
             // Update in memory
             for (int y = 0; y < titleImage.getHeight(); y++) {
                 for (int x = 0; x < titleImage.getWidth(); x++) {
 
                     int sample = titleImage.getImage().getRaster().getSample(x, y, 0);
-                    //section.SetPosition(section.GetDataOffset(KnownSections.STUP) + y * titleImage.getWidth() + x);
                     //TODO need to test this
-                    section.WriteByte(new Integer(sample).byteValue());
+                    yodesk.getStartupImage().getPixels()[y * titleImage.getWidth() + x] = new Integer(sample).byteValue();
                 }
             }
 
@@ -847,10 +838,10 @@ public class MainPaneController {
                 IOUtils.createDirectories(attrPath);
             }
 
-            section.SetPosition(KnownSections.TILE);
             for (int i = 0; i < yodesk.getTiles().getTiles().size(); i++) {
 
-                long attr = section.GetTileFlag(i); // attributes
+                byte[] attr = yodesk.getTiles().getTiles().get(i).get_raw_attributes(); // attributes
+                String attrHex = new BigInteger(attr).toString(2);
                 //ReadPicture(section, 0);
                 //CopyPicture(TileImage, 0, 0);
                 //TODO Application.ProcessMessages;
@@ -863,8 +854,8 @@ public class MainPaneController {
                 }
 
                 if (groupByAttributesFilenamesCheckBox.isSelected()) {
-                    String binaryAttr = StringUtils.right(StringUtils.leftPad(Long.toBinaryString(attr), 32, '0'), 32);
-                    Path path = attrPath.resolve(binaryAttr + " (" + attr + ")");
+                    String binaryAttr = StringUtils.right(StringUtils.leftPad(attrHex, 32, '0'), 32);
+                    Path path = attrPath.resolve(binaryAttr + " (" + attrHex + ")");
                     IOUtils.createDirectories(path);
                     BMPWriter.write(GetTile2(i), path.resolve(StringUtils.leftPad(Integer.toString(i), 4, "0") + E_BMP).toFile());
                 }
@@ -994,10 +985,10 @@ public class MainPaneController {
         //Section.Log.Clear;
         Section.Log.debug("Maps (zones):");
         Section.Log.newLine();
-        Section.Log.debug("Total count: " + section.maps.size());
+        Section.Log.debug("Total count: " + yodesk.getZones().getZones().size());
         Section.Log.newLine();
         //DTA.SetIndex(knownSections[5]);          // ZONE
-        for (int i = 0; i < section.maps.size(); i++) {
+        for (int i = 0; i < yodesk.getZones().getZones().size(); i++) {
             ReadIZON(i, true);
         }
 
@@ -1008,7 +999,7 @@ public class MainPaneController {
             Path unusedTilesPath = opath.resolve("TilesUnused");
             IOUtils.createDirectories(unusedTilesPath);
             for (int i = 0; i < yodesk.getTiles().getTiles().size(); i++) {
-                if (!section.tiles[i]) {
+                if (!usedTiles[i]) {
                     Section.Log.debug(i);
                     BMPWriter.write8bit(GetTile2(i), unusedTilesPath.resolve(StringUtils.leftPad(Integer.toString(i), 4, '0') + E_BMP));
                 }
@@ -1016,8 +1007,12 @@ public class MainPaneController {
         }
 
         if (dumpTextCheckBox.isSelected()) {
-            List<String> phrases = section.maps.stream().flatMap(m -> m.getIacts().stream().flatMap(p -> p.getPhrases().stream()
-                    .map(Phrase::getPhrase))).collect(Collectors.toList());
+            List<String> phrases = yodesk.getZones().getZones().stream().flatMap(z -> {
+                List<String> conditions = z.getActions().stream().flatMap(a -> a.getConditions().stream().map(Condition::getText)).collect(Collectors.toList());
+                List<String> instructions = z.getActions().stream().flatMap(a -> a.getInstructions().stream().map(Instruction::getText)).collect(Collectors.toList());
+                conditions.addAll(instructions);
+                return conditions.stream().filter(StringUtils::isNotBlank).map(s -> s.replace("\r\n", "[CR]").replace("[CR][CR]", "[CR2]"));
+            }).collect(Collectors.toList());
             IOUtils.saveTextFile(phrases, opath.resolve("iact.txt"));
         }
         //TODO uncomment, if need
@@ -1063,8 +1058,7 @@ public class MainPaneController {
         }
     }
 
-    //TODO md.leonis.ystt.model.puzzles.
-    private void ReadPUZ2(md.leonis.ystt.model.puzzles.Puzzle puzzle, int position) throws IOException {
+    private void ReadPUZ2(Puzzle puzzle, int position) throws IOException {
 
         Section.Log.debug("Puzzle #" + puzzle.getIndex() + "; Size: 0x" + section.longToHex(puzzle.byteSize(), 4));
         DumpData(opath.resolve("PUZ2").resolve(StringUtils.leftPad(Integer.toString(puzzle.getIndex()), 4, '0')), position, puzzle.byteSize());
@@ -1092,8 +1086,6 @@ public class MainPaneController {
             Section.Log.debug("Total count: " + yodesk.getCharacters().getCharacters().size());
             Section.Log.newLine();
 
-            //TODO remove all these code:
-            section.SetPosition(section.GetDataOffset(KnownSections.CHAR));
             int position = yodesk.getCharacters().get_parent().getDataPosition();
             for (int i = 0; i < yodesk.getCharacters().getCharacters().size(); i++) {
                 ReadCHAR(yodesk.getCharacters().getCharacters().get(i), position);
@@ -1101,18 +1093,12 @@ public class MainPaneController {
             }
 
             position = yodesk.getCharacterWeapons().get_parent().getDataPosition();
-            //TODO remove all these code:
-            section.SetPosition(section.GetDataOffset(KnownSections.CHWP));
             for (int i = 0; i < yodesk.getCharacterWeapons().getWeapons().size(); i++) {
                 ReadCHWP(yodesk.getCharacterWeapons().getWeapons().get(i), position);
                 position += yodesk.getCharacterWeapons().getWeapons().get(i).byteSize();
             }
 
             position = yodesk.getCharacterAuxiliaries().get_parent().getDataPosition();
-            //TODO remove all these code:
-            section.SetPosition(section.GetDataOffset(KnownSections.CAUX));
-            //incorrect CAUX offset!!!!!!!!!!!!!!
-            //Showmessage(inttohex(DTA.GetIndex,6));
             for (int i = 0; i < yodesk.getCharacterAuxiliaries().getAuxiliaries().size(); i++) {
                 ReadCAUX(yodesk.getCharacterAuxiliaries().getAuxiliaries().get(i), position);
                 position += yodesk.getCharacterAuxiliaries().getAuxiliaries().get(i).byteSize();
@@ -2145,13 +2131,19 @@ end;
         return ImageUtils.readBPicture(yodesk.getTiles().getRawTiles(), position, TILE_SIZE, TILE_SIZE, Config.icm0);
     }
 
-    private WritableImage GetWTile(int tileId) {
+    /*private WritableImage GetWTile(int tileId) {
 
         int index = section.GetPosition();
         section.SetPosition(section.GetDataOffset(KnownSections.TILE) + tileId * 0x404 + 4);
         WritableImage image = ImageUtils.readWPicture(TILE_SIZE, TILE_SIZE, Config.transparentColor);
         section.SetPosition(index);
         return image;
+    }*/
+
+    private WritableImage GetWTile2(int tileId) {
+
+        int position = yodesk.getTiles().tilePixelsPosition(tileId);
+        return ImageUtils.readWPicture(yodesk.getTiles().getRawTiles(), position, TILE_SIZE, TILE_SIZE, Config.transparentColor);
     }
 
     /*private void GetWTile(int tileId, Canvas canvas, int xOffset, int yOffset, Color transparentColor) {

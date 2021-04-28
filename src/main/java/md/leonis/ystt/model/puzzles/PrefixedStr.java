@@ -6,7 +6,7 @@ import io.kaitai.struct.KaitaiStruct;
 import md.leonis.ystt.model.Yodesk;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
+import java.nio.charset.Charset;
 
 public class PrefixedStr extends KaitaiStruct {
 
@@ -37,7 +37,7 @@ public class PrefixedStr extends KaitaiStruct {
 
     private void _read() {
         this.lenContent = this._io.readU2le();
-        this.content = new String(this._io.readBytes(lenContent), StandardCharsets.US_ASCII);
+        this.content = new String(this._io.readBytes(lenContent), Charset.forName("Cp1252"));
     }
 
     public int byteSize() {

@@ -5,6 +5,7 @@ import io.kaitai.struct.ByteBufferKaitaiStream;
 import io.kaitai.struct.KaitaiStruct;
 import io.kaitai.struct.KaitaiStream;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -411,7 +412,7 @@ public class Yodesk extends KaitaiStruct {
         private void _read() {
             this.tileId = this._io.readU2le();
             if (tileId() != 65535) {
-                this.name = new String(KaitaiStream.bytesTerminate(this._io.readBytes(24), (byte) 0, false), StandardCharsets.US_ASCII);
+                this.name = new String(KaitaiStream.bytesTerminate(this._io.readBytes(24), (byte) 0, false), Charset.forName("Cp1252"));
             }
         }
         private int tileId;
@@ -457,7 +458,7 @@ public class Yodesk extends KaitaiStruct {
 
         private void _read() {
             this.lenContent = this._io.readU2le();
-            this.content = new String(this._io.readBytes(lenContent()), StandardCharsets.US_ASCII);
+            this.content = new String(this._io.readBytes(lenContent()), Charset.forName("Cp1252"));
         }
     }
 
@@ -778,7 +779,7 @@ public class Yodesk extends KaitaiStruct {
         }
         private void _read() {
             this.lenContent = this._io.readU2le();
-            this.content = new String(KaitaiStream.bytesTerminate(this._io.readBytes(lenContent()), (byte) 0, false), StandardCharsets.US_ASCII);
+            this.content = new String(KaitaiStream.bytesTerminate(this._io.readBytes(lenContent()), (byte) 0, false), Charset.forName("Cp1252"));
         }
         private int lenContent;
         private String content;
@@ -999,7 +1000,7 @@ public class Yodesk extends KaitaiStruct {
                 this.arguments.add(this._io.readS2le());
             }
             this.lenText = this._io.readU2le();
-            this.text = new String(this._io.readBytes(lenText()), StandardCharsets.US_ASCII);
+            this.text = new String(this._io.readBytes(lenText()), Charset.forName("Cp1252"));
         }
         private InstructionOpcode opcode;
         private ArrayList<Short> arguments;
@@ -1435,7 +1436,7 @@ public class Yodesk extends KaitaiStruct {
                 this.arguments.add(this._io.readS2le());
             }
             this.lenText = this._io.readU2le();
-            this.text = new String(this._io.readBytes(lenText()), StandardCharsets.US_ASCII);
+            this.text = new String(this._io.readBytes(lenText()), Charset.forName("Cp1252"));
         }
         private ConditionOpcode opcode;
         private ArrayList<Short> arguments;
@@ -1521,7 +1522,7 @@ public class Yodesk extends KaitaiStruct {
                 this.size = this._io.readU4le();
             }
             if (index() != 65535) {
-                this.name = new String(KaitaiStream.bytesTerminate(this._io.readBytes(16), (byte) 0, false), StandardCharsets.US_ASCII);
+                this.name = new String(KaitaiStream.bytesTerminate(this._io.readBytes(16), (byte) 0, false), Charset.forName("Cp1252"));
             }
             if (index() != 65535) {
                 this.type = CharacterType.byId(this._io.readU2le());
@@ -2180,7 +2181,7 @@ public class Yodesk extends KaitaiStruct {
             _read();
         }
         private void _read() {
-            this.type = new String(this._io.readBytes(4), StandardCharsets.US_ASCII);
+            this.type = new String(this._io.readBytes(4), Charset.forName("Cp1252"));
             if ( ((!(type()).equals("VERS")) && (!(type()).equals("ZONE"))) ) {
                 this.size = this._io.readU4le();
             }

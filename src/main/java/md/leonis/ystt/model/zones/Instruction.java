@@ -6,6 +6,7 @@ import io.kaitai.struct.KaitaiStruct;
 import md.leonis.ystt.model.Yodesk;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
@@ -45,30 +46,30 @@ public class Instruction extends KaitaiStruct {
             this.arguments.add(this._io.readS2le());
         }
         this.lenText = this._io.readU2le();
-        this.text = new String(this._io.readBytes(lenText()), StandardCharsets.US_ASCII);
+        this.text = new String(this._io.readBytes(lenText), Charset.forName("Cp1252"));
     }
 
-    public InstructionOpcode opcode() {
+    public InstructionOpcode getOpcode() {
         return opcode;
     }
 
-    public ArrayList<Short> arguments() {
+    public ArrayList<Short> getArguments() {
         return arguments;
     }
 
-    public int lenText() {
+    public int getLenText() {
         return lenText;
     }
 
-    public String text() {
+    public String getText() {
         return text;
     }
 
-    public Yodesk _root() {
+    public Yodesk get_root() {
         return _root;
     }
 
-    public Action _parent() {
+    public Action get_parent() {
         return _parent;
     }
 }

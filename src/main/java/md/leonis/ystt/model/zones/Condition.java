@@ -6,6 +6,7 @@ import io.kaitai.struct.KaitaiStruct;
 import md.leonis.ystt.model.Yodesk;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
@@ -46,7 +47,7 @@ public class Condition extends KaitaiStruct {
             this.arguments.add(this._io.readS2le());
         }
         this.lenText = this._io.readU2le();
-        this.text = new String(this._io.readBytes(lenText), StandardCharsets.US_ASCII);
+        this.text = new String(this._io.readBytes(lenText), Charset.forName("Cp1252"));
     }
 
     public ConditionOpcode getOpcode() {

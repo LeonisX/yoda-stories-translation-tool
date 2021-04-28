@@ -7,6 +7,7 @@ import md.leonis.ystt.model.TileNames;
 import md.leonis.ystt.model.Yodesk;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
 public class TileName extends KaitaiStruct {
@@ -39,7 +40,7 @@ public class TileName extends KaitaiStruct {
     private void _read() {
         this.tileId = this._io.readU2le();
         if (tileId != 65535) {
-            this.name = new String(KaitaiStream.bytesTerminate(this._io.readBytes(24), (byte) 0, false), StandardCharsets.US_ASCII);
+            this.name = new String(KaitaiStream.bytesTerminate(this._io.readBytes(24), (byte) 0, false), Charset.forName("Cp1252"));
         }
     }
 

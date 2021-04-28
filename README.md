@@ -10,10 +10,6 @@ An original version: https://github.com/LeonisX/YExplorer
 
 ## TODO
 
-
-* Kaitai: verify offsets and sizes (must be full)
-
-* Kaitai
 * Dump texts to DOCX (separators, IACT/PUZ2 labels, ignore them, allow blocked text)
 * Replace tiles, maps, Undo
 * Replace text from DOCX
@@ -21,22 +17,26 @@ An original version: https://github.com/LeonisX/YExplorer
 * HEX
 * Тяжёлые процессы дампинга лучше вынести в отдельный поток
 
+* Charset.forName("Cp1252") - dump with native encoding!!!
+* Сломан вывод таблицы Map ( нужна ли?)
+
 * Prepare translated DTA & dump it here
 
 * Restore functionality
 * Add new tiles - already in Delphi version - we need a better solution: "PLUS" button at the end of tiles
-* Dump from EXE file
-* Dump palette from EXE file
 * Dump/read to DOCX
 * Validate text (first-last) phrases
 * Hide debug tabs by default
 
-* Show in UI: Chars, Names
 * Show in UI info about puzzles (id, size, phrases count)
 * IACT: show phrases count
 
+* Dump scripts
+* Show extra data in UI
+
 * TODO tests!!!!!!!!!!!!!!!
 
+* After transparent color change need to scroll table view
 * Map0 - white triangle :(
 * Compare all characters dumps
 * UnsignedInt, ... - изучить доступные решения. идея простая - возвращать number, но если минус, то тип на порядок больше.

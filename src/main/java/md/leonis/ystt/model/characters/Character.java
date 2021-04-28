@@ -7,6 +7,7 @@ import md.leonis.ystt.model.Characters;
 import md.leonis.ystt.model.Yodesk;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -60,7 +61,7 @@ public class Character extends KaitaiStruct {
             }
 
             this.size = this._io.readU4le();
-            this.name = new String(KaitaiStream.bytesTerminate(this._io.readBytes(16), (byte) 0, false), StandardCharsets.US_ASCII);
+            this.name = new String(KaitaiStream.bytesTerminate(this._io.readBytes(16), (byte) 0, false), Charset.forName("Cp1252"));
             this.type = CharacterType.byId(this._io.readU2le());
             this.movementType = MovementType.byId(this._io.readU2le());
             this.probablyGarbage1 = this._io.readU2le();

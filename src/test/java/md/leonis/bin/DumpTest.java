@@ -1,6 +1,5 @@
 package md.leonis.bin;
 
-import md.leonis.ystt.oldmodel.SaveState;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,7 +20,7 @@ public class DumpTest extends Assert {
         assertEquals(romData.size(), 8188);
     }
 
-    @Test
+    /*@Test
     public void moveTo() throws Exception {
         for (int i = 0; i < SaveState.START_TEXT.length(); i++) {
             romData.moveToAddress(i);
@@ -36,7 +35,7 @@ public class DumpTest extends Assert {
     @Test
     public void readString() throws Exception {
         assertEquals(romData.readString(SaveState.START_TEXT.length()), SaveState.START_TEXT);
-    }
+    }*/
 
     @Test
     public void checkZeroes() throws Exception {

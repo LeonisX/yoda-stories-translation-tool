@@ -7,6 +7,7 @@ import md.leonis.ystt.model.Sounds;
 import md.leonis.ystt.model.Yodesk;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
 public class PrefixedStrz extends KaitaiStruct {
@@ -38,7 +39,7 @@ public class PrefixedStrz extends KaitaiStruct {
 
     private void _read() {
         this.lenContent = this._io.readU2le();
-        this.content = new String(KaitaiStream.bytesTerminate(this._io.readBytes(lenContent), (byte) 0, false), StandardCharsets.US_ASCII);
+        this.content = new String(KaitaiStream.bytesTerminate(this._io.readBytes(lenContent), (byte) 0, false), Charset.forName("Cp1252"));
     }
 
     public int getLenContent() {
