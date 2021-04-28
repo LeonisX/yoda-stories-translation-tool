@@ -87,10 +87,12 @@
                                 </Label>
                                 <Label layoutX="14.0" layoutY="35.0" text="CRC32:"/>
                                 <Label layoutX="14.0" layoutY="52.0" text="Size:"/>
-                                <Label layoutX="14.0" layoutY="69.0" text="Internal Version:"/>
-                                <Label fx:id="crc32Label" layoutX="107.0" layoutY="35.0"/>
-                                <Label fx:id="sizeLabel" layoutX="107.0" layoutY="52.0"/>
-                                <Label fx:id="internalVersionLabel" layoutX="107.0" layoutY="69.0"/>
+                                <Label layoutX="14.0" layoutY="69.0" text="Version:"/>
+                                <Label layoutX="210.0" layoutY="69.0" text="Charset:"/>
+                                <Label fx:id="crc32Label" layoutX="80.0" layoutY="35.0"/>
+                                <Label fx:id="sizeLabel" layoutX="80.0" layoutY="52.0"/>
+                                <Label fx:id="versionLabel" layoutX="80.0" layoutY="69.0"/>
+                                <Label fx:id="charsetLabel" layoutX="260.0" layoutY="69.0"/>
                                 <TableView fx:id="commonInformationTableView" layoutX="14.0" layoutY="95.0" prefHeight="315.0" prefWidth="300.0">
                                     <columns>
                                         <TableColumn editable="false" prefWidth="60.0" text="Section">

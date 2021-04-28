@@ -5,8 +5,7 @@ import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import javafx.scene.paint.Color;
 import md.leonis.ystt.model.Yodesk;
-import md.leonis.ystt.oldmodel2.Release;
-import md.leonis.ystt.oldmodel2.Section;
+import md.leonis.ystt.oldmodel.Release;
 
 import java.awt.image.IndexColorModel;
 import java.io.*;
@@ -108,8 +107,6 @@ public class Config {
 
     public static Yodesk yodesk;
 
-    public static Section section;
-
     public static void updatePalette() {
 
         for (int i = 0; i < 1024; i += 4) {
@@ -167,12 +164,5 @@ public class Config {
 
     public static List<Release> releases;
 
-    public static void loadGameFiles(File selectedFile) throws IOException {
-
-        yodesk = Yodesk.fromFile(Section.getDtaPath(selectedFile.toPath().getParent()).toString());
-
-        section = new Section();
-        section.LoadFileToArray(selectedFile);
-        //throw new RuntimeException("YODESK.DTA file not found");
-    }
+    public static Release release;
 }

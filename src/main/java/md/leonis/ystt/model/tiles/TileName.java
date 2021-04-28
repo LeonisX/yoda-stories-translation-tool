@@ -40,7 +40,7 @@ public class TileName extends KaitaiStruct {
     private void _read() {
         this.tileId = this._io.readU2le();
         if (tileId != 65535) {
-            this.name = new String(KaitaiStream.bytesTerminate(this._io.readBytes(24), (byte) 0, false), Charset.forName("Cp1252"));
+            this.name = new String(KaitaiStream.bytesTerminate(this._io.readBytes(24), (byte) 0, false), Charset.forName(Yodesk.getCharset()));
         }
     }
 

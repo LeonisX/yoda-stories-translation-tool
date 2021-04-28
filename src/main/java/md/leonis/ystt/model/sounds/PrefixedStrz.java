@@ -39,7 +39,7 @@ public class PrefixedStrz extends KaitaiStruct {
 
     private void _read() {
         this.lenContent = this._io.readU2le();
-        this.content = new String(KaitaiStream.bytesTerminate(this._io.readBytes(lenContent), (byte) 0, false), Charset.forName("Cp1252"));
+        this.content = new String(KaitaiStream.bytesTerminate(this._io.readBytes(lenContent), (byte) 0, false), Charset.forName(Yodesk.getCharset()));
     }
 
     public int getLenContent() {

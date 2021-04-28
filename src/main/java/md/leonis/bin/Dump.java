@@ -1,5 +1,8 @@
 package md.leonis.bin;
 
+import md.leonis.ystt.model.Yodesk;
+import org.apache.commons.collections4.splitmap.AbstractIterableGetMapDecorator;
+
 import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
@@ -18,6 +21,8 @@ public class Dump {
     private int offset = 0; // Current offset in dump.
 
     private int index = 0; // Relative address. Full address: offset + index
+
+    private String charset;
 
     //TODO методы для доступа и проверки
     //всякие указатели
@@ -58,7 +63,7 @@ public class Dump {
     public String readString(int length) {
         byte[] slice = Arrays.copyOfRange(dump, index, index + length);
         index += length;
-        return new String(slice, Charset.forName("Cp1252"));
+        return new String(slice, Charset.forName(charset));
     }
 
     public boolean checkZeroes(int length) {
@@ -238,8 +243,6 @@ public class Dump {
     }
 
     public void setByte(int value) {
-        //System.out.print(Integer.toHexString(index) + ": ");
-        //System.out.println(Integer.toHexString(value));
         dump[index] = (byte) value;
         index++;
     }
@@ -335,8 +338,6 @@ public class Dump {
     }
 
     public void setBoolean(boolean value) {
-        //System.out.print(Integer.toHexString(index) + ": ");
-        //System.out.println(Integer.toHexString(value));
         dump[index] = value ? (byte) 1 : 0;
         index++;
     }
@@ -455,5 +456,13 @@ public class Dump {
         }
 
         return startIndex;
+    }
+
+    public String getCharset() {
+        return charset;
+    }
+
+    public void setCharset(String charset) {
+        this.charset = charset;
     }
 }

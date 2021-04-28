@@ -61,7 +61,7 @@ public class Character extends KaitaiStruct {
             }
 
             this.size = this._io.readU4le();
-            this.name = new String(KaitaiStream.bytesTerminate(this._io.readBytes(16), (byte) 0, false), Charset.forName("Cp1252"));
+            this.name = new String(KaitaiStream.bytesTerminate(this._io.readBytes(16), (byte) 0, false), Charset.forName(Yodesk.getCharset()));
             this.type = CharacterType.byId(this._io.readU2le());
             this.movementType = MovementType.byId(this._io.readU2le());
             this.probablyGarbage1 = this._io.readU2le();

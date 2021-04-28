@@ -1,6 +1,6 @@
-package md.leonis.ystt.oldmodel2;
+package md.leonis.ystt.oldmodel;
 
-public enum KnownSections {
+public enum Section {
 
     VERS(false),    // 1
     STUP(true),     // 2
@@ -18,7 +18,7 @@ public enum KnownSections {
 
     private final boolean withSize;
 
-    KnownSections(boolean withSize) {
+    Section(boolean withSize) {
         this.withSize = withSize;
     }
 

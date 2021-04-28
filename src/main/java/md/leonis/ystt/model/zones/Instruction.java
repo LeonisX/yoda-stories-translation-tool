@@ -4,6 +4,7 @@ import io.kaitai.struct.ByteBufferKaitaiStream;
 import io.kaitai.struct.KaitaiStream;
 import io.kaitai.struct.KaitaiStruct;
 import md.leonis.ystt.model.Yodesk;
+import md.leonis.ystt.model.characters.Character;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -46,7 +47,7 @@ public class Instruction extends KaitaiStruct {
             this.arguments.add(this._io.readS2le());
         }
         this.lenText = this._io.readU2le();
-        this.text = new String(this._io.readBytes(lenText), Charset.forName("Cp1252"));
+        this.text = new String(this._io.readBytes(lenText), Charset.forName(Yodesk.getCharset()));
     }
 
     public InstructionOpcode getOpcode() {

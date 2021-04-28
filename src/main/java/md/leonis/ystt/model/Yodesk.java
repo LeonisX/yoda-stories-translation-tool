@@ -6,7 +6,7 @@ import io.kaitai.struct.KaitaiStruct;
 import io.kaitai.struct.RandomAccessFileKaitaiStream;
 import md.leonis.ystt.model.characters.CharacterAuxiliaries;
 import md.leonis.ystt.model.characters.CharacterWeapons;
-import md.leonis.ystt.oldmodel2.KnownSections;
+import md.leonis.ystt.oldmodel.Section;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -39,7 +39,7 @@ import java.util.Map;
 public class Yodesk extends KaitaiStruct {
 
     private ArrayList<CatalogEntry> catalog;
-    private final Map<KnownSections, CatalogEntry> sections = new HashMap<>();
+    private final Map<Section, CatalogEntry> sections = new HashMap<>();
 
     private Version version;
     private StartupImage startupImage;
@@ -58,7 +58,10 @@ public class Yodesk extends KaitaiStruct {
     private final Yodesk _root;
     private final KaitaiStruct _parent;
 
-    public static Yodesk fromFile(String fileName) throws IOException {
+    private static String charset = "Cp1252";
+
+    public static Yodesk fromFile(String fileName, String charset) throws IOException {
+        Yodesk.charset = charset;
         return new Yodesk(new RandomAccessFileKaitaiStream(fileName));
     }
 
@@ -99,7 +102,7 @@ public class Yodesk extends KaitaiStruct {
         this.catalog = catalog;
     }
 
-    public Map<KnownSections, CatalogEntry> getSections() {
+    public Map<Section, CatalogEntry> getSections() {
         return sections;
     }
 
@@ -213,5 +216,13 @@ public class Yodesk extends KaitaiStruct {
 
     public KaitaiStruct get_parent() {
         return _parent;
+    }
+
+    public static String getCharset() {
+        return charset;
+    }
+
+    public static void setCharset(String charset) {
+        Yodesk.charset = charset;
     }
 }

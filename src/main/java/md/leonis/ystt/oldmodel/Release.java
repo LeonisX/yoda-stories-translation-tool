@@ -1,4 +1,4 @@
-package md.leonis.ystt.oldmodel2;
+package md.leonis.ystt.oldmodel;
 
 public class Release {
 
@@ -6,6 +6,7 @@ public class Release {
     private String title;
     private String exeCrc32;
     private String dtaCrc32;
+    private String charset;
 
     public String getId() {
         return id;
@@ -37,5 +38,13 @@ public class Release {
 
     public void setDtaCrc32(String dtaCrc32) {
         this.dtaCrc32 = dtaCrc32;
+    }
+
+    public String getCharset() {
+        return charset;
+    }
+
+    public void setCharset(String charset) {
+        this.charset = charset;
     }
 }

@@ -37,7 +37,7 @@ public class PrefixedStr extends KaitaiStruct {
 
     private void _read() {
         this.lenContent = this._io.readU2le();
-        this.content = new String(this._io.readBytes(lenContent), Charset.forName("Cp1252"));
+        this.content = new String(this._io.readBytes(lenContent), Charset.forName(Yodesk.getCharset()));
     }
 
     public int byteSize() {

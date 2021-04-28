@@ -47,7 +47,7 @@ public class Condition extends KaitaiStruct {
             this.arguments.add(this._io.readS2le());
         }
         this.lenText = this._io.readU2le();
-        this.text = new String(this._io.readBytes(lenText), Charset.forName("Cp1252"));
+        this.text = new String(this._io.readBytes(lenText), Charset.forName(Yodesk.getCharset()));
     }
 
     public ConditionOpcode getOpcode() {

@@ -6,18 +6,18 @@ import io.kaitai.struct.KaitaiStruct;
 import md.leonis.ystt.model.characters.CharacterAuxiliaries;
 import md.leonis.ystt.model.characters.CharacterWeapons;
 import md.leonis.ystt.model.zones.Zone;
-import md.leonis.ystt.oldmodel2.KnownSections;
+import md.leonis.ystt.oldmodel.Section;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
-import static md.leonis.ystt.oldmodel2.KnownSections.VERS;
-import static md.leonis.ystt.oldmodel2.KnownSections.ZONE;
+import static md.leonis.ystt.oldmodel.Section.VERS;
+import static md.leonis.ystt.oldmodel.Section.ZONE;
 
 public class CatalogEntry extends KaitaiStruct {
 
     private String type;
-    private KnownSections section;
+    private Section section;
     private long size;
     private int position;
     private int dataPosition;
@@ -49,14 +49,10 @@ public class CatalogEntry extends KaitaiStruct {
     private void _read() {
 
         try {
-            System.out.println("Start: " + this._io.pos());
-
             position = this._io.pos();
 
             this.type = new String(this._io.readBytes(4), StandardCharsets.US_ASCII);
-            section = KnownSections.valueOf(type);
-
-            //System.out.println(section);
+            section = Section.valueOf(type);
 
             if (section.equals(VERS)) {
                 this.size = 4;                                  // 4 bytes of value
@@ -142,15 +138,12 @@ public class CatalogEntry extends KaitaiStruct {
 
             size += 4 + (section.isWithSize() ? 4 : 0);             // 4 bytes of marker + optional 4 bytes of size
 
-            System.out.println(position);
-            System.out.println(size);
-
             this._io.seek(position);
             this.bytes = this._io.readBytes(size);
 
         } catch (IllegalArgumentException e) {
             //TODO showMessage("Unknown section: 0x" + intToHex(GetPosition(), 4) + ": \"" + s + '"');
-            section = KnownSections.UNKN;
+            section = Section.UNKN;
             this.size = this._io.readU4le();
             this.bytes = this._io.readBytes(size);
             KaitaiStream stream = new ByteBufferKaitaiStream(bytes);
@@ -164,7 +157,7 @@ public class CatalogEntry extends KaitaiStruct {
         return type;
     }
 
-    public KnownSections getSection() {
+    public Section getSection() {
         return section;
     }
 

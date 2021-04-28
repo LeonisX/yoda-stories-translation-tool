@@ -17,7 +17,6 @@ An original version: https://github.com/LeonisX/YExplorer
 * HEX
 * Тяжёлые процессы дампинга лучше вынести в отдельный поток
 
-* Charset.forName("Cp1252") - dump with native encoding!!!
 * Сломан вывод таблицы Map ( нужна ли?)
 
 * Prepare translated DTA & dump it here

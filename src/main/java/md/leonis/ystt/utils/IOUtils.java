@@ -9,6 +9,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.stream.Stream;
 
 public class IOUtils {
 
@@ -104,6 +105,16 @@ public class IOUtils {
                 }
                 b++;
             }
+        }
+    }
+
+    public static Path getDtaPath(Path dir) throws IOException {
+
+        try (Stream<Path> stream = Files.list(dir)) {
+            return stream
+                    .filter(file -> !Files.isDirectory(file))
+                    .filter(file -> file.getFileName().toString().toLowerCase().endsWith(".dta"))
+                    .findFirst().orElse(null);
         }
     }
 }
