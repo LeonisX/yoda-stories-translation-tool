@@ -35,6 +35,13 @@
     "charset": "Cp1252"
   },
   {
+    "id": "spa-1",
+    "title": "Yoda Stories (22.05.1997) (Spa)",
+    "exeCrc32": "82CFC2E8",
+    "dtaCrc32": "A0CE2095",
+    "charset": "Cp1252"
+  },
+  {
     "id": "ger-1",
     "title": "Yoda Stories (25.06.1997) (Ger)",
     "exeCrc32": "3AD6EF74",
@@ -42,7 +49,7 @@
     "charset": "Cp1252"
   },
   {
-    "id": "spa-1",
+    "id": "spa-2",
     "title": "Yoda Stories (13.12.2001) (T+Spa_Selva Translators)",
     "exeCrc32": "8E4CAB0D",
     "dtaCrc32": "A0CE2095",
