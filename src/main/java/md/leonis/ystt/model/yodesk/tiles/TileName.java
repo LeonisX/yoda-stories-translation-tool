@@ -51,6 +51,10 @@ public class TileName extends KaitaiStruct {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public Yodesk getRoot() {
         return root;
     }

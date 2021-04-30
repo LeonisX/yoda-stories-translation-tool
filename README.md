@@ -12,7 +12,6 @@ An original version: https://github.com/LeonisX/YExplorer
 
 ## TODO
 
-* Replace text from DOCX
 * Replace tiles, maps, Undo
 * Log
 * HEX

@@ -321,7 +321,7 @@
                                                           text="Group by planet type"/>
                                                 <CheckBox fx:id="dumpActionsCheckBox" layoutX="25.0" layoutY="148.0"
                                                           mnemonicParsing="false" selected="true" text="Dump actions"/>
-                                                <CheckBox fx:id="dumpTextCheckBox" layoutX="25.0" layoutY="174.0"
+                                                <CheckBox fx:id="dumpActionsTextCheckBox" layoutX="25.0" layoutY="174.0"
                                                           mnemonicParsing="false" selected="true" text="Dump text"/>
                                                 <CheckBox fx:id="saveUnusedTilesCheckBox" layoutX="25.0" layoutY="199.0"
                                                           mnemonicParsing="false" text="Save non-map tiles"/>
@@ -579,28 +579,47 @@
                                                         <padding>
                                                             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                                                         </padding>
-                                                        <Button fx:id="dumpTextToDocx" mnemonicParsing="false"
-                                                                onAction="#dumpTextToDocxCLick"
+                                                        <Button fx:id="dumpActionsTextToDocx" mnemonicParsing="false"
+                                                                onAction="#dumpActionsTextToDocxClick"
                                                                 text="Dump text to DOCX"/>
-                                                        <Button fx:id="loadTranslatedText" mnemonicParsing="false"
-                                                                onAction="#loadTranslatedTextClick"
+                                                        <Button fx:id="loadTranslatedActionsText" mnemonicParsing="false"
+                                                                onAction="#loadTranslatedActionsTextClick"
                                                                 text="Load translated text"/>
-                                                        <Button fx:id="replaceTextInDta" mnemonicParsing="false"
-                                                                onAction="#replaceTextInDtaClick"
+                                                        <Button fx:id="replaceActionText" mnemonicParsing="false"
+                                                                onAction="#replaceActionTextClick"
                                                                 text="Replace text in DTA"/>
-                                                        <CheckBox fx:id="trimSpacesCheckBox" mnemonicParsing="false"
-                                                                  text="Trim spaces"/>
+                                                        <CheckBox fx:id="trimActionsTrailSpacesCheckBox" mnemonicParsing="false" selected="true"
+                                                                  text="Trim unneeded trail spaces"/>
+                                                        <CheckBox fx:id="strictActionsReplacingRulesCheckBox"
+                                                                  mnemonicParsing="false" selected="true"
+                                                                  text="Strict replacing rules"/>
                                                     </HBox>
                                                 </top>
                                                 <center>
-                                                    <TableView prefHeight="200.0" prefWidth="200.0"
+                                                    <TableView fx:id="actionsTextTableView" prefHeight="200.0" prefWidth="200.0"
                                                                BorderPane.alignment="CENTER">
                                                         <columns>
-                                                            <TableColumn editable="false" prefWidth="442.0"
-                                                                         sortable="false" text="Original"/>
+                                                            <TableColumn editable="false" prefWidth="600.0"
+                                                                         sortable="false" text="Original">
+                                                                <cellValueFactory>
+                                                                    <PropertyValueFactory property="original"/>
+                                                                </cellValueFactory>
+                                                                <cellFactory>
+                                                                    <StringCellFactory alignment="LEFT">
+                                                                    </StringCellFactory>
+                                                                </cellFactory>
+                                                            </TableColumn>
                                                             <TableColumn editable="false" minWidth="0.0"
-                                                                         prefWidth="524.0" sortable="false"
-                                                                         text="Translated"/>
+                                                                         prefWidth="600.0" sortable="false"
+                                                                         text="Translated">
+                                                                <cellValueFactory>
+                                                                    <PropertyValueFactory property="translation"/>
+                                                                </cellValueFactory>
+                                                                <cellFactory>
+                                                                    <StringCellFactory alignment="LEFT">
+                                                                    </StringCellFactory>
+                                                                </cellFactory>
+                                                            </TableColumn>
                                                         </columns>
                                                     </TableView>
                                                 </center>
@@ -635,28 +654,47 @@
                                                             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                                                         </padding>
                                                         <Button fx:id="dumpPuzzlesTextToDocx" mnemonicParsing="false"
-                                                                onAction="#dumpPuzzlesTextToDocxCLick"
+                                                                onAction="#dumpPuzzlesTextToDocxClick"
                                                                 text="Dump text to DOCX"/>
-                                                        <Button fx:id="loadPuzzlesTranslatedText"
+                                                        <Button fx:id="loadTranslatedPuzzlesText"
                                                                 mnemonicParsing="false"
-                                                                onAction="#loadPuzzlesTranslatedTextClick"
+                                                                onAction="#loadTranslatedPuzzlesTextClick"
                                                                 text="Load translated text"/>
-                                                        <Button fx:id="replacePuzzlesTextInDta" mnemonicParsing="false"
-                                                                onAction="#replacePuzzlesTextInDtaClick"
+                                                        <Button fx:id="replacePuzzlesText" mnemonicParsing="false"
+                                                                onAction="#replacePuzzlesTextClick"
                                                                 text="Replace text in DTA"/>
-                                                        <CheckBox fx:id="trimPuzzlesSpacesCheckBox"
-                                                                  mnemonicParsing="false" text="Trim spaces"/>
+                                                        <CheckBox fx:id="trimPuzzlesTrailSpacesCheckBox" mnemonicParsing="false" selected="true"
+                                                                  text="Trim unneeded trail spaces"/>
+                                                        <CheckBox fx:id="strictPuzzlesReplacingRulesCheckBox"
+                                                                  mnemonicParsing="false" selected="true"
+                                                                  text="Strict replacing rules"/>
                                                     </HBox>
                                                 </top>
                                                 <center>
-                                                    <TableView prefHeight="200.0" prefWidth="200.0"
+                                                    <TableView fx:id="puzzlesTextTableView" prefHeight="200.0" prefWidth="200.0"
                                                                BorderPane.alignment="CENTER">
                                                         <columns>
-                                                            <TableColumn editable="false" prefWidth="442.0"
-                                                                         sortable="false" text="Original"/>
+                                                            <TableColumn editable="false" prefWidth="600.0"
+                                                                         sortable="false" text="Original">
+                                                                <cellValueFactory>
+                                                                    <PropertyValueFactory property="original"/>
+                                                                </cellValueFactory>
+                                                                <cellFactory>
+                                                                    <StringCellFactory alignment="LEFT">
+                                                                    </StringCellFactory>
+                                                                </cellFactory>
+                                                            </TableColumn>
                                                             <TableColumn editable="false" minWidth="0.0"
-                                                                         prefWidth="524.0" sortable="false"
-                                                                         text="Translated"/>
+                                                                         prefWidth="600.0" sortable="false"
+                                                                         text="Translated">
+                                                                <cellValueFactory>
+                                                                    <PropertyValueFactory property="translation"/>
+                                                                </cellValueFactory>
+                                                                <cellFactory>
+                                                                    <StringCellFactory alignment="LEFT">
+                                                                    </StringCellFactory>
+                                                                </cellFactory>
+                                                            </TableColumn>
                                                         </columns>
                                                     </TableView>
                                                 </center>
@@ -753,25 +791,44 @@
                                                         <Button fx:id="dumpNamesTextToDocx" mnemonicParsing="false"
                                                                 onAction="#dumpNamesTextToDocxCLick"
                                                                 text="Dump text to DOCX"/>
-                                                        <Button fx:id="loadNamesTranslatedText" mnemonicParsing="false"
-                                                                onAction="#loadNamesTranslatedTextClick"
+                                                        <Button fx:id="loadTranslatedNamesText" mnemonicParsing="false"
+                                                                onAction="#loadTranslatedNamesTextClick"
                                                                 text="Load translated text"/>
-                                                        <Button fx:id="replaceNamesTextInDta" mnemonicParsing="false"
-                                                                onAction="#replaceNamesTextInDtaClick"
+                                                        <Button fx:id="replaceNamesText" mnemonicParsing="false"
+                                                                onAction="#replaceNamesTextClick"
                                                                 text="Replace text in DTA"/>
-                                                        <CheckBox fx:id="trimNamesSpacesCheckBox"
+                                                        <CheckBox fx:id="trimNamesSpacesCheckBox" selected="true"
                                                                   mnemonicParsing="false" text="Trim spaces"/>
+                                                        <CheckBox fx:id="strictNamesReplacingRulesCheckBox"
+                                                                  mnemonicParsing="false" selected="true"
+                                                                  text="Strict replacing rules"/>
                                                     </HBox>
                                                 </top>
                                                 <center>
-                                                    <TableView prefHeight="200.0" prefWidth="200.0"
+                                                    <TableView fx:id="namesTextTableView" prefHeight="200.0" prefWidth="200.0"
                                                                BorderPane.alignment="CENTER">
                                                         <columns>
-                                                            <TableColumn editable="false" prefWidth="442.0"
-                                                                         sortable="false" text="Original"/>
+                                                            <TableColumn editable="false" prefWidth="600.0"
+                                                                         sortable="false" text="Original">
+                                                                <cellValueFactory>
+                                                                    <PropertyValueFactory property="original"/>
+                                                                </cellValueFactory>
+                                                                <cellFactory>
+                                                                    <StringCellFactory alignment="LEFT">
+                                                                    </StringCellFactory>
+                                                                </cellFactory>
+                                                            </TableColumn>
                                                             <TableColumn editable="false" minWidth="0.0"
-                                                                         prefWidth="524.0" sortable="false"
-                                                                         text="Translated"/>
+                                                                         prefWidth="600.0" sortable="false"
+                                                                         text="Translated">
+                                                                <cellValueFactory>
+                                                                    <PropertyValueFactory property="translation"/>
+                                                                </cellValueFactory>
+                                                                <cellFactory>
+                                                                    <StringCellFactory alignment="LEFT">
+                                                                    </StringCellFactory>
+                                                                </cellFactory>
+                                                            </TableColumn>
                                                         </columns>
                                                     </TableView>
                                                 </center>

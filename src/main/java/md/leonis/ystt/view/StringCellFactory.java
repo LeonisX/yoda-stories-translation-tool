@@ -4,8 +4,10 @@ import java.text.Format;
 
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.control.Control;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
+import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.util.Callback;
 
@@ -31,16 +33,27 @@ public class StringCellFactory<S, T> implements Callback<TableColumn<S, T>, Tabl
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public TableCell<S, T> call(TableColumn<S, T> p) {
+
         TableCell<S, T> cell = new TableCell<S, T>() {
 
             @Override
-            public void updateItem(Object item, boolean empty) {
+            public void updateItem(T item, boolean empty) {
+
                 if (item == getItem()) {
                     return;
                 }
-                super.updateItem((T) item, empty);
+
+                final Text text = new Text();
+
+                this.setGraphic(text);
+                text.wrappingWidthProperty().bind(this.widthProperty());
+
+                this.setWrapText(true);
+                this.setPrefHeight(Control.USE_COMPUTED_SIZE);
+                //text.textProperty().bind(this.itemProperty());
+
+                super.updateItem(item, empty);
                 if (item == null) {
                     super.setText(null);
                     super.setGraphic(null);

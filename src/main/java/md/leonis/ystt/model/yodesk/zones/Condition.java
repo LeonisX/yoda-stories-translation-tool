@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 
-public class Condition extends KaitaiStruct {
+public class Condition extends KaitaiStruct implements TextContainer {
 
     private ConditionOpcode opcode;
     private ArrayList<Short> arguments;
@@ -57,12 +57,20 @@ public class Condition extends KaitaiStruct {
         return arguments;
     }
 
+    @Override
     public int getLenText() {
         return lenText;
     }
 
+    @Override
     public String getText() {
         return text;
+    }
+
+    @Override
+    public void setText(String text) {
+        this.text = text;
+        this.lenText = text.length();
     }
 
     public Yodesk getRoot() {
@@ -72,4 +80,5 @@ public class Condition extends KaitaiStruct {
     public Action getParent() {
         return parent;
     }
+
 }

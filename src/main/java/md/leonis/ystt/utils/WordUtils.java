@@ -1,8 +1,9 @@
 package md.leonis.ystt.utils;
 
 import md.leonis.ystt.model.ImageRecord;
-import md.leonis.ystt.model.PuzzleRecord;
-import md.leonis.ystt.model.StringRecord;
+import md.leonis.ystt.model.docx.StringImagesRecord;
+import md.leonis.ystt.model.docx.StringRecord;
+import md.leonis.ystt.model.docx.WordRecord;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.util.Units;
 import org.apache.poi.xwpf.usermodel.*;
@@ -11,12 +12,15 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class WordUtils {
 
-    public static void saveZones(List<PuzzleRecord> records, Path path) throws IOException, InvalidFormatException {
+    public static void saveZones(List<StringRecord> records, List<String> strings, Path path) throws IOException, InvalidFormatException {
 
         XWPFDocument document = new XWPFDocument();
 
@@ -28,16 +32,18 @@ public class WordUtils {
         run.setText("Zone actions");
         paragraph.setAlignment(ParagraphAlignment.CENTER);
 
+        strings.forEach(s -> document.createParagraph().createRun().setText(s));
+
         List<List<Object>> matrix = records.stream().map(r -> {
             List<Object> objects = new ArrayList<>(new ArrayList<>(Collections.singletonList(r.getId())));
-            if (!r.getType().isEmpty()) {
+            /*if (!r.getType().isEmpty()) {
                 objects.add("\n");
                 objects.add(r.getType());
-            }
+            }*/
 
             List<String> lines = Arrays.stream(r.getOriginal().replace("\r\n", "\t\r\n\t").split("\t")).collect(Collectors.toList());
 
-            return Arrays.asList(objects, lines, "");
+            return Arrays.asList(objects, lines, r.getTranslation());
         }).collect(Collectors.toList());
 
         createTable(document, Arrays.asList("Info", "Original", "Translated"), matrix);
@@ -48,7 +54,7 @@ public class WordUtils {
         System.out.println(path.toString() + " written successfully");
     }
 
-    public static void savePuzzles(List<PuzzleRecord> records, Path path) throws IOException, InvalidFormatException {
+    public static void savePuzzles(List<StringImagesRecord> records, List<String> strings, Path path) throws IOException, InvalidFormatException {
 
         XWPFDocument document = new XWPFDocument();
 
@@ -60,6 +66,8 @@ public class WordUtils {
         run.setText("Puzzles");
         paragraph.setAlignment(ParagraphAlignment.CENTER);
 
+        strings.forEach(s -> document.createParagraph().createRun().setText(s));
+
         List<List<Object>> matrix = records.stream().map(r -> {
             List<Object> objects = new ArrayList<>(new ArrayList<>(Collections.singletonList(r.getId())));
             if (!r.getImages().isEmpty()) {
@@ -67,7 +75,7 @@ public class WordUtils {
                 objects.add(r.getImages().get(0));
             }
 
-            return Arrays.asList(objects, r.getOriginal(), "");
+            return Arrays.asList(objects, r.getOriginal(), r.getTranslation());
         }).collect(Collectors.toList());
 
         createTable(document, Arrays.asList("Info", "Original", "Translated"), matrix);
@@ -78,7 +86,7 @@ public class WordUtils {
         System.out.println(path.toString() + " written successfully");
     }
 
-    public static void saveCharacters(List<ImageRecord> records, Path path) throws IOException, InvalidFormatException {
+    public static void saveCharacters(List<ImageRecord> records, List<String> strings, Path path) throws IOException, InvalidFormatException {
 
         XWPFDocument document = new XWPFDocument();
 
@@ -90,6 +98,8 @@ public class WordUtils {
         run.setText("Characters");
         paragraph.setAlignment(ParagraphAlignment.CENTER);
 
+        strings.forEach(s -> document.createParagraph().createRun().setText(s));
+
         List<List<Object>> matrix = records.stream().map(r -> Arrays.asList(r.getOriginal(), r.getImages())).collect(Collectors.toList());
 
         createTable(document, Arrays.asList("Name", "Sprites"), matrix);
@@ -100,7 +110,7 @@ public class WordUtils {
         System.out.println(path.toString() + " written successully");
     }
 
-    public static void saveNames(List<ImageRecord> records, Path path) throws IOException, InvalidFormatException {
+    public static void saveNames(List<StringImagesRecord> records, List<String> strings, Path path) throws IOException, InvalidFormatException {
 
         XWPFDocument document = new XWPFDocument();
 
@@ -112,9 +122,10 @@ public class WordUtils {
         run.setText("Tile names");
         paragraph.setAlignment(ParagraphAlignment.CENTER);
 
-        List<List<Object>> matrix = records.stream().map(r -> Arrays.asList(r.getImages(), r.getOriginal(), r.getTranslation())).collect(Collectors.toList());
+        strings.forEach(s -> document.createParagraph().createRun().setText(s));
+        List<List<Object>> matrix = records.stream().map(r -> Arrays.asList(r.getId(), r.getImages(), r.getOriginal(), r.getTranslation())).collect(Collectors.toList());
 
-        createTable(document, Arrays.asList("Tiles", "Original text", "Translated text"), matrix);
+        createTable(document, Arrays.asList("ID", "Tile", "Original text", "Translated text"), matrix);
 
         FileOutputStream out = new FileOutputStream(path.toFile());
         document.write(out);
@@ -123,11 +134,13 @@ public class WordUtils {
     }
 
     //TODO add release metrics, comments
-    public static void saveRecords(String title, List<StringRecord> records, Path path) throws IOException {
+    public static void saveRecords(String title, List<StringRecord> records, List<String> strings, Path path) throws IOException {
 
         XWPFDocument document = new XWPFDocument();
 
         document.createParagraph().createRun().setText(title);
+
+        strings.forEach(s -> document.createParagraph().createRun().setText(s));
 
         XWPFTable table = document.createTable();
 
@@ -270,7 +283,7 @@ public class WordUtils {
         if (addBreak) run.addBreak();
     }
 
-    public static List<StringRecord> loadRecords(Path path) throws IOException {
+    public static WordRecord loadRecords(Path path) throws IOException {
 
         List<StringRecord> records = new ArrayList<>();
 
@@ -283,22 +296,26 @@ public class WordUtils {
             records.add(new StringRecord(row.getCell(0).getText(), row.getCell(1).getText(), row.getCell(2).getText()));
         }
 
-        /*
-        List<XWPFTable> tables = doc.getTables();
+        List<String> strings = doc.getParagraphs().stream().map(XWPFParagraph::getText).collect(Collectors.toList());
 
-        for (XWPFTable tbl : tables) {
-            for (XWPFTableRow row : tbl.getRows()) {
-                for (XWPFTableCell cell : row.getTableCells()) {
-                    System.out.println(cell.getText());
-                    String sFieldValue = cell.getText();
-                    if (sFieldValue.matches("Whatever you want to match with the string") || sFieldValue.matches("col two, row three")) {
-                        System.out.println("The match as per the Document is True");
-                    }
-                }
-                System.out.println(" ");
-            }
-        }*/
+        return new WordRecord(strings, records);
+    }
 
-        return records;
+    public static WordRecord loadNames(Path path) throws IOException {
+
+        List<StringRecord> records = new ArrayList<>();
+
+        FileInputStream fis = new FileInputStream(path.toFile());
+        XWPFDocument doc = new XWPFDocument(fis);
+        XWPFTable table = doc.getTables().get(0);
+
+        for (int i = 1; i < table.getRows().size(); i++) {
+            XWPFTableRow row = table.getRows().get(i);
+            records.add(new StringRecord(row.getCell(0).getText(), row.getCell(2).getText(), row.getCell(3).getText()));
+        }
+
+        List<String> strings = doc.getParagraphs().stream().map(XWPFParagraph::getText).collect(Collectors.toList());
+
+        return new WordRecord(strings, records);
     }
 }

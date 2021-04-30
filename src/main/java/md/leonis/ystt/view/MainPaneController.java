@@ -25,24 +25,27 @@ import javafx.stage.WindowEvent;
 import md.leonis.bin.ByteOrder;
 import md.leonis.bin.Dump;
 import md.leonis.config.Config;
-import md.leonis.ystt.model.*;
+import md.leonis.ystt.model.ImageRecord;
+import md.leonis.ystt.model.Release;
+import md.leonis.ystt.model.Section;
+import md.leonis.ystt.model.docx.StringImagesRecord;
+import md.leonis.ystt.model.docx.StringRecord;
+import md.leonis.ystt.model.docx.WordRecord;
 import md.leonis.ystt.model.yodesk.CatalogEntry;
 import md.leonis.ystt.model.yodesk.Yodesk;
 import md.leonis.ystt.model.yodesk.characters.Character;
 import md.leonis.ystt.model.yodesk.characters.CharacterAuxiliary;
 import md.leonis.ystt.model.yodesk.characters.CharacterWeapon;
+import md.leonis.ystt.model.yodesk.puzzles.PrefixedStr;
 import md.leonis.ystt.model.yodesk.puzzles.Puzzle;
+import md.leonis.ystt.model.yodesk.puzzles.StringMeaning;
 import md.leonis.ystt.model.yodesk.tiles.TileName;
-import md.leonis.ystt.model.yodesk.zones.Action;
-import md.leonis.ystt.model.yodesk.zones.Condition;
-import md.leonis.ystt.model.yodesk.zones.Instruction;
-import md.leonis.ystt.model.yodesk.zones.Zone;
+import md.leonis.ystt.model.yodesk.zones.*;
 import md.leonis.ystt.utils.*;
 import net.sf.image4j.codec.bmp.BMPImage;
 import net.sf.image4j.codec.bmp.BMPReader;
 import net.sf.image4j.codec.bmp.BMPWriter;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -53,6 +56,7 @@ import java.math.BigInteger;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -126,7 +130,7 @@ public class MainPaneController {
     public CheckBox groupByFlagsCheckBox;
     public CheckBox groupByPlanetTypeCheckBox;
     public CheckBox dumpActionsCheckBox;
-    public CheckBox dumpTextCheckBox;
+    public CheckBox dumpActionsTextCheckBox;
     public CheckBox saveUnusedTilesCheckBox;
     public ListView<String> mapsListView;
     public Canvas mapCanvas;
@@ -141,18 +145,22 @@ public class MainPaneController {
     public FlowPane mapEditorTilesFlowPane;
     public Button undoMapEdit;
 
-    public Button dumpTextToDocx;
-    public Button loadTranslatedText;
-    public Button replaceTextInDta;
-    public CheckBox trimSpacesCheckBox;
-
+    public Button dumpActionsTextToDocx;
+    public Button loadTranslatedActionsText;
+    public Button replaceActionText;
+    public CheckBox trimActionsTrailSpacesCheckBox;
+    public CheckBox strictActionsReplacingRulesCheckBox;
+    public TableView<StringRecord> actionsTextTableView;
 
     public Label puzzlesCountLabel;
     public Button savePuzzlesToFilesButton;
     public Button dumpPuzzlesTextToDocx;
-    public Button loadPuzzlesTranslatedText;
-    public Button replacePuzzlesTextInDta;
-    public CheckBox trimPuzzlesSpacesCheckBox;
+    public Button loadTranslatedPuzzlesText;
+    public Button replacePuzzlesText;
+
+    public CheckBox trimPuzzlesTrailSpacesCheckBox;
+    public CheckBox strictPuzzlesReplacingRulesCheckBox;
+    public TableView<StringImagesRecord> puzzlesTextTableView;
 
     public Label charactersCountLabel;
     public Button saveCharactersToFilesButton;
@@ -162,9 +170,11 @@ public class MainPaneController {
     public Button saveNamesToFilesButton;
     public TableView<TileName> namesTableView;
     public Button dumpNamesTextToDocx;
-    public Button loadNamesTranslatedText;
-    public Button replaceNamesTextInDta;
+    public Button loadTranslatedNamesText;
+    public Button replaceNamesText;
     public CheckBox trimNamesSpacesCheckBox;
+    public CheckBox strictNamesReplacingRulesCheckBox;
+    public TableView<StringImagesRecord> namesTextTableView;
 
     public TextArea logsTextArea;
     public TextArea hexViewerTextArea;
@@ -193,40 +203,13 @@ public class MainPaneController {
     public static String exeCrc32;
     public static String dtaCrc32;
 
+    private List<StringRecord> actionTexts;
+    private List<StringImagesRecord> puzzlesTexts;
+    private List<StringImagesRecord> namesTexts;
+
 
     public MainPaneController() {
-
         spath = Paths.get(".");
-
-        /*var k: Word;
-
-        ZeroColorRGDo(false);
-        OpenDTADialog.InitialDir := '.\';
-        texts := TStringList.Create;
-        log.SetOutput(LogMemo.lines);
-
-        // insert text
-        ts := TStringList.Create;
-        ts2 := TStringList.Create;
-
-        StringGrid1.Cells[0,0]:='#';
-        StringGrid1.Cells[1,0]:='Original';
-        StringGrid1.Cells[2,0]:='Translated';
-        k:=(StringGrid1.Width - 96) div 2 - StringGrid1.GridLineWidth * StringGrid1.ColCount - 8;
-        StringGrid1.ColWidths[1]:=k;
-        StringGrid1.ColWidths[2]:=k;
-        StringGrid4.Cells[0,0]:='#';
-        StringGrid4.Cells[1,0]:='Original';
-        StringGrid4.Cells[2,0]:='Translated';
-        StringGrid4.ColWidths[1]:=k;
-        StringGrid4.ColWidths[2]:=k;
-        StringGrid2.Cells[0,0]:='#';
-        StringGrid2.Cells[1,0]:='Original';
-        StringGrid2.Cells[2,0]:='Translated';
-        StringGrid2.ColWidths[1]:=k;
-        StringGrid2.ColWidths[2]:=k;
-
-        Opendialog1.InitialDir := ExtractFilePath(ParamStr(0))+'\';*/
     }
 
     @FXML
@@ -303,8 +286,13 @@ public class MainPaneController {
         mapEditorListView.getSelectionModel().select(0);
         drawMapEditorTiles();
 
+        actionTexts = getActionsTexts();
+        actionsTextTableView.setItems(FXCollections.observableList(actionTexts));
+
         // Puzzles
         puzzlesCountLabel.setText(Integer.toString(yodesk.getPuzzles().getPuzzles().size()));
+        puzzlesTexts = getPuzzlesTexts();
+        puzzlesTextTableView.setItems(FXCollections.observableList(puzzlesTexts));
 
         // Characters
         charactersCountLabel.setText(Integer.toString(yodesk.getCharacters().getCharacters().size()));
@@ -355,6 +343,9 @@ public class MainPaneController {
             return cell;
         });
         namesTableView.setItems(FXCollections.observableList(yodesk.getTileNames().getFilteredNames()));
+
+        namesTexts = getNamesTexts();
+        namesTextTableView.setItems(FXCollections.observableList(namesTexts));
     }
 
     private void drawTitleImage() {
@@ -979,7 +970,7 @@ public class MainPaneController {
         clipboardImageView.setImage(null);
     }
 
-    public void saveMapsToFilesButtonClick() throws IOException, InvalidFormatException {
+    public void saveMapsToFilesButtonClick() throws IOException {
 
         if (normalSaveCheckBox.isSelected()) {
             IOUtils.createDirectories(opath.resolve("Maps"));
@@ -1027,67 +1018,8 @@ public class MainPaneController {
             }
         }
 
-        if (dumpTextCheckBox.isSelected()) {
-            List<String> phrases = yodesk.getZones().getZones().stream().flatMap(z -> {
-                List<String> conditions = z.getActions().stream().flatMap(a -> a.getConditions().stream().map(Condition::getText)).collect(Collectors.toList());
-                List<String> instructions = z.getActions().stream().flatMap(a -> a.getInstructions().stream().map(Instruction::getText)).collect(Collectors.toList());
-                conditions.addAll(instructions);
-                return conditions.stream().filter(StringUtils::isNotBlank).map(s -> s.replace("\r\n", "[CR]").replace("[CR][CR]", "[CR2]"));
-            }).collect(Collectors.toList());
-            IOUtils.saveTextFile(phrases, opath.resolve("iact.txt"));
-
-
-            // TODO group by all zone auxiliary
-
-            List<PuzzleRecord> zoneRecords = new ArrayList<>();
-
-            //TODO filtered?
-            yodesk.getZones().getZones().forEach(zone -> {
-                List<PuzzleRecord> zr = new ArrayList<>();
-
-                // planet
-                // width
-                // height
-                // type
-                // sharedCounter
-                // hotspots
-                // ZoneAuxiliary3 npcs
-                // ZoneAuxiliary4 unknown
-                // ZoneAuxiliary2 providedItems
-                // ZoneAuxiliary
-                //    private int _unnamed2;
-                //    private ArrayList<Monster> monsters;
-                //    private ArrayList<Integer> requiredItems;
-                //    private ArrayList<Integer> goalItems;
-
-                // Actions
-                // Conditions Opcodes, text
-                // Instructions Opcodes, text
-
-                for (int ax = 0; ax < zone.getActions().size(); ax++) {
-                    Action a = zone.getActions().get(ax);
-                    for (int cx = 0; cx < a.getConditions().size(); cx++) {
-                        Condition c = a.getConditions().get(cx);
-                        if (!c.getText().isEmpty()) {
-                            zr.add(new PuzzleRecord(zone.getIndex() + "." + ax + ".c" + cx, Collections.emptyList(), "", c.getText()));
-                        }
-                    }
-                    for (int ix = 0; ix < a.getInstructions().size(); ix++) {
-                        Instruction i = a.getInstructions().get(ix);
-                        if (!i.getText().isEmpty()) {
-                            zr.add(new PuzzleRecord(zone.getIndex() + "." + ax + ".i" + ix, Collections.emptyList(), "", i.getText()));
-                        }
-                    }
-                }
-
-                /*if (zr.size() == 0) {
-                    zr.add(new PuzzleRecord(Integer.toString(zone.getIndex()), Collections.emptyList(), "", ""));
-                }
-                zr.get(0).setType(zone.getPlanet().name());*/
-
-                zoneRecords.addAll(zr);
-            });
-            WordUtils.saveZones(zoneRecords, opath.resolve("iact2" + E_DOCX));
+        if (dumpActionsTextCheckBox.isSelected()) {
+            dumpActionsTextToDocxClick();
         }
         //TODO uncomment, if need
         //ViewMap(MapsListStringGrid.Row);
@@ -1099,14 +1031,170 @@ public class MainPaneController {
         return Long.toBinaryString(value);
     }
 
-    public void dumpTextToDocxCLick(ActionEvent actionEvent) {
+    public void dumpActionsTextToDocxClick() {
 
+        try {
+            List<String> phrases = yodesk.getZones().getZones().stream().flatMap(z -> {
+                List<String> conditions = z.getActions().stream().flatMap(a -> a.getConditions().stream().map(Condition::getText)).collect(Collectors.toList());
+                List<String> instructions = z.getActions().stream().flatMap(a -> a.getInstructions().stream().map(Instruction::getText)).collect(Collectors.toList());
+                conditions.addAll(instructions);
+                return conditions.stream().filter(StringUtils::isNotBlank).map(s -> s.replace("\r\n", "[CR]").replace("[CR][CR]", "[CR2]"));
+            }).collect(Collectors.toList());
+            IOUtils.saveTextFile(phrases, opath.resolve("iact.txt"));
+
+            // TODO group by all zone auxiliary
+
+            WordUtils.saveZones(getActionsTexts(), getDtaCrcStrings(), opath.resolve("iact2" + E_DOCX));
+        } catch (Exception e) {
+            JavaFxUtils.showAlert("Error saving Actions text to file", e);
+        }
     }
 
-    public void loadTranslatedTextClick(ActionEvent actionEvent) {
+    private List<StringRecord> getActionsTexts() {
+
+        List<StringRecord> zoneRecords = new ArrayList<>();
+
+        yodesk.getZones().getZones().forEach(zone -> {
+            List<StringRecord> zr = new ArrayList<>();
+
+            // planet
+            // width
+            // height
+            // type
+            // sharedCounter
+            // hotspots
+            // ZoneAuxiliary3 npcs
+            // ZoneAuxiliary4 unknown
+            // ZoneAuxiliary2 providedItems
+            // ZoneAuxiliary
+            //    private int _unnamed2;
+            //    private ArrayList<Monster> monsters;
+            //    private ArrayList<Integer> requiredItems;
+            //    private ArrayList<Integer> goalItems;
+
+            // Actions
+            // Conditions Opcodes, text
+            // Instructions Opcodes, text
+
+            for (int ax = 0; ax < zone.getActions().size(); ax++) {
+                Action a = zone.getActions().get(ax);
+                for (int cx = 0; cx < a.getConditions().size(); cx++) {
+                    Condition c = a.getConditions().get(cx);
+                    if (!c.getText().isEmpty()) {
+                        zr.add(new StringRecord(zone.getIndex() + "." + ax + ".c" + cx, c.getText()));
+                    }
+                }
+                for (int ix = 0; ix < a.getInstructions().size(); ix++) {
+                    Instruction i = a.getInstructions().get(ix);
+                    if (!i.getText().isEmpty()) {
+                        zr.add(new StringRecord(zone.getIndex() + "." + ax + ".i" + ix, i.getText()));
+                    }
+                }
+            }
+
+                /*if (zr.size() == 0) {
+                    zr.add(new PuzzleRecord(Integer.toString(zone.getIndex()), Collections.emptyList(), "", ""));
+                }
+                zr.get(0).setType(zone.getPlanet().name());*/
+
+            zoneRecords.addAll(zr);
+        });
+
+        return zoneRecords;
     }
 
-    public void replaceTextInDtaClick(ActionEvent actionEvent) {
+    private List<String> getDtaCrcStrings() {
+        return Collections.singletonList(getDtaCrcString());
+    }
+
+    private String getDtaCrcString() {
+        return "CRC32: " + dtaCrc32;
+    }
+
+    private void validateDtaCrc(List<String> strings) {
+
+        if (!strings.contains(getDtaCrcString())) {
+            JavaFxUtils.showAlert("Wrong or absent CRC32 data", "Perhaps this translation is for another version of the game ", Alert.AlertType.WARNING);
+        }
+    }
+
+    public void loadTranslatedActionsTextClick() {
+
+        try {
+            WordRecord wordRecord = WordUtils.loadRecords(opath.resolve("iact2" + E_DOCX));
+            validateDtaCrc(wordRecord.getStrings());
+            actionTexts = wordRecord.getStringRecords();
+            actionsTextTableView.setItems(FXCollections.observableList(actionTexts));
+        } catch (Exception e) {
+            JavaFxUtils.showAlert("Error loading Actions text from file", e);
+        }
+    }
+
+    Pattern actionIdPattern = Pattern.compile("^[0-9]{1,4}\\.[0-9]{1,3}\\.[ic][0-9]{1,3}$");
+
+    public void replaceActionTextClick() {
+
+        try {
+            if (trimActionsTrailSpacesCheckBox.isSelected()) {
+                actionTexts.forEach(a -> a.setTranslation(a.getTranslation().trim()));
+            }
+
+            if (isBadTranslation(actionTexts, actionIdPattern, getActionsTexts(), strictActionsReplacingRulesCheckBox.isSelected())) {
+                return;
+            }
+
+            actionTexts.forEach(s -> getActionTextContainer(s.getId()).setText(s.getTranslation()));
+
+            JavaFxUtils.showAlert("The text has been successfully replaced", "No errors were found during the replacement ", Alert.AlertType.INFORMATION);
+
+        } catch (Exception e) {
+            JavaFxUtils.showAlert("Error replacing Actions text", e);
+        }
+    }
+
+    private boolean isBadTranslation(List<? extends StringRecord> translatedRecords, Pattern pattern, List<? extends StringRecord> records, boolean strict) {
+
+        List<String> strings = new ArrayList<>();
+
+        if (translatedRecords.stream().anyMatch(a -> a.getOriginal().trim().isEmpty())) {
+            strings.add("Part of the original text is missing");
+        }
+        if (translatedRecords.stream().anyMatch(a -> a.getTranslation().isEmpty())) {
+            strings.add("The text is not fully translated");
+        }
+        if (translatedRecords.size() != records.size()) {
+            strings.add("Invalid number of lines of text");
+        }
+        if (translatedRecords.stream().anyMatch(a -> !pattern.matcher(a.getId().trim()).matches())) {
+            strings.add("Broken or missing identifiers");
+        }
+        if (translatedRecords.stream().anyMatch(tr -> records.stream()
+                .noneMatch(r -> r.getOriginal().trim().equals(tr.getOriginal().trim()) && r.getId().trim().equals(tr.getId().trim())))) {
+            strings.add("Original text does not match IDs");
+        }
+
+        if (!strings.isEmpty()) {
+            JavaFxUtils.showAlert(strict ? "The text has not been replaced" : "Replacement of text was done with remarks",
+                    "During the check, the following errors were identified:",
+                    String.join("\n", strings), strict ? Alert.AlertType.ERROR : Alert.AlertType.WARNING
+            );
+        }
+
+        return !strings.isEmpty();
+    }
+
+    private TextContainer getActionTextContainer(String id) {
+
+        String[] chunks = id.split("\\.");
+        int zoneId = Integer.parseInt(chunks[0]);
+        int actionId = Integer.parseInt(chunks[1]);
+        int containerId = Integer.parseInt(chunks[2].substring(1));
+
+        if (chunks[2].charAt(0) == 'c') {
+            return yodesk.getZones().getZones().get(zoneId).getActions().get(actionId).getConditions().get(containerId);
+        } else {
+            return yodesk.getZones().getZones().get(zoneId).getActions().get(actionId).getInstructions().get(containerId);
+        }
     }
 
     public void savePuzzlesToFilesButtonClick() {
@@ -1127,9 +1215,6 @@ public class MainPaneController {
             List<String> phrases = yodesk.getPuzzles().getFilteredPuzzles().stream()
                     .flatMap(p -> p.getStrings().stream().filter(s -> !s.isEmpty())).map(s -> s.replace("\r\n", "[CR]").replace("[CR][CR]", "[CR2]")).collect(Collectors.toList());
             IOUtils.saveTextFile(phrases, opath.resolve("puz2.txt"));
-
-            List<PuzzleRecord> puzzleRecords = new ArrayList<>();
-
 
             Map<Long, List<String>> byType = yodesk.getPuzzles().getFilteredPuzzles().stream().filter(p -> p.getType() != null).collect(Collectors.groupingBy(Puzzle::getType, Collectors.mapping(p -> Long.toHexString(p.getIndex()), Collectors.toList())));
 
@@ -1158,41 +1243,7 @@ public class MainPaneController {
             System.out.println(puzzles1);
             System.out.println(puzzles2);
 
-            yodesk.getPuzzles().getFilteredPuzzles().forEach(p -> {
-                List<PuzzleRecord> pz = new ArrayList<>();
-
-
-                if (StringUtils.isNotBlank(p.getPrefixesStrings().get(0).getContent())) {
-                    pz.add(new PuzzleRecord(p.getIndex() + ".REQUEST", Stream.of(p.getItem1(), p.getItem2()).filter(i -> i <= yodesk.getTiles().getTiles().size() && i < 112)
-                            .map(tileId -> GetTile(tileId, icmw)).collect(Collectors.toList()), "REQUEST", p.getPrefixesStrings().get(0).getContent()));
-                }
-                if (StringUtils.isNotBlank(p.getPrefixesStrings().get(1).getContent())) {
-                    pz.add(new PuzzleRecord(p.getIndex() + ".THANK", Collections.emptyList(), "THANKS", p.getPrefixesStrings().get(1).getContent()));
-                }
-                if (StringUtils.isNotBlank(p.getPrefixesStrings().get(2).getContent())) {
-                    pz.add(new PuzzleRecord(p.getIndex() + ".OFFER", Collections.emptyList(), "OFFER", p.getPrefixesStrings().get(2).getContent()));
-                }
-                if (StringUtils.isNotBlank(p.getPrefixesStrings().get(3).getContent())) {
-                    pz.add(new PuzzleRecord(p.getIndex() + ".MISSION", Collections.emptyList(), "MISSION", p.getPrefixesStrings().get(3).getContent()));
-                }
-                if (StringUtils.isNotBlank(p.getPrefixesStrings().get(4).getContent())) {
-                    pz.add(new PuzzleRecord(p.getIndex() + ".UNUSED", Collections.emptyList(), "UNUSED", p.getPrefixesStrings().get(4).getContent()));
-                }
-
-                pz.get(0).setImages(Stream.of(p.getItem1()).map(tileId -> GetTile(tileId, icmw)).collect(Collectors.toList()));
-                if (pz.size() < 2) {
-                    List<BufferedImage> bufferedImages = pz.get(0).getImages();
-                    bufferedImages.addAll(Stream.of(p.getItem2()).filter(i -> i <= yodesk.getTiles().getTiles().size() && i >= 418)
-                            .map(tileId -> GetTile(tileId, icmw)).collect(Collectors.toList()));
-                    //pz.get(0).setImages();
-                } else {
-                    pz.get(1).setImages(Stream.of(p.getItem2()).filter(i -> i <= yodesk.getTiles().getTiles().size() && i >= 418)
-                            .map(tileId -> GetTile(tileId, icmw)).collect(Collectors.toList()));
-                }
-
-                puzzleRecords.addAll(pz);
-            });
-            WordUtils.savePuzzles(puzzleRecords, opath.resolve("puz2" + E_DOCX));
+            WordUtils.savePuzzles(getPuzzlesTexts(), getDtaCrcStrings(), opath.resolve("puz2" + E_DOCX));
 
         } catch (Exception e) {
             JavaFxUtils.showAlert("Error saving puzzles to the files", e);
@@ -1205,13 +1256,82 @@ public class MainPaneController {
         DumpData(opath.resolve("PUZ2").resolve(StringUtils.leftPad(Integer.toString(puzzle.getIndex()), 4, '0')), position, puzzle.byteSize());
     }
 
-    public void dumpPuzzlesTextToDocxCLick(ActionEvent actionEvent) {
+    public void dumpPuzzlesTextToDocxClick() {
+        savePuzzlesToFilesButtonClick();
     }
 
-    public void loadPuzzlesTranslatedTextClick(ActionEvent actionEvent) {
+    private List<StringImagesRecord> getPuzzlesTexts() {
+
+        List<StringImagesRecord> puzzleRecords = new ArrayList<>();
+
+        yodesk.getPuzzles().getFilteredPuzzles().forEach(p -> {
+            List<StringImagesRecord> pz = new ArrayList<>();
+
+            for (int i = 0; i < StringMeaning.values().length; i++) {
+                if (StringUtils.isNotBlank(p.getPrefixesStrings().get(i).getContent())) {
+                    pz.add(new StringImagesRecord(p.getIndex() + "." + StringMeaning.byId(i), Collections.emptyList(), p.getPrefixesStrings().get(i).getContent()));
+                }
+            }
+
+            pz.get(0).setImages(Stream.of(p.getItem1()).map(tileId -> GetTile(tileId, icmw)).collect(Collectors.toList()));
+
+            List<BufferedImage> image2 = Stream.of(p.getItem2()).filter(i -> i <= yodesk.getTiles().getTiles().size() && i >= 418)
+                    .map(tileId -> GetTile(tileId, icmw)).collect(Collectors.toList());
+
+            if (pz.size() < 2) {
+                pz.get(0).getImages().addAll(image2);
+            } else {
+                pz.get(1).setImages(image2);
+            }
+
+            puzzleRecords.addAll(pz);
+        });
+
+        return puzzleRecords;
     }
 
-    public void replacePuzzlesTextInDtaClick(ActionEvent actionEvent) {
+    public void loadTranslatedPuzzlesTextClick() {
+
+        try {
+            WordRecord wordRecord = WordUtils.loadRecords(opath.resolve("puz2" + E_DOCX));
+            validateDtaCrc(wordRecord.getStrings());
+            puzzlesTexts = wordRecord.getStringRecords().stream().map(s -> new StringImagesRecord(s.getId(), Collections.emptyList(), s.getOriginal(), s.getTranslation())).collect(Collectors.toList());
+            puzzlesTextTableView.setItems(FXCollections.observableList(puzzlesTexts));
+        } catch (Exception e) {
+            JavaFxUtils.showAlert("Error loading Puzzles text from file", e);
+        }
+    }
+
+    Pattern puzzleIdPattern = Pattern.compile(String.format("^[0-9]{1,4}\\.(%s|%s|%s|%s|%s)$",
+            StringMeaning.REQUEST, StringMeaning.THANK, StringMeaning.OFFER, StringMeaning.MISSION, StringMeaning.UNUSED));
+
+    public void replacePuzzlesTextClick() {
+
+        try {
+            if (trimPuzzlesTrailSpacesCheckBox.isSelected()) {
+                puzzlesTexts.forEach(a -> a.setTranslation(a.getTranslation().trim()));
+            }
+
+            if (isBadTranslation(puzzlesTexts, puzzleIdPattern, getPuzzlesTexts(), strictPuzzlesReplacingRulesCheckBox.isSelected())) {
+                return;
+            }
+
+            puzzlesTexts.forEach(s -> getPuzzlesPrefixedStr(s.getId()).setContent(s.getTranslation()));
+
+            JavaFxUtils.showAlert("The text has been successfully replaced", "No errors were found during the replacement ", Alert.AlertType.INFORMATION);
+
+        } catch (Exception e) {
+            JavaFxUtils.showAlert("Error replacing Puzzles text", e);
+        }
+    }
+
+    private PrefixedStr getPuzzlesPrefixedStr(String id) {
+
+        String[] chunks = id.trim().split("\\.");
+        int puzzleId = Integer.parseInt(chunks[0]);
+        int stringId = StringMeaning.valueOf(chunks[1]).getId();
+
+        return yodesk.getPuzzles().getPuzzles().get(puzzleId).getPrefixesStrings().get(stringId);
     }
 
     public void saveCharactersToFilesButtonClick() {
@@ -1247,11 +1367,11 @@ public class MainPaneController {
 
             List<StringRecord> records = yodesk.getCharacters().getCharacters().stream()
                     .map(c -> new StringRecord(c.getIndex(), c.getName())).collect(Collectors.toList());
-            WordUtils.saveRecords("Characters", records, opath.resolve("chars" + E_DOCX));
+            WordUtils.saveRecords("Characters", records, getDtaCrcStrings(), opath.resolve("chars" + E_DOCX));
 
             List<ImageRecord> imageRecords = yodesk.getCharacters().getFilteredCharacters().stream()
                     .map(c -> new ImageRecord(c.getTileIds().stream().map(t -> GetTile(t, icmw)).collect(Collectors.toList()), c.getName())).collect(Collectors.toList());
-            WordUtils.saveCharacters(imageRecords, opath.resolve("chars2" + E_DOCX));
+            WordUtils.saveCharacters(imageRecords, getDtaCrcStrings(), opath.resolve("chars2" + E_DOCX));
 
             IOUtils.saveTextFile(yodesk.getCharacters().getFilteredCharacters().stream().map(Character::getName).collect(Collectors.toList()), opath.resolve("chars.txt"));
         } catch (Exception e) {
@@ -1287,986 +1407,79 @@ public class MainPaneController {
     public void saveNamesToFileButtonClick() {
 
         try {
-            ReadTNAM();
+            Log.clear();
+            Log.debug("Names:");
+            Log.newLine();
+            Log.debug("Total count: " + yodesk.getTileNames().getNames().size());
+            Log.newLine();
+            IOUtils.createDirectories(opath.resolve("Names"));
+            for (TileName n : yodesk.getTileNames().getNames()) {
+                if (null != n.getName()) {
+                    BMPWriter.write(GetTile(n.getTileId()), IOUtils.findUnusedFileName(opath.resolve("Names"), n.getName(), E_BMP));
+                }
+            }
+            IOUtils.saveTextFile(yodesk.getTileNames().getFilteredNames().stream().map(TileName::getName).filter(Objects::nonNull)
+                    .collect(Collectors.toList()), opath.resolve("tilenames.txt"));
+
+            WordUtils.saveNames(getNamesTexts(), getDtaCrcStrings(), opath.resolve("tilenames2" + E_DOCX));
         } catch (Exception e) {
             JavaFxUtils.showAlert("Error saving names to a file", e);
         }
     }
 
-    private void ReadTNAM() throws IOException, InvalidFormatException {
+    public void dumpNamesTextToDocxCLick() {
+        saveNamesToFileButtonClick();
+    }
 
-        Log.clear();
-        Log.debug("Names:");
-        Log.newLine();
-        Log.debug("Total count: " + yodesk.getTileNames().getNames().size());
-        Log.newLine();
-        IOUtils.createDirectories(opath.resolve("Names"));
-        for (TileName n : yodesk.getTileNames().getNames()) {
-            if (null != n.getName()) {
-                BMPWriter.write(GetTile(n.getTileId()), IOUtils.findUnusedFileName(opath.resolve("Names"), n.getName(), E_BMP));
-            }
+    private List<StringImagesRecord> getNamesTexts() {
+
+        List<StringImagesRecord> list = new ArrayList<>();
+
+        List<TileName> filteredNames = yodesk.getTileNames().getFilteredNames();
+
+        for (int i = 0; i < filteredNames.size(); i++) {
+            TileName n = filteredNames.get(i);
+            StringImagesRecord puzzleRecord = new StringImagesRecord(i, Collections.singletonList(GetTile(n.getTileId(), icmw)), n.getName());
+            list.add(puzzleRecord);
         }
-        IOUtils.saveTextFile(yodesk.getTileNames().getFilteredNames().stream().map(TileName::getName).filter(Objects::nonNull)
-                .collect(Collectors.toList()), opath.resolve("tilenames.txt"));
-
-        List<ImageRecord> imageRecords = yodesk.getTileNames().getFilteredNames().stream()
-                .map(n -> new ImageRecord(Collections.singletonList(GetTile(n.getTileId(), icmw)), n.getName())).collect(Collectors.toList());
-        WordUtils.saveNames(imageRecords, opath.resolve("tilenames2" + E_DOCX));
+        return list;
     }
 
-    public void dumpNamesTextToDocxCLick(ActionEvent actionEvent) {
+    public void loadTranslatedNamesTextClick() {
+
+        try {
+            WordRecord wordRecord = WordUtils.loadNames(opath.resolve("tilenames2" + E_DOCX));
+            validateDtaCrc(wordRecord.getStrings());
+            namesTexts = wordRecord.getStringRecords().stream().map(s -> new StringImagesRecord(s.getId(), Collections.emptyList(), s.getOriginal(), s.getTranslation())).collect(Collectors.toList());
+            namesTextTableView.setItems(FXCollections.observableList(namesTexts));
+        } catch (Exception e) {
+            JavaFxUtils.showAlert("Error loading Puzzles text from file", e);
+        }
     }
 
-    public void loadNamesTranslatedTextClick(ActionEvent actionEvent) {
+    Pattern nameIdPattern = Pattern.compile("^[0-9]{1,4}$");
+
+    public void replaceNamesTextClick() {
+
+        try {
+            if (trimNamesSpacesCheckBox.isSelected()) {
+                namesTexts.forEach(a -> a.setTranslation(a.getTranslation().trim()));
+            }
+
+            if (isBadTranslation(namesTexts, nameIdPattern, getNamesTexts(), strictNamesReplacingRulesCheckBox.isSelected())) {
+                return;
+            }
+
+            List<TileName> filteredNames = yodesk.getTileNames().getFilteredNames();
+
+            namesTexts.forEach(n -> filteredNames.get(Integer.parseInt(n.getId())).setName(n.getTranslation()));
+
+            JavaFxUtils.showAlert("The text has been successfully replaced", "No errors were found during the replacement ", Alert.AlertType.INFORMATION);
+
+        } catch (Exception e) {
+            JavaFxUtils.showAlert("Error replacing Tile Names text", e);
+        }
     }
-
-    public void replaceNamesTextInDtaClick(ActionEvent actionEvent) {
-    }
-
-    /*
-
-    procedure TMainForm.SectionsStringGridSelectCell(Sender: TObject; ACol, ARow: Integer; var CanSelect: Boolean);
-    begin
-  if ACol <> 3 then
-            begin
-    HEX.SetSelStart(StrToInt(SectionsStringGrid.Cells[4, ARow]));
-    HEX.SetSelEnd(StrToInt(SectionsStringGrid.Cells[4, ARow]) + 3);
-    end else
-    begin
-    HEX.SetSelStart(StrToInt(SectionsStringGrid.Cells[ACol, ARow]));
-    HEX.SetSelEnd(StrToInt(SectionsStringGrid.Cells[ACol, ARow]) + StrToInt(SectionsStringGrid.Cells[1, ARow]) - 1);
-    end;
-    end;
-
-    procedure TMainForm.MapsStringGridSelectCell(Sender: TObject; ACol, ARow: Integer; var CanSelect: Boolean);
-    var pos: Integer;
-    begin
-  case ACol of
-    0..2: begin
-    pos := StrToInt(MapsStringGrid.Cells[1, ARow]);
-            HEX.SetSelStart(pos);
-            HEX.SetSelEnd(pos + StrToInt(MapsStringGrid.Cells[2, ARow]) - 1);
-    end;
-    3, 4: begin
-    pos := StrToInt(MapsStringGrid.Cells[3, ARow]);
-            HEX.SetSelStart(pos);
-            HEX.SetSelEnd(pos + StrToInt(MapsStringGrid.Cells[4, ARow]) - 1);
-    end;
-    5..7: begin
-    pos := StrToInt(MapsStringGrid.Cells[5, ARow]);
-            HEX.SetSelStart(pos);
-            HEX.SetSelEnd(pos + StrToInt(MapsStringGrid.Cells[6, ARow]) - 1);
-    end;
-    8, 9: begin
-    pos := StrToInt(MapsStringGrid.Cells[8, ARow]);
-            HEX.SetSelStart(pos);
-            HEX.SetSelEnd(pos + StrToInt(MapsStringGrid.Cells[9, ARow]) - 1);
-    end;
-    10, 11: begin
-    pos := StrToInt(MapsStringGrid.Cells[10, ARow]);
-            HEX.SetSelStart(pos);
-            HEX.SetSelEnd(pos + StrToInt(MapsStringGrid.Cells[11, ARow]) - 1);
-    end;
-    12, 13: begin
-    pos := StrToInt(MapsStringGrid.Cells[12, ARow]);
-            HEX.SetSelStart(pos);
-            HEX.SetSelEnd(pos + StrToInt(MapsStringGrid.Cells[13, ARow]) - 1);
-    end;
-    14, 15: begin
-    pos := StrToInt(MapsStringGrid.Cells[14, ARow]);
-            HEX.SetSelStart(pos);
-            HEX.SetSelEnd(pos + StrToInt(MapsStringGrid.Cells[15, ARow]) - 1);
-    end;
-    16, 17: begin
-    pos := StrToInt(MapsStringGrid.Cells[16, ARow]);
-            HEX.SetSelStart(pos);
-            HEX.SetSelEnd(pos + StrToInt(MapsStringGrid.Cells[17, ARow]) - 1);
-    end;
-    end;
-    HEX.CenterCursorPosition;
-
-    bmp.PixelFormat := pf8bit;
-    bmp.Width := TileSize;
-    bmp.Height := TileSize;
-    FillInternalPalette(BMP, $FE00FE);
-
-    ReadIZON(StrToInt(MapsStringGrid.Cells[0, ARow]), false);
-    end;
-
-
-
-
-    procedure TMainForm.ClipboardImageDragDrop(Sender, Source: TObject; X, Y: Integer);
-    var left, top: Word;
-    begin
-  if (Source is TDrawGrid) then
-            begin
-    bmp.PixelFormat := pf8bit;
-    bmp.Width := TileSize;
-    bmp.Height := TileSize;
-    FillInternalPalette(BMP, currentFillColor);
-
-    FillInternalPalette(ClipboardImage.Picture.Bitmap, currentFillColor);
-    left := x div 32 * 32;
-    top := y div 32 * 32;
-    GetTile(dta, selectedCell, bmp);
-    DrawBMP(ClipboardImage.Picture.Bitmap, left, top, BMP);
-    ClipboardImage.Repaint;
-    end;
-    end;
-
-    procedure TMainForm.ClipboardImageDragOver(Sender, Source: TObject; X, Y: Integer; State: TDragState; var Accept: Boolean);
-    begin
-    Accept := (Source is TDrawGrid);
-    end;
-
-    procedure TMainForm.TilesDrawGridMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-    var ACol, ARow: Integer;
-    canSel: Boolean;
-    begin
-  TilesDrawGrid.MouseToCell(x, y, ACol, ARow);
-    selectedCell := ACol + ARow * 16;
-  if selectedCell < DTA.tilesCount then
-    begin
-    if Button = mbLeft then TilesDrawGrid.BeginDrag(false, 8) else
-    begin
-    TilesDrawGrid.Row := ARow;
-    TilesDrawGrid.Col := ACol;
-    TilesDrawGridSelectCell(Sender, ARow, ACol, canSel);
-    TilesDrawGrid.SetFocus;
-    ShowTileStatus;
-    end;
-    end;
-    end;
-
-
-// Clear
-    procedure TMainForm.Button5Click(Sender: TObject);
-    var r: TRect;
-    begin
-    r := Rect(0, 0, ClipboardImage.Width, ClipboardImage.Height);
-    ClipboardImage.Canvas.Brush.Color := currentFillColor;
-    ClipboardImage.Canvas.Brush.Style := bsSolid;
-  ClipboardImage.Canvas.FillRect(r);
-    end;
-
-
-    procedure TMainForm.ClipboardImageMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-    begin
-    selectedTileX := x div 32 * 32;
-    selectedTileY := y div 32 * 32;
-  ClipboardImage.BeginDrag(false, 8);
-    end;
-
-
-    procedure TMainForm.TilesDrawGridDragOver(Sender, Source: TObject; X,
-                                              Y: Integer; State: TDragState; var Accept: Boolean);
-    begin
-    Accept := (Source is TImage);
-    end;
-
-    procedure TMainForm.TilesDrawGridDragDrop(Sender, Source: TObject; X, Y: Integer);
-    var ACol, ARow: Integer;
-    p: PByteArray;
-    i, j: Word;
-    begin
-  if (Source is TImage) then
-            begin
-    TilesDrawGrid.MouseToCell(x, y, ACol, ARow);
-    selectedCell := ACol + ARow * 16;
-    for i := 0 to 31 do
-    begin
-    p := ClipboardImage.Picture.Bitmap.ScanLine[i + selectedTileY];
-      for j := 0 to 31 do
-    begin
-          DTA.SetPosition(DTA.GetDataOffset(knownSections[4]) + selectedCell * $404 + 4 + i * 32 + j);
-          DTA.WriteByte(p[j + selectedTileX]);
-    end;
-    end;
-    TilesDrawGrid.Repaint;
-    end;
-    end;
-
-
-
-    procedure TMainForm.ReadTGEN;
-    var size: Integer;
-    begin
-    size := DTA.ReadLongWord;
-  LOG.debug('TGEN: '+inttohex(size,4)); //4 байта - длина блока TGEN
-    //надо расшифровать
-    showmessage('Обработка tGEN пока не поддерживается!!!');
-    seek(SrcFile,filepos(SrcFile) + size);
-    end;
-
-
-    procedure TMainForm.WhiteMenuItemClick(Sender: TObject);
-    begin
-    currentFillColor := TMenuItem(Sender).Tag;
-    ZeroColorRGDo(true);
-    end;
-
-    procedure TMainForm.ZeroColorRGDo(remember: Boolean);
-    var
-    i,j: word;
-    arr: Array[0..287, 0..287] of Byte;
-    p: PByteArray;
-    begin
-  for i := 0 to ClipboardImage.Height - 1 do
-    begin
-    p := ClipboardImage.Picture.Bitmap.ScanLine[i];
-    for j := 0 to ClipboardImage.Width - 1 do arr[i][j] := p[j];
-    end;
-
-    FillInternalPalette(TileImage.Picture.Bitmap, currentFillColor);
-    FillInternalPalette(ClipboardImage.Picture.Bitmap, currentFillColor);
-
-    // Clear ClipboardImage
-    Button5.Click;
-
-  if remember then
-    for i := 0 to ClipboardImage.Height - 1 do
-    begin
-    p := ClipboardImage.Picture.Bitmap.ScanLine[i];
-      for j := 0 to ClipboardImage.Width - 1 do p[j] := arr[i][j];
-    end;
-
-    TileImage.Repaint;
-    ClipboardImage.Repaint;
-    TilesDrawGrid.Repaint;
-    end;
-
-
-    procedure TMainForm.TilesDrawGridMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-    var pnt: TPoint;
-    begin
-  if selectedCell < DTA.tilesCount then
-    if (Button = mbRight) and GetCursorPos(pnt) then TilesPopupMenu.Popup(pnt.X - 7, pnt.Y - 10)
-    else ShowTileStatus;
-    end;
-
-
-// Tiles menu item click
-
-    procedure TMainForm.Bottomlayer1Click(Sender: TObject);
-    var flag: Cardinal;
-    begin
-    flag := TMenuItem(Sender).Tag;
-  if (flag = 2000000000) then flag := 2147483680;
-  DTA.SetTileFlag(selectedCell, flag);
-    ShowTileStatus;
-    //flag := DTA.GetTileFlag(selectedCell);
-    //Showmessage(inttohex(flag,4));
-    end;
-
-
-    procedure TMainForm.Adddtiles1Click(Sender: TObject);
-var count: Byte;
-  size: Cardinal;
-begin
-  count := StrToInt(InputBox('Add tile(s)', 'How many tiles to add?', '0'));
-  if count > 0 then
-  begin
-    DTA.SetPosition(DTA.GetDataOffset(knownSections[4]) + DTA.tilesCount * $404);
-    size := $404 * count;
-    DTA.InsertEmptyArea(size);
-    DTA.SetPosition(DTA.GetDataOffset(knownSections[4]) - 4);
-    DTA.WriteLongWord(DTA.GetDataSize(knownSections[4]) + size);
-    ScanFileAndUpdate;
-    prevTile := -1;
-  end;
-end;
-
-procedure TMainForm.Deletetile1Click(Sender: TObject);
-begin
-  if MessageDlg('Are you sure to delete current tile?', mtConfirmation, [mbYes, mbNo], 0) = mrYes then
-  begin
-    DTA.SetPosition(DTA.GetDataOffset(knownSections[4]) + selectedCell * $404);
-    DTA.DeleteArea($404);
-    DTA.SetPosition(DTA.GetDataOffset(knownSections[4]) - 4);
-    DTA.WriteLongWord(DTA.GetDataSize(knownSections[4]) - $404);
-    ScanFileAndUpdate;
-    prevTile := -1;
-  end;
-end;
-
-
-    procedure TMainForm.MapsListStringGridSelectCell(Sender: TObject; ACol, ARow: Integer; var CanSelect: Boolean);
-    begin
-  if ARow < DTA.mapsCount then ViewMap(ARow);
-    end;
-
-
-    procedure TMainForm.ViewMap(id: Word);
-    begin
-    bmp.PixelFormat := pf8bit;
-    bmp.Width := TileSize;
-    bmp.Height := TileSize;
-    FillInternalPalette(BMP, $FE00FE);
-    ReadMap(id, true, false);
-    end;
-
-
-    procedure TMainForm.ReadColumn(col: Byte; StringGrid: TStringGrid);
-    var f: textfile;
-    s: String;
-    i, c1, c2: Word;
-    begin
-    s := StringGrid.Cells[0, 0];
-    StringGrid.Cols[0].Clear;
-    StringGrid.Cells[0, 0] := s;
-    s := StringGrid.Cells[col, 0];
-    StringGrid.Cols[col].Clear;
-    StringGrid.Cells[col, 0] := s;
-
-    i := 1; //строка
-    AssignFile(f, Opendialog1.FileName);
-    Reset(f);
-  while not Eof(f) do
-    begin
-    ReadLn(f, s);
-    if s <> '' then
-            begin
-      if StringGrid.RowCount = i then StringGrid.RowCount := StringGrid.RowCount + 300;
-    StringGrid.Cells[0, i] := IntToStr(i);
-    StringGrid.Cells[col, i] := s;
-    inc(i);
-    end;
-    end;
-    CloseFile(f);
-
-    c1 := 1;
-    c2 := 1;
-  for i := 1 to StringGrid.RowCount - 1 do
-    begin
-    if StringGrid.Cells[1, i] <> '' then inc(c1);
-    if StringGrid.Cells[2, i] <> '' then inc(c2);
-    end;
-
-  if (c1 > 1) or (c2 > 1) then StringGrid.RowCount := Max(c1, c2);
-  if (c1 > 1) and (c2 > 1) and (c1 <> c2) then Showmessage('Number of phrases does not match!');
-    end;
-
-
-    function TMainForm.FindStringPosition(searchString: String): Cardinal;
-    var
-    startPosition: Cardinal;
-    searchLength, currentLength, i: Word;
-    begin
-    Result := 0;
-    searchLength := Length(searchString);
-    startPosition := DTA.GetPosition;
-  while (DTA.GetPosition + searchLength < DTA.GetSize) do
-    begin
-    DTA.SetPosition(startPosition);
-    currentLength := 0;
-    for i := 1 to searchLength do
-    begin
-      if DTA.ReadChar <> searchString[i] then Break;
-    Inc(currentLength);
-    end;
-    if currentLength = searchLength then
-    begin
-    Result := startPosition;
-    Break;
-    end else Inc(startPosition);
-    end; // while
-    end;
-
-
-    function TMainForm.FindStringPositionReverse(searchString: String): Cardinal;
-    var
-    startPosition: Cardinal;
-    searchLength, currentLength, i: Word;
-    begin
-    Result := 0;
-    searchLength := Length(searchString);
-    startPosition := DTA.GetPosition;
-  while (DTA.GetPosition > 0) do
-    begin
-    DTA.SetPosition(startPosition);
-    currentLength := 0;
-    for i := 1 to searchLength do
-    begin
-      if DTA.ReadChar <> searchString[i] then Break;
-    Inc(currentLength);
-    end;
-    if currentLength = searchLength then
-    begin
-    Result := startPosition;
-    Break;
-    end else Dec(startPosition);
-    end; // while
-    end;
-
-
-// Get original
-    procedure TMainForm.Button1Click(Sender: TObject);
-    begin
-  if Opendialog1.Execute then ReadColumn(1, StringGrid1);
-    end;
-
-
-// Get translated
-    procedure TMainForm.Button12Click(Sender: TObject);
-    begin
- if Opendialog1.Execute then ReadColumn(2, StringGrid1);
-    end;
-
-
-    function TMainForm.DecompressString(s: String): String;
-    begin
-    result := AnsiReplaceStr(s, '[CR2]', '[CR][CR]');
-    result := AnsiReplaceStr(result, '[CR]', chr($0d) + chr($0a));
-    result := AnsiReplaceStr(result, chr($5F), chr($A5));
-    end;
-
-
-
-// all StringGridDrawCell, multiline output
-
-    procedure TMainForm.StringGridDrawCell(Sender: TObject; ACol, ARow: Integer; Rect: TRect; State: TGridDrawState);
-    var
-    Sentence, { Выводимый текст }
-    CurWord: string; { Текущее выводимое слово }
-    SpacePos, { Позиция первого пробела }
-    CurX, { Х-координата 'курсора' }
-    CurY: Integer; { Y-координата 'курсора' }
-    EndOfSentence: Boolean; { Величина, указывающая на заполненность ячейки }
-    hGrid: TStringGrid;
-    n: Integer;
-    begin
-    { Инициализируем шрифт, чтобы он был управляющим шрифтом }
-    hGrid := (Sender as TStringGrid);
-    hGrid.Canvas.Font := Font;
-
-    with hGrid.Canvas do
-    begin
-    { Если это фиксированная ячейка, тогда используем фиксированный цвет }
-    if gdFixed in State then
-    begin
-    Pen.Color := hGrid.FixedColor;
-    Brush.Color := hGrid.FixedColor;
-    end
-    { в противном случае используем нормальный цвет }
-    else
-    begin
-    Pen.Color := hGrid.Color;
-    Brush.Color := hGrid.Color;
-    end;
-    { Рисуем подложку цветом ячейки }
-    Rectangle(Rect.Left, Rect.Top, Rect.Right, Rect.Bottom);
-    end;
-
-    { Начинаем рисование с верхнего левого угла ячейки }
-    CurX := Rect.Left;
-    CurY := Rect.Top;
-
-    { Здесь мы получаем содержание ячейки }
-    Sentence := hGrid.Cells[ACol, ARow];
-    n:=0;
-
-    { для каждого слова ячейки }
-    EndOfSentence := FALSE;
-  while (not EndOfSentence) do
-    begin
-    { для получения следующего слова ищем пробел }
-    SpacePos := Pos(' ', Sentence);
-    if SpacePos > 0 then
-            begin
-    { получаем текущее слово плюс пробел }
-    CurWord := Copy(Sentence, 0, SpacePos);
-
-    { получаем остальную часть предложения }
-    Sentence := Copy(Sentence, SpacePos + 1, Length(Sentence) - SpacePos);
-    end
-    else
-    begin
-    { это - последнее слово в предложении }
-    EndOfSentence := TRUE;
-    CurWord := Sentence;
-    end;
-
-    with hGrid.Canvas do
-    begin
-    { если текст выходит за границы ячейки }
-      if (TextWidth(CurWord) + CurX) > Rect.Right then
-    begin
-    { переносим на следующую строку }
-    CurY := CurY + TextHeight(CurWord);
-    CurX := Rect.Left;
-    n:=n + TextHeight(CurWord);
-    end;
-
-    { выводим слово }
-    TextOut(CurX, CurY, CurWord);
-    { увеличиваем X-координату курсора }
-    CurX := CurX + TextWidth(CurWord);
-    end;
-    end;
-    n := n + hGrid.Canvas.TextHeight(CurWord);
-    hGrid.RowHeights[Arow] := Max(n + 1, hGrid.RowHeights[Arow]);
-    end;
-
-
-    procedure TMainForm.Highlight(offset, size: Cardinal);
-    begin
-  HEX.LoadFromStream(DTA.data);
-  HEX.SetSelStart(offset);
-  HEX.SetSelEnd(offset + size - 1);
-    HEX.CenterCursorPosition;
-    Application.ProcessMessages;
-    end;
-
-
-// Maps Replace text
-
-    procedure TMainForm.Button14Click(Sender: TObject);
-    var
-    i, tw, oldSize, newSize: Word;
-    oldPhrase, newPhrase: String;
-    size, phaseStart, phaseEnd, iactOffset, izonOffset: Cardinal;
-    delta: Integer;
-    begin
-    Log.Clear;
-    ProgressBar1.Position := 0;
-    ProgressBar1.Max := StringGrid1.RowCount;
-    Label3.Caption := '';
-
-  DTA.SetPosition(TMap(DTA.maps.Objects[0]).mapOffset);
-    phaseEnd := DTA.GetPosition;
-
-  for i := 1 to StringGrid1.RowCount - 1 do
-    begin
-    oldPhrase := DecompressString(StringGrid1.Cells[1, i]);
-    oldSize := Length(oldPhrase);
-    if CheckBox3.Checked then newPhrase := DecompressString(Trim(StringGrid1.Cells[2, i]))
-            else newPhrase := DecompressString(StringGrid1.Cells[2, i]);
-    newSize := Length(newPhrase);
-    delta := newSize - oldSize;
-//    Log.Debug('======================================================================== #' + IntToStr(i));
-//    Log.Debug('Search phase: ' + IntToHex(phaseEnd, 2));
-    DTA.SetPosition(phaseEnd);
-    phaseStart := FindStringPosition(oldPhrase);
-
-//    Log.Debug('oldPhrase: ' + oldPhrase + ': oldSize: ' + IntToHex(oldSize, 2));
-//    Log.Debug('newPhrase: ' + newPhrase + ': newSize: ' + IntToHex(newSize, 2));
-//    Log.Debug('Delta: ' + IntToStr(delta));
-//    Log.Debug('Phase start: ' + IntToHex(phaseStart, 2));
-
-    DTA.SetPosition(phaseStart - 2);
-    tw := DTA.ReadWord;
-    if tw <> oldSize then
-            begin
-    Highlight(phaseStart - 2, 2);
-    ShowMessage('Readed size:' + Inttohex(tw, 4) + '(need ' + inttostr (oldSize) + ')');
-      break;
-    end;
-
-    DTA.SetPosition(phaseStart - 2);
-    DTA.WriteWord(newSize);
-
-    //Highlight(phaseStart, oldSize);
-    //ShowMessage('Before writing text. Size: ' + Inttohex(hex.SelCount, 4));
-
-    DTA.ReplaceArea(oldPhrase, newPhrase);
-    phaseEnd := phaseStart + newSize - 2;
-
-    //HEX.LoadFromStream(DTA.data);
-    //Highlight(phaseStart, newSize);
-    //ShowMessage('After writing text. Size: ' + Inttohex(hex.SelCount, 4));
-
-    if delta <> 0 then
-            begin
-      DTA.SetPosition(phaseStart - 2);
-    iactOffset := FindStringPositionReverse('IACT');
-    //Showmessage(inttohex(iactOffset,4));
-
-      DTA.SetPosition(iactOffset);
-      if DTA.ReadString(4) <> 'IACT' then
-            begin
-    Highlight(iactOffset, 4);
-    ShowMessage('IACT not found!!!');
-    Break;
-    end;
-
-    size := DTA.ReadLongWord;
-      DTA.MovePosition(-4);
-      DTA.WriteLongWord(size + delta);
-
-    //Highlight(iactOffset + 4, 4);
-    //ShowMessage('IACT size (old:new): ' + Inttohex(size, 4) + ':' + inttohex(size + delta, 4));
-
-
-      DTA.SetPosition(iactOffset);
-    izonOffset := FindStringPositionReverse('IZON');
-    //Showmessage(inttohex(izonOffset,4));
-      DTA.SetPosition(izonOffset);
-      if DTA.ReadString(4) <> 'IZON' then ShowMessage('IZON not found!!!');
-      DTA.MovePosition(-10);
-    size := DTA.ReadLongWord;
-      DTA.MovePosition(-4);
-      DTA.WriteLongWord(size + delta);
-
-    //Highlight(izonOffset - 6, 4);
-    //ShowMessage('IZON size (old:new): ' + Inttohex(size, 4) + ':' + inttohex(size + delta, 4));
-    end;
-
-    ProgressBar1.Position := i;
-    Label3.Caption := Format('%.2f %%', [((i + 1)/ StringGrid1.RowCount) * 100]);
-
-    Application.ProcessMessages;
-    end;
-
-  Hex.LoadFromStream(DTA.data);
-  DTA.data.SaveToFile('d:\YExplorer\test\test2\Yodesk.dta');
-    showmessage('OK');
-    ScanFileAndUpdate;
-    end;
-
-
-// puzzles
-// Get original
-    procedure TMainForm.Button16Click(Sender: TObject);
-    begin
-  if Opendialog1.Execute then ReadColumn(1, StringGrid4);
-    end;
-
-
-// Get translated
-    procedure TMainForm.Button17Click(Sender: TObject);
-    begin
-  if Opendialog1.Execute then ReadColumn(2, StringGrid4);
-    end;
-
-
-// Replace text
-    procedure TMainForm.Button19Click(Sender: TObject);
-    var
-    i, tw, oldSize, newSize: Word;
-    oldPhrase, newPhrase: String;
-    size, phaseStart, phaseEnd, ipuzOffset, previousSize: Cardinal;
-    delta: Integer;
-    begin
-    Log.Clear;
-    ProgressBar3.Position := 0;
-    ProgressBar3.Max := StringGrid4.RowCount;
-    Label7.Caption := '';
-
-    previousSize := DTA.GetSize;
- // PUZ2
-  DTA.SetPosition(DTA.GetDataOffset(knownSections[6]));
-    phaseEnd := DTA.GetPosition;
-
-  for i := 1 to StringGrid4.RowCount - 1 do
-    begin
-    oldPhrase := DecompressString(StringGrid4.Cells[1, i]);
-    oldSize := Length(oldPhrase);
-    if CheckBox10.Checked then newPhrase := DecompressString(Trim(StringGrid4.Cells[2, i]))
-            else newPhrase := DecompressString(StringGrid4.Cells[2, i]);
-    newSize := Length(newPhrase);
-    delta := newSize - oldSize;
-//    Log.Debug('======================================================================== #' + IntToStr(i));
-//    Log.Debug('Search phase: ' + IntToHex(phaseEnd, 2));
-    DTA.SetPosition(phaseEnd);
-    phaseStart := FindStringPosition(oldPhrase);
-
-//    Log.Debug('oldPhrase: ' + oldPhrase + ': oldSize: ' + IntToHex(oldSize, 2));
-//    Log.Debug('newPhrase: ' + newPhrase + ': newSize: ' + IntToHex(newSize, 2));
-//    Log.Debug('Delta: ' + IntToStr(delta));
-//    Log.Debug('Phase start: ' + IntToHex(phaseStart, 2));
-
-    DTA.SetPosition(phaseStart - 2);
-    tw := DTA.ReadWord;
-    if tw <> oldSize then
-            begin
-    Highlight(phaseStart - 2, 2);
-    ShowMessage('Readed size:' + Inttohex(tw, 4) + '(need ' + inttostr (oldSize) + ')');
-      break;
-    end;
-
-    DTA.SetPosition(phaseStart - 2);
-    DTA.WriteWord(newSize);
-
-    //Highlight(phaseStart, oldSize);
-    //ShowMessage('Before writing text. Size: ' + Inttohex(hex.SelCount, 4));
-
-    DTA.ReplaceArea(oldPhrase, newPhrase);
-    phaseEnd := phaseStart + newSize - 2;
-
-    //HEX.LoadFromStream(DTA.data);
-    //Highlight(phaseStart, newSize);
-    //ShowMessage('After writing text. Size: ' + Inttohex(hex.SelCount, 4));
-
-    if delta <> 0 then
-            begin
-      DTA.SetPosition(phaseStart - 2);
-    ipuzOffset := FindStringPositionReverse('IPUZ');
-    //Showmessage(inttohex(ipuzOffset,4));
-      DTA.SetPosition(ipuzOffset);
-      if DTA.ReadString(4) <> 'IPUZ' then ShowMessage('IPUZ not found!!!');
-    size := DTA.ReadLongWord;
-      DTA.MovePosition(-4);
-      DTA.WriteLongWord(size + delta);
-
-    //Highlight(izonOffset - 6, 4);
-    //ShowMessage('IZON size (old:new): ' + Inttohex(size, 4) + ':' + inttohex(size + delta, 4));
-    end;
-
-    ProgressBar3.Position := i;
-    Label7.Caption := Format('%.2f %%', [((i + 1)/ StringGrid4.RowCount) * 100]);
-
-    Application.ProcessMessages;
-    end;
-
-    // поменять размер PUZ2
-  DTA.SetPosition(DTA.GetStartOffset(knownSections[6]));
-  if DTA.ReadString(4) <> 'PUZ2' then ShowMessage('PUZ2 not found!!!');
-    size := DTA.ReadLongWord;
-  if size <> DTA.GetDataSize((knownSections[6])) then ShowMessage('PUZ2 size don''t match!');
-  DTA.MovePosition(-4);
-  DTA.WriteLongWord(size - previousSize + DTA.GetSize);
-
-  Hex.LoadFromStream(DTA.data);
-  DTA.data.SaveToFile('d:\YExplorer\test\test2\Yodesk.dta');
-    showmessage('OK');
-    ScanFileAndUpdate;
-    end;
-
-
-    procedure TMainForm.StringGrid1DrawCell(Sender: TObject; ACol, ARow: Integer; Rect: TRect; State: TGridDrawState);
-    begin
-    StringGridDrawCell(Sender, ACol, ARow, Rect, State);
-    end;
-
-
-    procedure TMainForm.StringGrid4DrawCell(Sender: TObject; ACol, ARow: Integer; Rect: TRect; State: TGridDrawState);
-    begin
-    StringGridDrawCell(Sender, ACol, ARow, Rect, State);
-    end;
-
-
-// Names
-// Get original
-    procedure TMainForm.Button20Click(Sender: TObject);
-    begin
-  if Opendialog1.Execute then ReadColumn(1, StringGrid2);
-    end;
-
-// Get translated
-    procedure TMainForm.Button21Click(Sender: TObject);
-    begin
-  if Opendialog1.Execute then ReadColumn(2, StringGrid2);
-    end;
-
-
-//Check phase positions (may be not need)
-    procedure TMainForm.Button22Click(Sender: TObject);
-    var i: Word;
-    s, msg: String;
-    len: Byte;
-    begin
-// TNAM
-  DTA.SetPosition(DTA.GetDataOffset(knownSections[10]));
-    msg := '';
-  for i := 1 to DTA.namesCount do
-    begin
-    DTA.ReadWord;
-    len := Length(StringGrid2.Cells[1, i]);
-    s := DTA.ReadString(len);
-    if s <> StringGrid2.Cells[1, i] then
-            begin
-    msg := 'Readed name "' + s + '" must be: "' + StringGrid2.Cells[1, i] + '"';
-    Break;
-    end;
-    DTA.ReadString(24 - len);
-    end;
-  if msg <> '' then
-            begin
-    StringGrid2.Row := i;
-    StringGrid2.Selection := TGridRect(Rect(StringGrid2.FixedCols, i, StringGrid2.FixedCols + 1, i));
-    Application.ProcessMessages;
-    Showmessage(msg);
-    end else ShowMessage('OK, founded all names.');
-    end;
-
-
-//Replace text (Names)
-    procedure TMainForm.Button23Click(Sender: TObject);
-    var currentPos: Cardinal;
-    i: Word;
-    j, len: Byte;
-    str: String;
-    begin
-    Log.Clear;
-    ProgressBar2.Position := 0;
-    ProgressBar2.Max := StringGrid2.RowCount;
-    Label9.Caption := '';
-
-// TNAM
-  DTA.SetPosition(DTA.GetDataOffset(knownSections[10]));
-
-  for i := 1 to DTA.namesCount do
-    begin
-    DTA.ReadWord;
-    currentPos := DTA.GetPosition;
-    // Check again
-    //if DTA.ReadString(Length(StringGrid2.Cells[1, i])) <> StringGrid2.Cells[1, i] then showmessage(inttohex(currentPos,4) + ' !! ' + StringGrid2.Cells[1, i]);
-    // Clear with #0000000000000000
-    //DTA.SetPosition(currentPos);
-    for j := 1 to 6 do DTA.WriteLongWord(0);
-
-    DTA.SetPosition(currentPos);
-
-    str := StringGrid2.Cells[2, i];
-    if CheckBox4.Checked then str := Trim(str);
-    DTA.WriteString(str);
-    DTA.ReadString(24 - Length(str));
-
-    ProgressBar2.Position := i;
-    Label9.Caption := Format('%.2f %%', [((i + 1)/ StringGrid2.RowCount) * 100]);
-
-    Application.ProcessMessages;
-    end;
-
-  Hex.LoadFromStream(DTA.data);
-  DTA.data.SaveToFile('d:\YExplorer\test\test2\Yodesk.dta');
-    showmessage('OK');
-    ScanFileAndUpdate;
-    end;
-
-    procedure TMainForm.TabSheet18Show(Sender: TObject);
-    begin
-    MapsListStringGrid.Parent := TabSheet18;
-    MapsListStringGrid.Left := 8;
-    TilesDrawGrid.Parent := TabSheet18;
-    TilesDrawGrid.Left := MapsListStringGrid.Left + MapsListStringGrid.Width + 8;
-    MapImage.Parent := TabSheet18;
-    MapImage.Left := TilesDrawGrid.Left + TilesDrawGrid.Width + 8;
-    MapsListStringGrid.Top := TilesDrawGrid.Top;
-    MapImage.Top := TilesDrawGrid.Top;
-    end;
-
-    procedure TMainForm.TabSheet18Hide(Sender: TObject);
-    begin
-    MapsListStringGrid.Parent := TabSheet11;
-    MapsListStringGrid.Left := 224;
-    TilesDrawGrid.Parent := TabSheet4;
-    TilesDrawGrid.Left := 224;
-    MapImage.Parent := TabSheet11;
-    MapImage.Left := 320;
-    MapsListStringGrid.Top := 7;
-    MapImage.Top := 7;
-    end;
-
-
-    procedure TMainForm.MapImageDragOver(Sender, Source: TObject; X, Y: Integer; State: TDragState; var Accept: Boolean);
-    begin
-    Accept := (Source is TDrawGrid);
-    end;
-
-
-    procedure TMainForm.SelectMapTile(X, Y: Integer; concrete: Boolean);
-    var left, top, w, h: Word;
-    begin
-    left := x div 32;
-    top := y div 32;
-
-  DTA.SetPosition(TMap(DTA.maps.Objects[MapsListStringGrid.Row]).mapOffset);   // go to map data
-  DTA.ReadString(10);
-    w := DTA.ReadWord;                // width:word; //2 bytes: map width (W)
-    //h := DTA.ReadWord;                // height:word; //2 bytes: map height (H)
-  //DTA.ReadString(8);
-  DTA.ReadString(10);
-  DTA.MovePosition((top * w + left) * 6);
-  if concrete then DTA.MovePosition(RadioGroup1.ItemIndex * 2);
-    end;
-
-
-    procedure TMainForm.MapImageDragDrop(Sender, Source: TObject; X, Y: Integer);
-begin
-  SelectMapTile(x, y, true);
-  prevTileAddress := DTA.GetPosition;
-  prevTile := DTA.ReadWord;
-  DTA.MovePosition(-2);
-  DTA.WriteWord(selectedCell);
-  Highlight(DTA.GetPosition - 2, 2);
-  ViewMap(MapsListStringGrid.Row);
-end;
-
-
-    procedure TMainForm.MapImageMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-var pnt: TPoint;
-begin
-  SelectMapTile(x, y, false);
-  Highlight(DTA.GetPosition, 6);
-  if (Button = mbRight) and GetCursorPos(pnt) and TabSheet18.Visible then
-  begin
-    Undo1.Enabled := prevTile <> -1;
-    MapPopupMenu.Popup(pnt.X - 7, pnt.Y - 10);
-  end;
-end;
-
-    StatusBar.Panels[0].Text := '$' + IntToHex(t1, 4) + ' $' + IntToHex(t2, 4) + ' $' + IntToHex(t3, 4) + ' (bottom, middle, top)';
-
-  if (Button = mbRight) and GetCursorPos(pnt) and TabSheet18.Visible then MapPopupMenu.Popup(pnt.X - 7, pnt.Y - 10);
-    end;
-
-
-    procedure TMainForm.RadioGroup1Click(Sender: TObject);
-    begin
-    prevTile := -1;
-    end;
-
-
-    procedure TMainForm.Undo1Click(Sender: TObject);
-begin
-  if prevTile <> -1 then
-  begin
-    DTA.SetPosition(prevTileAddress);
-    DTA.WriteWord(prevTile);
-    Highlight(DTA.GetPosition - 2, 2);
-    prevTile := -1;
-    ViewMap(MapsListStringGrid.Row);
-  end;
-end;
-
-
-    procedure TMainForm.Empty1Click(Sender: TObject);
-var pt : tPoint;
-begin
-  pt := ScreenToClient(Mouse.CursorPos);
-  SelectMapTile(pt.x div 32, pt.y div 32, true);
-  prevTileAddress := DTA.GetPosition;
-  prevTile := DTA.ReadWord;
-  DTA.MovePosition(-2);
-  DTA.WriteWord($FFFF);
-  Highlight(DTA.GetPosition - 2, 2);
-  ViewMap(MapsListStringGrid.Row);
-end;
-
-*/
-
-
-    /*procedure TMainForm.HEXMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-    begin
-            ShowHEXCaretIndex;
-    end;
-
-    procedure TMainForm.HEXKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
-    begin
-            ShowHEXCaretIndex;
-    end;
-
-    procedure TMainForm.HEXSelectionChanged(Sender: TObject);
-    begin
-            ShowHEXCaretIndex;
-    end;
-
-    procedure TMainForm.ShowHEXCaretIndex;
-    begin
-  if HEX.HasFile then StatusBar.Panels[0].Text := 'Offset: 0x' + IntToHex(HEX.GetSelStart, 8);
-    end;*/
 
     private BufferedImage GetTile(int tileId) {
         return GetTile(tileId, Config.icm0);

@@ -1,4 +1,4 @@
-package md.leonis.ystt.model;
+package md.leonis.ystt.model.docx;
 
 public class StringRecord {
 

@@ -52,6 +52,11 @@ public class PrefixedStr extends KaitaiStruct {
         return content;
     }
 
+    public void setContent(String content) {
+        this.content = content;
+        this.lenContent = content.length();
+    }
+
     public Yodesk getRoot() {
         return root;
     }
