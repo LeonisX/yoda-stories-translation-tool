@@ -2,7 +2,7 @@
 
 Utility Yoda Stories Translation Tool
 
-**Current status: read only, partially dumping**
+**Current status: read only, dumping**
 
 **Current stage: port from Delphi**
 
@@ -13,6 +13,7 @@ An original version: https://github.com/LeonisX/YExplorer
 ## TODO
 
 * Replace tiles, maps, Undo
+* Hide map layers
 * Log
 * HEX
 * Тяжёлые процессы дампинга лучше вынести в отдельный поток
@@ -23,8 +24,6 @@ An original version: https://github.com/LeonisX/YExplorer
 
 * Restore functionality
 * Add new tiles - already in Delphi version - we need a better solution: "PLUS" button at the end of tiles
-* Dump/read to DOCX
-* Validate text (first-last) phrases
 * Hide debug tabs by default
 
 * Text descriptions for each release
@@ -37,7 +36,7 @@ An original version: https://github.com/LeonisX/YExplorer
 
 * TODO tests!!!!!!!!!!!!!!!
 
-* After transparent color change need to scroll table view
+* After transparent color change need to scroll table view (refresh?)
 * Compare all characters dumps
 * UnsignedInt, ... - изучить доступные решения. идея простая - возвращать number, но если минус, то тип на порядок больше.
 * Article about unsigned (hex editor, port from delphi, mathematic, before java 8, current solutions, examples)
@@ -45,8 +44,6 @@ An original version: https://github.com/LeonisX/YExplorer
 * Remove all text from DTA, save puz2, iacts together, verify if all phrases was found
 * Paste from clipboard (good idea)
 * Validate loaded BMP palette
-* In Map we save offset before title (ex. IZX3). But IACT - we save offset after title. Need to unify all. 
-* PUZ2 - если смотреть в дампах, то там перед текстом попадается левый текст, вроде: Bogus text; Unused text, right; Look elsewhere for this text. 
 
 ### Other YS / DA solutions
 
