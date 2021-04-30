@@ -2,7 +2,7 @@ package md.leonis.ystt;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
-import md.leonis.ystt.utils.Config;
+import md.leonis.config.Config;
 import md.leonis.ystt.utils.JavaFxUtils;
 
 public class MainApp extends Application {

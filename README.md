@@ -6,13 +6,14 @@ Utility Yoda Stories Translation Tool
 
 **Current stage: port from Delphi**
 
+**Powered with Kaitai structure format**
+
 An original version: https://github.com/LeonisX/YExplorer
 
 ## TODO
 
-* Dump texts to DOCX (separators, IACT/PUZ2 labels, ignore them, allow blocked text)
-* Replace tiles, maps, Undo
 * Replace text from DOCX
+* Replace tiles, maps, Undo
 * Log
 * HEX
 * Тяжёлые процессы дампинга лучше вынести в отдельный поток
@@ -27,6 +28,8 @@ An original version: https://github.com/LeonisX/YExplorer
 * Validate text (first-last) phrases
 * Hide debug tabs by default
 
+* Text descriptions for each release
+
 * Show in UI info about puzzles (id, size, phrases count)
 * IACT: show phrases count
 
@@ -36,7 +39,6 @@ An original version: https://github.com/LeonisX/YExplorer
 * TODO tests!!!!!!!!!!!!!!!
 
 * After transparent color change need to scroll table view
-* Map0 - white triangle :(
 * Compare all characters dumps
 * UnsignedInt, ... - изучить доступные решения. идея простая - возвращать number, но если минус, то тип на порядок больше.
 * Article about unsigned (hex editor, port from delphi, mathematic, before java 8, current solutions, examples)
@@ -51,6 +53,7 @@ An original version: https://github.com/LeonisX/YExplorer
 
 **yodesk.ksy**
 
+* https://www.webfun.io/
 * https://github.com/cyco/WebFun
 * https://github.com/cyco/kaitai_struct_formats/blob/add-yodesk/game/yodesk.ksy
 * https://github.com/kaitai-io/kaitai_struct_formats/pull/403

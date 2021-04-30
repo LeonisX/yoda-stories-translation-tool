@@ -24,25 +24,29 @@ import javafx.stage.FileChooser;
 import javafx.stage.WindowEvent;
 import md.leonis.bin.ByteOrder;
 import md.leonis.bin.Dump;
-import md.leonis.ystt.model.CatalogEntry;
-import md.leonis.ystt.model.Yodesk;
-import md.leonis.ystt.model.characters.Character;
-import md.leonis.ystt.model.characters.CharacterAuxiliary;
-import md.leonis.ystt.model.characters.CharacterWeapon;
-import md.leonis.ystt.model.puzzles.Puzzle;
-import md.leonis.ystt.model.tiles.TileName;
-import md.leonis.ystt.model.zones.Condition;
-import md.leonis.ystt.model.zones.Instruction;
-import md.leonis.ystt.model.zones.Zone;
-import md.leonis.ystt.oldmodel.Section;
-import md.leonis.ystt.oldmodel.Release;
+import md.leonis.config.Config;
+import md.leonis.ystt.model.*;
+import md.leonis.ystt.model.yodesk.CatalogEntry;
+import md.leonis.ystt.model.yodesk.Yodesk;
+import md.leonis.ystt.model.yodesk.characters.Character;
+import md.leonis.ystt.model.yodesk.characters.CharacterAuxiliary;
+import md.leonis.ystt.model.yodesk.characters.CharacterWeapon;
+import md.leonis.ystt.model.yodesk.puzzles.Puzzle;
+import md.leonis.ystt.model.yodesk.tiles.TileName;
+import md.leonis.ystt.model.yodesk.zones.Action;
+import md.leonis.ystt.model.yodesk.zones.Condition;
+import md.leonis.ystt.model.yodesk.zones.Instruction;
+import md.leonis.ystt.model.yodesk.zones.Zone;
 import md.leonis.ystt.utils.*;
 import net.sf.image4j.codec.bmp.BMPImage;
 import net.sf.image4j.codec.bmp.BMPReader;
 import net.sf.image4j.codec.bmp.BMPWriter;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.awt.image.IndexColorModel;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
@@ -50,8 +54,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import static md.leonis.ystt.utils.Config.*;
+import static md.leonis.config.Config.*;
 import static md.leonis.ystt.utils.ImageUtils.readWPicture;
 
 public class MainPaneController {
@@ -168,6 +173,7 @@ public class MainPaneController {
 
     private static final String OUTPUT = "output";
     private static final String E_BMP = ".bmp";
+    private static final String E_DOCX = ".docx";
     private static final int TILE_SIZE = 32;
 
     Path spath, opath;
@@ -316,6 +322,8 @@ public class MainPaneController {
                         for (int i = 0; i < tileIds.size(); i++) {
                             GetWTile(tileIds.get(i), canvas, i * TILE_SIZE, 0, null);
                         }
+                    } else {
+                        canvas.setWidth(0);
                     }
                 }
             };
@@ -323,7 +331,7 @@ public class MainPaneController {
             cell.setAlignment(Pos.CENTER);
             return cell;
         });
-        charactesTableView.setItems(FXCollections.observableList(yodesk.getCharacters().getCharacters()));
+        charactesTableView.setItems(FXCollections.observableList(yodesk.getCharacters().getFilteredCharacters()));
 
         // Names
         namesCountLabel.setText(Integer.toString(yodesk.getTileNames().getNames().size()));
@@ -335,8 +343,10 @@ public class MainPaneController {
 
             TableCell<TileName, Integer> cell = new TableCell<TileName, Integer>() {
                 public void updateItem(Integer tileId, boolean empty) {
-                    if (tileId != null) {
+                    if (tileId != null && !tileId.equals(0xFFFF)) {
                         imageView.setImage(GetWTile(tileId));
+                    } else {
+                        imageView.setImage(null);
                     }
                 }
             };
@@ -344,7 +354,7 @@ public class MainPaneController {
             cell.setAlignment(Pos.CENTER);
             return cell;
         });
-        namesTableView.setItems(FXCollections.observableList(yodesk.getTileNames().getNames()));
+        namesTableView.setItems(FXCollections.observableList(yodesk.getTileNames().getFilteredNames()));
     }
 
     private void drawTitleImage() {
@@ -858,18 +868,21 @@ public class MainPaneController {
 
                 if (decimalFilenamesCheckBox.isSelected()) {
                     Path path = tilesPath.resolve(StringUtils.leftPad(Integer.toString(i), 4, "0") + E_BMP);
-                    BMPWriter.write(GetTile(i), path.toFile());
+                    BMPWriter.write(GetTile(i, icm), path.toFile());
+
+                    //TODO may be use PNG. Sample code
+                    ImageIO.write(GetTile(i, icm), "PNG", tilesPath.resolve(StringUtils.leftPad(Integer.toString(i), 4, "0") + ".png").toFile());
                 }
 
                 if (groupByAttributesFilenamesCheckBox.isSelected()) {
                     String binaryAttr = StringUtils.right(StringUtils.leftPad(attrHex, 32, '0'), 32);
                     Path path = attrPath.resolve(binaryAttr + " (" + attrHex + ")");
                     IOUtils.createDirectories(path);
-                    BMPWriter.write(GetTile(i), path.resolve(StringUtils.leftPad(Integer.toString(i), 4, "0") + E_BMP).toFile());
+                    BMPWriter.write(GetTile(i, icm), path.resolve(StringUtils.leftPad(Integer.toString(i), 4, "0") + E_BMP).toFile());
                 }
 
                 if (hexFilenamesCheckBox.isSelected()) {
-                    BMPWriter.write(GetTile(i), hexPath.resolve(intToHex(i, 4) + E_BMP).toFile());
+                    BMPWriter.write(GetTile(i, icm), hexPath.resolve(intToHex(i, 4) + E_BMP).toFile());
                 }
                 //TilesProgressBar.Position := i;
                 //TilesProgressLabel.Caption := Format('%.2f %%', [((i + 1) / DTA.tilesCount) * 100]);
@@ -966,7 +979,7 @@ public class MainPaneController {
         clipboardImageView.setImage(null);
     }
 
-    public void saveMapsToFilesButtonClick() throws IOException {
+    public void saveMapsToFilesButtonClick() throws IOException, InvalidFormatException {
 
         if (normalSaveCheckBox.isSelected()) {
             IOUtils.createDirectories(opath.resolve("Maps"));
@@ -1022,6 +1035,59 @@ public class MainPaneController {
                 return conditions.stream().filter(StringUtils::isNotBlank).map(s -> s.replace("\r\n", "[CR]").replace("[CR][CR]", "[CR2]"));
             }).collect(Collectors.toList());
             IOUtils.saveTextFile(phrases, opath.resolve("iact.txt"));
+
+
+            // TODO group by all zone auxiliary
+
+            List<PuzzleRecord> zoneRecords = new ArrayList<>();
+
+            //TODO filtered?
+            yodesk.getZones().getZones().forEach(zone -> {
+                List<PuzzleRecord> zr = new ArrayList<>();
+
+                // planet
+                // width
+                // height
+                // type
+                // sharedCounter
+                // hotspots
+                // ZoneAuxiliary3 npcs
+                // ZoneAuxiliary4 unknown
+                // ZoneAuxiliary2 providedItems
+                // ZoneAuxiliary
+                //    private int _unnamed2;
+                //    private ArrayList<Monster> monsters;
+                //    private ArrayList<Integer> requiredItems;
+                //    private ArrayList<Integer> goalItems;
+
+                // Actions
+                // Conditions Opcodes, text
+                // Instructions Opcodes, text
+
+                for (int ax = 0; ax < zone.getActions().size(); ax++) {
+                    Action a = zone.getActions().get(ax);
+                    for (int cx = 0; cx < a.getConditions().size(); cx++) {
+                        Condition c = a.getConditions().get(cx);
+                        if (!c.getText().isEmpty()) {
+                            zr.add(new PuzzleRecord(zone.getIndex() + "." + ax + ".c" + cx, Collections.emptyList(), "", c.getText()));
+                        }
+                    }
+                    for (int ix = 0; ix < a.getInstructions().size(); ix++) {
+                        Instruction i = a.getInstructions().get(ix);
+                        if (!i.getText().isEmpty()) {
+                            zr.add(new PuzzleRecord(zone.getIndex() + "." + ax + ".i" + ix, Collections.emptyList(), "", i.getText()));
+                        }
+                    }
+                }
+
+                /*if (zr.size() == 0) {
+                    zr.add(new PuzzleRecord(Integer.toString(zone.getIndex()), Collections.emptyList(), "", ""));
+                }
+                zr.get(0).setType(zone.getPlanet().name());*/
+
+                zoneRecords.addAll(zr);
+            });
+            WordUtils.saveZones(zoneRecords, opath.resolve("iact2" + E_DOCX));
         }
         //TODO uncomment, if need
         //ViewMap(MapsListStringGrid.Row);
@@ -1052,15 +1118,82 @@ public class MainPaneController {
             Log.newLine();
             Log.debug("Total count: " + yodesk.getPuzzles().getPuzzles().size());
             Log.newLine();
-            int position = yodesk.getPuzzles().get_parent().getPosition();
+            int position = yodesk.getPuzzles().getParent().getPosition();
             for (int i = 0; i < yodesk.getPuzzles().getPuzzles().size(); i++) {
                 ReadPUZ2(yodesk.getPuzzles().getPuzzles().get(i), position);
                 position += yodesk.getPuzzles().getPuzzles().get(i).byteSize();
             }
             //TODO rewrite code after tests
-            List<String> phrases = yodesk.getPuzzles().getPuzzles().stream()
+            List<String> phrases = yodesk.getPuzzles().getFilteredPuzzles().stream()
                     .flatMap(p -> p.getStrings().stream().filter(s -> !s.isEmpty())).map(s -> s.replace("\r\n", "[CR]").replace("[CR][CR]", "[CR2]")).collect(Collectors.toList());
             IOUtils.saveTextFile(phrases, opath.resolve("puz2.txt"));
+
+            List<PuzzleRecord> puzzleRecords = new ArrayList<>();
+
+
+            Map<Long, List<String>> byType = yodesk.getPuzzles().getFilteredPuzzles().stream().filter(p -> p.getType() != null).collect(Collectors.groupingBy(Puzzle::getType, Collectors.mapping(p -> Long.toHexString(p.getIndex()), Collectors.toList())));
+
+            Map<Long, List<String>> byUnnamed4 = yodesk.getPuzzles().getFilteredPuzzles().stream().filter(p -> p.get_unnamed4() != null).collect(Collectors.groupingBy(Puzzle::get_unnamed4, Collectors.mapping(p -> Long.toHexString(p.getIndex()), Collectors.toList())));
+
+            Map<Long, List<String>> byUnnamed5 = yodesk.getPuzzles().getFilteredPuzzles().stream().filter(p -> p.get_unnamed5() != null && p.getItem2() != 0).collect(Collectors.groupingBy(Puzzle::get_unnamed5, Collectors.mapping(p -> Long.toHexString(p.getIndex()), Collectors.toList())));
+
+            Map<Integer, List<String>> byUnnamed6 = yodesk.getPuzzles().getFilteredPuzzles().stream().filter(p -> p.get_unnamed6() != null).collect(Collectors.groupingBy(Puzzle::get_unnamed6, Collectors.mapping(p -> Integer.toHexString(p.getIndex()), Collectors.toList())));
+
+            //TODO dump groups
+            System.out.println(byType);
+            System.out.println(byUnnamed4); // Item1 type
+            System.out.println(byUnnamed5); // Item2 type
+            System.out.println(byUnnamed6); // Flag??
+
+            List<Integer> items1 = yodesk.getPuzzles().getFilteredPuzzles().stream().map(Puzzle::getItem1).distinct().filter(i -> i <= yodesk.getTiles().getTiles().size()).sorted().collect(Collectors.toList());
+            List<Integer> items2 = yodesk.getPuzzles().getFilteredPuzzles().stream().map(Puzzle::getItem2).distinct().filter(i -> i <= yodesk.getTiles().getTiles().size()).sorted().collect(Collectors.toList());
+
+            List<Puzzle> puzzles1 = yodesk.getPuzzles().getFilteredPuzzles().stream().filter(i -> i.getItem1() > yodesk.getTiles().getTiles().size()).sorted(Comparator.comparing(Puzzle::getItem1)).collect(Collectors.toList());
+            List<Puzzle> puzzles2 = yodesk.getPuzzles().getFilteredPuzzles().stream().filter(i -> i.getItem2() > yodesk.getTiles().getTiles().size()).sorted(Comparator.comparing(Puzzle::getItem2)).collect(Collectors.toList());
+
+
+            System.out.println(items1);
+            System.out.println(items2);
+
+            System.out.println(puzzles1);
+            System.out.println(puzzles2);
+
+            yodesk.getPuzzles().getFilteredPuzzles().forEach(p -> {
+                List<PuzzleRecord> pz = new ArrayList<>();
+
+
+                if (StringUtils.isNotBlank(p.getPrefixesStrings().get(0).getContent())) {
+                    pz.add(new PuzzleRecord(p.getIndex() + ".REQUEST", Stream.of(p.getItem1(), p.getItem2()).filter(i -> i <= yodesk.getTiles().getTiles().size() && i < 112)
+                            .map(tileId -> GetTile(tileId, icmw)).collect(Collectors.toList()), "REQUEST", p.getPrefixesStrings().get(0).getContent()));
+                }
+                if (StringUtils.isNotBlank(p.getPrefixesStrings().get(1).getContent())) {
+                    pz.add(new PuzzleRecord(p.getIndex() + ".THANK", Collections.emptyList(), "THANKS", p.getPrefixesStrings().get(1).getContent()));
+                }
+                if (StringUtils.isNotBlank(p.getPrefixesStrings().get(2).getContent())) {
+                    pz.add(new PuzzleRecord(p.getIndex() + ".OFFER", Collections.emptyList(), "OFFER", p.getPrefixesStrings().get(2).getContent()));
+                }
+                if (StringUtils.isNotBlank(p.getPrefixesStrings().get(3).getContent())) {
+                    pz.add(new PuzzleRecord(p.getIndex() + ".MISSION", Collections.emptyList(), "MISSION", p.getPrefixesStrings().get(3).getContent()));
+                }
+                if (StringUtils.isNotBlank(p.getPrefixesStrings().get(4).getContent())) {
+                    pz.add(new PuzzleRecord(p.getIndex() + ".UNUSED", Collections.emptyList(), "UNUSED", p.getPrefixesStrings().get(4).getContent()));
+                }
+
+                pz.get(0).setImages(Stream.of(p.getItem1()).map(tileId -> GetTile(tileId, icmw)).collect(Collectors.toList()));
+                if (pz.size() < 2) {
+                    List<BufferedImage> bufferedImages = pz.get(0).getImages();
+                    bufferedImages.addAll(Stream.of(p.getItem2()).filter(i -> i <= yodesk.getTiles().getTiles().size() && i >= 418)
+                            .map(tileId -> GetTile(tileId, icmw)).collect(Collectors.toList()));
+                    //pz.get(0).setImages();
+                } else {
+                    pz.get(1).setImages(Stream.of(p.getItem2()).filter(i -> i <= yodesk.getTiles().getTiles().size() && i >= 418)
+                            .map(tileId -> GetTile(tileId, icmw)).collect(Collectors.toList()));
+                }
+
+                puzzleRecords.addAll(pz);
+            });
+            WordUtils.savePuzzles(puzzleRecords, opath.resolve("puz2" + E_DOCX));
+
         } catch (Exception e) {
             JavaFxUtils.showAlert("Error saving puzzles to the files", e);
         }
@@ -1094,25 +1227,33 @@ public class MainPaneController {
             Log.debug("Total count: " + yodesk.getCharacters().getCharacters().size());
             Log.newLine();
 
-            int position = yodesk.getCharacters().get_parent().getDataPosition();
+            int position = yodesk.getCharacters().getParent().getDataPosition();
             for (int i = 0; i < yodesk.getCharacters().getCharacters().size(); i++) {
                 ReadCHAR(yodesk.getCharacters().getCharacters().get(i), position);
                 position += yodesk.getCharacters().getCharacters().get(i).byteSize();
             }
 
-            position = yodesk.getCharacterWeapons().get_parent().getDataPosition();
+            position = yodesk.getCharacterWeapons().getParent().getDataPosition();
             for (int i = 0; i < yodesk.getCharacterWeapons().getWeapons().size(); i++) {
                 ReadCHWP(yodesk.getCharacterWeapons().getWeapons().get(i), position);
                 position += yodesk.getCharacterWeapons().getWeapons().get(i).byteSize();
             }
 
-            position = yodesk.getCharacterAuxiliaries().get_parent().getDataPosition();
+            position = yodesk.getCharacterAuxiliaries().getParent().getDataPosition();
             for (int i = 0; i < yodesk.getCharacterAuxiliaries().getAuxiliaries().size(); i++) {
                 ReadCAUX(yodesk.getCharacterAuxiliaries().getAuxiliaries().get(i), position);
                 position += yodesk.getCharacterAuxiliaries().getAuxiliaries().get(i).byteSize();
             }
 
-            IOUtils.saveTextFile(yodesk.getCharacters().getCharacters().stream().map(Character::getName).collect(Collectors.toList()), opath.resolve("chars.txt"));
+            List<StringRecord> records = yodesk.getCharacters().getCharacters().stream()
+                    .map(c -> new StringRecord(c.getIndex(), c.getName())).collect(Collectors.toList());
+            WordUtils.saveRecords("Characters", records, opath.resolve("chars" + E_DOCX));
+
+            List<ImageRecord> imageRecords = yodesk.getCharacters().getFilteredCharacters().stream()
+                    .map(c -> new ImageRecord(c.getTileIds().stream().map(t -> GetTile(t, icmw)).collect(Collectors.toList()), c.getName())).collect(Collectors.toList());
+            WordUtils.saveCharacters(imageRecords, opath.resolve("chars2" + E_DOCX));
+
+            IOUtils.saveTextFile(yodesk.getCharacters().getFilteredCharacters().stream().map(Character::getName).collect(Collectors.toList()), opath.resolve("chars.txt"));
         } catch (Exception e) {
             JavaFxUtils.showAlert("Error saving characters to the files", e);
         }
@@ -1152,7 +1293,7 @@ public class MainPaneController {
         }
     }
 
-    private void ReadTNAM() throws IOException {
+    private void ReadTNAM() throws IOException, InvalidFormatException {
 
         Log.clear();
         Log.debug("Names:");
@@ -1165,8 +1306,12 @@ public class MainPaneController {
                 BMPWriter.write(GetTile(n.getTileId()), IOUtils.findUnusedFileName(opath.resolve("Names"), n.getName(), E_BMP));
             }
         }
-        IOUtils.saveTextFile(yodesk.getTileNames().getNames().stream().map(TileName::getName).filter(Objects::nonNull)
+        IOUtils.saveTextFile(yodesk.getTileNames().getFilteredNames().stream().map(TileName::getName).filter(Objects::nonNull)
                 .collect(Collectors.toList()), opath.resolve("tilenames.txt"));
+
+        List<ImageRecord> imageRecords = yodesk.getTileNames().getFilteredNames().stream()
+                .map(n -> new ImageRecord(Collections.singletonList(GetTile(n.getTileId(), icmw)), n.getName())).collect(Collectors.toList());
+        WordUtils.saveNames(imageRecords, opath.resolve("tilenames2" + E_DOCX));
     }
 
     public void dumpNamesTextToDocxCLick(ActionEvent actionEvent) {
@@ -2124,9 +2269,13 @@ end;
     end;*/
 
     private BufferedImage GetTile(int tileId) {
+        return GetTile(tileId, Config.icm0);
+    }
+
+    private BufferedImage GetTile(int tileId, IndexColorModel icm) {
 
         int position = yodesk.getTiles().tilePixelsPosition(tileId);
-        return ImageUtils.readBPicture(yodesk.getTiles().getRawTiles(), position, TILE_SIZE, TILE_SIZE, Config.icm0);
+        return ImageUtils.readBPicture(yodesk.getTiles().getRawTiles(), position, TILE_SIZE, TILE_SIZE, icm);
     }
 
     private WritableImage GetWTile(int tileId) {

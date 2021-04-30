@@ -3,6 +3,7 @@ package md.leonis.ystt.utils;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
+import md.leonis.config.Config;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;

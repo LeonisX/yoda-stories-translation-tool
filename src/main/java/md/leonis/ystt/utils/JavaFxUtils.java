@@ -9,6 +9,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Region;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import md.leonis.config.Config;
 import md.leonis.ystt.MainApp;
 
 import java.io.File;

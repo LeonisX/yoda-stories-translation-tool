@@ -16,6 +16,37 @@ import java.util.stream.Collectors;
 
 public class WordUtils {
 
+    public static void saveZones(List<PuzzleRecord> records, Path path) throws IOException, InvalidFormatException {
+
+        XWPFDocument document = new XWPFDocument();
+
+        XWPFParagraph paragraph = document.createParagraph();
+        XWPFRun run = paragraph.createRun();
+
+        run.setFontSize(18);
+        run.setBold(true);
+        run.setText("Zone actions");
+        paragraph.setAlignment(ParagraphAlignment.CENTER);
+
+        List<List<Object>> matrix = records.stream().map(r -> {
+            List<Object> objects = new ArrayList<>(new ArrayList<>(Collections.singletonList(r.getId())));
+            if (!r.getType().isEmpty()) {
+                objects.add("\n");
+                objects.add(r.getType());
+            }
+
+            List<String> lines = Arrays.stream(r.getOriginal().replace("\r\n", "\t\r\n\t").split("\t")).collect(Collectors.toList());
+
+            return Arrays.asList(objects, lines, "");
+        }).collect(Collectors.toList());
+
+        createTable(document, Arrays.asList("Info", "Original", "Translated"), matrix);
+
+        FileOutputStream out = new FileOutputStream(path.toFile());
+        document.write(out);
+        out.close();
+        System.out.println(path.toString() + " written successfully");
+    }
 
     public static void savePuzzles(List<PuzzleRecord> records, Path path) throws IOException, InvalidFormatException {
 
@@ -30,8 +61,9 @@ public class WordUtils {
         paragraph.setAlignment(ParagraphAlignment.CENTER);
 
         List<List<Object>> matrix = records.stream().map(r -> {
-            List<Object> objects = new ArrayList<>(Arrays.asList(r.getId(), "\n"));
+            List<Object> objects = new ArrayList<>(new ArrayList<>(Collections.singletonList(r.getId())));
             if (!r.getImages().isEmpty()) {
+                objects.add("\n");
                 objects.add(r.getImages().get(0));
             }
 
@@ -184,7 +216,7 @@ public class WordUtils {
                         addImage(run, Collections.singletonList((BufferedImage) e));
                     } else {
                         String s = (String) e;
-                        if (s.equals("\n")) {
+                        if (s.equals("\n") || s.equals("\r\n")) {
                             run.addBreak();
                         } else {
                             run.setText((String) e);

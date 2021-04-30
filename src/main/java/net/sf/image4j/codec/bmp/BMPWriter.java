@@ -26,7 +26,7 @@ import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.Set;
 
-import static md.leonis.ystt.utils.Config.*;
+import static md.leonis.config.Config.*;
 
 /**
  * Encodes images in BMP format.
