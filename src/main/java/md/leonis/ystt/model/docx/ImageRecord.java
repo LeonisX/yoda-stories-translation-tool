@@ -1,8 +1,9 @@
-package md.leonis.ystt.model;
+package md.leonis.ystt.model.docx;
 
 import java.awt.image.BufferedImage;
 import java.util.List;
 
+//TODO may be merge with StringImageRecord
 public class ImageRecord {
 
     private List<BufferedImage> images;

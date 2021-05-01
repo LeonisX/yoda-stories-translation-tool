@@ -9,6 +9,8 @@ import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;
 import java.awt.image.WritableRaster;
 
+import static md.leonis.config.Config.palette;
+
 public class ImageUtils {
 
     public static WritableImage readWPicture(byte[] bytes, int position, int width, int height, Color transparentColor) {
@@ -80,5 +82,57 @@ public class ImageUtils {
                 canvas.getGraphicsContext2D().getPixelWriter().setColor(xOffset + x, yOffset + y, fillColor);
             }
         }
+    }
+
+    public static void fillCanvas(Canvas canvas, Color fillColor) {
+
+        for (int y = 0; y < canvas.getHeight(); y++) {
+            for (int x = 0; x < canvas.getWidth(); x++) {
+                canvas.getGraphicsContext2D().getPixelWriter().setColor(x, y, fillColor);
+            }
+        }
+    }
+
+    public static WritableImage snapshot(Canvas canvas, int x, int y, int width, int height) {
+
+        Canvas result = new Canvas(width, height);
+        WritableImage wi = canvas.snapshot(null, null);
+        result.getGraphicsContext2D().drawImage(wi, x, y, width, height, 0, 0, width, height);
+        return result.snapshot(null, null);
+    }
+
+    public static byte[] getBytes(Canvas canvas, int x, int y, int width, int height) {
+
+        WritableImage snap = canvas.snapshot(null, null);
+        return getBytes(snap, x, y, width, height);
+    }
+
+    public static byte[] getBytes(WritableImage image) {
+
+        int width = (int) image.getWidth();
+        int height = (int) image.getHeight();
+        return getBytes(image, 0, 0, width, height);
+    }
+
+    public static byte[] getBytes(WritableImage image, int x, int y, int width, int height) {
+
+        byte[] raster = new byte[width * height];
+
+        int k = 0;
+        for (int iy = 0; iy < height; iy++) {
+            for (int ix = 0; ix < width; ix++) {
+                Color color = image.getPixelReader().getColor(ix + x, iy + y);
+                int id = -1;
+                //TODO map map map
+                for (int i = 0; i < palette.length; i++) {
+                    if (palette[i].equals(color)) {
+                        id = i;
+                        break;
+                    }
+                }
+                raster[k++] = (byte) (id & 0xff);
+            }
+        }
+        return raster;
     }
 }

@@ -12,7 +12,7 @@ An original version: https://github.com/LeonisX/YExplorer
 
 ## TODO
 
-* Replace tiles, maps, Undo
+* Replace maps, Undo
 * Hide map layers
 * Log
 * HEX
@@ -25,6 +25,8 @@ An original version: https://github.com/LeonisX/YExplorer
 * Restore functionality
 * Add new tiles - already in Delphi version - we need a better solution: "PLUS" button at the end of tiles
 * Hide debug tabs by default
+
+* Dump structure (hi, mid, lo levels)
 
 * Text descriptions for each release
 
@@ -44,6 +46,10 @@ An original version: https://github.com/LeonisX/YExplorer
 * Remove all text from DTA, save puz2, iacts together, verify if all phrases was found
 * Paste from clipboard (good idea)
 * Validate loaded BMP palette
+
+* Think how to drag-drop from UI to Windows Explorer
+
+
 
 ### Other YS / DA solutions
 

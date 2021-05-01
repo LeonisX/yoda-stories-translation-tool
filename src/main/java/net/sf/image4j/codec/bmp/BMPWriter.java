@@ -43,7 +43,6 @@ public class BMPWriter {
     private BMPWriter() {
     }
 
-
     // 8 bit only
     public static void write8bit(InfoHeader ih, IndexColorModel icm, byte[] raster, File file) throws IOException {
         FileOutputStream fout = new FileOutputStream(file);
@@ -58,7 +57,6 @@ public class BMPWriter {
             }
         }
     }
-
 
     // 8 bit only
     public static void write8bit(Image wi, File file) throws IOException {
@@ -188,7 +186,6 @@ public class BMPWriter {
         }
     }
 
-
     public static void write8bit(InfoHeader ih, IndexColorModel icm, byte[] raster, java.io.OutputStream os) throws IOException {
 
         // Create colour map if the image uses an indexed colour model.
@@ -230,7 +227,6 @@ public class BMPWriter {
         out.write(raster);
     }
 
-
     public static void write(BMPImage bmpImage, Path path) throws IOException {
         write(bmpImage, path.toFile());
     }
@@ -248,7 +244,6 @@ public class BMPWriter {
             }
         }
     }
-
 
     public static void write(BMPImage bmpImage, java.io.OutputStream os) throws IOException {
 
@@ -337,10 +332,10 @@ public class BMPWriter {
         }
     }
 
-
     public static void write(BufferedImage img, Path path) throws IOException {
         write(img, path.toFile());
     }
+
     /**
      * Encodes and writes BMP data the output file
      *

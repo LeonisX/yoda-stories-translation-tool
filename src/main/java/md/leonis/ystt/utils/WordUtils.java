@@ -1,6 +1,6 @@
 package md.leonis.ystt.utils;
 
-import md.leonis.ystt.model.ImageRecord;
+import md.leonis.ystt.model.docx.ImageRecord;
 import md.leonis.ystt.model.docx.StringImagesRecord;
 import md.leonis.ystt.model.docx.StringRecord;
 import md.leonis.ystt.model.docx.WordRecord;

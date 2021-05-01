@@ -25,6 +25,11 @@ public class Tile extends KaitaiStruct {
         this.pixels = new byte[32 * 32];
     }
 
+    public Tile(byte[] pixels, TilesEntries parent, Yodesk root) {
+        this(parent, root);
+        this.pixels = pixels;
+    }
+
     public static Tile fromFile(String fileName) throws IOException {
         return new Tile(new ByteBufferKaitaiStream(fileName));
     }
@@ -62,6 +67,10 @@ public class Tile extends KaitaiStruct {
 
     public byte[] getPixels() {
         return pixels;
+    }
+
+    public void setPixels(byte[] pixels) {
+        this.pixels = pixels;
     }
 
     public Yodesk getRoot() {

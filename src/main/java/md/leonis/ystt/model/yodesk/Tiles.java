@@ -54,7 +54,7 @@ public class Tiles extends KaitaiStruct {
         return position;
     }
 
-    public int tilePixelsPosition(int tileId) {
+    public int getTilePixelsPosition(int tileId) {
         return tilePosition(tileId) + tiles.get(tileId).get_raw_attributes().length;
     }
 
@@ -82,5 +82,20 @@ public class Tiles extends KaitaiStruct {
 
         rawTiles = Arrays.copyOf(rawTiles, rawTiles.length + tiles.get(0).byteSize());
         tilesEntries.getTiles().add(new Tile(tilesEntries, root));
+    }
+
+    public void addTile(byte[] pixels) {
+
+        rawTiles = Arrays.copyOf(rawTiles, rawTiles.length + tiles.get(0).byteSize());
+        tilesEntries.getTiles().add(new Tile(pixels, tilesEntries, root));
+    }
+
+    //TODO need to test this
+    public void replaceTile(int tileId, byte[] pixels) {
+
+        getTiles().get(tileId).setPixels(pixels);
+
+        int offset = getTilePixelsPosition(tileId);
+        System.arraycopy(pixels, 0, rawTiles, offset, pixels.length);
     }
 }

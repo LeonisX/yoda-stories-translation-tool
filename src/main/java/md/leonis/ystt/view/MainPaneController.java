@@ -16,7 +16,7 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.input.*;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -25,9 +25,9 @@ import javafx.stage.WindowEvent;
 import md.leonis.bin.ByteOrder;
 import md.leonis.bin.Dump;
 import md.leonis.config.Config;
-import md.leonis.ystt.model.ImageRecord;
 import md.leonis.ystt.model.Release;
 import md.leonis.ystt.model.Section;
+import md.leonis.ystt.model.docx.ImageRecord;
 import md.leonis.ystt.model.docx.StringImagesRecord;
 import md.leonis.ystt.model.docx.StringRecord;
 import md.leonis.ystt.model.docx.WordRecord;
@@ -113,7 +113,7 @@ public class MainPaneController {
     public Button saveTilesToOneFile;
     public FlowPane tilesFlowPane;
     public TextField tilesInARowTextField;
-    public ImageView clipboardImageView;
+    public Canvas clipboardCanvas;
     public Rectangle clipboardRectangle;
     public Button loadClipboardImage;
     public Button saveClipboardImage;
@@ -408,7 +408,100 @@ public class MainPaneController {
         image.setOnMouseEntered(mouseEnteredHandler);
         image.setOnMouseExited(mouseExitedHandler);
         image.setOnContextMenuRequested(e -> tilesContextMenu.show((Node) e.getSource(), e.getScreenX(), e.getScreenY()));
+
+        image.setOnDragDetected(event -> {
+            Dragboard db = image.startDragAndDrop(TransferMode.ANY);
+            ClipboardContent content = new ClipboardContent();
+            content.putString(Integer.toString(tileId));
+            db.setContent(content);
+            event.consume();
+        });
+        image.setOnDragOver(event -> {
+            if (event.getGestureSource() != image && event.getDragboard().hasString()) {
+                event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
+            }
+            event.consume();
+        });
+        image.setOnDragEntered(event -> {
+            if (event.getGestureSource() != image && event.getDragboard().hasString()) {
+                moveClipboardRectangle(event.getX(), event.getY());
+                clipboardRectangle.setVisible(false);
+            }
+            event.consume();
+        });
+        image.setOnDragExited(event -> {
+            moveClipboardRectangle(event.getX(), event.getY());
+            event.consume();
+        });
+        image.setOnDragDropped(event -> {
+            Dragboard db = event.getDragboard();
+            boolean success = false;
+            if (db.hasString()) {
+                String[] chunks = db.getString().split("\\|");
+                int x = Integer.parseInt(chunks[0]);
+                int y = Integer.parseInt(chunks[1]);
+                WritableImage wi = ImageUtils.snapshot(clipboardCanvas, x, y, TILE_SIZE, TILE_SIZE);
+                image.setImage(wi);
+                yodesk.getTiles().replaceTile(tileId, ImageUtils.getBytes(wi));
+                success = true;
+            }
+            event.setDropCompleted(success);
+
+            event.consume();
+        });
         return image;
+    }
+
+    public void clipboardCanvasDragDetected(MouseEvent event) {
+
+        Dragboard db = clipboardCanvas.startDragAndDrop(TransferMode.ANY);
+        ClipboardContent content = new ClipboardContent();
+
+        int x = ((int) event.getX()) & 0xFFFFFFE0;
+        int y = ((int) event.getY()) & 0xFFFFFFE0;
+
+        content.putString(String.format("%s|%s", x, y));
+        db.setContent(content);
+        event.consume();
+    }
+
+    public void clipboardCanvasDragOver(DragEvent event) {
+
+        if (event.getGestureSource() != clipboardCanvas && event.getDragboard().hasString()) {
+            event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
+        }
+        event.consume();
+    }
+
+    public void clipboardCanvasDragEntered(DragEvent event) {
+
+        if (event.getGestureSource() != clipboardCanvas && event.getDragboard().hasString()) {
+            moveClipboardRectangle(event.getX(), event.getY());
+            clipboardRectangle.setVisible(false);
+        }
+        event.consume();
+    }
+
+    public void clipboardCanvasDragExited(DragEvent event) {
+
+        moveClipboardRectangle(event.getX(), event.getY());
+        event.consume();
+    }
+
+    public void clipboardCanvasDragDropped(DragEvent event) {
+
+        Dragboard db = event.getDragboard();
+        boolean success = false;
+        if (db.hasString()) {
+            int tileId = Integer.parseInt(db.getString());
+            int x = ((int) event.getX()) & 0xFFFFFFE0;
+            int y = ((int) event.getY()) & 0xFFFFFFE0;
+            GetWTile(tileId, clipboardCanvas, x, y, transparentColor);
+            success = true;
+        }
+        event.setDropCompleted(success);
+
+        event.consume();
     }
 
     private void drawMapEditorTiles() {
@@ -731,12 +824,12 @@ public class MainPaneController {
         Config.transparentColor = (Color) transparentColorToggleGroup.getSelectedToggle().getUserData();
         Config.updatePalette();
         ObservableList<Node> children = tilesFlowPane.getChildren();
-        for (int i = 0; i < children.size(); i++) {
+        for (int i = 0; i < children.size() - 1; i++) {
             ImageView imageView = (ImageView) children.get(i);
             imageView.setImage(GetWTile(i));
         }
         children = mapEditorTilesFlowPane.getChildren();
-        for (int i = 0; i < children.size(); i++) {
+        for (int i = 0; i < children.size() - 1; i++) {
             ImageView imageView = (ImageView) children.get(i);
             imageView.setImage(GetWTile(i));
         }
@@ -934,25 +1027,25 @@ public class MainPaneController {
         }
     }
 
-    public void clipboardImageViewMouseEntered(MouseEvent mouseEvent) {
+    public void clipboardCanvasMouseEntered(MouseEvent mouseEvent) {
         moveClipboardRectangle(mouseEvent.getX(), mouseEvent.getY());
         clipboardRectangle.setVisible(true);
     }
 
-    public void clipboardImageViewMouseMoved(MouseEvent mouseEvent) {
+    public void clipboardCanvasMouseMoved(MouseEvent mouseEvent) {
         moveClipboardRectangle(mouseEvent.getX(), mouseEvent.getY());
     }
 
     private void moveClipboardRectangle(double mx, double my) {
-        double x = clipboardImageView.getLayoutX() + (((int) mx) & 0xFFFFFFE0);
-        double y = clipboardImageView.getLayoutY() + (((int) my) & 0xFFFFFFE0);
+        double x = clipboardCanvas.getLayoutX() + (((int) mx) & 0xFFFFFFE0);
+        double y = clipboardCanvas.getLayoutY() + (((int) my) & 0xFFFFFFE0);
         if (x != clipboardRectangle.getLayoutX() || y != clipboardRectangle.getLayoutY()) {
             clipboardRectangle.setLayoutX(x);
             clipboardRectangle.setLayoutY(y);
         }
     }
 
-    public void clipboardImageViewMouseExited() {
+    public void clipboardCanvasMouseExited() {
         clipboardRectangle.setVisible(false);
     }
 
@@ -965,9 +1058,9 @@ public class MainPaneController {
             if (file != null) {
                 clipboardFile = file;
                 Image image = BMPReader.readWI(file);
-                clipboardImageView.setImage(image);
-                clipboardImageView.setFitHeight(image.getHeight());
-                clipboardImageView.setFitWidth(image.getWidth());
+                clipboardCanvas.setWidth(image.getWidth());
+                clipboardCanvas.setHeight(image.getHeight());
+                clipboardCanvas.getGraphicsContext2D().drawImage(image, 0, 0);
             }
         } catch (Exception e) {
             JavaFxUtils.showAlert("Clipboard image loading error", e);
@@ -976,13 +1069,11 @@ public class MainPaneController {
 
     public void saveClipboardImageClick() {
         try {
-            if (null != clipboardImageView.getImage()) {
-                String initialFile = (null == clipboardFile) ? "clipboard.bmp" : clipboardFile.getName();
-                String initialDir = (null == clipboardFile) ? null : clipboardFile.getParent();
-                File file = JavaFxUtils.showBMPSaveDialog("Save Clipboard image", initialDir, initialFile);
-                if (file != null) {
-                    BMPWriter.write8bit(clipboardImageView, file);
-                }
+            String initialFile = (null == clipboardFile) ? "clipboard.bmp" : clipboardFile.getName();
+            String initialDir = (null == clipboardFile) ? null : clipboardFile.getParent();
+            File file = JavaFxUtils.showBMPSaveDialog("Save Clipboard image", initialDir, initialFile);
+            if (file != null) {
+                BMPWriter.write8bit(clipboardCanvas, file);
             }
         } catch (Exception e) {
             JavaFxUtils.showAlert("Clipboard image saving error", e);
@@ -990,7 +1081,7 @@ public class MainPaneController {
     }
 
     public void clearClipboardImageClick() {
-        clipboardImageView.setImage(null);
+        ImageUtils.fillCanvas(clipboardCanvas, transparentColor);
     }
 
     public void saveMapsToFilesButtonClick() throws IOException {
@@ -1510,19 +1601,19 @@ public class MainPaneController {
 
     private BufferedImage GetTile(int tileId, IndexColorModel icm) {
 
-        int position = yodesk.getTiles().tilePixelsPosition(tileId);
+        int position = yodesk.getTiles().getTilePixelsPosition(tileId);
         return ImageUtils.readBPicture(yodesk.getTiles().getRawTiles(), position, TILE_SIZE, TILE_SIZE, icm);
     }
 
     private WritableImage GetWTile(int tileId) {
 
-        int position = yodesk.getTiles().tilePixelsPosition(tileId);
+        int position = yodesk.getTiles().getTilePixelsPosition(tileId);
         return ImageUtils.readWPicture(yodesk.getTiles().getRawTiles(), position, TILE_SIZE, TILE_SIZE, Config.transparentColor);
     }
 
     private void GetWTile(int tileId, Canvas canvas, int xOffset, int yOffset, Color transparentColor) {
 
-        int position = yodesk.getTiles().tilePixelsPosition(tileId);
+        int position = yodesk.getTiles().getTilePixelsPosition(tileId);
         ImageUtils.drawOnCanvas(yodesk.getTiles().getRawTiles(), position, canvas, xOffset, yOffset, transparentColor);
     }
 
