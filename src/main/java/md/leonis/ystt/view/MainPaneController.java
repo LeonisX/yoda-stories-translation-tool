@@ -141,6 +141,9 @@ public class MainPaneController {
     public RadioButton topRadioButton;
     public RadioButton middleRadioButton;
     public RadioButton bottomRadioButton;
+    public CheckBox topCheckBox;
+    public CheckBox middleCheckBox;
+    public CheckBox bottomCheckBox;
     public ToggleGroup mapLayerToggleGroup;
     public ListView<String> mapEditorListView;
     public Canvas mapEditorCanvas;

@@ -591,17 +591,23 @@
                                                             prefHeight="92.0" prefWidth="93.0" text="Map layer">
                                                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0"
                                                                 prefWidth="200.0">
-                                                        <RadioButton fx:id="topRadioButton" layoutX="5.0" layoutY="4.0"
+                                                        <CheckBox fx:id="topCheckBox" layoutX="5.0" layoutY="4.0"
+                                                                  mnemonicParsing="false" selected="true" userData="2"/>
+                                                        <CheckBox fx:id="middleCheckBox" layoutX="5.0" layoutY="23.0"
+                                                                  mnemonicParsing="false" selected="true" userData="1"/>
+                                                        <CheckBox fx:id="bottomCheckBox" layoutX="5.0" layoutY="42.0"
+                                                                  mnemonicParsing="false" selected="true" userData="0"/>
+                                                        <RadioButton fx:id="topRadioButton" layoutX="25.0" layoutY="4.0"
                                                                      mnemonicParsing="false" selected="true" text="Top"
                                                                      userData="2">
                                                             <toggleGroup>
                                                                 <ToggleGroup fx:id="mapLayerToggleGroup"/>
                                                             </toggleGroup>
                                                         </RadioButton>
-                                                        <RadioButton fx:id="middleRadioButton" layoutX="5.0"
+                                                        <RadioButton fx:id="middleRadioButton" layoutX="25.0"
                                                                      layoutY="23.0" mnemonicParsing="false" userData="1"
                                                                      text="Middle" toggleGroup="$mapLayerToggleGroup"/>
-                                                        <RadioButton fx:id="bottomRadioButton" layoutX="5.0"
+                                                        <RadioButton fx:id="bottomRadioButton" layoutX="25.0"
                                                                      layoutY="42.0" mnemonicParsing="false" userData="0"
                                                                      text="Bottom" toggleGroup="$mapLayerToggleGroup"/>
                                                     </AnchorPane>
@@ -620,7 +626,8 @@
                                                         onDragExited="#mapEditorCanvasDragExited"
                                                         onDragDropped="#mapEditorCanvasDragDropped"
                                                 />
-                                                <ScrollPane fx:id="mapEditorTilesScrollPane" layoutX="700.0" layoutY="15.0" prefHeight="392.0"
+                                                <ScrollPane fx:id="mapEditorTilesScrollPane" layoutX="700.0"
+                                                            layoutY="15.0" prefHeight="392.0"
                                                             prefWidth="481.0">
                                                     <FlowPane fx:id="mapEditorTilesFlowPane" columnHalignment="CENTER"
                                                               prefHeight="390.0" prefWidth="463.0"
