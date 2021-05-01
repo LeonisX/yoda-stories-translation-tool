@@ -192,7 +192,7 @@ public class MainPaneController {
     Path spath, opath;
 
     //TODO need to clear after DTA load
-    public boolean[] usedTiles;
+    public List<Boolean> usedTiles;
 
     private File clipboardFile;
 
@@ -215,7 +215,7 @@ public class MainPaneController {
     @FXML
     void initialize() {
 
-        usedTiles = new boolean[yodesk.getTiles().getTiles().size()];
+        usedTiles = new ArrayList<Boolean>(Collections.nCopies(yodesk.getTiles().getTiles().size(), false));
 
         noColorMenuItem.setUserData(Config.transparentColor);
         fuchsiaMenuItem.setUserData(Color.FUCHSIA);
@@ -395,6 +395,8 @@ public class MainPaneController {
             yodesk.getTiles().addTile();
             int tileId = yodesk.getTiles().getTiles().size() - 1;
             tilesFlowPane.getChildren().add(tileId, newTile(tileId));
+            mapEditorTilesFlowPane.getChildren().add(tileId, newTile(tileId));
+            usedTiles.add(false);
         } catch (Exception e) {
             JavaFxUtils.showAlert("Error adding tiles", e);
         }
@@ -434,17 +436,16 @@ public class MainPaneController {
         });
         image.setOnDragDropped(event -> {
             Dragboard db = event.getDragboard();
-            boolean success = false;
             if (db.hasString()) {
                 String[] chunks = db.getString().split("\\|");
                 int x = Integer.parseInt(chunks[0]);
                 int y = Integer.parseInt(chunks[1]);
                 WritableImage wi = ImageUtils.snapshot(clipboardCanvas, x, y, TILE_SIZE, TILE_SIZE);
                 image.setImage(wi);
+                ((ImageView) mapEditorTilesFlowPane.getChildren().get(tileId)).setImage(wi);
                 yodesk.getTiles().replaceTile(tileId, ImageUtils.getBytes(wi));
-                success = true;
             }
-            event.setDropCompleted(success);
+            event.setDropCompleted(true);
 
             event.consume();
         });
@@ -667,7 +668,6 @@ public class MainPaneController {
     public void mapEditorCanvasDragDropped(DragEvent event) {
 
         Dragboard db = event.getDragboard();
-        boolean success = false;
         if (db.hasString()) {
             int tileId = Integer.parseInt(db.getString());
             int x = ((int) event.getX()) / TILE_SIZE;
@@ -683,10 +683,8 @@ public class MainPaneController {
             addToMapsHistory(zoneId, x, y, layerId, oldValue, tileId);
 
             undoMapEdit.setVisible(true);
-
-            success = true;
         }
-        event.setDropCompleted(success);
+        event.setDropCompleted(true);
 
         event.consume();
     }
@@ -780,7 +778,7 @@ public class MainPaneController {
 
         int tileId = zone.getTileIds().get(y * zone.getWidth() + x).getColumn().get(layer);
         if (tileId < yodesk.getTiles().getTiles().size()) {
-            usedTiles[tileId] = true;
+            usedTiles.set(tileId, true);
             GetWTile(tileId, canvas, x * TILE_SIZE, y * TILE_SIZE, null);
         }
     }
@@ -1238,7 +1236,7 @@ public class MainPaneController {
             Path unusedTilesPath = opath.resolve("TilesUnused");
             IOUtils.createDirectories(unusedTilesPath);
             for (int i = 0; i < yodesk.getTiles().getTiles().size(); i++) {
-                if (!usedTiles[i]) {
+                if (!usedTiles.get(i)) {
                     Log.debug(i);
                     BMPWriter.write8bit(GetTile(i), unusedTilesPath.resolve(StringUtils.leftPad(Integer.toString(i), 4, '0') + E_BMP));
                 }
