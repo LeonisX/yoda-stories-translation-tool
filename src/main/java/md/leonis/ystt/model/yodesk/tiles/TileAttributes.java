@@ -73,6 +73,12 @@ public class TileAttributes extends KaitaiStruct {
         _read();
     }
 
+    public TileAttributes(Tile parent, Yodesk root) {
+        super(null);
+        this.parent = parent;
+        this.root = root;
+    }
+
     private void _read() {
 
         this.hasTransparency = this.io.readBitsIntLe(1) != 0;

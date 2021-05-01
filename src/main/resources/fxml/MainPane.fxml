@@ -204,6 +204,9 @@
                                         <FlowPane fx:id="tilesFlowPane" columnHalignment="CENTER" prefHeight="420.0" prefWidth="527.0"
                                                   prefWrapLength="540.0" hgap="1.0" vgap="1.0" />
                                 </ScrollPane>
+                                <Button fx:id="addNewTile"
+                                        mnemonicParsing="false" onAction="#addNewTileClick"
+                                        text="+" prefWidth="32" prefHeight="32"/>
                                 <Label layoutX="12.0" layoutY="18.0" text="Tiles count:"/>
                                 <Label fx:id="tilesCountLabel" layoutX="88.0" layoutY="18.0"/>
                                 <Button fx:id="saveTilesToSeparateFiles" layoutX="10.0" layoutY="42.0"

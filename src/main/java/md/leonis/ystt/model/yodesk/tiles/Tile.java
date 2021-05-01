@@ -16,6 +16,15 @@ public class Tile extends KaitaiStruct {
     private final TilesEntries parent;
     private byte[] _raw_attributes;
 
+    public Tile(TilesEntries parent, Yodesk root) {
+        super(null);
+        this.parent = parent;
+        this.root = root;
+        this._raw_attributes = "\u0000\u0000\u0000\u0000".getBytes();
+        this.attributes = new TileAttributes(this, root);
+        this.pixels = new byte[32 * 32];
+    }
+
     public static Tile fromFile(String fileName) throws IOException {
         return new Tile(new ByteBufferKaitaiStream(fileName));
     }

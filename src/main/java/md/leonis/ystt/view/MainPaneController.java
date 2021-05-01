@@ -121,6 +121,7 @@ public class MainPaneController {
     public ContextMenu tilesContextMenu;
     public ToggleGroup tilesToggleGroup;
     private final Map<String, RadioMenuItem> tileFlagsMap = new HashMap<>();
+    public Button addNewTile;
 
     private Node currentTile;
 
@@ -271,8 +272,8 @@ public class MainPaneController {
         soundsTextArea.setText(String.join("\n", yodesk.getSounds().getSounds()));
 
         // Tiles, sprites
-        tilesCountLabel.setText(Integer.toString(yodesk.getTiles().getTiles().size()));
         drawTiles();
+        updateTilesCount();
         tilesContextMenu.setOnShown(this::selectTileMenuItem);
 
         // Maps
@@ -348,6 +349,10 @@ public class MainPaneController {
         namesTextTableView.setItems(FXCollections.observableList(namesTexts));
     }
 
+    private void updateTilesCount() {
+        tilesCountLabel.setText(Integer.toString(yodesk.getTiles().getTiles().size()));
+    }
+
     private void drawTitleImage() {
 
         try {
@@ -375,17 +380,35 @@ public class MainPaneController {
     private void drawTiles() {
 
         try {
+            tilesFlowPane.getChildren().clear();
             for (int i = 0; i < yodesk.getTiles().getTiles().size(); i++) {
-                ImageView image = new ImageView(GetWTile(i));
-                image.setUserData(i);
-                image.setOnMouseEntered(mouseEnteredHandler);
-                image.setOnMouseExited(mouseExitedHandler);
-                image.setOnContextMenuRequested(e -> tilesContextMenu.show((Node) e.getSource(), e.getScreenX(), e.getScreenY()));
-                tilesFlowPane.getChildren().add(image);
+                tilesFlowPane.getChildren().add(newTile(i));
             }
+            tilesFlowPane.getChildren().add(addNewTile);
         } catch (Exception e) {
             JavaFxUtils.showAlert("Tiles display error", e);
         }
+    }
+
+    public void addNewTileClick() {
+
+        try {
+            yodesk.getTiles().addTile();
+            int tileId = yodesk.getTiles().getTiles().size() - 1;
+            tilesFlowPane.getChildren().add(tileId, newTile(tileId));
+        } catch (Exception e) {
+            JavaFxUtils.showAlert("Error adding tiles", e);
+        }
+    }
+
+    private ImageView newTile(int tileId) {
+
+        ImageView image = new ImageView(GetWTile(tileId));
+        image.setUserData(tileId);
+        image.setOnMouseEntered(mouseEnteredHandler);
+        image.setOnMouseExited(mouseExitedHandler);
+        image.setOnContextMenuRequested(e -> tilesContextMenu.show((Node) e.getSource(), e.getScreenX(), e.getScreenY()));
+        return image;
     }
 
     private void drawMapEditorTiles() {

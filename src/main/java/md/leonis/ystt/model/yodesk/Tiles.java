@@ -8,6 +8,7 @@ import md.leonis.ystt.model.yodesk.tiles.TilesEntries;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Tiles extends KaitaiStruct {
 
@@ -75,5 +76,11 @@ public class Tiles extends KaitaiStruct {
 
     public CatalogEntry getParent() {
         return parent;
+    }
+
+    public void addTile() {
+
+        rawTiles = Arrays.copyOf(rawTiles, rawTiles.length + tiles.get(0).byteSize());
+        tilesEntries.getTiles().add(new Tile(tilesEntries, root));
     }
 }
