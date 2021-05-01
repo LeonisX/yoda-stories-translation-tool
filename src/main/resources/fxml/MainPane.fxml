@@ -592,16 +592,17 @@
                                                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0"
                                                                 prefWidth="200.0">
                                                         <RadioButton fx:id="topRadioButton" layoutX="5.0" layoutY="4.0"
-                                                                     mnemonicParsing="false" selected="true" text="Top">
+                                                                     mnemonicParsing="false" selected="true" text="Top"
+                                                                     userData="2">
                                                             <toggleGroup>
                                                                 <ToggleGroup fx:id="mapLayerToggleGroup"/>
                                                             </toggleGroup>
                                                         </RadioButton>
                                                         <RadioButton fx:id="middleRadioButton" layoutX="5.0"
-                                                                     layoutY="23.0" mnemonicParsing="false"
+                                                                     layoutY="23.0" mnemonicParsing="false" userData="1"
                                                                      text="Middle" toggleGroup="$mapLayerToggleGroup"/>
                                                         <RadioButton fx:id="bottomRadioButton" layoutX="5.0"
-                                                                     layoutY="42.0" mnemonicParsing="false"
+                                                                     layoutY="42.0" mnemonicParsing="false" userData="0"
                                                                      text="Bottom" toggleGroup="$mapLayerToggleGroup"/>
                                                     </AnchorPane>
                                                 </TitledPane>
@@ -612,8 +613,14 @@
                                                         mnemonicParsing="false" onAction="#undoMapEditClick"
                                                         text="Undo"/>
                                                 <Canvas fx:id="mapEditorCanvas" height="576.0" width="576.0"
-                                                        layoutX="115.0" layoutY="15.0"/>
-                                                <ScrollPane layoutX="700.0" layoutY="15.0" prefHeight="392.0"
+                                                        layoutX="115.0" layoutY="15.0"
+                                                        onDragDetected="#mapEditorCanvasDragDetected"
+                                                        onDragOver="#mapEditorCanvasDragOver"
+                                                        onDragEntered="#mapEditorCanvasDragEntered"
+                                                        onDragExited="#mapEditorCanvasDragExited"
+                                                        onDragDropped="#mapEditorCanvasDragDropped"
+                                                />
+                                                <ScrollPane fx:id="mapEditorTilesScrollPane" layoutX="700.0" layoutY="15.0" prefHeight="392.0"
                                                             prefWidth="481.0">
                                                     <FlowPane fx:id="mapEditorTilesFlowPane" columnHalignment="CENTER"
                                                               prefHeight="390.0" prefWidth="463.0"

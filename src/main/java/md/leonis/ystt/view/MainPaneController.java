@@ -143,6 +143,7 @@ public class MainPaneController {
     public ToggleGroup mapLayerToggleGroup;
     public ListView<String> mapEditorListView;
     public Canvas mapEditorCanvas;
+    public ScrollPane mapEditorTilesScrollPane;
     public FlowPane mapEditorTilesFlowPane;
     public Button undoMapEdit;
 
@@ -188,14 +189,9 @@ public class MainPaneController {
     private static final int TILE_SIZE = 32;
 
     Path spath, opath;
-    int selectedCell, selectedTileX, selectedTileY;
-
 
     //TODO need to clear after DTA load
     public boolean[] usedTiles;
-
-    int prevTile = -1;
-    long prevTileAddress;
 
     private File clipboardFile;
 
@@ -207,7 +203,7 @@ public class MainPaneController {
     private List<StringRecord> actionTexts;
     private List<StringImagesRecord> puzzlesTexts;
     private List<StringImagesRecord> namesTexts;
-
+    private int zoneId;
 
     public MainPaneController() {
         spath = Paths.get(".");
@@ -512,7 +508,18 @@ public class MainPaneController {
                 image.setUserData(i);
                 image.setOnMouseEntered(mouseEnteredHandler);
                 image.setOnMouseExited(mouseExitedHandler);
+                //TODO need here????
                 image.setOnContextMenuRequested(e -> tilesContextMenu.show((Node) e.getSource(), e.getScreenX(), e.getScreenY()));
+
+                int finalI = i;
+                image.setOnDragDetected(event -> {
+                    Dragboard db = image.startDragAndDrop(TransferMode.ANY);
+                    ClipboardContent content = new ClipboardContent();
+                    content.putString(Integer.toString(finalI));
+                    db.setContent(content);
+                    event.consume();
+                });
+
                 mapEditorTilesFlowPane.getChildren().add(image);
             }
         } catch (Exception e) {
@@ -598,20 +605,79 @@ public class MainPaneController {
         @Override
         public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
             if (mapEditorListView.getSelectionModel().getSelectedIndex() >= 0) {
-                drawEditorMap(mapEditorListView.getSelectionModel().getSelectedIndex());
-                //TODO move map editor tiles, undo button
+                zoneId = mapEditorListView.getSelectionModel().getSelectedIndex();
+                drawEditorMap(zoneId);
+                mapEditorTilesScrollPane.setLayoutX(mapEditorCanvas.getLayoutX() + mapEditorCanvas.getWidth() + 8);
             }
         }
     };
 
-    private void drawEditorMap(int id) {
+    private void drawEditorMap(int zoneId) {
         try {
             //ReadIZON(id, false);
-            ReadMap(mapEditorCanvas, id, true, normalSaveCheckBox.isSelected() || groupByFlagsCheckBox.isSelected() || groupByPlanetTypeCheckBox.isSelected());
+            ReadMap(mapEditorCanvas, zoneId, true, normalSaveCheckBox.isSelected() || groupByFlagsCheckBox.isSelected() || groupByPlanetTypeCheckBox.isSelected());
         } catch (Exception e) {
-            JavaFxUtils.showAlert(String.format("Map %s display error", id), e);
+            JavaFxUtils.showAlert(String.format("Map %s display error", zoneId), e);
         }
     }
+
+    public void mapEditorCanvasDragDetected(MouseEvent event) {
+
+        Dragboard db = mapEditorCanvas.startDragAndDrop(TransferMode.ANY);
+        ClipboardContent content = new ClipboardContent();
+
+        int x = ((int) event.getX()) & 0xFFFFFFE0;
+        int y = ((int) event.getY()) & 0xFFFFFFE0;
+
+        content.putString(String.format("%s|%s", x, y));
+        db.setContent(content);
+        event.consume();
+    }
+
+    public void mapEditorCanvasDragOver(DragEvent event) {
+
+        if (event.getGestureSource() != mapEditorCanvas && event.getDragboard().hasString()) {
+            event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
+        }
+        event.consume();
+    }
+
+    public void mapEditorCanvasDragEntered(DragEvent event) {
+
+        if (event.getGestureSource() != mapEditorCanvas && event.getDragboard().hasString()) {
+            moveClipboardRectangle(event.getX(), event.getY());
+            clipboardRectangle.setVisible(false);
+        }
+        event.consume();
+    }
+
+    public void mapEditorCanvasDragExited(DragEvent event) {
+
+        moveClipboardRectangle(event.getX(), event.getY());
+        event.consume();
+    }
+
+    public void mapEditorCanvasDragDropped(DragEvent event) {
+
+        Dragboard db = event.getDragboard();
+        boolean success = false;
+        if (db.hasString()) {
+            int tileId = Integer.parseInt(db.getString());
+            int x = ((int) event.getX()) & 0xFFFFFFE0;
+            int y = ((int) event.getY()) & 0xFFFFFFE0;
+
+            int layerId = Integer.parseInt((String) mapLayerToggleGroup.getSelectedToggle().getUserData());
+
+            Zone zone = yodesk.getZones().getZones().get(zoneId);
+            zone.getTileIds().get(y * zone.getWidth() + x).getColumn().set(layerId, tileId);
+            drawZoneSpot(mapEditorCanvas, zone, x, y);
+            success = true;
+        }
+        event.setDropCompleted(success);
+
+        event.consume();
+    }
+
 
     //TODO
     public void undoMapEditClick(ActionEvent actionEvent) {
@@ -635,10 +701,7 @@ public class MainPaneController {
 
             for (int y = 0; y < zone.getHeight(); y++) {
                 for (int x = 0; x < zone.getWidth(); x++) {
-                    //W*H*6 bytes: map data
-                    drawTileOnMap(canvas, x, y, zone, 0);
-                    drawTileOnMap(canvas, x, y, zone, 1);
-                    drawTileOnMap(canvas, x, y, zone, 2);
+                    drawZoneSpot(canvas, zone, x, y);
                 }
             }
         }
@@ -663,7 +726,14 @@ public class MainPaneController {
         }
     }
 
-    private void drawTileOnMap(Canvas canvas, int x, int y, Zone zone, int layer) {
+    private void drawZoneSpot(Canvas canvas, Zone zone, int x, int y) {
+
+        for (int layer = 0; layer < 3; layer++) {
+            drawTileOnMap(canvas, zone, x, y, layer);
+        }
+    }
+
+    private void drawTileOnMap(Canvas canvas, Zone zone, int x, int y, int layer) {
 
         int tileId = zone.getTileIds().get(y * zone.getWidth() + x).getColumn().get(layer);
         if (tileId < yodesk.getTiles().getTiles().size()) {

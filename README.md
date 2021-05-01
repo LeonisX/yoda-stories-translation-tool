@@ -12,7 +12,7 @@ An original version: https://github.com/LeonisX/YExplorer
 
 ## TODO
 
-* Replace maps, Undo
+* Undo
 * Hide map layers
 * Log
 * HEX
