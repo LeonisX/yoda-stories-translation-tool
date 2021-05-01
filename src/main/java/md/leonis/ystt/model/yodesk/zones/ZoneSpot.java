@@ -7,13 +7,14 @@ import md.leonis.ystt.model.yodesk.Yodesk;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ZoneSpot extends KaitaiStruct {
 
     /**
      * from bottom to top, 0xFFFF indicates empty tiles
      */
-    private ArrayList<Integer> column;
+    private List<Integer> column;
 
     private final Yodesk root;
     private final Zone parent;
@@ -44,7 +45,7 @@ public class ZoneSpot extends KaitaiStruct {
         }
     }
 
-    public ArrayList<Integer> getColumn() {
+    public List<Integer> getColumn() {
         return column;
     }
 

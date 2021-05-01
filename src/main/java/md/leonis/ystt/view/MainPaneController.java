@@ -27,6 +27,7 @@ import md.leonis.bin.Dump;
 import md.leonis.config.Config;
 import md.leonis.ystt.model.Release;
 import md.leonis.ystt.model.Section;
+import md.leonis.ystt.model.ZoneHistory;
 import md.leonis.ystt.model.docx.ImageRecord;
 import md.leonis.ystt.model.docx.StringImagesRecord;
 import md.leonis.ystt.model.docx.StringRecord;
@@ -203,7 +204,9 @@ public class MainPaneController {
     private List<StringRecord> actionTexts;
     private List<StringImagesRecord> puzzlesTexts;
     private List<StringImagesRecord> namesTexts;
+
     private int zoneId;
+    private final Map<Integer, ArrayDeque<ZoneHistory>> zoneHistoryMap = new HashMap<>();
 
     public MainPaneController() {
         spath = Paths.get(".");
@@ -586,17 +589,20 @@ public class MainPaneController {
         @Override
         public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
             if (mapsListView.getSelectionModel().getSelectedIndex() >= 0) {
-                drawViewMap(mapsListView.getSelectionModel().getSelectedIndex());
+                zoneId = mapsListView.getSelectionModel().getSelectedIndex();
+                drawViewMap(zoneId);
+
+                undoMapEdit.setVisible(null != zoneHistoryMap.get(zoneId));
             }
         }
     };
 
-    private void drawViewMap(int id) {
+    private void drawViewMap(int zoneId) {
         try {
             //ReadIZON(id, false);
-            ReadMap(mapCanvas, id, true, normalSaveCheckBox.isSelected() || groupByFlagsCheckBox.isSelected() || groupByPlanetTypeCheckBox.isSelected());
+            ReadMap(mapCanvas, zoneId, true, normalSaveCheckBox.isSelected() || groupByFlagsCheckBox.isSelected() || groupByPlanetTypeCheckBox.isSelected());
         } catch (Exception e) {
-            JavaFxUtils.showAlert(String.format("Map %s display error", id), e);
+            JavaFxUtils.showAlert(String.format("Map %s display error", zoneId), e);
         }
     }
 
@@ -608,6 +614,7 @@ public class MainPaneController {
                 zoneId = mapEditorListView.getSelectionModel().getSelectedIndex();
                 drawEditorMap(zoneId);
                 mapEditorTilesScrollPane.setLayoutX(mapEditorCanvas.getLayoutX() + mapEditorCanvas.getWidth() + 8);
+                undoMapEdit.setVisible(null != zoneHistoryMap.get(zoneId));
             }
         }
     };
@@ -663,14 +670,20 @@ public class MainPaneController {
         boolean success = false;
         if (db.hasString()) {
             int tileId = Integer.parseInt(db.getString());
-            int x = ((int) event.getX()) & 0xFFFFFFE0;
-            int y = ((int) event.getY()) & 0xFFFFFFE0;
+            int x = ((int) event.getX()) / TILE_SIZE;
+            int y = ((int) event.getY()) / TILE_SIZE;
 
             int layerId = Integer.parseInt((String) mapLayerToggleGroup.getSelectedToggle().getUserData());
 
             Zone zone = yodesk.getZones().getZones().get(zoneId);
-            zone.getTileIds().get(y * zone.getWidth() + x).getColumn().set(layerId, tileId);
-            drawZoneSpot(mapEditorCanvas, zone, x, y);
+            int oldValue = zone.getTileIds().get(y * zone.getWidth() + x).getColumn().get(layerId);
+
+            modifyZoneSpot(zoneId, x, y, layerId, tileId);
+
+            addToMapsHistory(zoneId, x, y, layerId, oldValue, tileId);
+
+            undoMapEdit.setVisible(true);
+
             success = true;
         }
         event.setDropCompleted(success);
@@ -678,10 +691,40 @@ public class MainPaneController {
         event.consume();
     }
 
+    private void addToMapsHistory(int zoneId, int x, int y, int layerId, int oldValue, int newValue) {
 
-    //TODO
-    public void undoMapEditClick(ActionEvent actionEvent) {
+        ArrayDeque<ZoneHistory> histories = zoneHistoryMap.get(zoneId);
+        if (null == histories) {
+            histories = new ArrayDeque<>();
+        }
+
+        histories.add(new ZoneHistory(zoneId, x, y, layerId, oldValue, newValue));
+        zoneHistoryMap.put(zoneId, histories);
     }
+
+    public void undoMapEditClick() {
+
+        ArrayDeque<ZoneHistory> histories = zoneHistoryMap.get(zoneId);
+
+        ZoneHistory history = zoneHistoryMap.get(zoneId).pollLast();
+
+        modifyZoneSpot(zoneId, history.getX(), history.getY(), history.getLayerId(), history.getOldValue());
+
+        if (histories.isEmpty()) {
+            zoneHistoryMap.remove(zoneId);
+            undoMapEdit.setVisible(false);
+        }
+    }
+
+    private void modifyZoneSpot(int zoneId, int x, int y, int layerId, int tileId) {
+
+        Zone zone = yodesk.getZones().getZones().get(zoneId);
+        List<Integer> column = zone.getTileIds().get(y * zone.getWidth() + x).getColumn();
+        column.set(layerId, tileId);
+
+        drawZoneSpot(mapEditorCanvas, zone, x, y);
+    }
+
 
     //TODO refactor this
     private void ReadMap(Canvas canvas, int zoneId, boolean show, boolean save) throws IOException {

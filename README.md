@@ -12,7 +12,6 @@ An original version: https://github.com/LeonisX/YExplorer
 
 ## TODO
 
-* Undo
 * Hide map layers
 * Log
 * HEX

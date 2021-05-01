@@ -611,7 +611,7 @@
                                                 <Button fx:id="undoMapEdit" layoutX="14.0" layoutY="386.0"
                                                         minWidth="93.0"
                                                         mnemonicParsing="false" onAction="#undoMapEditClick"
-                                                        text="Undo"/>
+                                                        text="Undo" visible="false"/>
                                                 <Canvas fx:id="mapEditorCanvas" height="576.0" width="576.0"
                                                         layoutX="115.0" layoutY="15.0"
                                                         onDragDetected="#mapEditorCanvasDragDetected"
