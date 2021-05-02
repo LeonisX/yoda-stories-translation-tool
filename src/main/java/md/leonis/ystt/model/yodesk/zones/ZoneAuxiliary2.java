@@ -8,6 +8,7 @@ import md.leonis.ystt.model.yodesk.Yodesk;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class ZoneAuxiliary2 extends KaitaiStruct {
 
@@ -15,7 +16,7 @@ public class ZoneAuxiliary2 extends KaitaiStruct {
     private long size;
     private int numProvidedItems;
     // Items that can be gained when the zone is solved.
-    private ArrayList<Integer> providedItems;
+    private List<Integer> providedItems;
 
     private final Yodesk root;
     private final Zone parent;
@@ -64,7 +65,7 @@ public class ZoneAuxiliary2 extends KaitaiStruct {
         return numProvidedItems;
     }
 
-    public ArrayList<Integer> getProvidedItems() {
+    public List<Integer> getProvidedItems() {
         return providedItems;
     }
 

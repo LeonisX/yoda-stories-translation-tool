@@ -8,20 +8,21 @@ import md.leonis.ystt.model.yodesk.Yodesk;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class ZoneAuxiliary extends KaitaiStruct {
 
     private byte[] marker;
     private long size;
-    private int _unnamed2;
+    private int _unnamed2; // 0 or 1
     private int numMonsters;
-    private ArrayList<Monster> monsters;
+    private List<Monster> monsters;
     private int numRequiredItems;
     // List of items that can be used to solve the zone.
-    private ArrayList<Integer> requiredItems;
+    private List<Integer> requiredItems;
     private int numGoalItems;
     // Additional items that are needed to solve the zone. Only used if the zone type is `goal`.
-    private ArrayList<Integer> goalItems;
+    private List<Integer> goalItems;
 
     private final Yodesk root;
     private final Zone parent;
@@ -85,7 +86,7 @@ public class ZoneAuxiliary extends KaitaiStruct {
         return numMonsters;
     }
 
-    public ArrayList<Monster> getMonsters() {
+    public List<Monster> getMonsters() {
         return monsters;
     }
 
@@ -93,7 +94,7 @@ public class ZoneAuxiliary extends KaitaiStruct {
         return numRequiredItems;
     }
 
-    public ArrayList<Integer> getRequiredItems() {
+    public List<Integer> getRequiredItems() {
         return requiredItems;
     }
 
@@ -101,7 +102,7 @@ public class ZoneAuxiliary extends KaitaiStruct {
         return numGoalItems;
     }
 
-    public ArrayList<Integer> getGoalItems() {
+    public List<Integer> getGoalItems() {
         return goalItems;
     }
 

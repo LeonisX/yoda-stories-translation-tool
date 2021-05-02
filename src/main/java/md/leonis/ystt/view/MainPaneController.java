@@ -81,7 +81,7 @@ public class MainPaneController {
     public MenuItem aboutMenuItem;
 
     public Label versionLabel;
-    public Label sizeLabel;
+    public Label fileSizeLabel;
     public Label crc32Label;
     public Label nameLabel;
     public Label charsetLabel;
@@ -129,6 +129,17 @@ public class MainPaneController {
     public CheckBox saveUnusedTilesCheckBox;
     public ListView<String> mapsListView;
     public Canvas mapCanvas;
+    public Label mapSizeLabel;
+    public Label mapTypeLabel;
+    public Label mapPlanetLabel;
+    public Label mapActionsLabel;
+    public Label mapIzaxUnnamedLabel;
+    public Label mapZax4Unnamed2Label;
+    public FlowPane mapNpcsTilesFlowPane;
+    public FlowPane mapGoalTilesFlowPane;
+    public FlowPane mapProvidedItemsTilesFlowPane;
+    public FlowPane mapRequiredItemsTilesFlowPane;
+
     public TableView<Zone> mapsTableView;
 
     public RadioButton topRadioButton;
@@ -252,7 +263,7 @@ public class MainPaneController {
         // Common information, sections
         versionLabel.setText(yodesk.getVersion().getVersion());
         nameLabel.setText(release.getTitle());
-        sizeLabel.setText(dtaDump.size() + " / " + exeDump.size());
+        fileSizeLabel.setText(dtaDump.size() + " / " + exeDump.size());
         crc32Label.setText(dtaCrc32 + " / " + exeCrc32);
         charsetLabel.setText(release.getCharset());
 
@@ -304,7 +315,7 @@ public class MainPaneController {
                         canvas.setWidth(tileIds.size() * TILE_SIZE);
                         canvas.setHeight(TILE_SIZE);
                         for (int i = 0; i < tileIds.size(); i++) {
-                            GetWTile(tileIds.get(i), canvas, i * TILE_SIZE, 0, null);
+                            drawTileOnCanvas(tileIds.get(i), canvas, i * TILE_SIZE, 0, null);
                         }
                     } else {
                         canvas.setWidth(0);
@@ -328,7 +339,7 @@ public class MainPaneController {
             TableCell<TileName, Integer> cell = new TableCell<TileName, Integer>() {
                 public void updateItem(Integer tileId, boolean empty) {
                     if (tileId != null && !tileId.equals(0xFFFF)) {
-                        imageView.setImage(GetWTile(tileId));
+                        imageView.setImage(drawTileOnImage(tileId));
                     } else {
                         imageView.setImage(null);
                     }
@@ -385,6 +396,14 @@ public class MainPaneController {
         }
     }
 
+    private void drawTilesOnFlowPane(FlowPane flowPane, List<Integer> tileIds) {
+
+        flowPane.getChildren().clear();
+        for (Integer tileId : tileIds) {
+            flowPane.getChildren().add(newTile(tileId));
+        }
+    }
+
     public void addNewTileClick() {
 
         try {
@@ -400,7 +419,7 @@ public class MainPaneController {
 
     private ImageView newTile(int tileId) {
 
-        ImageView image = new ImageView(GetWTile(tileId));
+        ImageView image = new ImageView(drawTileOnImage(tileId));
         image.setUserData(tileId);
         image.setOnMouseEntered(mouseEnteredHandler);
         image.setOnMouseExited(mouseExitedHandler);
@@ -492,7 +511,7 @@ public class MainPaneController {
             int tileId = Integer.parseInt(db.getString());
             int x = ((int) event.getX()) & 0xFFFFFFE0;
             int y = ((int) event.getY()) & 0xFFFFFFE0;
-            GetTile(tileId, clipboardBufferedImage, x, y);
+            drawTileOnBufferedImage(tileId, clipboardBufferedImage, x, y);
             ImageUtils.drawOnCanvas(clipboardBufferedImage, clipboardCanvas, transparentColor);
             success = true;
         }
@@ -505,7 +524,7 @@ public class MainPaneController {
 
         try {
             for (int i = 0; i < yodesk.getTiles().getTiles().size(); i++) {
-                ImageView image = new ImageView(GetWTile(i));
+                ImageView image = new ImageView(drawTileOnImage(i));
                 image.setUserData(i);
                 image.setOnMouseEntered(mouseEnteredHandler);
                 image.setOnMouseExited(mouseExitedHandler);
@@ -588,16 +607,49 @@ public class MainPaneController {
         public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
             if (mapsListView.getSelectionModel().getSelectedIndex() >= 0) {
                 int zoneId = mapsListView.getSelectionModel().getSelectedIndex();
+
                 drawViewMap(zoneId);
+                showMapInfo(zoneId);
 
                 undoMapEdit.setVisible(null != zoneHistoryMap.get(zoneId));
             }
         }
     };
 
+    private void showMapInfo(int zoneId) {
+
+        Zone zone = yodesk.getZones().getZones().get(zoneId);
+
+        mapSizeLabel.setText(zone.getWidth() + "x" + zone.getHeight());
+        mapTypeLabel.setText(zone.getType().name());
+        mapPlanetLabel.setText(zone.getPlanet().name());
+        mapActionsLabel.setText(String.valueOf(zone.getActions().size()));
+
+        mapIzaxUnnamedLabel.setText(String.valueOf(zone.getIzax().get_unnamed2()));
+        mapZax4Unnamed2Label.setText(String.valueOf(zone.getIzx4().get_unnamed2()));
+
+        drawTilesOnFlowPane(mapNpcsTilesFlowPane, zone.getIzx3().getNpcs());
+        drawTilesOnFlowPane(mapGoalTilesFlowPane, zone.getIzax().getGoalItems());
+        drawTilesOnFlowPane(mapProvidedItemsTilesFlowPane, zone.getIzx2().getProvidedItems());
+        drawTilesOnFlowPane(mapRequiredItemsTilesFlowPane, zone.getIzax().getRequiredItems());
+
+        //TODO draw monsters if checked
+        zone.getIzax().getMonsters().forEach(m -> {
+            int tileId = yodesk.getCharacters().getCharacters().get(m.getCharacter()).getTileIds().get(0);
+            drawTileOnCanvas(tileId, mapCanvas, m.getX() * TILE_SIZE, m.getY() * TILE_SIZE, null);
+            drawBorderOnCanvas(mapCanvas, m.getX() * TILE_SIZE, m.getY() * TILE_SIZE, Color.rgb(127, 255, 255));
+        });
+
+        //TODO draw if checked
+        zone.getHotspots().forEach(h -> {
+            drawBorderOnCanvas(mapCanvas, h.getX() * TILE_SIZE, h.getY() * TILE_SIZE, Color.rgb(255, 0, 255));
+        });
+
+        //TODO ArrayList<Action> actions;
+    }
+
     private void drawViewMap(int zoneId) {
         try {
-            //ReadIZON(id, false);
             ReadMap(mapCanvas, zoneId, true, normalSaveCheckBox.isSelected() || groupByFlagsCheckBox.isSelected() || groupByPlanetTypeCheckBox.isSelected());
         } catch (Exception e) {
             JavaFxUtils.showAlert(String.format("Map %s display error", zoneId), e);
@@ -776,7 +828,7 @@ public class MainPaneController {
 
     private void drawZoneSpot(Canvas canvas, Zone zone, int x, int y) {
 
-        fillMapTile(canvas, x * TILE_SIZE, y * TILE_SIZE, transparentColor);
+        fillZoneTile(canvas, x * TILE_SIZE, y * TILE_SIZE, transparentColor);
 
         if (bottomCheckBox.isSelected()) {
             drawTileOnMap(canvas, zone, x, y, 0);
@@ -794,7 +846,7 @@ public class MainPaneController {
         int tileId = zone.getTileIds().get(y * zone.getWidth() + x).getColumn().get(layer);
         if (tileId < yodesk.getTiles().getTiles().size()) {
             usedTiles.set(tileId, true);
-            GetWTile(tileId, canvas, x * TILE_SIZE, y * TILE_SIZE, null);
+            drawTileOnCanvas(tileId, canvas, x * TILE_SIZE, y * TILE_SIZE, null);
         }
     }
 
@@ -967,12 +1019,12 @@ public class MainPaneController {
         ObservableList<Node> children = tilesFlowPane.getChildren();
         for (int i = 0; i < children.size() - 1; i++) {
             ImageView imageView = (ImageView) children.get(i);
-            imageView.setImage(GetWTile(i));
+            imageView.setImage(drawTileOnImage(i));
         }
         children = mapEditorTilesFlowPane.getChildren();
         for (int i = 0; i < children.size() - 1; i++) {
             ImageView imageView = (ImageView) children.get(i);
-            imageView.setImage(GetWTile(i));
+            imageView.setImage(drawTileOnImage(i));
         }
         drawTitleImage();
         clipboardBufferedImage = ImageUtils.replaceIcm(clipboardBufferedImage, icm);
@@ -1109,21 +1161,21 @@ public class MainPaneController {
 
                 if (decimalFilenamesCheckBox.isSelected()) {
                     Path path = tilesPath.resolve(StringUtils.leftPad(Integer.toString(i), 4, "0") + E_BMP);
-                    BMPWriter.write(GetTile(i, icm), path.toFile());
+                    BMPWriter.write(getTile(i, icm), path.toFile());
 
                     //TODO may be use PNG. Sample code
-                    ImageIO.write(GetTile(i, icm), "PNG", tilesPath.resolve(StringUtils.leftPad(Integer.toString(i), 4, "0") + ".png").toFile());
+                    ImageIO.write(getTile(i, icm), "PNG", tilesPath.resolve(StringUtils.leftPad(Integer.toString(i), 4, "0") + ".png").toFile());
                 }
 
                 if (groupByAttributesFilenamesCheckBox.isSelected()) {
                     String binaryAttr = StringUtils.right(StringUtils.leftPad(attrHex, 32, '0'), 32);
                     Path path = attrPath.resolve(binaryAttr + " (" + attrHex + ")");
                     IOUtils.createDirectories(path);
-                    BMPWriter.write(GetTile(i, icm), path.resolve(StringUtils.leftPad(Integer.toString(i), 4, "0") + E_BMP).toFile());
+                    BMPWriter.write(getTile(i, icm), path.resolve(StringUtils.leftPad(Integer.toString(i), 4, "0") + E_BMP).toFile());
                 }
 
                 if (hexFilenamesCheckBox.isSelected()) {
-                    BMPWriter.write(GetTile(i, icm), hexPath.resolve(intToHex(i, 4) + E_BMP).toFile());
+                    BMPWriter.write(getTile(i, icm), hexPath.resolve(intToHex(i, 4) + E_BMP).toFile());
                 }
                 //TilesProgressBar.Position := i;
                 //TilesProgressLabel.Caption := Format('%.2f %%', [((i + 1) / DTA.tilesCount) * 100]);
@@ -1147,7 +1199,7 @@ public class MainPaneController {
             for (int y = 0; y < height; y++) {
                 for (int x = 0; x < width; x++) {
                     if ((y * width + x) < yodesk.getTiles().getTiles().size()) {
-                        GetWTile(k, canvas, x * TILE_SIZE, y * TILE_SIZE, Config.transparentColor);
+                        drawTileOnCanvas(k, canvas, x * TILE_SIZE, y * TILE_SIZE, Config.transparentColor);
                         k++;
                     }
                 }
@@ -1260,7 +1312,7 @@ public class MainPaneController {
             for (int i = 0; i < yodesk.getTiles().getTiles().size(); i++) {
                 if (!usedTiles.get(i)) {
                     Log.debug(i);
-                    BMPWriter.write8bit(GetTile(i), unusedTilesPath.resolve(StringUtils.leftPad(Integer.toString(i), 4, '0') + E_BMP));
+                    BMPWriter.write8bit(getTile(i), unusedTilesPath.resolve(StringUtils.leftPad(Integer.toString(i), 4, '0') + E_BMP));
                 }
             }
         }
@@ -1520,10 +1572,10 @@ public class MainPaneController {
                 }
             }
 
-            pz.get(0).setImages(Stream.of(p.getItem1()).map(tileId -> GetTile(tileId, icmw)).collect(Collectors.toList()));
+            pz.get(0).setImages(Stream.of(p.getItem1()).map(tileId -> getTile(tileId, icmw)).collect(Collectors.toList()));
 
             List<BufferedImage> image2 = Stream.of(p.getItem2()).filter(i -> i <= yodesk.getTiles().getTiles().size() && i >= 418)
-                    .map(tileId -> GetTile(tileId, icmw)).collect(Collectors.toList());
+                    .map(tileId -> getTile(tileId, icmw)).collect(Collectors.toList());
 
             if (pz.size() < 2) {
                 pz.get(0).getImages().addAll(image2);
@@ -1617,7 +1669,7 @@ public class MainPaneController {
             WordUtils.saveRecords("Characters", records, getDtaCrcStrings(), opath.resolve("chars" + E_DOCX));
 
             List<ImageRecord> imageRecords = yodesk.getCharacters().getFilteredCharacters().stream()
-                    .map(c -> new ImageRecord(c.getTileIds().stream().map(t -> GetTile(t, icmw)).collect(Collectors.toList()), c.getName())).collect(Collectors.toList());
+                    .map(c -> new ImageRecord(c.getTileIds().stream().map(t -> getTile(t, icmw)).collect(Collectors.toList()), c.getName())).collect(Collectors.toList());
             WordUtils.saveCharacters(imageRecords, getDtaCrcStrings(), opath.resolve("chars2" + E_DOCX));
 
             IOUtils.saveTextFile(yodesk.getCharacters().getFilteredCharacters().stream().map(Character::getName).collect(Collectors.toList()), opath.resolve("chars.txt"));
@@ -1631,7 +1683,7 @@ public class MainPaneController {
         for (Integer integer : c.getTileIds()) {
             Path path = opath.resolve("Characters").resolve(c.getName());
             IOUtils.createDirectories(path);
-            BMPWriter.write(GetTile(integer), path.resolve(StringUtils.leftPad(Integer.toString(integer), 4, '0') + E_BMP));
+            BMPWriter.write(getTile(integer), path.resolve(StringUtils.leftPad(Integer.toString(integer), 4, '0') + E_BMP));
         }
 
         DumpData(opath.resolve("CHAR").resolve(StringUtils.leftPad(Integer.toString(c.getIndex()), 3, '0')), position, c.byteSize());
@@ -1662,7 +1714,7 @@ public class MainPaneController {
             IOUtils.createDirectories(opath.resolve("Names"));
             for (TileName n : yodesk.getTileNames().getNames()) {
                 if (null != n.getName()) {
-                    BMPWriter.write(GetTile(n.getTileId()), IOUtils.findUnusedFileName(opath.resolve("Names"), n.getName(), E_BMP));
+                    BMPWriter.write(getTile(n.getTileId()), IOUtils.findUnusedFileName(opath.resolve("Names"), n.getName(), E_BMP));
                 }
             }
             IOUtils.saveTextFile(yodesk.getTileNames().getFilteredNames().stream().map(TileName::getName).filter(Objects::nonNull)
@@ -1686,7 +1738,7 @@ public class MainPaneController {
 
         for (int i = 0; i < filteredNames.size(); i++) {
             TileName n = filteredNames.get(i);
-            StringImagesRecord puzzleRecord = new StringImagesRecord(i, Collections.singletonList(GetTile(n.getTileId(), icmw)), n.getName());
+            StringImagesRecord puzzleRecord = new StringImagesRecord(i, Collections.singletonList(getTile(n.getTileId(), icmw)), n.getName());
             list.add(puzzleRecord);
         }
         return list;
@@ -1728,35 +1780,39 @@ public class MainPaneController {
         }
     }
 
-    private BufferedImage GetTile(int tileId) {
-        return GetTile(tileId, Config.icm0);
+    private BufferedImage getTile(int tileId) {
+        return getTile(tileId, Config.icm0);
     }
 
-    private BufferedImage GetTile(int tileId, IndexColorModel icm) {
+    private BufferedImage getTile(int tileId, IndexColorModel icm) {
 
         int position = yodesk.getTiles().getTilePixelsPosition(tileId);
         return ImageUtils.readBPicture(yodesk.getTiles().getRawTiles(), position, TILE_SIZE, TILE_SIZE, icm);
     }
 
-    private WritableImage GetWTile(int tileId) {
+    private WritableImage drawTileOnImage(int tileId) {
 
         int position = yodesk.getTiles().getTilePixelsPosition(tileId);
         return ImageUtils.readWPicture(yodesk.getTiles().getRawTiles(), position, TILE_SIZE, TILE_SIZE, Config.transparentColor);
     }
 
-    private void GetTile(int tileId, BufferedImage bi, int xOffset, int yOffset) {
+    private void drawTileOnBufferedImage(int tileId, BufferedImage bi, int xOffset, int yOffset) {
 
         int position = yodesk.getTiles().getTilePixelsPosition(tileId);
         ImageUtils.drawOnBufferedImage(yodesk.getTiles().getRawTiles(), position, bi, xOffset, yOffset);
     }
 
-    private void GetWTile(int tileId, Canvas canvas, int xOffset, int yOffset, Color transparentColor) {
+    private void drawTileOnCanvas(int tileId, Canvas canvas, int xOffset, int yOffset, Color transparentColor) {
 
         int position = yodesk.getTiles().getTilePixelsPosition(tileId);
         ImageUtils.drawOnCanvas(yodesk.getTiles().getRawTiles(), position, canvas, xOffset, yOffset, transparentColor);
     }
 
-    private void fillMapTile(Canvas canvas, int xOffset, int yOffset, Color color) {
+    private void drawBorderOnCanvas(Canvas canvas, int xOffset, int yOffset, Color borderColor) {
+        ImageUtils.drawBorderOnCanvas(canvas, xOffset, yOffset, borderColor);
+    }
+
+    private void fillZoneTile(Canvas canvas, int xOffset, int yOffset, Color color) {
         ImageUtils.fillCanvas(canvas, xOffset, yOffset, color);
     }
 

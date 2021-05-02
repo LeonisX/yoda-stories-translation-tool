@@ -12,10 +12,10 @@ An original version: https://github.com/LeonisX/YExplorer
 
 ## TODO
 
-* Show map detailed info: size, type, planet, actions
-* Items: provided, required, goal, NPC
+* Show monsters, hotspots if selected
+* Show map actions (new window)
 * Show tile IDs for 3 layers
-* Show monsters, hotspots
+* Draw map icon from minimap
 * Save + backup
 * Log
 * HEX

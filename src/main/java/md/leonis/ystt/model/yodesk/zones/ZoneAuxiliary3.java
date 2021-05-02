@@ -8,6 +8,7 @@ import md.leonis.ystt.model.yodesk.Yodesk;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class ZoneAuxiliary3 extends KaitaiStruct {
 
@@ -15,7 +16,7 @@ public class ZoneAuxiliary3 extends KaitaiStruct {
     private long size;
     // NPCs that can be placed in the zone to trade items with the hero.
     private int numNpcs;
-    private ArrayList<Integer> npcs;
+    private List<Integer> npcs;
 
     private final Yodesk root;
     private final Zone parent;
@@ -64,7 +65,7 @@ public class ZoneAuxiliary3 extends KaitaiStruct {
         return numNpcs;
     }
 
-    public ArrayList<Integer> getNpcs() {
+    public List<Integer> getNpcs() {
         return npcs;
     }
 

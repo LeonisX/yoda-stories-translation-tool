@@ -86,6 +86,13 @@ public class ImageUtils {
         }
     }
 
+    public static void drawBorderOnCanvas(Canvas canvas, int xOffset, int yOffset, Color borderColor) {
+
+        canvas.getGraphicsContext2D().setStroke(borderColor);
+        canvas.getGraphicsContext2D().setLineDashes(1.5, 4);
+        canvas.getGraphicsContext2D().strokeRect(xOffset + 0.5, yOffset + 0.5, 32, 32);
+    }
+
     public static void drawOnCanvas(BufferedImage bi, Canvas canvas, Color transparentColor) {
 
         canvas.setHeight(bi.getHeight());

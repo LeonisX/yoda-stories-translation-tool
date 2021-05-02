@@ -30,7 +30,7 @@ public class Zone extends KaitaiStruct {
     private int height;
     private ZoneType type;
     // Scripting register shared between the zone and its rooms.
-    private int sharedCounter;
+    private int sharedCounter; // 65535 in all maps (undefined)
     // Repetition of the `planet` field
     private int planetAgain;
     /**

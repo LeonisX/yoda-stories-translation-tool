@@ -9,6 +9,7 @@
 <?import javafx.scene.shape.*?>
 <?import javafx.scene.text.Font?>
 <?import md.leonis.ystt.view.*?>
+<?import javafx.scene.Group?>
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
             xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="md.leonis.ystt.view.MainPaneController">
@@ -96,7 +97,7 @@
                                 <Label layoutX="14.0" layoutY="69.0" text="Version:"/>
                                 <Label layoutX="210.0" layoutY="69.0" text="Charset:"/>
                                 <Label fx:id="crc32Label" layoutX="80.0" layoutY="35.0"/>
-                                <Label fx:id="sizeLabel" layoutX="80.0" layoutY="52.0"/>
+                                <Label fx:id="fileSizeLabel" layoutX="80.0" layoutY="52.0"/>
                                 <Label fx:id="versionLabel" layoutX="80.0" layoutY="69.0"/>
                                 <Label fx:id="charsetLabel" layoutX="260.0" layoutY="69.0"/>
                                 <TableView fx:id="commonInformationTableView" layoutX="14.0" layoutY="95.0"
@@ -152,16 +153,21 @@
                                 </center>
                                 <right>
                                     <VBox prefHeight="750.0" prefWidth="310.0" BorderPane.alignment="CENTER">
-                                        <children>
-                                            <Label text="In alphabet order:"/>
-                                            <Hyperlink text="PE Explorer (129$)" onAction="#peExplorerHyperlinkClick" underline="true" />
-                                            <Hyperlink text="ResEdit (Free)" onAction="#resEditHyperlinkClick" underline="true" />
-                                            <Hyperlink text="Resource Builder (59$)" onAction="#resourceBuilderHyperlinkClick" underline="true" />
-                                            <Hyperlink text="Resource Hacker (Free)" onAction="#resourceHackerHyperlinkClick" underline="true" />
-                                            <Hyperlink text="Resource Tuner (49$)" onAction="#resourceTunerHyperlinkClick" underline="true" />
-                                            <Hyperlink text="Restorator (72$)" onAction="#restoratorHyperlinkClick" underline="true" />
-                                            <Hyperlink text="XN Resource Editor (Free)" onAction="#xnResourceEditorHyperlinkClick" underline="true" />
-                                        </children>
+                                        <Label text="In alphabet order:"/>
+                                        <Hyperlink text="PE Explorer (129$)" onAction="#peExplorerHyperlinkClick"
+                                                   underline="true"/>
+                                        <Hyperlink text="ResEdit (Free)" onAction="#resEditHyperlinkClick"
+                                                   underline="true"/>
+                                        <Hyperlink text="Resource Builder (59$)"
+                                                   onAction="#resourceBuilderHyperlinkClick" underline="true"/>
+                                        <Hyperlink text="Resource Hacker (Free)"
+                                                   onAction="#resourceHackerHyperlinkClick" underline="true"/>
+                                        <Hyperlink text="Resource Tuner (49$)" onAction="#resourceTunerHyperlinkClick"
+                                                   underline="true"/>
+                                        <Hyperlink text="Restorator (72$)" onAction="#restoratorHyperlinkClick"
+                                                   underline="true"/>
+                                        <Hyperlink text="XN Resource Editor (Free)"
+                                                   onAction="#xnResourceEditorHyperlinkClick" underline="true"/>
                                     </VBox>
                                 </right>
                             </BorderPane>
@@ -367,8 +373,66 @@
                                                 <ListView fx:id="mapsListView" layoutX="171.0" layoutY="15.0"
                                                           prefHeight="400.0"
                                                           prefWidth="93.0"/>
-                                                <Canvas fx:id="mapCanvas" height="576.0" width="576.0" layoutX="271.0"
-                                                        layoutY="15.0"/>
+                                                <Group><Canvas fx:id="mapCanvas" height="576.0" width="576.0" layoutX="271.0"
+                                                               layoutY="15.0"/></Group>
+                                                <BorderPane layoutX="850.0" layoutY="15.0" prefHeight="424.0" prefWidth="531.0">
+                                                    <center>
+                                                        <VBox prefWidth="531.0" BorderPane.alignment="CENTER">
+                                                            <HBox alignment="TOP_LEFT" prefHeight="22.0" prefWidth="531.0">
+                                                                <Label prefWidth="95.0" text="Size:" />
+                                                                <Label fx:id="mapSizeLabel" />
+                                                            </HBox>
+                                                            <HBox alignment="TOP_LEFT" prefHeight="22.0" prefWidth="531.0">
+                                                                <Label prefWidth="95.0" text="Type:" />
+                                                                <Label fx:id="mapTypeLabel" />
+                                                            </HBox>
+                                                            <HBox alignment="TOP_LEFT" prefHeight="22.0" prefWidth="531.0">
+                                                                <Label prefWidth="95.0" text="Planet:" />
+                                                                <Label fx:id="mapPlanetLabel" />
+                                                            </HBox>
+                                                            <HBox alignment="TOP_LEFT" prefHeight="22.0" prefWidth="531.0">
+                                                                <Label prefWidth="95.0" text="Actions:" />
+                                                                <Label fx:id="mapActionsLabel" />
+                                                            </HBox>
+                                                            <HBox alignment="TOP_LEFT" prefHeight="24.0" prefWidth="531.0">
+                                                                <Label prefWidth="95.0" text="Goal:" />
+                                                                <FlowPane fx:id="mapGoalTilesFlowPane" columnHalignment="CENTER"
+                                                                          prefWidth="280.0"
+                                                                          prefWrapLength="280.0" hgap="1.0" vgap="1.0"/>
+                                                            </HBox>
+                                                            <HBox alignment="TOP_LEFT" prefHeight="22.0" prefWidth="531.0">
+                                                                <Label prefWidth="95.0" text="Provided items:" />
+                                                                <FlowPane fx:id="mapProvidedItemsTilesFlowPane" columnHalignment="CENTER"
+                                                                          prefWidth="280.0"
+                                                                          prefWrapLength="280.0" hgap="1.0" vgap="1.0"/>
+                                                            </HBox>
+                                                            <HBox alignment="TOP_LEFT" prefHeight="22.0" prefWidth="531.0">
+                                                                <Label prefWidth="95.0" text="Required items:" />
+                                                                <FlowPane fx:id="mapRequiredItemsTilesFlowPane" columnHalignment="CENTER"
+                                                                          prefWidth="280.0"
+                                                                          prefWrapLength="280.0" hgap="1.0" vgap="1.0"/>
+                                                            </HBox>
+                                                            <HBox alignment="TOP_LEFT" prefHeight="24.0" prefWidth="531.0">
+                                                                <Label prefWidth="95.0" text="NPCs:" />
+                                                                <FlowPane fx:id="mapNpcsTilesFlowPane" columnHalignment="CENTER"
+                                                                          prefWidth="280.0"
+                                                                          prefWrapLength="280.0" hgap="1.0" vgap="1.0"/>
+                                                            </HBox>
+                                                            <HBox alignment="TOP_LEFT" prefHeight="22.0" prefWidth="531.0">
+                                                                <Label prefWidth="95.0" text="IZAX Unnamed2:" />
+                                                                <Label fx:id="mapIzaxUnnamedLabel" />
+                                                            </HBox>
+                                                            <HBox alignment="TOP_LEFT" prefHeight="22.0" prefWidth="531.0">
+                                                                <Label prefWidth="95.0" text="ZAX4 Unnamed2:" />
+                                                                <Label fx:id="mapZax4Unnamed2Label" />
+                                                            </HBox>
+                                                            <HBox alignment="TOP_LEFT" prefHeight="20.0" prefWidth="531.0">
+
+
+                                                            </HBox>
+                                                        </VBox>
+                                                    </center>
+                                                </BorderPane>
                                             </AnchorPane>
                                         </Tab>
                                         <Tab text="HEX Offsets">

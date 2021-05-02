@@ -12,7 +12,7 @@ public class ZoneAuxiliary4 extends KaitaiStruct {
 
     private byte[] marker;
     private long size;
-    private int _unnamed2;
+    private int _unnamed2; // 3 swamp maps, except start map: 0; all other maps: 1
 
     private final Yodesk root;
     private final Zone parent;
