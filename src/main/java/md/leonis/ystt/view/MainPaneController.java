@@ -1822,6 +1822,34 @@ public class MainPaneController {
         return StringUtils.leftPad(result, size, '0');
     }
 
+    public void peExplorerHyperlinkClick() {
+        JavaFxUtils.openUrl("http://heaventools.com/pe-explorer.htm");
+    }
+
+    public void resEditHyperlinkClick() {
+        JavaFxUtils.openUrl("http://resedit.net");
+    }
+
+    public void resourceBuilderHyperlinkClick() {
+        JavaFxUtils.openUrl("https://resource-builder.com");
+    }
+
+    public void resourceHackerHyperlinkClick() {
+        JavaFxUtils.openUrl("http://angusj.com/resourcehacker");
+    }
+
+    public void resourceTunerHyperlinkClick() {
+        JavaFxUtils.openUrl("http://restuner.com");
+    }
+
+    public void restoratorHyperlinkClick() {
+        JavaFxUtils.openUrl("https://bome.com/products/restorator");
+    }
+
+    public void xnResourceEditorHyperlinkClick() {
+        JavaFxUtils.openUrl("https://stefansundin.github.io/xn_resource_editor");
+    }
+
     //TODO
     public static class Log {
 

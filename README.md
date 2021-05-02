@@ -12,7 +12,8 @@ An original version: https://github.com/LeonisX/YExplorer
 
 ## TODO
 
-* Hide map layers
+* Show map detailed info
+* Hide map layers (editor)
 * Log
 * HEX
 * Тяжёлые процессы дампинга лучше вынести в отдельный поток
@@ -48,7 +49,11 @@ An original version: https://github.com/LeonisX/YExplorer
 
 * Think how to drag-drop from UI to Windows Explorer
 
+TODO 223.res in description, if need
 
+Instruction to translate EXE (UI: TextFlow or WebView)
+
+Full instruction: EXE, DTA: MarkDown
 
 ### Other YS / DA solutions
 
@@ -85,15 +90,21 @@ An original version: https://github.com/LeonisX/YExplorer
 
 ### BMP
 
+####Accepted:
+
+* https://github.com/nayuki/BMP-IO
+
+####Other solutions:
+
+* https://github.com/imagej/imagej
 * https://www.infoworld.com/article/2077561/java-tip-60--saving-bitmap-files-in-java.html
 * http://www.java2s.com/Tutorials/Java/Graphics_How_to/Image/Create_BMP_format_image.htm
 * https://docs.oracle.com/javase/tutorial/2d/images/index.html
 * https://coderanch.com/t/456757/java/creating-BufferedImage-save-bmp-file
 * https://research.cs.queensu.ca/home/blostein/image/Example/BMPFile.java
-* https://github.com/nayuki/BMP-IO
 * http://image4j.sourceforge.net/#license
 * https://commons.apache.org/proper/commons-imaging/
-* https://github.com/imagej/imagej
+
 * https://www.programcreek.com/java-api-examples/?api=java.awt.image.IndexColorModel
 * http://www.java2s.com/Tutorials/Java/Graphics_How_to/Image/Swap_Palette_for_an_BufferedImage.htm
 * https://docs.oracle.com/javase/8/docs/api/javax/imageio/package-summary.html
@@ -123,6 +134,8 @@ An original version: https://github.com/LeonisX/YExplorer
 
 * http://pecoff4j.sourceforge.net/
 * https://github.com/kichik/pecoff4j
+* https://github.com/jonnyzzz/PE
+
 * https://github.com/katjahahn/PortEx
 * http://web.archive.org/web/20120708235509/http://java.net/projects/pe-file-reader
 * http://sourceware.org/binutils/docs/binutils/windres.html

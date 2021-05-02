@@ -34,15 +34,6 @@
             <version>5.0.0</version>
         </dependency>
 
-
-        <!-- https://mvnrepository.com/artifact/com.kichik.pecoff4j/pecoff4j -->
-        <dependency>
-            <groupId>com.kichik.pecoff4j</groupId>
-            <artifactId>pecoff4j</artifactId>
-            <version>0.3.2</version>
-        </dependency>
-
-
         <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
         <dependency>
             <groupId>org.apache.commons</groupId>

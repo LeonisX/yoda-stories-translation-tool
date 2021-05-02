@@ -147,32 +147,23 @@
                         </Tab>
                         <Tab text="Portable Executable">
                             <BorderPane prefHeight="200.0" prefWidth="200.0">
-                                <top>
-                                    <HBox alignment="CENTER_LEFT" prefHeight="44.0" prefWidth="1135.0" spacing="5.0"
-                                          BorderPane.alignment="CENTER">
-                                        <padding>
-                                            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
-                                        </padding>
-                                        <Button fx:id="dumpPETextToDocx" mnemonicParsing="false"
-                                                onAction="#dumpPETextToDocxCLick" text="Dump text to DOCX"/>
-                                        <Button fx:id="loadPETranslatedText" mnemonicParsing="false"
-                                                onAction="#loadPETranslatedTextClick" text="Load translated text"/>
-                                        <Button fx:id="replacePETextInDta" mnemonicParsing="false"
-                                                onAction="#replacePETextInDtaClick" text="Replace text in EXE"/>
-                                        <CheckBox fx:id="trimPESpacesCheckBox" mnemonicParsing="false"
-                                                  text="Trim spaces"/>
-                                    </HBox>
-                                </top>
                                 <center>
-                                    <TableView prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-                                        <columns>
-                                            <TableColumn editable="false" prefWidth="442.0" sortable="false"
-                                                         text="Original"/>
-                                            <TableColumn editable="false" minWidth="0.0" prefWidth="524.0"
-                                                         sortable="false" text="Translated"/>
-                                        </columns>
-                                    </TableView>
+                                    <TextArea prefHeight="200.0" prefWidth="200.0" text="Yoda Stories Translation Tool originally planned to translate text in an EXE file as well. However, there is currently no off-the-shelf Java solution for editing Windows PE headers. In addition, this data structure is complex enough to quickly implement it yourself.&#10;&#10;However, not everything is so hopeless. There are many Portable Executables editors out there, and in fact, the main difficulty is in choosing the one that suits best.&#10;&#10;Our choice settled on the Restorator utility, but it is paid, therefore, we will publish a list of several more found tools, so that you choose the one that will allow you to perform the translation with comfort. Any allows you to fully translate text strings, menus and dialog boxes." wrapText="true" BorderPane.alignment="CENTER" />
                                 </center>
+                                <right>
+                                    <VBox prefHeight="750.0" prefWidth="310.0" BorderPane.alignment="CENTER">
+                                        <children>
+                                            <Label text="In alphabet order:"/>
+                                            <Hyperlink text="PE Explorer (129$)" onAction="#peExplorerHyperlinkClick" underline="true" />
+                                            <Hyperlink text="ResEdit (Free)" onAction="#resEditHyperlinkClick" underline="true" />
+                                            <Hyperlink text="Resource Builder (59$)" onAction="#resourceBuilderHyperlinkClick" underline="true" />
+                                            <Hyperlink text="Resource Hacker (Free)" onAction="#resourceHackerHyperlinkClick" underline="true" />
+                                            <Hyperlink text="Resource Tuner (49$)" onAction="#resourceTunerHyperlinkClick" underline="true" />
+                                            <Hyperlink text="Restorator (72$)" onAction="#restoratorHyperlinkClick" underline="true" />
+                                            <Hyperlink text="XN Resource Editor (Free)" onAction="#xnResourceEditorHyperlinkClick" underline="true" />
+                                        </children>
+                                    </VBox>
+                                </right>
                             </BorderPane>
                         </Tab>
                         <Tab text="Title Screen/Palette">

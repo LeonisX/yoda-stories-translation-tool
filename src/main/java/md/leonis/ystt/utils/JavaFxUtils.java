@@ -1,5 +1,6 @@
 package md.leonis.ystt.utils;
 
+import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -19,6 +20,7 @@ import java.util.List;
 
 public class JavaFxUtils {
 
+    private static Application application;
     private static Stage stage;
 
     private static BorderPane rootLayout;
@@ -28,7 +30,8 @@ public class JavaFxUtils {
 
     public static Object currentController;
 
-    public static void showMainPane(Stage primaryStage) {
+    public static void showMainPane(Stage primaryStage, Application application) {
+        JavaFxUtils.application = application;
         stage = primaryStage;
         primaryStage.setTitle("Yoda Stories Translation Tool");
         try {
@@ -135,5 +138,9 @@ public class JavaFxUtils {
 
     public static Stage getStage() {
         return stage;
+    }
+
+    public static void openUrl(String url) {
+        application.getHostServices().showDocument(url);
     }
 }
