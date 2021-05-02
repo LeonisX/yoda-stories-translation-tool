@@ -92,9 +92,9 @@ public class Config {
     public static byte[] ga0 = new byte[256];
     public static byte[] ba0 = new byte[256];
 
-    public static IndexColorModel icm;
-    public static IndexColorModel icm0;
-    public static IndexColorModel icmw;
+    public static IndexColorModel icm; // with transparent color
+    public static IndexColorModel icm0; // native palette
+    public static IndexColorModel icmw; // white zero color
 
     public static Color transparentColor = Color.rgb(0xF4, 0xF4, 0xF4);
 

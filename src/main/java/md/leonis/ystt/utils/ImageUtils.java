@@ -48,6 +48,17 @@ public class ImageUtils {
         return image;
     }
 
+    public static void drawOnBufferedImage(byte[] bytes, int position, BufferedImage bi, int xOffset, int yOffset) {
+
+        for (int y = 0; y < 32; y++) {
+            for (int x = 0; x < 32; x++) {
+                int b = bytes[position] & 0xFF;
+                bi.getRaster().setSample(xOffset + x, yOffset + y, 0, b);
+                position++;
+            }
+        }
+    }
+
     public static void drawPalette(Canvas canvas) {
 
         for (int y = 0; y < 16; y++) {
@@ -68,6 +79,29 @@ public class ImageUtils {
                     canvas.getGraphicsContext2D().getPixelWriter().setColor(xOffset + x, yOffset + y, color);
                 } else if (null != transparentColor) {
                     canvas.getGraphicsContext2D().getPixelWriter().setColor(xOffset + x, yOffset + y, transparentColor);
+                }
+                position++;
+                /*titleScreenCanvas.getGraphicsContext2D().getPixelWriter().setArgb(x, y, palette[index]);*/
+            }
+        }
+    }
+
+    public static void drawOnCanvas(BufferedImage bi, Canvas canvas, Color transparentColor) {
+
+        canvas.setHeight(bi.getHeight());
+        canvas.setWidth(bi.getWidth());
+
+        int[] bytes = bi.getData().getPixels(0, 0, bi.getWidth(), bi.getHeight(), new int[bi.getWidth() * bi.getHeight()]);
+
+        int position = 0;
+        for (int y = 0; y < bi.getHeight(); y++) {
+            for (int x = 0; x < bi.getWidth(); x++) {
+                int colorIndex = bytes[position];
+                if (colorIndex != 0) {
+                    Color color = Config.palette[colorIndex];
+                    canvas.getGraphicsContext2D().getPixelWriter().setColor( x,  y, color);
+                } else if (null != transparentColor) {
+                    canvas.getGraphicsContext2D().getPixelWriter().setColor( x,  y, transparentColor);
                 }
                 position++;
                 /*titleScreenCanvas.getGraphicsContext2D().getPixelWriter().setArgb(x, y, palette[index]);*/
@@ -134,5 +168,14 @@ public class ImageUtils {
             }
         }
         return raster;
+    }
+
+    public static BufferedImage replaceIcm(BufferedImage bi, IndexColorModel icm) {
+        return new BufferedImage(icm, bi.getRaster(), icm.isAlphaPremultiplied(), null);
+    }
+
+    public static BufferedImage clearBufferedImage(BufferedImage bi) {
+        final IndexColorModel icm = (IndexColorModel) bi.getColorModel();
+        return new BufferedImage(bi.getWidth(), bi.getHeight(), BufferedImage.TYPE_BYTE_INDEXED, icm);
     }
 }

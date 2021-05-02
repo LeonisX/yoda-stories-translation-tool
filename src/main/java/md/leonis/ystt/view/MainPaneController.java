@@ -6,14 +6,12 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingFXUtils;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.input.*;
@@ -193,6 +191,7 @@ public class MainPaneController {
     public List<Boolean> usedTiles;
 
     private File clipboardFile;
+    private BufferedImage clipboardBufferedImage = new BufferedImage(288, 288, BufferedImage.TYPE_BYTE_INDEXED, icm);
 
     public static Dump dtaDump;
     public static Dump exeDump;
@@ -352,7 +351,7 @@ public class MainPaneController {
     private void drawTitleImage() {
 
         try {
-            WritableImage image = readWPicture(yodesk.getStartupImage().getPixels(), 0, 288, 288, Color.BLACK);
+            WritableImage image = readWPicture(yodesk.getStartupImage().getPixels(), 0, 288, 288, transparentColor);
             titleScreenImageView.setImage(image);
         } catch (Exception e) {
             JavaFxUtils.showAlert("Title screen display error", e);
@@ -493,7 +492,8 @@ public class MainPaneController {
             int tileId = Integer.parseInt(db.getString());
             int x = ((int) event.getX()) & 0xFFFFFFE0;
             int y = ((int) event.getY()) & 0xFFFFFFE0;
-            GetWTile(tileId, clipboardCanvas, x, y, transparentColor);
+            GetTile(tileId, clipboardBufferedImage, x, y);
+            ImageUtils.drawOnCanvas(clipboardBufferedImage, clipboardCanvas, transparentColor);
             success = true;
         }
         event.setDropCompleted(success);
@@ -761,6 +761,10 @@ public class MainPaneController {
         }
     }
 
+    private void drawZone(Canvas canvas, int zoneId) {
+        drawZone(canvas, yodesk.getZones().getZones().get(zoneId));
+    }
+
     private void drawZone(Canvas canvas, Zone zone) {
 
         for (int y = 0; y < zone.getHeight(); y++) {
@@ -771,6 +775,8 @@ public class MainPaneController {
     }
 
     private void drawZoneSpot(Canvas canvas, Zone zone, int x, int y) {
+
+        fillMapTile(canvas, x * TILE_SIZE, y * TILE_SIZE, transparentColor);
 
         if (bottomCheckBox.isSelected()) {
             drawTileOnMap(canvas, zone, x, y, 0);
@@ -794,7 +800,6 @@ public class MainPaneController {
 
     public void layerCheckBoxClick() {
 
-        ImageUtils.fillCanvas(mapEditorCanvas, transparentColor);
         Zone zone = getEditorZone();
         drawZone(mapEditorCanvas, zone);
     }
@@ -956,6 +961,7 @@ public class MainPaneController {
     }
 
     public void transparentColorMenuItemClick() {
+
         Config.transparentColor = (Color) transparentColorToggleGroup.getSelectedToggle().getUserData();
         Config.updatePalette();
         ObservableList<Node> children = tilesFlowPane.getChildren();
@@ -968,7 +974,12 @@ public class MainPaneController {
             ImageView imageView = (ImageView) children.get(i);
             imageView.setImage(GetWTile(i));
         }
-        //TODO redraw clipboard,  other images//TODO redraw clipboard,  other images
+        drawTitleImage();
+        clipboardBufferedImage = ImageUtils.replaceIcm(clipboardBufferedImage, icm);
+        ImageUtils.drawOnCanvas(clipboardBufferedImage, clipboardCanvas, transparentColor);
+        drawZone(mapCanvas, mapsListView.getSelectionModel().getSelectedIndex());
+        drawZone(mapEditorCanvas, mapEditorListView.getSelectionModel().getSelectedIndex());
+        namesTableView.refresh();
     }
 
     //TODO
@@ -1180,10 +1191,8 @@ public class MainPaneController {
             File file = JavaFxUtils.showBMPLoadDialog("Load Clipboard image", initialDir, initialFile);
             if (file != null) {
                 clipboardFile = file;
-                Image image = BMPReader.readWI(file);
-                clipboardCanvas.setWidth(image.getWidth());
-                clipboardCanvas.setHeight(image.getHeight());
-                clipboardCanvas.getGraphicsContext2D().drawImage(image, 0, 0);
+                clipboardBufferedImage = BMPReader.read(file);
+                ImageUtils.drawOnCanvas(clipboardBufferedImage, clipboardCanvas, transparentColor);
             }
         } catch (Exception e) {
             JavaFxUtils.showAlert("Clipboard image loading error", e);
@@ -1196,7 +1205,7 @@ public class MainPaneController {
             String initialDir = (null == clipboardFile) ? null : clipboardFile.getParent();
             File file = JavaFxUtils.showBMPSaveDialog("Save Clipboard image", initialDir, initialFile);
             if (file != null) {
-                BMPWriter.write8bit(clipboardCanvas, file);
+                BMPWriter.write8bit(clipboardBufferedImage, file);
             }
         } catch (Exception e) {
             JavaFxUtils.showAlert("Clipboard image saving error", e);
@@ -1204,6 +1213,7 @@ public class MainPaneController {
     }
 
     public void clearClipboardImageClick() {
+        clipboardBufferedImage = ImageUtils.clearBufferedImage(clipboardBufferedImage);
         ImageUtils.fillCanvas(clipboardCanvas, transparentColor);
     }
 
@@ -1732,6 +1742,12 @@ public class MainPaneController {
 
         int position = yodesk.getTiles().getTilePixelsPosition(tileId);
         return ImageUtils.readWPicture(yodesk.getTiles().getRawTiles(), position, TILE_SIZE, TILE_SIZE, Config.transparentColor);
+    }
+
+    private void GetTile(int tileId, BufferedImage bi, int xOffset, int yOffset) {
+
+        int position = yodesk.getTiles().getTilePixelsPosition(tileId);
+        ImageUtils.drawOnBufferedImage(yodesk.getTiles().getRawTiles(), position, bi, xOffset, yOffset);
     }
 
     private void GetWTile(int tileId, Canvas canvas, int xOffset, int yOffset, Color transparentColor) {
