@@ -90,11 +90,6 @@ public class MainPaneController {
     public TableView<CatalogEntry> commonInformationTableView;
     public Button dumpAllSectionsButton;
 
-    public Button dumpPETextToDocx;
-    public Button loadPETranslatedText;
-    public Button replacePETextInDta;
-    public CheckBox trimPESpacesCheckBox;
-
     public Button saveToBitmapButton;
     public Button loadFromBitmapButton;
     public ImageView titleScreenImageView;
@@ -208,7 +203,6 @@ public class MainPaneController {
     private List<StringImagesRecord> puzzlesTexts;
     private List<StringImagesRecord> namesTexts;
 
-    private int zoneId;
     private final Map<Integer, ArrayDeque<ZoneHistory>> zoneHistoryMap = new HashMap<>();
 
     public MainPaneController() {
@@ -218,7 +212,7 @@ public class MainPaneController {
     @FXML
     void initialize() {
 
-        usedTiles = new ArrayList<Boolean>(Collections.nCopies(yodesk.getTiles().getTiles().size(), false));
+        usedTiles = new ArrayList<>(Collections.nCopies(yodesk.getTiles().getTiles().size(), false));
 
         noColorMenuItem.setUserData(Config.transparentColor);
         fuchsiaMenuItem.setUserData(Color.FUCHSIA);
@@ -593,7 +587,7 @@ public class MainPaneController {
         @Override
         public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
             if (mapsListView.getSelectionModel().getSelectedIndex() >= 0) {
-                zoneId = mapsListView.getSelectionModel().getSelectedIndex();
+                int zoneId = mapsListView.getSelectionModel().getSelectedIndex();
                 drawViewMap(zoneId);
 
                 undoMapEdit.setVisible(null != zoneHistoryMap.get(zoneId));
@@ -614,8 +608,8 @@ public class MainPaneController {
 
         @Override
         public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-            if (mapEditorListView.getSelectionModel().getSelectedIndex() >= 0) {
-                zoneId = mapEditorListView.getSelectionModel().getSelectedIndex();
+            if (getEditorZoneId() >= 0) {
+                int zoneId = getEditorZoneId();
                 drawEditorMap(zoneId);
                 mapEditorTilesScrollPane.setLayoutX(mapEditorCanvas.getLayoutX() + mapEditorCanvas.getWidth() + 8);
                 undoMapEdit.setVisible(null != zoneHistoryMap.get(zoneId));
@@ -678,12 +672,12 @@ public class MainPaneController {
 
             int layerId = Integer.parseInt((String) mapLayerToggleGroup.getSelectedToggle().getUserData());
 
-            Zone zone = yodesk.getZones().getZones().get(zoneId);
+            Zone zone = getEditorZone();
             int oldValue = zone.getTileIds().get(y * zone.getWidth() + x).getColumn().get(layerId);
 
-            modifyZoneSpot(zoneId, x, y, layerId, tileId);
+            modifyZoneSpot(zone.getIndex(), x, y, layerId, tileId);
 
-            addToMapsHistory(zoneId, x, y, layerId, oldValue, tileId);
+            addToMapsHistory(zone.getIndex(), x, y, layerId, oldValue, tileId);
 
             undoMapEdit.setVisible(true);
         }
@@ -705,8 +699,9 @@ public class MainPaneController {
 
     public void undoMapEditClick() {
 
-        ArrayDeque<ZoneHistory> histories = zoneHistoryMap.get(zoneId);
+        ArrayDeque<ZoneHistory> histories = zoneHistoryMap.get(getEditorZoneId());
 
+        int zoneId = getEditorZoneId();
         ZoneHistory history = zoneHistoryMap.get(zoneId).pollLast();
 
         modifyZoneSpot(zoneId, history.getX(), history.getY(), history.getLayerId(), history.getOldValue());
@@ -740,8 +735,8 @@ public class MainPaneController {
             canvas.setWidth(zone.getWidth() * TILE_SIZE);
             canvas.setHeight(zone.getHeight() * TILE_SIZE);
 
-            canvas.getGraphicsContext2D().setFill(Color.rgb(7, 11, 0));
-            canvas.getGraphicsContext2D().fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+            /*canvas.getGraphicsContext2D().setFill(transparentColor);
+            canvas.getGraphicsContext2D().fillRect(0, 0, canvas.getWidth(), canvas.getHeight());*/
 
             drawZone(canvas, zone);
         }
@@ -800,8 +795,16 @@ public class MainPaneController {
     public void layerCheckBoxClick() {
 
         ImageUtils.fillCanvas(mapEditorCanvas, transparentColor);
-        Zone zone = yodesk.getZones().getZones().get(zoneId);
+        Zone zone = getEditorZone();
         drawZone(mapEditorCanvas, zone);
+    }
+
+    private Zone getEditorZone() {
+        return yodesk.getZones().getZones().get(getEditorZoneId());
+    }
+
+    private int getEditorZoneId() {
+        return mapEditorListView.getSelectionModel().getSelectedIndex();
     }
 
     private void ReadIZON(int id, boolean save) throws IOException {
@@ -994,18 +997,6 @@ public class MainPaneController {
         } catch (Exception e) {
             JavaFxUtils.showAlert("Sections dumping error", e);
         }
-    }
-
-    //TODO
-    public void dumpPETextToDocxCLick(ActionEvent actionEvent) {
-    }
-
-    //TODO
-    public void loadPETranslatedTextClick(ActionEvent actionEvent) {
-    }
-
-    //TODO
-    public void replacePETextInDtaClick() {
     }
 
     public void saveToBitmapButtonClick() {
