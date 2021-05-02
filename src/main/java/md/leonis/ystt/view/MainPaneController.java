@@ -743,11 +743,7 @@ public class MainPaneController {
             canvas.getGraphicsContext2D().setFill(Color.rgb(7, 11, 0));
             canvas.getGraphicsContext2D().fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
-            for (int y = 0; y < zone.getHeight(); y++) {
-                for (int x = 0; x < zone.getWidth(); x++) {
-                    drawZoneSpot(canvas, zone, x, y);
-                }
-            }
+            drawZone(canvas, zone);
         }
         // TODO Application.ProcessMessages;
 
@@ -770,10 +766,25 @@ public class MainPaneController {
         }
     }
 
+    private void drawZone(Canvas canvas, Zone zone) {
+
+        for (int y = 0; y < zone.getHeight(); y++) {
+            for (int x = 0; x < zone.getWidth(); x++) {
+                drawZoneSpot(canvas, zone, x, y);
+            }
+        }
+    }
+
     private void drawZoneSpot(Canvas canvas, Zone zone, int x, int y) {
 
-        for (int layer = 0; layer < 3; layer++) {
-            drawTileOnMap(canvas, zone, x, y, layer);
+        if (bottomCheckBox.isSelected()) {
+            drawTileOnMap(canvas, zone, x, y, 0);
+        }
+        if (middleCheckBox.isSelected()) {
+            drawTileOnMap(canvas, zone, x, y, 1);
+        }
+        if (topCheckBox.isSelected()) {
+            drawTileOnMap(canvas, zone, x, y, 2);
         }
     }
 
@@ -784,6 +795,13 @@ public class MainPaneController {
             usedTiles.set(tileId, true);
             GetWTile(tileId, canvas, x * TILE_SIZE, y * TILE_SIZE, null);
         }
+    }
+
+    public void layerCheckBoxClick() {
+
+        ImageUtils.fillCanvas(mapEditorCanvas, transparentColor);
+        Zone zone = yodesk.getZones().getZones().get(zoneId);
+        drawZone(mapEditorCanvas, zone);
     }
 
     private void ReadIZON(int id, boolean save) throws IOException {

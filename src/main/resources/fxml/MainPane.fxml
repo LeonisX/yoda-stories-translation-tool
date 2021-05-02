@@ -583,11 +583,11 @@
                                                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0"
                                                                 prefWidth="200.0">
                                                         <CheckBox fx:id="topCheckBox" layoutX="5.0" layoutY="4.0"
-                                                                  mnemonicParsing="false" selected="true" userData="2"/>
+                                                                  mnemonicParsing="false" selected="true" userData="2" onAction="#layerCheckBoxClick"/>
                                                         <CheckBox fx:id="middleCheckBox" layoutX="5.0" layoutY="23.0"
-                                                                  mnemonicParsing="false" selected="true" userData="1"/>
+                                                                  mnemonicParsing="false" selected="true" userData="1" onAction="#layerCheckBoxClick"/>
                                                         <CheckBox fx:id="bottomCheckBox" layoutX="5.0" layoutY="42.0"
-                                                                  mnemonicParsing="false" selected="true" userData="0"/>
+                                                                  mnemonicParsing="false" selected="true" userData="0" onAction="#layerCheckBoxClick"/>
                                                         <RadioButton fx:id="topRadioButton" layoutX="25.0" layoutY="4.0"
                                                                      mnemonicParsing="false" selected="true" text="Top"
                                                                      userData="2">

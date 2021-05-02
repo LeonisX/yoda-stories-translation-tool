@@ -13,7 +13,6 @@ An original version: https://github.com/LeonisX/YExplorer
 ## TODO
 
 * Show map detailed info
-* Hide map layers (editor)
 * Log
 * HEX
 * Тяжёлые процессы дампинга лучше вынести в отдельный поток
@@ -22,8 +21,6 @@ An original version: https://github.com/LeonisX/YExplorer
 
 * Prepare translated DTA & dump it here
 
-* Restore functionality
-* Add new tiles - already in Delphi version - we need a better solution: "PLUS" button at the end of tiles
 * Hide debug tabs by default
 
 * Dump structure (hi, mid, lo levels)
@@ -33,7 +30,7 @@ An original version: https://github.com/LeonisX/YExplorer
 * Show in UI info about puzzles (id, size, phrases count)
 * IACT: show phrases count
 
-* Dump scripts
+* Dump iact scripts
 * Show extra data in UI
 
 * TODO tests!!!!!!!!!!!!!!!
@@ -49,11 +46,11 @@ An original version: https://github.com/LeonisX/YExplorer
 
 * Think how to drag-drop from UI to Windows Explorer
 
-TODO 223.res in description, if need
+* TODO 223.res in description, if need
 
-Instruction to translate EXE (UI: TextFlow or WebView)
+* Instruction to translate EXE (UI: TextFlow or WebView)
 
-Full instruction: EXE, DTA: MarkDown
+* Full instruction: EXE, DTA: MarkDown
 
 ### Other YS / DA solutions
 
