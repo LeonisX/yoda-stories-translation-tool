@@ -1,13 +1,13 @@
 package md.leonis.ystt.model.yodesk.characters;
 
-import io.kaitai.struct.ByteBufferKaitaiStream;
-import io.kaitai.struct.KaitaiStream;
+import io.kaitai.struct.ByteBufferKaitaiInputStream;
+import io.kaitai.struct.KaitaiInputStream;
+import io.kaitai.struct.KaitaiOutputStream;
 import io.kaitai.struct.KaitaiStruct;
 import md.leonis.ystt.model.yodesk.Characters;
 import md.leonis.ystt.model.yodesk.Yodesk;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -31,18 +31,18 @@ public class Character extends KaitaiStruct {
     private final Characters parent;
 
     public static Character fromFile(String fileName) throws IOException {
-        return new Character(new ByteBufferKaitaiStream(fileName));
+        return new Character(new ByteBufferKaitaiInputStream(fileName));
     }
 
-    public Character(KaitaiStream io) {
+    public Character(KaitaiInputStream io) {
         this(io, null, null);
     }
 
-    public Character(KaitaiStream io, Characters parent) {
+    public Character(KaitaiInputStream io, Characters parent) {
         this(io, parent, null);
     }
 
-    public Character(KaitaiStream io, Characters parent, Yodesk root) {
+    public Character(KaitaiInputStream io, Characters parent, Yodesk root) {
         super(io);
         this.parent = parent;
         this.root = root;
@@ -50,24 +50,44 @@ public class Character extends KaitaiStruct {
     }
 
     private void _read() {
-        this.index = this.io.readU2le();
+        index = io.readU2le();
 
         if (index != 65535) {
-            this.marker = this.io.readBytes(4);
+            marker = io.readBytes(4);
 
-            if (!(Arrays.equals(marker, new byte[]{73, 67, 72, 65}))) { // ICHA
-                throw new KaitaiStream.ValidationNotEqualError(new byte[]{73, 67, 72, 65}, marker, getIo(), "/types/character/seq/1");
+            if (!Arrays.equals(marker, new byte[]{73, 67, 72, 65})) { // ICHA
+                throw new KaitaiInputStream.ValidationNotEqualError(new byte[]{73, 67, 72, 65}, marker, getIo(), "/types/character/seq/1");
             }
 
-            this.size = this.io.readU4le();
-            this.name = new String(KaitaiStream.bytesTerminate(this.io.readBytes(16), (byte) 0, false), Charset.forName(Yodesk.getCharset()));
-            this.type = CharacterType.byId(this.io.readU2le());
-            this.movementType = MovementType.byId(this.io.readU2le());
-            this.probablyGarbage1 = this.io.readU2le();
-            this.probablyGarbage2 = this.io.readU4le();
-            this.frame1 = new CharFrame(this.io, this, root);
-            this.frame2 = new CharFrame(this.io, this, root);
-            this.frame3 = new CharFrame(this.io, this, root);
+            size = io.readU4le();
+            name = io.readNullTerminatedString(16);
+            type = CharacterType.byId(io.readU2le());
+            movementType = MovementType.byId(io.readU2le());
+            probablyGarbage1 = io.readU2le();
+            probablyGarbage2 = io.readU4le();
+            frame1 = new CharFrame(io, this, root);
+            frame2 = new CharFrame(io, this, root);
+            frame3 = new CharFrame(io, this, root);
+        }
+    }
+
+    @Override
+    public void write(KaitaiOutputStream os) {
+        os.writeU2le(index);
+
+        if (index != 65535) {
+            os.writeBytesFull(marker);
+
+            os.writeU4le(size);
+            os.writeNullTerminatedString(name);
+            os.writeU2le(type.getId());
+            os.writeU2le(movementType.getId());
+            os.writeU2le(probablyGarbage1);
+            os.writeU4le(probablyGarbage2);
+
+            frame1.write(os);
+            frame2.write(os);
+            frame3.write(os);
         }
     }
 

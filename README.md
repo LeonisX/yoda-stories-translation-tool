@@ -12,6 +12,8 @@ An original version: https://github.com/LeonisX/YExplorer
 
 ## TODO
 
+* Save DAT file + backup if simply save
+* Test DAT file writing
 * Show monsters, hotspots if selected
 * Show map actions (new window)
 * Show tile IDs for 3 layers

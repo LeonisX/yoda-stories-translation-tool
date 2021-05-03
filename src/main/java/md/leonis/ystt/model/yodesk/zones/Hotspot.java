@@ -1,7 +1,8 @@
 package md.leonis.ystt.model.yodesk.zones;
 
-import io.kaitai.struct.ByteBufferKaitaiStream;
-import io.kaitai.struct.KaitaiStream;
+import io.kaitai.struct.ByteBufferKaitaiInputStream;
+import io.kaitai.struct.KaitaiInputStream;
+import io.kaitai.struct.KaitaiOutputStream;
 import io.kaitai.struct.KaitaiStruct;
 import md.leonis.ystt.model.yodesk.Yodesk;
 
@@ -26,18 +27,18 @@ public class Hotspot extends KaitaiStruct {
     private final Zone parent;
 
     public static Hotspot fromFile(String fileName) throws IOException {
-        return new Hotspot(new ByteBufferKaitaiStream(fileName));
+        return new Hotspot(new ByteBufferKaitaiInputStream(fileName));
     }
 
-    public Hotspot(KaitaiStream io) {
+    public Hotspot(KaitaiInputStream io) {
         this(io, null, null);
     }
 
-    public Hotspot(KaitaiStream io, Zone parent) {
+    public Hotspot(KaitaiInputStream io, Zone parent) {
         this(io, parent, null);
     }
 
-    public Hotspot(KaitaiStream io, Zone parent, Yodesk root) {
+    public Hotspot(KaitaiInputStream io, Zone parent, Yodesk root) {
         super(io);
         this.parent = parent;
         this.root = root;
@@ -50,6 +51,15 @@ public class Hotspot extends KaitaiStruct {
         this.y = this.io.readU2le();
         this.enabled = this.io.readU2le();
         this.argument = this.io.readU2le();
+    }
+
+    @Override
+    public void write(KaitaiOutputStream os) {
+        os.writeU4le(type.getId());
+        os.writeU2le(x);
+        os.writeU2le(y);
+        os.writeU2le(enabled);
+        os.writeU2le(argument);
     }
 
     public HotspotType getType() {

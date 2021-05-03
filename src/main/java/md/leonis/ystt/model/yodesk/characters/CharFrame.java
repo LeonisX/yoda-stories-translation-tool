@@ -1,7 +1,8 @@
 package md.leonis.ystt.model.yodesk.characters;
 
-import io.kaitai.struct.ByteBufferKaitaiStream;
-import io.kaitai.struct.KaitaiStream;
+import io.kaitai.struct.ByteBufferKaitaiInputStream;
+import io.kaitai.struct.KaitaiInputStream;
+import io.kaitai.struct.KaitaiOutputStream;
 import io.kaitai.struct.KaitaiStruct;
 import md.leonis.ystt.model.yodesk.Yodesk;
 
@@ -16,18 +17,18 @@ public class CharFrame extends KaitaiStruct {
     private final Character parent;
 
     public static CharFrame fromFile(String fileName) throws IOException {
-        return new CharFrame(new ByteBufferKaitaiStream(fileName));
+        return new CharFrame(new ByteBufferKaitaiInputStream(fileName));
     }
 
-    public CharFrame(KaitaiStream io) {
+    public CharFrame(KaitaiInputStream io) {
         this(io, null, null);
     }
 
-    public CharFrame(KaitaiStream io, Character parent) {
+    public CharFrame(KaitaiInputStream io, Character parent) {
         this(io, parent, null);
     }
 
-    public CharFrame(KaitaiStream io, Character parent, Yodesk root) {
+    public CharFrame(KaitaiInputStream io, Character parent, Yodesk root) {
         super(io);
         this.parent = parent;
         this.root = root;
@@ -37,7 +38,14 @@ public class CharFrame extends KaitaiStruct {
     private void _read() {
         tiles = new ArrayList<>(8);
         for (int i = 0; i < 8; i++) {
-            this.tiles.add(this.io.readU2le());
+            tiles.add(io.readU2le());
+        }
+    }
+
+    @Override
+    public void write(KaitaiOutputStream os) {
+        for (Integer tile : tiles) {
+            os.writeU2le(tile);
         }
     }
 

@@ -1,7 +1,8 @@
 package md.leonis.ystt.model.yodesk.zones;
 
-import io.kaitai.struct.ByteBufferKaitaiStream;
-import io.kaitai.struct.KaitaiStream;
+import io.kaitai.struct.ByteBufferKaitaiInputStream;
+import io.kaitai.struct.KaitaiInputStream;
+import io.kaitai.struct.KaitaiOutputStream;
 import io.kaitai.struct.KaitaiStruct;
 import md.leonis.ystt.model.yodesk.Yodesk;
 
@@ -27,18 +28,18 @@ public class Monster extends KaitaiStruct {
     private final ZoneAuxiliary parent;
 
     public static Monster fromFile(String fileName) throws IOException {
-        return new Monster(new ByteBufferKaitaiStream(fileName));
+        return new Monster(new ByteBufferKaitaiInputStream(fileName));
     }
 
-    public Monster(KaitaiStream io) {
+    public Monster(KaitaiInputStream io) {
         this(io, null, null);
     }
 
-    public Monster(KaitaiStream io, ZoneAuxiliary parent) {
+    public Monster(KaitaiInputStream io, ZoneAuxiliary parent) {
         this(io, parent, null);
     }
 
-    public Monster(KaitaiStream io, ZoneAuxiliary parent, Yodesk root) {
+    public Monster(KaitaiInputStream io, ZoneAuxiliary parent, Yodesk root) {
         super(io);
         this.parent = parent;
         this.root = root;
@@ -46,14 +47,27 @@ public class Monster extends KaitaiStruct {
     }
 
     private void _read() {
-        this.character = this.io.readU2le();
-        this.x = this.io.readU2le();
-        this.y = this.io.readU2le();
-        this.loot = this.io.readU2le();
-        this.dropsLoot = this.io.readU4le();
+        character = io.readU2le();
+        x = io.readU2le();
+        y = io.readU2le();
+        loot = io.readU2le();
+        dropsLoot = io.readU4le();
         waypoints = new ArrayList<>(4);
         for (int i = 0; i < 4; i++) {
-            this.waypoints.add(new Waypoint(this.io, this, root));
+            waypoints.add(new Waypoint(io, this, root));
+        }
+    }
+
+    @Override
+    public void write(KaitaiOutputStream os) {
+        os.writeU2le(character);
+        os.writeU2le(x);
+        os.writeU2le(y);
+        os.writeU2le(loot);
+        os.writeU4le(dropsLoot);
+
+        for (int i = 0; i < 4; i++) {
+            waypoints.get(i).write(os);
         }
     }
 

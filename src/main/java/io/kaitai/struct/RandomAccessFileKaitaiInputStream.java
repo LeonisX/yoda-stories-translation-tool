@@ -31,10 +31,10 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
 /**
- * An implementation of {@link KaitaiStream} backed by a {@link RandomAccessFile}.
+ * An implementation of {@link KaitaiInputStream} backed by a {@link RandomAccessFile}.
  *
  * Allows reading from local files. Generally, one would want to use
- * {@link ByteBufferKaitaiStream} instead, as it most likely would be faster,
+ * {@link ByteBufferKaitaiInputStream} instead, as it most likely would be faster,
  * but there are two situations when one should consider this one instead:
  *
  * <ul>
@@ -45,10 +45,11 @@ import java.nio.ByteOrder;
  * offsets, even if you use a 64-bit platform.</li>
  * </ul>
  */
-public class RandomAccessFileKaitaiStream extends KaitaiStream {
+public class RandomAccessFileKaitaiInputStream extends KaitaiInputStream {
+
     protected RandomAccessFile raf;
 
-    public RandomAccessFileKaitaiStream(String fileName) throws IOException {
+    public RandomAccessFileKaitaiInputStream(String fileName) throws IOException {
         raf = new RandomAccessFile(fileName, "r");
     }
 
@@ -125,7 +126,7 @@ public class RandomAccessFileKaitaiStream extends KaitaiStream {
             if ((b1 | b2) < 0) {
                 throw new EOFException();
             } else {
-                return (short) ((b1 << 8) + (b2 << 0));
+                return (short) ((b1 << 8) + b2);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -142,7 +143,7 @@ public class RandomAccessFileKaitaiStream extends KaitaiStream {
             if ((b1 | b2 | b3 | b4) < 0) {
                 throw new EOFException();
             } else {
-                return (b1 << 24) + (b2 << 16) + (b3 << 8) + (b4 << 0);
+                return (b1 << 24) + (b2 << 16) + (b3 << 8) + b4;
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -153,7 +154,7 @@ public class RandomAccessFileKaitaiStream extends KaitaiStream {
     public long readS8be() {
         long b1 = readU4be();
         long b2 = readU4be();
-        return (b1 << 32) + (b2 << 0);
+        return (b1 << 32) + b2;
     }
 
     @Override
@@ -164,7 +165,7 @@ public class RandomAccessFileKaitaiStream extends KaitaiStream {
             if ((b1 | b2) < 0) {
                 throw new EOFException();
             } else {
-                return (short) ((b2 << 8) + (b1 << 0));
+                return (short) ((b2 << 8) + b1);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -181,7 +182,7 @@ public class RandomAccessFileKaitaiStream extends KaitaiStream {
             if ((b1 | b2 | b3 | b4) < 0) {
                 throw new EOFException();
             } else {
-                return (b4 << 24) + (b3 << 16) + (b2 << 8) + (b1 << 0);
+                return (b4 << 24) + (b3 << 16) + (b2 << 8) + b1;
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -192,7 +193,7 @@ public class RandomAccessFileKaitaiStream extends KaitaiStream {
     public long readS8le() {
         long b1 = readU4le();
         long b2 = readU4le();
-        return (b2 << 32) + (b1 << 0);
+        return (b2 << 32) + b1;
     }
 
     @Override
@@ -217,7 +218,7 @@ public class RandomAccessFileKaitaiStream extends KaitaiStream {
             if ((b1 | b2) < 0) {
                 throw new EOFException();
             } else {
-                return (b1 << 8) + (b2 << 0);
+                return (b1 << 8) + b2;
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -234,7 +235,7 @@ public class RandomAccessFileKaitaiStream extends KaitaiStream {
             if ((b1 | b2 | b3 | b4) < 0) {
                 throw new EOFException();
             } else {
-                return (b1 << 24) + (b2 << 16) + (b3 << 8) + (b4 << 0);
+                return (b1 << 24) + (b2 << 16) + (b3 << 8) + b4;
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -249,7 +250,7 @@ public class RandomAccessFileKaitaiStream extends KaitaiStream {
             if ((b1 | b2) < 0) {
                 throw new EOFException();
             } else {
-                return (b2 << 8) + (b1 << 0);
+                return (b2 << 8) + b1;
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -266,7 +267,7 @@ public class RandomAccessFileKaitaiStream extends KaitaiStream {
             if ((b1 | b2 | b3 | b4) < 0) {
                 throw new EOFException();
             } else {
-                return (b4 << 24) + (b3 << 16) + (b2 << 8) + (b1 << 0);
+                return (b4 << 24) + (b3 << 16) + (b2 << 8) + b1;
             }
         } catch (IOException e) {
             throw new RuntimeException(e);

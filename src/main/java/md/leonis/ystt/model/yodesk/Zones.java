@@ -1,7 +1,8 @@
 package md.leonis.ystt.model.yodesk;
 
-import io.kaitai.struct.ByteBufferKaitaiStream;
-import io.kaitai.struct.KaitaiStream;
+import io.kaitai.struct.ByteBufferKaitaiInputStream;
+import io.kaitai.struct.KaitaiInputStream;
+import io.kaitai.struct.KaitaiOutputStream;
 import io.kaitai.struct.KaitaiStruct;
 import md.leonis.ystt.model.yodesk.zones.Zone;
 
@@ -17,18 +18,18 @@ public class Zones extends KaitaiStruct {
     private final CatalogEntry parent;
 
     public static Zones fromFile(String fileName) throws IOException {
-        return new Zones(new ByteBufferKaitaiStream(fileName));
+        return new Zones(new ByteBufferKaitaiInputStream(fileName));
     }
 
-    public Zones(KaitaiStream io) {
+    public Zones(KaitaiInputStream io) {
         this(io, null, null);
     }
 
-    public Zones(KaitaiStream io, CatalogEntry parent) {
+    public Zones(KaitaiInputStream io, CatalogEntry parent) {
         this(io, parent, null);
     }
 
-    public Zones(KaitaiStream io, CatalogEntry parent, Yodesk root) {
+    public Zones(KaitaiInputStream io, CatalogEntry parent, Yodesk root) {
         super(io);
         this.parent = parent;
         this.root = root;
@@ -36,10 +37,18 @@ public class Zones extends KaitaiStruct {
     }
 
     private void _read() {
-        this.numZones = this.io.readU2le();
+        numZones = io.readU2le();
         zones = new ArrayList<>(numZones);
         for (int i = 0; i < numZones; i++) {
-            this.zones.add(new Zone(this.io, this, root));
+            zones.add(new Zone(io, this, root));
+        }
+    }
+
+    @Override
+    public void write(KaitaiOutputStream os) {
+        os.writeU2le(numZones);
+        for (int i = 0; i < numZones; i++) {
+            zones.get(i).write(os);
         }
     }
 

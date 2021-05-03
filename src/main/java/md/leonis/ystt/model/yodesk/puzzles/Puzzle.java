@@ -1,7 +1,8 @@
 package md.leonis.ystt.model.yodesk.puzzles;
 
-import io.kaitai.struct.ByteBufferKaitaiStream;
-import io.kaitai.struct.KaitaiStream;
+import io.kaitai.struct.ByteBufferKaitaiInputStream;
+import io.kaitai.struct.KaitaiInputStream;
+import io.kaitai.struct.KaitaiOutputStream;
 import io.kaitai.struct.KaitaiStruct;
 import md.leonis.ystt.model.yodesk.Puzzles;
 import md.leonis.ystt.model.yodesk.Yodesk;
@@ -65,18 +66,18 @@ FFFF
     private final Puzzles parent;
 
     public static Puzzle fromFile(String fileName) throws IOException {
-        return new Puzzle(new ByteBufferKaitaiStream(fileName));
+        return new Puzzle(new ByteBufferKaitaiInputStream(fileName));
     }
 
-    public Puzzle(KaitaiStream io) {
+    public Puzzle(KaitaiInputStream io) {
         this(io, null, null);
     }
 
-    public Puzzle(KaitaiStream io, Puzzles parent) {
+    public Puzzle(KaitaiInputStream io, Puzzles parent) {
         this(io, parent, null);
     }
 
-    public Puzzle(KaitaiStream io, Puzzles parent, Yodesk root) {
+    public Puzzle(KaitaiInputStream io, Puzzles parent, Yodesk root) {
         super(io);
         this.parent = parent;
         this.root = root;
@@ -85,28 +86,51 @@ FFFF
 
     private void _read() {
 
-        this.index = this.io.readU2le();
+        index = io.readU2le();
 
         if (index != 65535) {
-            this.marker = this.io.readBytes(4);
+            marker = io.readBytes(4);
 
-            if (!(Arrays.equals(marker, new byte[]{73, 80, 85, 90}))) { // IPUZ
-                throw new KaitaiStream.ValidationNotEqualError(new byte[]{73, 80, 85, 90}, marker, getIo(), "/types/puzzle/seq/1");
+            if (!Arrays.equals(marker, new byte[]{73, 80, 85, 90})) { // IPUZ
+                throw new KaitaiInputStream.ValidationNotEqualError(new byte[]{73, 80, 85, 90}, marker, getIo(), "/types/puzzle/seq/1");
             }
 
-            this.size = this.io.readU4le();
-            this.type = this.io.readU4le();
-            this._unnamed4 = this.io.readU4le();
-            this._unnamed5 = this.io.readU4le();
-            this._unnamed6 = this.io.readU2le();
+            size = io.readU4le();
+            type = io.readU4le();
+            _unnamed4 = io.readU4le();
+            _unnamed5 = io.readU4le();
+            _unnamed6 = io.readU2le();
 
             for (int i = 0; i < 5; i++) {
-                PrefixedStr prefixedStr = new PrefixedStr(this.io, this, root);
-                this.prefixesStrings.add(prefixedStr);
+                PrefixedStr prefixedStr = new PrefixedStr(io, this, root);
+                prefixesStrings.add(prefixedStr);
             }
 
-            this.item1 = this.io.readU2le();
-            this.item2 = this.io.readU2le();
+            item1 = io.readU2le();
+            item2 = io.readU2le();
+        }
+    }
+
+    @Override
+    public void write(KaitaiOutputStream os) {
+
+        os.writeU2le(index);
+
+        if (index != 65535) {
+            os.writeBytesFull(marker);
+
+            os.writeU4le(size);
+            os.writeU4le(type);
+            os.writeU4le(_unnamed4);
+            os.writeU4le(_unnamed5);
+            os.writeU2le(_unnamed6);
+
+            for (PrefixedStr prefixesString : prefixesStrings) {
+                prefixesString.write(os);
+            }
+
+            os.writeU2le(item1);
+            os.writeU2le(item2);
         }
     }
 

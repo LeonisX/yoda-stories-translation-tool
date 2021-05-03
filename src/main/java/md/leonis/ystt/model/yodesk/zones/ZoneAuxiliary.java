@@ -1,7 +1,8 @@
 package md.leonis.ystt.model.yodesk.zones;
 
-import io.kaitai.struct.ByteBufferKaitaiStream;
-import io.kaitai.struct.KaitaiStream;
+import io.kaitai.struct.ByteBufferKaitaiInputStream;
+import io.kaitai.struct.KaitaiInputStream;
+import io.kaitai.struct.KaitaiOutputStream;
 import io.kaitai.struct.KaitaiStruct;
 import md.leonis.ystt.model.yodesk.Yodesk;
 
@@ -28,18 +29,18 @@ public class ZoneAuxiliary extends KaitaiStruct {
     private final Zone parent;
 
     public static ZoneAuxiliary fromFile(String fileName) throws IOException {
-        return new ZoneAuxiliary(new ByteBufferKaitaiStream(fileName));
+        return new ZoneAuxiliary(new ByteBufferKaitaiInputStream(fileName));
     }
 
-    public ZoneAuxiliary(KaitaiStream io) {
+    public ZoneAuxiliary(KaitaiInputStream io) {
         this(io, null, null);
     }
 
-    public ZoneAuxiliary(KaitaiStream io, Zone parent) {
+    public ZoneAuxiliary(KaitaiInputStream io, Zone parent) {
         this(io, parent, null);
     }
 
-    public ZoneAuxiliary(KaitaiStream io, Zone parent, Yodesk root) {
+    public ZoneAuxiliary(KaitaiInputStream io, Zone parent, Yodesk root) {
         super(io);
         this.parent = parent;
         this.root = root;
@@ -47,26 +48,50 @@ public class ZoneAuxiliary extends KaitaiStruct {
     }
 
     private void _read() {
-        this.marker = this.io.readBytes(4);
+        marker = io.readBytes(4);
         if (!(Arrays.equals(marker, new byte[]{73, 90, 65, 88}))) { // IZAX
-            throw new KaitaiStream.ValidationNotEqualError(new byte[]{73, 90, 65, 88}, marker, getIo(), "/types/zone_auxiliary/seq/0");
+            throw new KaitaiInputStream.ValidationNotEqualError(new byte[]{73, 90, 65, 88}, marker, getIo(), "/types/zone_auxiliary/seq/0");
         }
-        this.size = this.io.readU4le();
-        this._unnamed2 = this.io.readU2le();
-        this.numMonsters = this.io.readU2le();
+        size = io.readU4le();
+        _unnamed2 = io.readU2le();
+        numMonsters = io.readU2le();
         monsters = new ArrayList<>(numMonsters);
         for (int i = 0; i < numMonsters; i++) {
-            this.monsters.add(new Monster(this.io, this, root));
+            monsters.add(new Monster(io, this, root));
         }
-        this.numRequiredItems = this.io.readU2le();
+        numRequiredItems = io.readU2le();
         requiredItems = new ArrayList<>(numRequiredItems);
         for (int i = 0; i < numRequiredItems; i++) {
-            this.requiredItems.add(this.io.readU2le());
+            requiredItems.add(io.readU2le());
         }
-        this.numGoalItems = this.io.readU2le();
+        numGoalItems = io.readU2le();
         goalItems = new ArrayList<>(numGoalItems);
         for (int i = 0; i < numGoalItems; i++) {
-            this.goalItems.add(this.io.readU2le());
+            goalItems.add(io.readU2le());
+        }
+    }
+
+    @Override
+    public void write(KaitaiOutputStream os) {
+        os.writeBytesFull(marker);
+        os.writeU4le(size);
+        os.writeU2le(_unnamed2);
+        os.writeU2le(numMonsters);
+
+        for (Monster monster : monsters) {
+            monster.write(os);
+        }
+
+        os.writeU2le(numRequiredItems);
+
+        for (Integer requiredItem : requiredItems) {
+            os.writeU2le(requiredItem);
+        }
+
+        os.writeU2le(numGoalItems);
+
+        for (Integer goalItem : goalItems) {
+            os.writeU2le(goalItem);
         }
     }
 

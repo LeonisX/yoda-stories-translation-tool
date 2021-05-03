@@ -1,7 +1,8 @@
 package md.leonis.ystt.model.yodesk.zones;
 
-import io.kaitai.struct.ByteBufferKaitaiStream;
-import io.kaitai.struct.KaitaiStream;
+import io.kaitai.struct.ByteBufferKaitaiInputStream;
+import io.kaitai.struct.KaitaiInputStream;
+import io.kaitai.struct.KaitaiOutputStream;
 import io.kaitai.struct.KaitaiStruct;
 import md.leonis.ystt.model.yodesk.Yodesk;
 
@@ -16,18 +17,18 @@ public class Waypoint extends KaitaiStruct {
     private final Monster parent;
 
     public static Waypoint fromFile(String fileName) throws IOException {
-        return new Waypoint(new ByteBufferKaitaiStream(fileName));
+        return new Waypoint(new ByteBufferKaitaiInputStream(fileName));
     }
 
-    public Waypoint(KaitaiStream io) {
+    public Waypoint(KaitaiInputStream io) {
         this(io, null, null);
     }
 
-    public Waypoint(KaitaiStream io, Monster parent) {
+    public Waypoint(KaitaiInputStream io, Monster parent) {
         this(io, parent, null);
     }
 
-    public Waypoint(KaitaiStream io, Monster parent, Yodesk root) {
+    public Waypoint(KaitaiInputStream io, Monster parent, Yodesk root) {
         super(io);
         this.parent = parent;
         this.root = root;
@@ -35,8 +36,14 @@ public class Waypoint extends KaitaiStruct {
     }
 
     private void _read() {
-        this.x = this.io.readU4le();
-        this.y = this.io.readU4le();
+        x = io.readU4le();
+        y = io.readU4le();
+    }
+
+    @Override
+    public void write(KaitaiOutputStream os) {
+        os.writeU4le(x);
+        os.writeU4le(y);
     }
 
     public long getX() {

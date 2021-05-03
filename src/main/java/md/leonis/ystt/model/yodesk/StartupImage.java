@@ -1,7 +1,8 @@
 package md.leonis.ystt.model.yodesk;
 
-import io.kaitai.struct.ByteBufferKaitaiStream;
-import io.kaitai.struct.KaitaiStream;
+import io.kaitai.struct.ByteBufferKaitaiInputStream;
+import io.kaitai.struct.KaitaiInputStream;
+import io.kaitai.struct.KaitaiOutputStream;
 import io.kaitai.struct.KaitaiStruct;
 
 import java.io.IOException;
@@ -18,18 +19,18 @@ public class StartupImage extends KaitaiStruct {
     private final CatalogEntry parent;
 
     public static StartupImage fromFile(String fileName) throws IOException {
-        return new StartupImage(new ByteBufferKaitaiStream(fileName));
+        return new StartupImage(new ByteBufferKaitaiInputStream(fileName));
     }
 
-    public StartupImage(KaitaiStream io) {
+    public StartupImage(KaitaiInputStream io) {
         this(io, null, null);
     }
 
-    public StartupImage(KaitaiStream io, CatalogEntry parent) {
+    public StartupImage(KaitaiInputStream io, CatalogEntry parent) {
         this(io, parent, null);
     }
 
-    public StartupImage(KaitaiStream io, CatalogEntry parent, Yodesk root) {
+    public StartupImage(KaitaiInputStream io, CatalogEntry parent, Yodesk root) {
         super(io);
         this.parent = parent;
         this.root = root;
@@ -38,6 +39,11 @@ public class StartupImage extends KaitaiStruct {
 
     private void _read() {
         this.pixels = this.io.readBytes(getParent().getSize());
+    }
+
+    @Override
+    public void write(KaitaiOutputStream os) {
+        os.writeBytesFull(pixels);
     }
 
     public byte[] getPixels() {

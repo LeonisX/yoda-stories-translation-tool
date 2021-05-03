@@ -1,7 +1,8 @@
 package md.leonis.ystt.model.yodesk.zones;
 
-import io.kaitai.struct.ByteBufferKaitaiStream;
-import io.kaitai.struct.KaitaiStream;
+import io.kaitai.struct.ByteBufferKaitaiInputStream;
+import io.kaitai.struct.KaitaiInputStream;
+import io.kaitai.struct.KaitaiOutputStream;
 import io.kaitai.struct.KaitaiStruct;
 import md.leonis.ystt.model.yodesk.Yodesk;
 
@@ -56,18 +57,18 @@ public class Action extends KaitaiStruct {
     private final Zone parent;
 
     public static Action fromFile(String fileName) throws IOException {
-        return new Action(new ByteBufferKaitaiStream(fileName));
+        return new Action(new ByteBufferKaitaiInputStream(fileName));
     }
 
-    public Action(KaitaiStream io) {
+    public Action(KaitaiInputStream io) {
         this(io, null, null);
     }
 
-    public Action(KaitaiStream io, Zone parent) {
+    public Action(KaitaiInputStream io, Zone parent) {
         this(io, parent, null);
     }
 
-    public Action(KaitaiStream io, Zone parent, Yodesk root) {
+    public Action(KaitaiInputStream io, Zone parent, Yodesk root) {
         super(io);
         this.parent = parent;
         this.root = root;
@@ -75,20 +76,37 @@ public class Action extends KaitaiStruct {
     }
 
     private void _read() {
-        this.marker = this.io.readBytes(4);
-        if (!(Arrays.equals(marker, new byte[]{73, 65, 67, 84}))) { // IACT
-            throw new KaitaiStream.ValidationNotEqualError(new byte[]{73, 65, 67, 84}, marker, getIo(), "/types/action/seq/0");
+        marker = io.readBytes(4);
+        if (!Arrays.equals(marker, new byte[]{73, 65, 67, 84})) { // IACT
+            throw new KaitaiInputStream.ValidationNotEqualError(new byte[]{73, 65, 67, 84}, marker, getIo(), "/types/action/seq/0");
         }
-        this.size = this.io.readU4le();
-        this.numConditions = this.io.readU2le();
+        size = io.readU4le();
+        numConditions = io.readU2le();
         conditions = new ArrayList<>(numConditions);
         for (int i = 0; i < numConditions; i++) {
-            this.conditions.add(new Condition(this.io, this, root));
+            conditions.add(new Condition(io, this, root));
         }
-        this.numInstructions = this.io.readU2le();
+        numInstructions = io.readU2le();
         instructions = new ArrayList<>(numInstructions);
         for (int i = 0; i < numInstructions; i++) {
-            this.instructions.add(new Instruction(this.io, this, root));
+            instructions.add(new Instruction(io, this, root));
+        }
+    }
+
+    @Override
+    public void write(KaitaiOutputStream os) {
+        os.writeBytesFull(marker);
+        os.writeU4le(size);
+        os.writeU2le(numConditions);
+
+        for (Condition condition : conditions) {
+            condition.write(os);
+        }
+
+        os.writeU2le(numInstructions);
+
+        for (Instruction instruction : instructions) {
+            instruction.write(os);
         }
     }
 

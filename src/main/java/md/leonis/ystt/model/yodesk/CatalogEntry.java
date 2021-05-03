@@ -1,7 +1,8 @@
 package md.leonis.ystt.model.yodesk;
 
-import io.kaitai.struct.ByteBufferKaitaiStream;
-import io.kaitai.struct.KaitaiStream;
+import io.kaitai.struct.ByteBufferKaitaiInputStream;
+import io.kaitai.struct.KaitaiInputStream;
+import io.kaitai.struct.KaitaiOutputStream;
 import io.kaitai.struct.KaitaiStruct;
 import md.leonis.ystt.model.yodesk.characters.CharacterAuxiliaries;
 import md.leonis.ystt.model.yodesk.characters.CharacterWeapons;
@@ -28,18 +29,18 @@ public class CatalogEntry extends KaitaiStruct {
     private final Yodesk parent;
 
     public static CatalogEntry fromFile(String fileName) throws IOException {
-        return new CatalogEntry(new ByteBufferKaitaiStream(fileName));
+        return new CatalogEntry(new ByteBufferKaitaiInputStream(fileName));
     }
 
-    public CatalogEntry(KaitaiStream io) {
+    public CatalogEntry(KaitaiInputStream io) {
         this(io, null, null);
     }
 
-    public CatalogEntry(KaitaiStream io, Yodesk parent) {
+    public CatalogEntry(KaitaiInputStream io, Yodesk parent) {
         this(io, parent, null);
     }
 
-    public CatalogEntry(KaitaiStream io, Yodesk parent, Yodesk root) {
+    public CatalogEntry(KaitaiInputStream io, Yodesk parent, Yodesk root) {
         super(io);
         this.parent = parent;
         this.root = root;
@@ -64,7 +65,7 @@ public class CatalogEntry extends KaitaiStruct {
 
             dataPosition = this.io.pos();
             this.bytes = this.io.readBytes(size);
-            KaitaiStream stream = new ByteBufferKaitaiStream(bytes);
+            KaitaiInputStream stream = new ByteBufferKaitaiInputStream(bytes);
 
             switch (section) {
                 case VERS:
@@ -146,11 +147,16 @@ public class CatalogEntry extends KaitaiStruct {
             section = Section.UNKN;
             this.size = this.io.readU4le();
             this.bytes = this.io.readBytes(size);
-            KaitaiStream stream = new ByteBufferKaitaiStream(bytes);
+            KaitaiInputStream stream = new ByteBufferKaitaiInputStream(bytes);
             UnknownCatalogEntry unknownCatalogEntry = new UnknownCatalogEntry(stream, this, root);
             this.content = unknownCatalogEntry;
             parent.setUnknownCatalogEntry(unknownCatalogEntry);
         }
+    }
+
+    public void write(KaitaiOutputStream os) {
+        os.writeString(section.name());
+        content.write(os);
     }
 
     public String getType() {

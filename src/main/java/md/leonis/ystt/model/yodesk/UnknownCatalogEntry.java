@@ -1,31 +1,32 @@
 package md.leonis.ystt.model.yodesk;
 
-import io.kaitai.struct.ByteBufferKaitaiStream;
-import io.kaitai.struct.KaitaiStream;
+import io.kaitai.struct.ByteBufferKaitaiInputStream;
+import io.kaitai.struct.KaitaiInputStream;
+import io.kaitai.struct.KaitaiOutputStream;
 import io.kaitai.struct.KaitaiStruct;
 
 import java.io.IOException;
 
 public class UnknownCatalogEntry extends KaitaiStruct {
 
-    private byte[] data;
+    private byte[] rawData;
 
     private final Yodesk root;
     private final CatalogEntry parent;
 
     public static UnknownCatalogEntry fromFile(String fileName) throws IOException {
-        return new UnknownCatalogEntry(new ByteBufferKaitaiStream(fileName));
+        return new UnknownCatalogEntry(new ByteBufferKaitaiInputStream(fileName));
     }
 
-    public UnknownCatalogEntry(KaitaiStream io) {
+    public UnknownCatalogEntry(KaitaiInputStream io) {
         this(io, null, null);
     }
 
-    public UnknownCatalogEntry(KaitaiStream io, CatalogEntry parent) {
+    public UnknownCatalogEntry(KaitaiInputStream io, CatalogEntry parent) {
         this(io, parent, null);
     }
 
-    public UnknownCatalogEntry(KaitaiStream io, CatalogEntry parent, Yodesk root) {
+    public UnknownCatalogEntry(KaitaiInputStream io, CatalogEntry parent, Yodesk root) {
         super(io);
         this.parent = parent;
         this.root = root;
@@ -33,11 +34,16 @@ public class UnknownCatalogEntry extends KaitaiStruct {
     }
 
     private void _read() {
-        this.data = this.io.readBytes(getParent().getSize());
+        rawData = io.readBytes(getParent().getSize());
     }
 
-    public byte[] getData() {
-        return data;
+    @Override
+    public void write(KaitaiOutputStream os) {
+        os.writeBytesFull(rawData);
+    }
+
+    public byte[] getRawData() {
+        return rawData;
     }
 
     public Yodesk getRoot() {

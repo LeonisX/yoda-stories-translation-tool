@@ -1,7 +1,8 @@
 package md.leonis.ystt.model.yodesk.zones;
 
-import io.kaitai.struct.ByteBufferKaitaiStream;
-import io.kaitai.struct.KaitaiStream;
+import io.kaitai.struct.ByteBufferKaitaiInputStream;
+import io.kaitai.struct.KaitaiInputStream;
+import io.kaitai.struct.KaitaiOutputStream;
 import io.kaitai.struct.KaitaiStruct;
 import md.leonis.ystt.model.yodesk.Yodesk;
 import md.leonis.ystt.model.yodesk.Zones;
@@ -52,18 +53,18 @@ public class Zone extends KaitaiStruct {
     private final Zones parent;
 
     public static Zone fromFile(String fileName) throws IOException {
-        return new Zone(new ByteBufferKaitaiStream(fileName));
+        return new Zone(new ByteBufferKaitaiInputStream(fileName));
     }
 
-    public Zone(KaitaiStream io) {
+    public Zone(KaitaiInputStream io) {
         this(io, null, null);
     }
 
-    public Zone(KaitaiStream io, Zones parent) {
+    public Zone(KaitaiInputStream io, Zones parent) {
         this(io, parent, null);
     }
 
-    public Zone(KaitaiStream io, Zones parent, Yodesk root) {
+    public Zone(KaitaiInputStream io, Zones parent, Yodesk root) {
         super(io);
         this.parent = parent;
         this.root = root;
@@ -71,39 +72,74 @@ public class Zone extends KaitaiStruct {
     }
 
     private void _read() {
-        this.planet = Planet.byId(this.io.readU2le());
-        this.size = this.io.readU4le();
-        this.index = this.io.readU2le();
-        this.marker = this.io.readBytes(4);
-        if (!(Arrays.equals(marker, new byte[]{73, 90, 79, 78}))) { // IZON
-            throw new KaitaiStream.ValidationNotEqualError(new byte[]{73, 90, 79, 78}, marker, getIo(), "/types/zone/seq/3");
+        planet = Planet.byId(io.readU2le());
+        size = io.readU4le();
+        index = io.readU2le();
+        marker = io.readBytes(4);
+        if (!Arrays.equals(marker, new byte[]{73, 90, 79, 78})) { // IZON
+            throw new KaitaiInputStream.ValidationNotEqualError(new byte[]{73, 90, 79, 78}, marker, getIo(), "/types/zone/seq/3");
         }
-        this.size2 = this.io.readU4le();
-        this.width = this.io.readU2le();
-        this.height = this.io.readU2le();
-        this.type = ZoneType.byId(this.io.readU4le());
-        this.sharedCounter = this.io.readU2le();
+        size2 = io.readU4le();
+        width = io.readU2le();
+        height = io.readU2le();
+        type = ZoneType.byId(io.readU4le());
+        sharedCounter = io.readU2le();
         if (sharedCounter != 65535) {
-            throw new KaitaiStream.ValidationNotEqualError(65535, sharedCounter, getIo(), "/types/zone/seq/8");
+            throw new KaitaiInputStream.ValidationNotEqualError(65535, sharedCounter, getIo(), "/types/zone/seq/8");
         }
-        this.planetAgain = this.io.readU2le();
+        planetAgain = io.readU2le();
         tileIds = new ArrayList<>(width * height);
         for (int i = 0; i < width * height; i++) {
-            this.tileIds.add(new ZoneSpot(this.io, this, root));
+            tileIds.add(new ZoneSpot(io, this, root));
         }
-        this.numHotspots = this.io.readU2le();
+        numHotspots = io.readU2le();
         hotspots = new ArrayList<>(numHotspots);
         for (int i = 0; i < numHotspots; i++) {
-            this.hotspots.add(new Hotspot(this.io, this, root));
+            hotspots.add(new Hotspot(io, this, root));
         }
-        this.izax = new ZoneAuxiliary(this.io, this, root);
-        this.izx2 = new ZoneAuxiliary2(this.io, this, root);
-        this.izx3 = new ZoneAuxiliary3(this.io, this, root);
-        this.izx4 = new ZoneAuxiliary4(this.io, this, root);
-        this.numActions = this.io.readU2le();
+        izax = new ZoneAuxiliary(io, this, root);
+        izx2 = new ZoneAuxiliary2(io, this, root);
+        izx3 = new ZoneAuxiliary3(io, this, root);
+        izx4 = new ZoneAuxiliary4(io, this, root);
+        numActions = io.readU2le();
         actions = new ArrayList<>(numActions);
         for (int i = 0; i < numActions; i++) {
-            this.actions.add(new Action(this.io, this, root));
+            this.actions.add(new Action(io, this, root));
+        }
+    }
+
+    @Override
+    public void write(KaitaiOutputStream os) {
+        os.writeU2le(planet.getId());
+        os.writeU4le(size);
+        os.writeU2le(index);
+        os.writeBytesFull(marker);
+        os.writeU4le(size2);
+        os.writeU2le(width);
+        os.writeU2le(height);
+        os.writeU4le(type.getId());
+        os.writeU2le(sharedCounter);
+        os.writeU2le(planetAgain);
+
+        for (ZoneSpot tileId : tileIds) {
+            tileId.write(os);
+        }
+
+        os.writeU2le(numHotspots);
+
+        for (Hotspot hotspot : hotspots) {
+            hotspot.write(os);
+        }
+
+        izax.write(os);
+        izx2.write(os);
+        izx3.write(os);
+        izx4.write(os);
+
+        os.writeU2le(numActions);
+
+        for (Action action : actions) {
+            action.write(os);
         }
     }
 
@@ -115,6 +151,10 @@ public class Zone extends KaitaiStruct {
         return size;
     }
 
+    public void setSize(long size) {
+        this.size = size;
+    }
+    
     public int getIndex() {
         return index;
     }

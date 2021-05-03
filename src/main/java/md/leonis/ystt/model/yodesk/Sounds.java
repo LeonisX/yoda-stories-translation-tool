@@ -1,7 +1,8 @@
 package md.leonis.ystt.model.yodesk;
 
-import io.kaitai.struct.ByteBufferKaitaiStream;
-import io.kaitai.struct.KaitaiStream;
+import io.kaitai.struct.ByteBufferKaitaiInputStream;
+import io.kaitai.struct.KaitaiInputStream;
+import io.kaitai.struct.KaitaiOutputStream;
 import io.kaitai.struct.KaitaiStruct;
 import md.leonis.ystt.model.yodesk.sounds.PrefixedStrz;
 
@@ -28,18 +29,18 @@ public class Sounds extends KaitaiStruct {
     private final CatalogEntry parent;
 
     public static Sounds fromFile(String fileName) throws IOException {
-        return new Sounds(new ByteBufferKaitaiStream(fileName));
+        return new Sounds(new ByteBufferKaitaiInputStream(fileName));
     }
 
-    public Sounds(KaitaiStream io) {
+    public Sounds(KaitaiInputStream io) {
         this(io, null, null);
     }
 
-    public Sounds(KaitaiStream io, CatalogEntry parent) {
+    public Sounds(KaitaiInputStream io, CatalogEntry parent) {
         this(io, parent, null);
     }
 
-    public Sounds(KaitaiStream io, CatalogEntry parent, Yodesk root) {
+    public Sounds(KaitaiInputStream io, CatalogEntry parent, Yodesk root) {
         super(io);
         this.parent = parent;
         this.root = root;
@@ -53,6 +54,12 @@ public class Sounds extends KaitaiStruct {
             PrefixedStrz prefixedStrz = new PrefixedStrz(this.io, this, root);
             prefixedSounds.add(prefixedStrz);
         }
+    }
+
+    @Override
+    public void write(KaitaiOutputStream os) {
+        os.writeS2le(count);
+        prefixedSounds.forEach(s -> s.write(os));
     }
 
     public List<String> getSounds() {

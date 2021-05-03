@@ -1,13 +1,13 @@
 package md.leonis.ystt.model.yodesk.tiles;
 
-import io.kaitai.struct.ByteBufferKaitaiStream;
-import io.kaitai.struct.KaitaiStream;
+import io.kaitai.struct.ByteBufferKaitaiInputStream;
+import io.kaitai.struct.KaitaiInputStream;
+import io.kaitai.struct.KaitaiOutputStream;
 import io.kaitai.struct.KaitaiStruct;
 import md.leonis.ystt.model.yodesk.TileNames;
 import md.leonis.ystt.model.yodesk.Yodesk;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
 
 public class TileName extends KaitaiStruct {
 
@@ -18,18 +18,18 @@ public class TileName extends KaitaiStruct {
     private final TileNames parent;
 
     public static TileName fromFile(String fileName) throws IOException {
-        return new TileName(new ByteBufferKaitaiStream(fileName));
+        return new TileName(new ByteBufferKaitaiInputStream(fileName));
     }
 
-    public TileName(KaitaiStream io) {
+    public TileName(KaitaiInputStream io) {
         this(io, null, null);
     }
 
-    public TileName(KaitaiStream io, TileNames parent) {
+    public TileName(KaitaiInputStream io, TileNames parent) {
         this(io, parent, null);
     }
 
-    public TileName(KaitaiStream io, TileNames parent, Yodesk root) {
+    public TileName(KaitaiInputStream io, TileNames parent, Yodesk root) {
         super(io);
         this.parent = parent;
         this.root = root;
@@ -37,9 +37,21 @@ public class TileName extends KaitaiStruct {
     }
 
     private void _read() {
-        this.tileId = this.io.readU2le();
+        tileId = io.readU2le();
         if (tileId != 65535) {
-            this.name = new String(KaitaiStream.bytesTerminate(this.io.readBytes(24), (byte) 0, false), Charset.forName(Yodesk.getCharset()));
+            name = io.readNullTerminatedString(24);
+        }
+    }
+
+    @Override
+    public void write(KaitaiOutputStream os) {
+        os.writeU2le(tileId);
+        if (tileId != 65535) {
+            os.writeNullTerminatedString(name);
+
+            for (int i = 0; i < 24 - name.length() - 1; i++) {
+                os.writeS1((byte) 0);
+            }
         }
     }
 

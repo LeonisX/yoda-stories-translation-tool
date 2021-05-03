@@ -1,7 +1,8 @@
 package md.leonis.ystt.model.yodesk.characters;
 
-import io.kaitai.struct.ByteBufferKaitaiStream;
-import io.kaitai.struct.KaitaiStream;
+import io.kaitai.struct.ByteBufferKaitaiInputStream;
+import io.kaitai.struct.KaitaiInputStream;
+import io.kaitai.struct.KaitaiOutputStream;
 import io.kaitai.struct.KaitaiStruct;
 import md.leonis.ystt.model.yodesk.CatalogEntry;
 import md.leonis.ystt.model.yodesk.Yodesk;
@@ -17,18 +18,18 @@ public class CharacterAuxiliaries extends KaitaiStruct {
     private final CatalogEntry parent;
 
     public static CharacterAuxiliaries fromFile(String fileName) throws IOException {
-        return new CharacterAuxiliaries(new ByteBufferKaitaiStream(fileName));
+        return new CharacterAuxiliaries(new ByteBufferKaitaiInputStream(fileName));
     }
 
-    public CharacterAuxiliaries(KaitaiStream io) {
+    public CharacterAuxiliaries(KaitaiInputStream io) {
         this(io, null, null);
     }
 
-    public CharacterAuxiliaries(KaitaiStream io, CatalogEntry parent) {
+    public CharacterAuxiliaries(KaitaiInputStream io, CatalogEntry parent) {
         this(io, parent, null);
     }
 
-    public CharacterAuxiliaries(KaitaiStream io, CatalogEntry parent, Yodesk root) {
+    public CharacterAuxiliaries(KaitaiInputStream io, CatalogEntry parent, Yodesk root) {
         super(io);
         this.parent = parent;
         this.root = root;
@@ -43,6 +44,11 @@ public class CharacterAuxiliaries extends KaitaiStruct {
             _it = new CharacterAuxiliary(this.io, this, root);
             this.auxiliaries.add(_it);
         } while (_it.getIndex() != 65535);
+    }
+
+    @Override
+    public void write(KaitaiOutputStream os) {
+        auxiliaries.forEach(a -> a.write(os));
     }
 
     public ArrayList<CharacterAuxiliary> getAuxiliaries() {

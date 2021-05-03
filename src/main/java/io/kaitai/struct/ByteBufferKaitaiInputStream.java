@@ -33,11 +33,11 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 
 /**
- * An implementation of {@link KaitaiStream} backed by a {@link ByteBuffer}.
+ * An implementation of {@link KaitaiInputStream} backed by a {@link ByteBuffer}.
  * It can be either a {@link MappedByteBuffer} backed by {@link FileChannel},
  * or a regular wrapper over a given byte array).
  */
-public class ByteBufferKaitaiStream extends KaitaiStream {
+public class ByteBufferKaitaiInputStream extends KaitaiInputStream {
 
     private FileChannel fc;
     private ByteBuffer bb;
@@ -48,7 +48,7 @@ public class ByteBufferKaitaiStream extends KaitaiStream {
      * @param fileName file to read
      * @throws IOException if file can't be read
      */
-    public ByteBufferKaitaiStream(String fileName) throws IOException {
+    public ByteBufferKaitaiInputStream(String fileName) throws IOException {
         fc = FileChannel.open(Paths.get(fileName), StandardOpenOption.READ);
         bb = fc.map(FileChannel.MapMode.READ_ONLY, 0, fc.size());
     }
@@ -58,7 +58,7 @@ public class ByteBufferKaitaiStream extends KaitaiStream {
      * Internally, ByteBuffer wrapping given array will be used.
      * @param arr byte array to read
      */
-    public ByteBufferKaitaiStream(byte[] arr) {
+    public ByteBufferKaitaiInputStream(byte[] arr) {
         fc = null;
         bb = ByteBuffer.wrap(arr);
     }
@@ -67,7 +67,7 @@ public class ByteBufferKaitaiStream extends KaitaiStream {
      * Initializes a stream that will get data from given ByteBuffer when read.
      * @param buffer ByteBuffer to read
      */
-    public ByteBufferKaitaiStream(ByteBuffer buffer) {
+    public ByteBufferKaitaiInputStream(ByteBuffer buffer) {
         fc = null;
         bb = buffer;
     }

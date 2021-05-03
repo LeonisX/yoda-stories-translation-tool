@@ -1,7 +1,8 @@
 package md.leonis.ystt.model.yodesk;
 
-import io.kaitai.struct.ByteBufferKaitaiStream;
-import io.kaitai.struct.KaitaiStream;
+import io.kaitai.struct.ByteBufferKaitaiInputStream;
+import io.kaitai.struct.KaitaiInputStream;
+import io.kaitai.struct.KaitaiOutputStream;
 import io.kaitai.struct.KaitaiStruct;
 import md.leonis.ystt.model.yodesk.characters.Character;
 
@@ -17,18 +18,18 @@ public class Characters extends KaitaiStruct {
     private final CatalogEntry parent;
 
     public static Characters fromFile(String fileName) throws IOException {
-        return new Characters(new ByteBufferKaitaiStream(fileName));
+        return new Characters(new ByteBufferKaitaiInputStream(fileName));
     }
 
-    public Characters(KaitaiStream io) {
+    public Characters(KaitaiInputStream io) {
         this(io, null, null);
     }
 
-    public Characters(KaitaiStream io, CatalogEntry parent) {
+    public Characters(KaitaiInputStream io, CatalogEntry parent) {
         this(io, parent, null);
     }
 
-    public Characters(KaitaiStream io, CatalogEntry parent, Yodesk root) {
+    public Characters(KaitaiInputStream io, CatalogEntry parent, Yodesk root) {
         super(io);
         this.parent = parent;
         this.root = root;
@@ -43,7 +44,12 @@ public class Characters extends KaitaiStruct {
         do {
             _it = new Character(this.io, this, root);
             this.characters.add(_it);
-        } while (_it.getIndex() != 65535);
+        } while (_it.getIndex() != 65535);//TODO 65535
+    }
+
+    @Override
+    public void write(KaitaiOutputStream os) {
+        characters.forEach(c -> c.write(os));
     }
 
     public List<Character> getCharacters() {

@@ -1,16 +1,17 @@
 package md.leonis.ystt.model.yodesk;
 // This is a generated file! Please edit source .ksy file and use kaitai-struct-compiler to rebuild
 
-import io.kaitai.struct.KaitaiStream;
+import io.kaitai.struct.KaitaiInputStream;
+import io.kaitai.struct.KaitaiOutputStream;
 import io.kaitai.struct.KaitaiStruct;
-import io.kaitai.struct.RandomAccessFileKaitaiStream;
+import io.kaitai.struct.RandomAccessFileKaitaiInputStream;
 import md.leonis.ystt.model.yodesk.characters.CharacterAuxiliaries;
 import md.leonis.ystt.model.yodesk.characters.CharacterWeapons;
 import md.leonis.ystt.model.Section;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -39,7 +40,7 @@ import java.util.Map;
 public class Yodesk extends KaitaiStruct {
 
     private ArrayList<CatalogEntry> catalog;
-    private final Map<Section, CatalogEntry> sections = new HashMap<>();
+    private final Map<Section, CatalogEntry> sections = new LinkedHashMap<>();
 
     private Version version;
     private StartupImage startupImage;
@@ -62,18 +63,18 @@ public class Yodesk extends KaitaiStruct {
 
     public static Yodesk fromFile(String fileName, String charset) throws IOException {
         Yodesk.charset = charset;
-        return new Yodesk(new RandomAccessFileKaitaiStream(fileName));
+        return new Yodesk(new RandomAccessFileKaitaiInputStream(fileName));
     }
 
-    public Yodesk(KaitaiStream io) {
+    public Yodesk(KaitaiInputStream io) {
         this(io, null, null);
     }
 
-    public Yodesk(KaitaiStream io, KaitaiStruct parent) {
+    public Yodesk(KaitaiInputStream io, KaitaiStruct parent) {
         this(io, parent, null);
     }
 
-    public Yodesk(KaitaiStream io, KaitaiStruct parent, Yodesk root) {
+    public Yodesk(KaitaiInputStream io, KaitaiStruct parent, Yodesk root) {
         super(io);
         this.parent = parent;
         this.root = root == null ? this : root;
@@ -92,6 +93,10 @@ public class Yodesk extends KaitaiStruct {
 
         assert characters.getCharacters().size() == characterAuxiliaries.getAuxiliaries().size();
         assert characters.getCharacters().size() == characterWeapons.getWeapons().size();
+    }
+
+    public void write(KaitaiOutputStream os) {
+        catalog.forEach(c -> c.write(os));
     }
 
     public ArrayList<CatalogEntry> getCatalog() {

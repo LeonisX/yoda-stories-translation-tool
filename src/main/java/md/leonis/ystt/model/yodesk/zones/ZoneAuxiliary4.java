@@ -1,7 +1,8 @@
 package md.leonis.ystt.model.yodesk.zones;
 
-import io.kaitai.struct.ByteBufferKaitaiStream;
-import io.kaitai.struct.KaitaiStream;
+import io.kaitai.struct.ByteBufferKaitaiInputStream;
+import io.kaitai.struct.KaitaiInputStream;
+import io.kaitai.struct.KaitaiOutputStream;
 import io.kaitai.struct.KaitaiStruct;
 import md.leonis.ystt.model.yodesk.Yodesk;
 
@@ -18,18 +19,18 @@ public class ZoneAuxiliary4 extends KaitaiStruct {
     private final Zone parent;
 
     public static ZoneAuxiliary4 fromFile(String fileName) throws IOException {
-        return new ZoneAuxiliary4(new ByteBufferKaitaiStream(fileName));
+        return new ZoneAuxiliary4(new ByteBufferKaitaiInputStream(fileName));
     }
 
-    public ZoneAuxiliary4(KaitaiStream io) {
+    public ZoneAuxiliary4(KaitaiInputStream io) {
         this(io, null, null);
     }
 
-    public ZoneAuxiliary4(KaitaiStream io, Zone parent) {
+    public ZoneAuxiliary4(KaitaiInputStream io, Zone parent) {
         this(io, parent, null);
     }
 
-    public ZoneAuxiliary4(KaitaiStream io, Zone parent, Yodesk root) {
+    public ZoneAuxiliary4(KaitaiInputStream io, Zone parent, Yodesk root) {
         super(io);
         this.parent = parent;
         this.root = root;
@@ -37,12 +38,19 @@ public class ZoneAuxiliary4 extends KaitaiStruct {
     }
 
     private void _read() {
-        this.marker = this.io.readBytes(4);
-        if (!(Arrays.equals(marker, new byte[]{73, 90, 88, 52}))) { // IZX4
-            throw new KaitaiStream.ValidationNotEqualError(new byte[]{73, 90, 88, 52}, marker, getIo(), "/types/zone_auxiliary_4/seq/0");
+        marker = io.readBytes(4);
+        if (!Arrays.equals(marker, new byte[]{73, 90, 88, 52})) { // IZX4
+            throw new KaitaiInputStream.ValidationNotEqualError(new byte[]{73, 90, 88, 52}, marker, getIo(), "/types/zone_auxiliary_4/seq/0");
         }
-        this.size = this.io.readU4le();
-        this._unnamed2 = this.io.readU2le();
+        size = io.readU4le();
+        _unnamed2 = io.readU2le();
+    }
+
+    @Override
+    public void write(KaitaiOutputStream os) {
+        os.writeBytesFull(marker);
+        os.writeU4le(size);
+        os.writeU2le(_unnamed2);
     }
 
     public byte[] getMarker() {

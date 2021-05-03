@@ -1,7 +1,8 @@
 package md.leonis.ystt.model.yodesk.characters;
 
-import io.kaitai.struct.ByteBufferKaitaiStream;
-import io.kaitai.struct.KaitaiStream;
+import io.kaitai.struct.ByteBufferKaitaiInputStream;
+import io.kaitai.struct.KaitaiInputStream;
+import io.kaitai.struct.KaitaiOutputStream;
 import io.kaitai.struct.KaitaiStruct;
 import md.leonis.ystt.model.yodesk.Yodesk;
 
@@ -19,18 +20,18 @@ public class CharacterWeapon extends KaitaiStruct {
     private final CharacterWeapons parent;
 
     public static CharacterWeapon fromFile(String fileName) throws IOException {
-        return new CharacterWeapon(new ByteBufferKaitaiStream(fileName));
+        return new CharacterWeapon(new ByteBufferKaitaiInputStream(fileName));
     }
 
-    public CharacterWeapon(KaitaiStream io) {
+    public CharacterWeapon(KaitaiInputStream io) {
         this(io, null, null);
     }
 
-    public CharacterWeapon(KaitaiStream io, CharacterWeapons parent) {
+    public CharacterWeapon(KaitaiInputStream io, CharacterWeapons parent) {
         this(io, parent, null);
     }
 
-    public CharacterWeapon(KaitaiStream io, CharacterWeapons parent, Yodesk root) {
+    public CharacterWeapon(KaitaiInputStream io, CharacterWeapons parent, Yodesk root) {
         super(io);
         this.parent = parent;
         this.root = root;
@@ -38,10 +39,19 @@ public class CharacterWeapon extends KaitaiStruct {
     }
 
     private void _read() {
-        this.index = this.io.readU2le();
+        index = io.readU2le();
         if (index != 65535) {
-            this.reference = this.io.readU2le();
-            this.health = this.io.readU2le();
+            reference = io.readU2le();
+            health = io.readU2le();
+        }
+    }
+
+    @Override
+    public void write(KaitaiOutputStream os) {
+        os.writeU2le(index);
+        if (index != 65535) {
+            os.writeU2le(reference);
+            os.writeU2le(health);
         }
     }
 

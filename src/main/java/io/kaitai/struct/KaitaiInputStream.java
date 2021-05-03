@@ -23,9 +23,12 @@
 
 package io.kaitai.struct;
 
+import md.leonis.ystt.model.yodesk.Yodesk;
+
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.zip.DataFormatException;
 import java.util.zip.Inflater;
@@ -34,26 +37,26 @@ import java.util.zip.Inflater;
  * KaitaiStream provides implementation of
  * <a href="https://github.com/kaitai-io/kaitai_struct/wiki/Kaitai-Struct-stream-API">Kaitai Struct stream API</a>
  * for Java.
- *
+ * <p>
  * It provides a wide variety of simple methods to read (parse) binary
  * representations of primitive types, such as integer and floating
  * point numbers, byte arrays and strings, and also provides stream
  * positioning / navigation methods with unified cross-language and
  * cross-toolkit semantics.
- *
+ * <p>
  * This is abstract class, which serves as an interface description and
  * a few default method implementations, which are believed to be common
  * for all (or at least most) implementations. Different implementations
  * of this interface may provide way to parse data from local files,
  * in-memory buffers or arrays, remote files, network streams, etc.
- *
+ * <p>
  * Typically, end users won't access any of these Kaitai Stream classes
  * manually, but would describe a binary structure format using .ksy language
  * and then would use Kaitai Struct compiler to generate source code in
  * desired target language.  That code, in turn, would use this class
  * and API to do the actual parsing job.
  */
-public abstract class KaitaiStream implements Closeable {
+public abstract class KaitaiInputStream implements Closeable {
 
     protected int bitsLeft = 0;
     protected long bits = 0;
@@ -65,30 +68,35 @@ public abstract class KaitaiStream implements Closeable {
 
     /**
      * Check if stream pointer is at the end of stream.
+     *
      * @return true if we are located at the end of the stream
      */
     abstract public boolean isEof();
 
     /**
      * Set stream pointer to designated position (int).
+     *
      * @param newPos new position (offset in bytes from the beginning of the stream)
      */
     abstract public void seek(int newPos);
 
     /**
      * Set stream pointer to designated position (long).
+     *
      * @param newPos new position (offset in bytes from the beginning of the stream)
      */
     abstract public void seek(long newPos);
 
     /**
      * Get current position of a stream pointer.
+     *
      * @return pointer position, number of bytes from the beginning of the stream
      */
     abstract public int pos();
 
     /**
      * Get total size of the stream in bytes.
+     *
      * @return size of the stream in bytes
      */
     abstract public long size();
@@ -101,6 +109,7 @@ public abstract class KaitaiStream implements Closeable {
 
     /**
      * Reads one signed 1-byte integer, returning it properly as Java's "byte" type.
+     *
      * @return 1-byte integer read from a stream
      */
     abstract public byte readS1();
@@ -108,7 +117,9 @@ public abstract class KaitaiStream implements Closeable {
     //region Big-endian
 
     abstract public short readS2be();
+
     abstract public int readS4be();
+
     abstract public long readS8be();
 
     //endregion
@@ -116,7 +127,9 @@ public abstract class KaitaiStream implements Closeable {
     //region Little-endian
 
     abstract public short readS2le();
+
     abstract public int readS4le();
+
     abstract public long readS8le();
 
     //endregion
@@ -136,6 +149,7 @@ public abstract class KaitaiStream implements Closeable {
     /**
      * Reads one unsigned 8-byte integer in big-endian encoding. As Java does not
      * have a primitive data type to accomodate it, we just reuse {@link #readS8be()}.
+     *
      * @return 8-byte signed integer (pretending to be unsigned) read from a stream
      */
     public long readU8be() {
@@ -153,6 +167,7 @@ public abstract class KaitaiStream implements Closeable {
     /**
      * Reads one unsigned 8-byte integer in little-endian encoding. As Java does not
      * have a primitive data type to accomodate it, we just reuse {@link #readS8le()}.
+     *
      * @return 8-byte signed integer (pretending to be unsigned) read from a stream
      */
     public long readU8le() {
@@ -170,6 +185,7 @@ public abstract class KaitaiStream implements Closeable {
     //region Big-endian
 
     abstract public float readF4be();
+
     abstract public double readF8be();
 
     //endregion
@@ -177,6 +193,7 @@ public abstract class KaitaiStream implements Closeable {
     //region Little-endian
 
     abstract public float readF4le();
+
     abstract public double readF8le();
 
     //endregion
@@ -268,6 +285,7 @@ public abstract class KaitaiStream implements Closeable {
 
     /**
      * Reads designated number of bytes from the stream.
+     *
      * @param n number of bytes to read
      * @return read bytes as byte array
      */
@@ -275,6 +293,7 @@ public abstract class KaitaiStream implements Closeable {
 
     /**
      * Reads all the remaining bytes in a stream as byte array.
+     *
      * @return all remaining bytes in a stream as byte array
      */
     abstract public byte[] readBytesFull();
@@ -286,6 +305,7 @@ public abstract class KaitaiStream implements Closeable {
      * It does so by determining number of bytes to compare, reading them, and doing
      * the actual comparison. If they differ, throws a {@link UnexpectedDataError}
      * runtime exception.
+     *
      * @param expected contents to be expected
      * @return read bytes as byte array, which are guaranteed to equal to expected
      * @throws UnexpectedDataError if read data from stream isn't equal to given data
@@ -319,6 +339,7 @@ public abstract class KaitaiStream implements Closeable {
     /**
      * Checks if supplied number of bytes is a valid number of elements for Java
      * byte array: converts it to int, if it is, or throws an exception if it is not.
+     *
      * @param n number of bytes for byte array as long
      * @return number of bytes, converted to int
      */
@@ -343,8 +364,9 @@ public abstract class KaitaiStream implements Closeable {
     /**
      * Performs a XOR processing with given data, XORing every byte of input with a single
      * given value.
+     *
      * @param data data to process
-     * @param key value to XOR with
+     * @param key  value to XOR with
      * @return processed data
      */
     public static byte[] processXor(byte[] data, int key) {
@@ -359,8 +381,9 @@ public abstract class KaitaiStream implements Closeable {
      * Performs a XOR processing with given data, XORing every byte of input with a key
      * array, repeating key array many times, if necessary (i.e. if data array is longer
      * than key array).
+     *
      * @param data data to process
-     * @param key array of bytes to XOR with
+     * @param key  array of bytes to XOR with
      * @return processed data
      */
     public static byte[] processXor(byte[] data, byte[] key) {
@@ -380,23 +403,22 @@ public abstract class KaitaiStream implements Closeable {
      * Performs a circular left rotation shift for a given buffer by a given amount of bits,
      * using groups of groupSize bytes each time. Right circular rotation should be performed
      * using this procedure with corrected amount.
-     * @param data source data to process
-     * @param amount number of bits to shift by
+     *
+     * @param data      source data to process
+     * @param amount    number of bits to shift by
      * @param groupSize number of bytes per group to shift
      * @return copy of source array with requested shift applied
      */
     public static byte[] processRotateLeft(byte[] data, int amount, int groupSize) {
         byte[] r = new byte[data.length];
-        switch (groupSize) {
-            case 1:
-                for (int i = 0; i < data.length; i++) {
-                    byte bits = data[i];
-                    // http://stackoverflow.com/a/19181827/487064
-                    r[i] = (byte) (((bits & 0xff) << amount) | ((bits & 0xff) >>> (8 - amount)));
-                }
-                break;
-            default:
-                throw new UnsupportedOperationException("unable to rotate group of " + groupSize + " bytes yet");
+        if (groupSize == 1) {
+            for (int i = 0; i < data.length; i++) {
+                byte bits = data[i];
+                // http://stackoverflow.com/a/19181827/487064
+                r[i] = (byte) (((bits & 0xff) << amount) | ((bits & 0xff) >>> (8 - amount)));
+            }
+        } else {
+            throw new UnsupportedOperationException("unable to rotate group of " + groupSize + " bytes yet");
         }
         return r;
     }
@@ -405,6 +427,7 @@ public abstract class KaitaiStream implements Closeable {
 
     /**
      * Performs an unpacking ("inflation") of zlib-compressed data with usual zlib headers.
+     *
      * @param data data to unpack
      * @return unpacked data
      * @throws RuntimeException if data can't be decoded
@@ -413,7 +436,7 @@ public abstract class KaitaiStream implements Closeable {
         Inflater ifl = new Inflater();
         ifl.setInput(data);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        byte buf[] = new byte[ZLIB_BUF_SIZE];
+        byte[] buf = new byte[ZLIB_BUF_SIZE];
         while (!ifl.finished()) {
             try {
                 int decBytes = ifl.inflate(buf);
@@ -434,6 +457,7 @@ public abstract class KaitaiStream implements Closeable {
      * Performs modulo operation between two integers: dividend `a`
      * and divisor `b`. Divisor `b` is expected to be positive. The
      * result is always 0 &lt;= x &lt;= b - 1.
+     *
      * @param a dividend
      * @param b divisor
      * @return result
@@ -451,6 +475,7 @@ public abstract class KaitaiStream implements Closeable {
      * Performs modulo operation between two integers: dividend `a`
      * and divisor `b`. Divisor `b` is expected to be positive. The
      * result is always 0 &lt;= x &lt;= b - 1.
+     *
      * @param a dividend
      * @param b divisor
      * @return result
@@ -468,6 +493,7 @@ public abstract class KaitaiStream implements Closeable {
      * Compares two byte arrays in lexicographical order. Makes extra effort
      * to compare bytes properly, as *unsigned* bytes, i.e. [0x90] would be
      * greater than [0x10].
+     *
      * @param a first byte array to compare
      * @param b second byte array to compare
      * @return negative number if a &lt; b, 0 if a == b, positive number if a &gt; b
@@ -496,13 +522,14 @@ public abstract class KaitaiStream implements Closeable {
     /**
      * Finds the minimal byte in a byte array, treating bytes as
      * unsigned values.
+     *
      * @param b byte array to scan
      * @return minimal byte in byte array as integer
      */
     public static int byteArrayMin(byte[] b) {
         int min = Integer.MAX_VALUE;
-        for (int i = 0; i < b.length; i++) {
-            int value = b[i] & 0xff;
+        for (byte item : b) {
+            int value = item & 0xff;
             if (value < min)
                 min = value;
         }
@@ -512,13 +539,14 @@ public abstract class KaitaiStream implements Closeable {
     /**
      * Finds the maximal byte in a byte array, treating bytes as
      * unsigned values.
+     *
      * @param b byte array to scan
      * @return maximal byte in byte array as integer
      */
     public static int byteArrayMax(byte[] b) {
         int max = 0;
-        for (int i = 0; i < b.length; i++) {
-            int value = b[i] & 0xff;
+        for (byte item : b) {
+            int value = item & 0xff;
             if (value > max)
                 max = value;
         }
@@ -553,12 +581,25 @@ public abstract class KaitaiStream implements Closeable {
         }
     }
 
+    public String readString(long length) {
+        return newString(readBytes(length));
+    }
+
+    public String readNullTerminatedString(long length) {
+        return newString(KaitaiInputStream.bytesTerminate(readBytes(length), (byte) 0, false));
+    }
+
+    private String newString(byte[] bytes) {
+        return new String(bytes, Charset.forName(Yodesk.getCharset()));
+    }
+
     /**
      * Error that occurs when default endianness should be decided with a
      * switch, but nothing matches (although using endianness expression
      * implies that there should be some positive result).
      */
-    public static class UndecidedEndiannessError extends RuntimeException {}
+    public static class UndecidedEndiannessError extends RuntimeException {
+    }
 
     /**
      * Common ancestor for all error originating from Kaitai Struct usage.
@@ -579,12 +620,12 @@ public abstract class KaitaiStream implements Closeable {
      * KaitaiStream IO object which was involved in an error.
      */
     public static class ValidationFailedError extends KaitaiStructError {
-        public ValidationFailedError(String msg, KaitaiStream io, String srcPath) {
+        public ValidationFailedError(String msg, KaitaiInputStream io, String srcPath) {
             super("at pos " + io.pos() + ": validation failed: " + msg, srcPath);
             this.io = io;
         }
 
-        protected KaitaiStream io;
+        protected KaitaiInputStream io;
 
         protected static String byteArrayToHex(byte[] arr) {
             StringBuilder sb = new StringBuilder("[");
@@ -603,11 +644,11 @@ public abstract class KaitaiStream implements Closeable {
      * "expected", but it turned out that it's not.
      */
     public static class ValidationNotEqualError extends ValidationFailedError {
-        public ValidationNotEqualError(byte[] expected, byte[] actual, KaitaiStream io, String srcPath) {
+        public ValidationNotEqualError(byte[] expected, byte[] actual, KaitaiInputStream io, String srcPath) {
             super("not equal, expected " + byteArrayToHex(expected) + ", but got " + byteArrayToHex(actual), io, srcPath);
         }
 
-        public ValidationNotEqualError(Object expected, Object actual, KaitaiStream io, String srcPath) {
+        public ValidationNotEqualError(Object expected, Object actual, KaitaiInputStream io, String srcPath) {
             super("not equal, expected " + expected + ", but got " + actual, io, srcPath);
         }
 
@@ -616,11 +657,11 @@ public abstract class KaitaiStream implements Closeable {
     }
 
     public static class ValidationLessThanError extends ValidationFailedError {
-        public ValidationLessThanError(byte[] expected, byte[] actual, KaitaiStream io, String srcPath) {
+        public ValidationLessThanError(byte[] expected, byte[] actual, KaitaiInputStream io, String srcPath) {
             super("not in range, min " + byteArrayToHex(expected) + ", but got " + byteArrayToHex(actual), io, srcPath);
         }
 
-        public ValidationLessThanError(Object min, Object actual, KaitaiStream io, String srcPath) {
+        public ValidationLessThanError(Object min, Object actual, KaitaiInputStream io, String srcPath) {
             super("not in range, min " + min + ", but got " + actual, io, srcPath);
         }
 
@@ -629,11 +670,11 @@ public abstract class KaitaiStream implements Closeable {
     }
 
     public static class ValidationGreaterThanError extends ValidationFailedError {
-        public ValidationGreaterThanError(byte[] expected, byte[] actual, KaitaiStream io, String srcPath) {
+        public ValidationGreaterThanError(byte[] expected, byte[] actual, KaitaiInputStream io, String srcPath) {
             super("not in range, max " + byteArrayToHex(expected) + ", but got " + byteArrayToHex(actual), io, srcPath);
         }
 
-        public ValidationGreaterThanError(Object max, Object actual, KaitaiStream io, String srcPath) {
+        public ValidationGreaterThanError(Object max, Object actual, KaitaiInputStream io, String srcPath) {
             super("not in range, max " + max + ", but got " + actual, io, srcPath);
         }
 
@@ -642,7 +683,7 @@ public abstract class KaitaiStream implements Closeable {
     }
 
     public static class ValidationNotAnyOfError extends ValidationFailedError {
-        public ValidationNotAnyOfError(Object actual, KaitaiStream io, String srcPath) {
+        public ValidationNotAnyOfError(Object actual, KaitaiInputStream io, String srcPath) {
             super("not any of the list, got " + actual, io, srcPath);
         }
 
@@ -650,7 +691,7 @@ public abstract class KaitaiStream implements Closeable {
     }
 
     public static class ValidationExprError extends ValidationFailedError {
-        public ValidationExprError(Object actual, KaitaiStream io, String srcPath) {
+        public ValidationExprError(Object actual, KaitaiInputStream io, String srcPath) {
             super("not matching the expression, got " + actual, io, srcPath);
         }
 

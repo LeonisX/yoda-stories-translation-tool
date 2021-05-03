@@ -1,7 +1,8 @@
 package md.leonis.ystt.model.yodesk;
 
-import io.kaitai.struct.ByteBufferKaitaiStream;
-import io.kaitai.struct.KaitaiStream;
+import io.kaitai.struct.ByteBufferKaitaiInputStream;
+import io.kaitai.struct.KaitaiInputStream;
+import io.kaitai.struct.KaitaiOutputStream;
 import io.kaitai.struct.KaitaiStruct;
 import md.leonis.ystt.model.yodesk.puzzles.Puzzle;
 
@@ -17,18 +18,18 @@ public class Puzzles extends KaitaiStruct {
     private final CatalogEntry parent;
 
     public static Puzzles fromFile(String fileName) throws IOException {
-        return new Puzzles(new ByteBufferKaitaiStream(fileName));
+        return new Puzzles(new ByteBufferKaitaiInputStream(fileName));
     }
 
-    public Puzzles(KaitaiStream io) {
+    public Puzzles(KaitaiInputStream io) {
         this(io, null, null);
     }
 
-    public Puzzles(KaitaiStream io, CatalogEntry parent) {
+    public Puzzles(KaitaiInputStream io, CatalogEntry parent) {
         this(io, parent, null);
     }
 
-    public Puzzles(KaitaiStream io, CatalogEntry parent, Yodesk root) {
+    public Puzzles(KaitaiInputStream io, CatalogEntry parent, Yodesk root) {
         super(io);
         this.parent = parent;
         this.root = root;
@@ -44,6 +45,11 @@ public class Puzzles extends KaitaiStruct {
             _it = new Puzzle(this.io, this, root);
             this.puzzles.add(_it);
         } while (_it.getIndex() != 65535);
+    }
+
+    @Override
+    public void write(KaitaiOutputStream os) {
+        puzzles.forEach(p -> p.write(os));
     }
 
     public List<Puzzle> getPuzzles() {

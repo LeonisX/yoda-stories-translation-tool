@@ -1,7 +1,8 @@
 package md.leonis.ystt.model.yodesk.characters;
 
-import io.kaitai.struct.ByteBufferKaitaiStream;
-import io.kaitai.struct.KaitaiStream;
+import io.kaitai.struct.ByteBufferKaitaiInputStream;
+import io.kaitai.struct.KaitaiInputStream;
+import io.kaitai.struct.KaitaiOutputStream;
 import io.kaitai.struct.KaitaiStruct;
 import md.leonis.ystt.model.yodesk.CatalogEntry;
 import md.leonis.ystt.model.yodesk.Yodesk;
@@ -17,18 +18,18 @@ public class CharacterWeapons extends KaitaiStruct {
     private final CatalogEntry parent;
 
     public static CharacterWeapons fromFile(String fileName) throws IOException {
-        return new CharacterWeapons(new ByteBufferKaitaiStream(fileName));
+        return new CharacterWeapons(new ByteBufferKaitaiInputStream(fileName));
     }
 
-    public CharacterWeapons(KaitaiStream io) {
+    public CharacterWeapons(KaitaiInputStream io) {
         this(io, null, null);
     }
 
-    public CharacterWeapons(KaitaiStream io, CatalogEntry parent) {
+    public CharacterWeapons(KaitaiInputStream io, CatalogEntry parent) {
         this(io, parent, null);
     }
 
-    public CharacterWeapons(KaitaiStream io, CatalogEntry parent, Yodesk root) {
+    public CharacterWeapons(KaitaiInputStream io, CatalogEntry parent, Yodesk root) {
         super(io);
         this.parent = parent;
         this.root = root;
@@ -36,12 +37,17 @@ public class CharacterWeapons extends KaitaiStruct {
     }
 
     private void _read() {
-        this.weapons = new ArrayList<>();
+        weapons = new ArrayList<>();
         CharacterWeapon _it;
         do {
-            _it = new CharacterWeapon(this.io, this, root);
-            this.weapons.add(_it);
+            _it = new CharacterWeapon(io, this, root);
+            weapons.add(_it);
         } while (_it.getIndex() != 65535);
+    }
+
+    @Override
+    public void write(KaitaiOutputStream os) {
+        weapons.forEach(w -> w.write(os));
     }
 
     public ArrayList<CharacterWeapon> getWeapons() {

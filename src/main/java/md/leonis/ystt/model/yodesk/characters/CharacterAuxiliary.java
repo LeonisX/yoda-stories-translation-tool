@@ -1,7 +1,8 @@
 package md.leonis.ystt.model.yodesk.characters;
 
-import io.kaitai.struct.ByteBufferKaitaiStream;
-import io.kaitai.struct.KaitaiStream;
+import io.kaitai.struct.ByteBufferKaitaiInputStream;
+import io.kaitai.struct.KaitaiInputStream;
+import io.kaitai.struct.KaitaiOutputStream;
 import io.kaitai.struct.KaitaiStruct;
 import md.leonis.ystt.model.yodesk.Yodesk;
 
@@ -16,18 +17,18 @@ public class CharacterAuxiliary extends KaitaiStruct {
     private final CharacterAuxiliaries parent;
 
     public static CharacterAuxiliary fromFile(String fileName) throws IOException {
-        return new CharacterAuxiliary(new ByteBufferKaitaiStream(fileName));
+        return new CharacterAuxiliary(new ByteBufferKaitaiInputStream(fileName));
     }
 
-    public CharacterAuxiliary(KaitaiStream io) {
+    public CharacterAuxiliary(KaitaiInputStream io) {
         this(io, null, null);
     }
 
-    public CharacterAuxiliary(KaitaiStream io, CharacterAuxiliaries parent) {
+    public CharacterAuxiliary(KaitaiInputStream io, CharacterAuxiliaries parent) {
         this(io, parent, null);
     }
 
-    public CharacterAuxiliary(KaitaiStream io, CharacterAuxiliaries parent, Yodesk root) {
+    public CharacterAuxiliary(KaitaiInputStream io, CharacterAuxiliaries parent, Yodesk root) {
         super(io);
         this.parent = parent;
         this.root = root;
@@ -35,9 +36,17 @@ public class CharacterAuxiliary extends KaitaiStruct {
     }
 
     private void _read() {
-        this.index = this.io.readU2le();
+        index = io.readU2le();
         if (index != 65535) {
-            this.damage = this.io.readS2le();
+            damage = io.readS2le();
+        }
+    }
+
+    @Override
+    public void write(KaitaiOutputStream os) {
+        os.writeU2le(index);
+        if (index != 65535) {
+            os.writeS2le(damage);
         }
     }
 

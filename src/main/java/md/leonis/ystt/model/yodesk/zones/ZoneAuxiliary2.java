@@ -1,7 +1,8 @@
 package md.leonis.ystt.model.yodesk.zones;
 
-import io.kaitai.struct.ByteBufferKaitaiStream;
-import io.kaitai.struct.KaitaiStream;
+import io.kaitai.struct.ByteBufferKaitaiInputStream;
+import io.kaitai.struct.KaitaiInputStream;
+import io.kaitai.struct.KaitaiOutputStream;
 import io.kaitai.struct.KaitaiStruct;
 import md.leonis.ystt.model.yodesk.Yodesk;
 
@@ -22,18 +23,18 @@ public class ZoneAuxiliary2 extends KaitaiStruct {
     private final Zone parent;
 
     public static ZoneAuxiliary2 fromFile(String fileName) throws IOException {
-        return new ZoneAuxiliary2(new ByteBufferKaitaiStream(fileName));
+        return new ZoneAuxiliary2(new ByteBufferKaitaiInputStream(fileName));
     }
 
-    public ZoneAuxiliary2(KaitaiStream io) {
+    public ZoneAuxiliary2(KaitaiInputStream io) {
         this(io, null, null);
     }
 
-    public ZoneAuxiliary2(KaitaiStream io, Zone parent) {
+    public ZoneAuxiliary2(KaitaiInputStream io, Zone parent) {
         this(io, parent, null);
     }
 
-    public ZoneAuxiliary2(KaitaiStream io, Zone parent, Yodesk root) {
+    public ZoneAuxiliary2(KaitaiInputStream io, Zone parent, Yodesk root) {
         super(io);
         this.parent = parent;
         this.root = root;
@@ -41,15 +42,26 @@ public class ZoneAuxiliary2 extends KaitaiStruct {
     }
 
     private void _read() {
-        this.marker = this.io.readBytes(4);
+        marker = io.readBytes(4);
         if (!(Arrays.equals(marker, new byte[]{73, 90, 88, 50}))) { // IZX2
-            throw new KaitaiStream.ValidationNotEqualError(new byte[]{73, 90, 88, 50}, marker, getIo(), "/types/zone_auxiliary_2/seq/0");
+            throw new KaitaiInputStream.ValidationNotEqualError(new byte[]{73, 90, 88, 50}, marker, getIo(), "/types/zone_auxiliary_2/seq/0");
         }
-        this.size = this.io.readU4le();
-        this.numProvidedItems = this.io.readU2le();
+        size = io.readU4le();
+        numProvidedItems = io.readU2le();
         providedItems = new ArrayList<>(numProvidedItems);
         for (int i = 0; i < numProvidedItems; i++) {
-            this.providedItems.add(this.io.readU2le());
+            providedItems.add(io.readU2le());
+        }
+    }
+
+    @Override
+    public void write(KaitaiOutputStream os) {
+        os.writeBytesFull(marker);
+        os.writeU4le(size);
+        os.writeU2le(numProvidedItems);
+
+        for (Integer providedItem : providedItems) {
+            os.writeU2le(providedItem);
         }
     }
 

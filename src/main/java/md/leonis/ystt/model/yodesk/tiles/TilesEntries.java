@@ -1,7 +1,8 @@
 package md.leonis.ystt.model.yodesk.tiles;
 
-import io.kaitai.struct.ByteBufferKaitaiStream;
-import io.kaitai.struct.KaitaiStream;
+import io.kaitai.struct.ByteBufferKaitaiInputStream;
+import io.kaitai.struct.KaitaiInputStream;
+import io.kaitai.struct.KaitaiOutputStream;
 import io.kaitai.struct.KaitaiStruct;
 import md.leonis.ystt.model.yodesk.Tiles;
 import md.leonis.ystt.model.yodesk.Yodesk;
@@ -17,18 +18,18 @@ public class TilesEntries extends KaitaiStruct {
     private final Tiles parent;
 
     public static TilesEntries fromFile(String fileName) throws IOException {
-        return new TilesEntries(new ByteBufferKaitaiStream(fileName));
+        return new TilesEntries(new ByteBufferKaitaiInputStream(fileName));
     }
 
-    public TilesEntries(KaitaiStream io) {
+    public TilesEntries(KaitaiInputStream io) {
         this(io, null, null);
     }
 
-    public TilesEntries(KaitaiStream io, Tiles parent) {
+    public TilesEntries(KaitaiInputStream io, Tiles parent) {
         this(io, parent, null);
     }
 
-    public TilesEntries(KaitaiStream io, Tiles parent, Yodesk root) {
+    public TilesEntries(KaitaiInputStream io, Tiles parent, Yodesk root) {
         super(io);
         this.parent = parent;
         this.root = root;
@@ -41,6 +42,11 @@ public class TilesEntries extends KaitaiStruct {
         while (!this.io.isEof()) {
             this.tiles.add(new Tile(this.io, this, root));
         }
+    }
+
+    @Override
+    public void write(KaitaiOutputStream os) {
+        // unneeded, we write raw bytes in Tiles class
     }
 
     public ArrayList<Tile> getTiles() {
