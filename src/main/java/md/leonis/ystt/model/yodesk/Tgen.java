@@ -7,6 +7,10 @@ import io.kaitai.struct.KaitaiStruct;
 
 import java.io.IOException;
 
+/**
+ * The TGEN section is only present in non-english versions of the game.
+ * It's purpose or internal structure is unknown.
+ */
 public class Tgen extends KaitaiStruct {
 
     private byte[] rawData;

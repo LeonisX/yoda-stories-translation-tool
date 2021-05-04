@@ -5,19 +5,19 @@ import java.util.Map;
 
 public enum MovementType {
 
-    NONE(0),
-    UNKNOWN1(1),
-    UNKNOWN2(2),
-    UNKNOWN3(3),
-    SIT(4),
-    UNKNOWN5(5),
-    UNKNOWN6(6),
-    UNKNOWN7(7),
-    UNKNOWN8(8),
-    WANDER(9),
-    PATROL(10),
-    UNKNOWN11(11),
-    ANIMATION(12);
+    NONE(0),        // PLAYER
+    UNKNOWN1(1),    // ENEMY_HARD
+    UNKNOWN2(2),    // ENEMY_MILD
+    UNKNOWN3(3),    // ENEMY
+    SIT(4),         // ENEMY_SIT
+    UNKNOWN5(5),    // unused
+    UNKNOWN6(6),    // ENEMY_INACTIVE
+    UNKNOWN7(7),    // ENEMY_ROBOT
+    UNKNOWN8(8),    // ENEMY_ROBOT_MILD
+    WANDER(9),      // ENEMY_ROBOT_HARD
+    PATROL(10),     // ENEMY_PATROL
+    UNKNOWN11(11),  // ENEMY_SCARED
+    ANIMATION(12);  // MAP_ITEM
 
     private final long id;
 

@@ -19,8 +19,8 @@ public class Puzzle extends KaitaiStruct {
     private byte[] marker;
     private Long size;
     private Long type;
-    private Long _unnamed4;
-    private Long _unnamed5;
+    private PuzzleItemClass item1Class;
+    private PuzzleItemClass item2Class;
     private Integer _unnamed6;
     private final List<PrefixedStr> prefixesStrings = new ArrayList<>(5);
     private Integer item1;
@@ -34,21 +34,6 @@ public class Puzzle extends KaitaiStruct {
 1 Trade
 2 Goal
 3 End
-
-* Unnamed 4
-
-0 Keycard
-1 Tool
-2 Part
-3 Valuable
-
-* Unnamed 5 (if item2 != 0 else None)
-
-0
-2
-3
-4 Valuable
-FFFF
 
 * Unnamed 6
 
@@ -97,8 +82,8 @@ FFFF
 
             size = io.readU4le();
             type = io.readU4le();
-            _unnamed4 = io.readU4le();
-            _unnamed5 = io.readU4le();
+            item1Class = PuzzleItemClass.byId(io.readU4le());
+            item2Class = PuzzleItemClass.byId(io.readU4le());
             _unnamed6 = io.readU2le();
 
             for (int i = 0; i < 5; i++) {
@@ -121,8 +106,8 @@ FFFF
 
             os.writeU4le(size);
             os.writeU4le(type);
-            os.writeU4le(_unnamed4);
-            os.writeU4le(_unnamed5);
+            os.writeU4le(item1Class.getId());
+            os.writeU4le(item2Class.getId());
             os.writeU2le(_unnamed6);
 
             for (PrefixedStr prefixesString : prefixesStrings) {
@@ -165,12 +150,12 @@ FFFF
         return type;
     }
 
-    public Long get_unnamed4() {
-        return _unnamed4;
+    public PuzzleItemClass getItem1Class() {
+        return item1Class;
     }
 
-    public Long get_unnamed5() {
-        return _unnamed5;
+    public PuzzleItemClass getItem2Class() {
+        return item2Class;
     }
 
     public Integer get_unnamed6() {
