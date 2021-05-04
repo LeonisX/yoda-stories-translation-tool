@@ -9,10 +9,11 @@ import md.leonis.ystt.model.yodesk.Yodesk;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class CharacterWeapons extends KaitaiStruct {
 
-    private ArrayList<CharacterWeapon> weapons;
+    private List<CharacterWeapon> weapons;
 
     private final Yodesk root;
     private final CatalogEntry parent;
@@ -50,7 +51,7 @@ public class CharacterWeapons extends KaitaiStruct {
         weapons.forEach(w -> w.write(os));
     }
 
-    public ArrayList<CharacterWeapon> getWeapons() {
+    public List<CharacterWeapon> getWeapons() {
         return weapons;
     }
 

@@ -178,7 +178,8 @@ public class MainPaneController {
 
     public Label charactersCountLabel;
     public Button saveCharactersToFilesButton;
-    public TableView<Character> charactesTableView;
+    public Button generateCharactersReportButton;
+    public TableView<Character> charactersTableView;
 
     public Label namesCountLabel;
     public Button saveNamesToFilesButton;
@@ -198,6 +199,7 @@ public class MainPaneController {
     private static final String OUTPUT = "output";
     private static final String E_BMP = ".bmp";
     private static final String E_DOCX = ".docx";
+    private static final String E_XLSX = ".xlsx";
     private static final int TILE_SIZE = 32;
 
     Path spath, opath;
@@ -308,7 +310,7 @@ public class MainPaneController {
         // Characters
         charactersCountLabel.setText(Integer.toString(yodesk.getCharacters().getCharacters().size()));
         @SuppressWarnings("all")
-        TableColumn<Character, List<Integer>> charsColumn = (TableColumn<Character, List<Integer>>) charactesTableView.getColumns().get(1);
+        TableColumn<Character, List<Integer>> charsColumn = (TableColumn<Character, List<Integer>>) charactersTableView.getColumns().get(1);
         charsColumn.setCellFactory(c -> {
 
             Canvas canvas = new Canvas();
@@ -330,7 +332,7 @@ public class MainPaneController {
             cell.setAlignment(Pos.CENTER);
             return cell;
         });
-        charactesTableView.setItems(FXCollections.observableList(yodesk.getCharacters().getFilteredCharacters()));
+        charactersTableView.setItems(FXCollections.observableList(yodesk.getCharacters().getFilteredCharacters()));
 
         // Names
         namesCountLabel.setText(Integer.toString(yodesk.getTileNames().getNames().size()));
@@ -1712,6 +1714,17 @@ public class MainPaneController {
         }
     }
 
+    public void generateCharactersReportButton() {
+
+        try {
+            List<ImageRecord> imageRecords = yodesk.getCharacters().getFilteredCharacters().stream()
+                    .map(c -> new ImageRecord(c.getTileIds().stream().map(t -> getTile(t, icmw)).collect(Collectors.toList()), c.getName())).collect(Collectors.toList());
+            WordUtils.saveCharacters(imageRecords, getDtaCrcStrings(), opath.resolve("chars2" + E_DOCX));
+        } catch (Exception e) {
+            JavaFxUtils.showAlert("Error saving characters to the files", e);
+        }
+    }
+
     private void ReadCHAR(Character c, int position) throws IOException {
 
         for (Integer integer : c.getTileIds()) {
@@ -1928,7 +1941,7 @@ public class MainPaneController {
     public static String intToHex(int value, int size) {
 
         String result = Integer.toHexString(value).toUpperCase();
-        return /*"$" +*/ StringUtils.leftPad(result, size, '0');
+        return StringUtils.leftPad(result, size, '0');
     }
 
     public String longToHex(long value, int size) {

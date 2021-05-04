@@ -8,10 +8,11 @@ import md.leonis.ystt.model.yodesk.Yodesk;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class CharFrame extends KaitaiStruct {
 
-    private ArrayList<Integer> tiles;
+    private List<Integer> tiles;
 
     private final Yodesk root;
     private final Character parent;
@@ -53,7 +54,7 @@ public class CharFrame extends KaitaiStruct {
         return 2 * 8; // 8 tiles x 2 bytes
     }
 
-    public ArrayList<Integer> getTiles() {
+    public List<Integer> getTiles() {
         return tiles;
     }
 

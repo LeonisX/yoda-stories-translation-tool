@@ -9,10 +9,11 @@ import md.leonis.ystt.model.yodesk.Yodesk;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class CharacterAuxiliaries extends KaitaiStruct {
 
-    private ArrayList<CharacterAuxiliary> auxiliaries;
+    private List<CharacterAuxiliary> auxiliaries;
 
     private final Yodesk root;
     private final CatalogEntry parent;
@@ -51,7 +52,7 @@ public class CharacterAuxiliaries extends KaitaiStruct {
         auxiliaries.forEach(a -> a.write(os));
     }
 
-    public ArrayList<CharacterAuxiliary> getAuxiliaries() {
+    public List<CharacterAuxiliary> getAuxiliaries() {
         return auxiliaries;
     }
 

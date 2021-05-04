@@ -22,8 +22,6 @@ An original version: https://github.com/LeonisX/YExplorer
 
 * Сломан вывод таблицы Map (нужна ли?)
 
-* Prepare translated DTA & dump it here
-
 * Hide debug tabs by default
 
 * Dump structure (hi, mid, lo levels)
@@ -47,18 +45,14 @@ An original version: https://github.com/LeonisX/YExplorer
 * Validate loaded BMP palette
 
 * Think how to drag-drop from UI to Windows Explorer
-
 * TODO 223.res in description, if need
-
 * Instruction to translate EXE (UI: TextFlow or WebView)
-
 * Full instruction: EXE, DTA: MarkDown
+* Resolve all TODO
+* remove all [CR2], [CR] code
 
 * Identify Characters MovementTypes
 
-* Resolve all TODO
-
-* remove all [CR2], [CR] code
 
 ### Other YS / DA solutions
 

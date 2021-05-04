@@ -11,7 +11,8 @@ import java.io.IOException;
 public class CharacterWeapon extends KaitaiStruct {
 
     private int index;
-    // If the character referenced by index is a monster, this is a reference to their weapon,
+    // If the character referenced by index is a monster,
+    // this is a reference to their weapon (Darth Vader: 69 Evil Force, 9 Blaster, 11 Imperial Blaster),
     // otherwise this is the index of the weapon's sound
     private Integer reference;
     private Integer health;
