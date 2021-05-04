@@ -130,6 +130,8 @@ public class MainPaneController {
     public CheckBox saveUnusedTilesCheckBox;
     public ListView<String> mapsListView;
     public Canvas mapCanvas;
+    public CheckBox showMapMonstersCheckBox;
+    public CheckBox showMapHotspotsCheckBox;
     public Label mapSizeLabel;
     public Label mapTypeLabel;
     public Label mapPlanetLabel;
@@ -634,17 +636,19 @@ public class MainPaneController {
         drawTilesOnFlowPane(mapProvidedItemsTilesFlowPane, zone.getIzx2().getProvidedItems());
         drawTilesOnFlowPane(mapRequiredItemsTilesFlowPane, zone.getIzax().getRequiredItems());
 
-        //TODO draw monsters if checked
-        zone.getIzax().getMonsters().forEach(m -> {
-            int tileId = yodesk.getCharacters().getCharacters().get(m.getCharacter()).getTileIds().get(0);
-            drawTileOnCanvas(tileId, mapCanvas, m.getX() * TILE_SIZE, m.getY() * TILE_SIZE, null);
-            drawBorderOnCanvas(mapCanvas, m.getX() * TILE_SIZE, m.getY() * TILE_SIZE, Color.rgb(127, 255, 255));
-        });
+        if (showMapMonstersCheckBox.isSelected()) {
+            zone.getIzax().getMonsters().forEach(m -> {
+                int tileId = yodesk.getCharacters().getCharacters().get(m.getCharacter()).getTileIds().get(0);
+                drawTileOnCanvas(tileId, mapCanvas, m.getX() * TILE_SIZE, m.getY() * TILE_SIZE, null);
+                drawBorderOnCanvas(mapCanvas, m.getX() * TILE_SIZE, m.getY() * TILE_SIZE, Color.rgb(127, 255, 255));
+            });
+        }
 
-        //TODO draw if checked
-        zone.getHotspots().forEach(h -> {
-            drawBorderOnCanvas(mapCanvas, h.getX() * TILE_SIZE, h.getY() * TILE_SIZE, Color.rgb(255, 0, 255));
-        });
+        if (showMapHotspotsCheckBox.isSelected()) {
+            zone.getHotspots().forEach(h -> {
+                drawBorderOnCanvas(mapCanvas, h.getX() * TILE_SIZE, h.getY() * TILE_SIZE, Color.rgb(255, 0, 255));
+            });
+        }
 
         //TODO ArrayList<Action> actions;
     }

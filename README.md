@@ -13,8 +13,8 @@ An original version: https://github.com/LeonisX/YExplorer
 ## TODO
 
 * Show map actions (new window)
-* Scan all translated IACTs for lost ¥, ¢
-* Show monsters, hotspots if selected
+* Scan all translated IACTs for lost ¥ Ґ, ¢ ў
+* Probably replace ¥ with Ґ, ¢ with ў
 * Show tile IDs for 3 layers
 * Draw map icon from minimap
 * Log

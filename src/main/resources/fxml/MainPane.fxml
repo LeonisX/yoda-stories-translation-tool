@@ -380,6 +380,10 @@
                                                 <BorderPane layoutX="850.0" layoutY="15.0" prefHeight="424.0" prefWidth="531.0">
                                                     <center>
                                                         <VBox prefWidth="531.0" BorderPane.alignment="CENTER">
+                                                            <HBox prefHeight="20.0" prefWidth="531.0" spacing="5">
+                                                                <CheckBox fx:id="showMapMonstersCheckBox" mnemonicParsing="false" selected="true" text="Show mosters"/>
+                                                                <CheckBox fx:id="showMapHotspotsCheckBox" mnemonicParsing="false" selected="true" text="Show hotspots"/>
+                                                            </HBox>
                                                             <HBox prefHeight="22.0" prefWidth="531.0">
                                                                 <Label prefWidth="95.0" text="Size:" />
                                                                 <Label fx:id="mapSizeLabel" />
@@ -428,7 +432,7 @@
                                                                 <Label prefWidth="95.0" text="ZAX4 Unnamed2:" />
                                                                 <Label fx:id="mapZax4Unnamed2Label" />
                                                             </HBox>
-                                                            <HBox prefHeight="20.0" prefWidth="531.0"/>
+                                                            <HBox prefHeight="20.0" prefWidth="531.0"></HBox>
                                                         </VBox>
                                                     </center>
                                                 </BorderPane>
