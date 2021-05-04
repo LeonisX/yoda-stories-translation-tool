@@ -30,10 +30,10 @@ public class Puzzle extends KaitaiStruct {
 
 * Puzzle types:
 
-0 Use
-1 Trade
-2 Goal
-3 End
+0 Use       TWO_NPC_QUEST       QUEST
+1 Trade     ONE_NPC_QUEST_1     QUEST_IN_PROGRESS
+2 Goal      ONE_NPC_QUEST_2     STORY
+3 End       YODA_QUEST          STORY_INTRO
 
 * Unnamed 6
 

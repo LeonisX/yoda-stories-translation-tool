@@ -7,8 +7,8 @@ public enum PuzzleItemClass {
 
     KEYCARD(0),
     TOOL(1),
-    PART(2),
-    VALUABLE(4),
+    PART(2),        // PUZZLE_ITEM_RARE
+    VALUABLE(4),    // PUZZLE_ITEM
     NONE(4294967295L);
 
     private final long id;
