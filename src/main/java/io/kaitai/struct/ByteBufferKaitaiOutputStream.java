@@ -1,10 +1,13 @@
 package io.kaitai.struct;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
@@ -22,18 +25,41 @@ public class ByteBufferKaitaiOutputStream extends KaitaiOutputStream {
     /**
      * Initializes a stream, writing to a local file with specified fileName.
      * Internally, FileChannel + MappedByteBuffer will be used.
-     * @param fileName file to read
-     * @throws IOException if file can't be read
+     * @param fileName file to write
+     * @throws IOException if file can't be written
      */
     public ByteBufferKaitaiOutputStream(String fileName) throws IOException {
-        fc = FileChannel.open(Paths.get(fileName), StandardOpenOption.READ);
-        bb = fc.map(FileChannel.MapMode.READ_WRITE, 0, fc.size());
+        this(Paths.get(fileName));
+    }
+
+    /**
+     * Initializes a stream, writing to a local file with specified fileName.
+     * Internally, FileChannel + MappedByteBuffer will be used.
+     * @param file file to write
+     * @throws IOException if file can't be written
+     */
+    public ByteBufferKaitaiOutputStream(File file) throws IOException {
+        this(file.getAbsolutePath());
+    }
+
+    /**
+     * Initializes a stream, writing to a local file with specified fileName.
+     * Internally, FileChannel + MappedByteBuffer will be used.
+     * @param path file to write
+     * @throws IOException if file can't be written
+     */
+    public ByteBufferKaitaiOutputStream(Path path) throws IOException {
+        if (!Files.exists(path)) {
+            Files.createFile(path);
+        }
+        fc = FileChannel.open(path, StandardOpenOption.WRITE, StandardOpenOption.READ, StandardOpenOption.TRUNCATE_EXISTING);
+        bb = ByteBuffer.allocateDirect(8 * 1024 * 1024);
     }
 
     /**
      * Initializes a stream that will write data to a given byte array.
      * Internally, ByteBuffer wrapping given array will be used.
-     * @param arr byte array to read
+     * @param arr byte array to write
      */
     public ByteBufferKaitaiOutputStream(byte[] arr) {
         fc = null;
@@ -81,6 +107,18 @@ public class ByteBufferKaitaiOutputStream extends KaitaiOutputStream {
     @Override
     public void close() throws IOException {
         if (fc != null) {
+            fc.close();
+            fc = null;
+        }
+        bb = null;
+    }
+
+    @Override
+    public void saveAndClose() throws IOException {
+        if (fc != null) {
+            bb.flip();
+            fc.write(bb);
+
             fc.close();
             fc = null;
         }

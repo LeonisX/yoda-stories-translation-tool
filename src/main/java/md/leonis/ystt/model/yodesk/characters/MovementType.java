@@ -6,9 +6,17 @@ import java.util.Map;
 public enum MovementType {
 
     NONE(0),
+    UNKNOWN1(1),
+    UNKNOWN2(2),
+    UNKNOWN3(3),
     SIT(4),
+    UNKNOWN5(5),
+    UNKNOWN6(6),
+    UNKNOWN7(7),
+    UNKNOWN8(8),
     WANDER(9),
     PATROL(10),
+    UNKNOWN11(11),
     ANIMATION(12);
 
     private final long id;

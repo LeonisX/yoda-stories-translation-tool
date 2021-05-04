@@ -90,6 +90,11 @@ public class IOUtils {
         }
     }
 
+    public static Path findUnusedFileName(Path rootPath, String nameWithExt) {
+        String[] chunks = nameWithExt.split("\\.");
+        return findUnusedFileName(rootPath, chunks[0], "." + chunks[1]);
+    }
+
     public static Path findUnusedFileName(Path rootPath, String name, String ext) {
 
         Path path = rootPath.resolve(name + ext);

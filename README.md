@@ -12,8 +12,7 @@ An original version: https://github.com/LeonisX/YExplorer
 
 ## TODO
 
-* Save DAT file + backup if simply save
-* Test DAT file writing
+* Save DAT file
 * Show monsters, hotspots if selected
 * Show map actions (new window)
 * Show tile IDs for 3 layers
@@ -56,6 +55,8 @@ An original version: https://github.com/LeonisX/YExplorer
 * Instruction to translate EXE (UI: TextFlow or WebView)
 
 * Full instruction: EXE, DTA: MarkDown
+
+* Identify Characters MovementTypes
 
 ### Other YS / DA solutions
 

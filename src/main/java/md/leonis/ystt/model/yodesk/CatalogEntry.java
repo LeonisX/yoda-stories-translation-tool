@@ -4,10 +4,10 @@ import io.kaitai.struct.ByteBufferKaitaiInputStream;
 import io.kaitai.struct.KaitaiInputStream;
 import io.kaitai.struct.KaitaiOutputStream;
 import io.kaitai.struct.KaitaiStruct;
+import md.leonis.ystt.model.Section;
 import md.leonis.ystt.model.yodesk.characters.CharacterAuxiliaries;
 import md.leonis.ystt.model.yodesk.characters.CharacterWeapons;
 import md.leonis.ystt.model.yodesk.zones.Zone;
-import md.leonis.ystt.model.Section;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -20,6 +20,7 @@ public class CatalogEntry extends KaitaiStruct {
     private String type;
     private Section section;
     private long size;
+    private long fullSize;
     private int position;
     private int dataPosition;
     private byte[] bytes;
@@ -50,112 +51,120 @@ public class CatalogEntry extends KaitaiStruct {
     private void _read() {
 
         try {
-            position = this.io.pos();
+            position = io.pos();
 
-            this.type = new String(this.io.readBytes(4), StandardCharsets.US_ASCII);
+            type = new String(io.readBytes(4), StandardCharsets.US_ASCII);
             section = Section.valueOf(type);
 
             if (section.equals(VERS)) {
-                this.size = 4;                                  // 4 bytes of value
+                size = 4;                       // 4 bytes of value
             } else if (section.equals(ZONE)) {
-                this.size = this.io.size() - this.io.pos();   // Will be calculated later
+                size = io.size() - io.pos();    // Will be calculated later
             } else {
-                this.size = this.io.readU4le();
+                size = io.readU4le();
             }
 
-            dataPosition = this.io.pos();
-            this.bytes = this.io.readBytes(size);
+            dataPosition = io.pos();
+            bytes = io.readBytes(size);
             KaitaiInputStream stream = new ByteBufferKaitaiInputStream(bytes);
 
             switch (section) {
                 case VERS:
                     Version version = new Version(stream, this, root);
-                    this.content = version;
+                    content = version;
                     parent.setVersion(version);
                     break;
                 case STUP:
                     StartupImage startupImage = new StartupImage(stream, this, root);
-                    this.content = startupImage;
+                    content = startupImage;
                     parent.setStartupImage(startupImage);
                     break;
                 case SNDS:
                     Sounds sounds = new Sounds(stream, this, root);
-                    this.content = sounds;
+                    content = sounds;
                     parent.setSounds(sounds);
                     break;
                 case TILE:
                     Tiles tiles = new Tiles(stream, this, root);
-                    this.content = tiles;
+                    content = tiles;
                     parent.setTiles(tiles);
                     break;
                 case ZONE:
                     Zones zones = new Zones(stream, this, root);
-                    this.content = zones;
+                    content = zones;
                     parent.setZones(zones);
 
-                    this.size = zones.getZones().stream().map(Zone::getSize).reduce(0L, Long::sum)
+                    size = zones.getZones().stream().map(Zone::getSize).reduce(0L, Long::sum)
                             + 2                                 // numZones
                             + zones.getZones().size() * (2 + 4);   // planet + size of every zone
 
                     io.seek(position);
-                    this.bytes = io.readBytes(size);
+                    bytes = io.readBytes(size);
                     break;
                 case PUZ2:
                     Puzzles puzzles = new Puzzles(stream, this, root);
-                    this.content = puzzles;
+                    content = puzzles;
                     parent.setPuzzles(puzzles);
                     break;
                 case CHAR:
                     Characters characters = new Characters(stream, this, root);
-                    this.content = characters;
+                    content = characters;
                     parent.setCharacters(characters);
                     break;
                 case CHWP:
                     CharacterWeapons characterWeapons = new CharacterWeapons(stream, this, root);
-                    this.content = characterWeapons;
+                    content = characterWeapons;
                     parent.setCharacterWeapons(characterWeapons);
                     break;
                 case CAUX:
                     CharacterAuxiliaries characterAuxiliaries = new CharacterAuxiliaries(stream, this, root);
-                    this.content = characterAuxiliaries;
+                    content = characterAuxiliaries;
                     parent.setCharacterAuxiliaries(characterAuxiliaries);
                     break;
                 case TNAM:
                     TileNames tileNames = new TileNames(stream, this, root);
-                    this.content = tileNames;
+                    content = tileNames;
                     parent.setTileNames(tileNames);
                     break;
                 case TGEN:
                     Tgen tgen = new Tgen(stream, this, root);
-                    this.content = tgen;
+                    content = tgen;
                     parent.setTgen(tgen);
                     break;
                 case ENDF:
                     Endf endf = new Endf(stream, this, root);
-                    this.content = endf;
+                    content = endf;
                     parent.setEndf(endf);
                     break;
             }
 
-            size += 4 + (section.isWithSize() ? 4 : 0);             // 4 bytes of marker + optional 4 bytes of size
-
-            this.io.seek(position);
-            this.bytes = this.io.readBytes(size);
+            io.seek(position);
+            fullSize = size + 4 + (section.isWithSize() ? 4 : 0);             // 4 bytes of marker + optional 4 bytes of size
+            bytes = io.readBytes(fullSize);
 
         } catch (IllegalArgumentException e) {
             //TODO showMessage("Unknown section: 0x" + intToHex(GetPosition(), 4) + ": \"" + s + '"');
             section = Section.UNKN;
-            this.size = this.io.readU4le();
-            this.bytes = this.io.readBytes(size);
+            size = io.readU4le();
+            bytes = io.readBytes(fullSize);
+            fullSize = size + 4 + (section.isWithSize() ? 4 : 0);             // 4 bytes of marker + optional 4 bytes of size
             KaitaiInputStream stream = new ByteBufferKaitaiInputStream(bytes);
             UnknownCatalogEntry unknownCatalogEntry = new UnknownCatalogEntry(stream, this, root);
-            this.content = unknownCatalogEntry;
+            content = unknownCatalogEntry;
             parent.setUnknownCatalogEntry(unknownCatalogEntry);
         }
+
+        fullSize = size + 4 + (section.isWithSize() ? 4 : 0);             // 4 bytes of marker + optional 4 bytes of size
     }
 
     public void write(KaitaiOutputStream os) {
+
         os.writeString(section.name());
+
+        if (!section.equals(VERS) && !section.equals(ZONE)) {
+            os.writeU4le(size);
+        }
+
         content.write(os);
     }
 

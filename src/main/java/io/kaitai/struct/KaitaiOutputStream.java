@@ -42,6 +42,8 @@ public abstract class KaitaiOutputStream implements Closeable {
     @Override
     abstract public void close() throws IOException;
 
+    public abstract void saveAndClose() throws IOException;
+
     //region Stream positioning
 
     /**
@@ -535,6 +537,15 @@ public abstract class KaitaiOutputStream implements Closeable {
 
         writeString(string);
         writeS1((byte) 0);
+    }
+
+    public void writeNullTerminatedString(String string, int length) {
+
+        writeString(string);
+        writeS1((byte) 0);
+        for (int i = string.length() + 1; i < length; i++) {
+            writeS1((byte) 0);
+        }
     }
 
 

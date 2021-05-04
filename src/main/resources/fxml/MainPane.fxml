@@ -23,6 +23,8 @@
                                       text="Open"/>
                             <MenuItem fx:id="saveMenuItem" mnemonicParsing="false" onAction="#saveMenuItemClick"
                                       text="Save"/>
+                            <MenuItem fx:id="saveAsMenuItem" mnemonicParsing="false" onAction="#saveAsMenuItemClick"
+                                      text="Save As..."/>
                             <MenuItem fx:id="closeMenuItem" mnemonicParsing="false" onAction="#closeMenuItemClick"
                                       text="Close"/>
                             <SeparatorMenuItem mnemonicParsing="false"/>

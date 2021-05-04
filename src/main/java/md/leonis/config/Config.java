@@ -10,6 +10,7 @@ import md.leonis.ystt.model.yodesk.Yodesk;
 import java.awt.image.IndexColorModel;
 import java.io.*;
 import java.lang.reflect.Type;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Properties;
 
@@ -105,6 +106,9 @@ public class Config {
     public static Properties languageTable;
 
     public static final String resourcePath = "/fxml/";
+
+    public static File exeFile;
+    public static Path dtaFile;
 
     public static Yodesk yodesk;
 

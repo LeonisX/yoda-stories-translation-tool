@@ -96,7 +96,13 @@ public class Yodesk extends KaitaiStruct {
     }
 
     public void write(KaitaiOutputStream os) {
-        catalog.forEach(c -> c.write(os));
+
+        try {
+            catalog.forEach(c -> c.write(os));
+            os.saveAndClose();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public ArrayList<CatalogEntry> getCatalog() {

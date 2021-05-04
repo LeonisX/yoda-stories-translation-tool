@@ -1,5 +1,6 @@
 package md.leonis.ystt.view;
 
+import io.kaitai.struct.ByteBufferKaitaiOutputStream;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -18,7 +19,6 @@ import javafx.scene.input.*;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import javafx.stage.FileChooser;
 import javafx.stage.WindowEvent;
 import md.leonis.bin.ByteOrder;
 import md.leonis.bin.Dump;
@@ -66,6 +66,7 @@ public class MainPaneController {
 
     public MenuItem openMenuItem;
     public MenuItem saveMenuItem;
+    public MenuItem saveAsMenuItem;
     public MenuItem closeMenuItem;
     public MenuItem exitMenuItem;
 
@@ -956,50 +957,48 @@ public class MainPaneController {
     public static void openFile() {
 
         try {
-            FileChooser fileChooser = new FileChooser();
-            fileChooser.setTitle("Open Executable File");
-            //TODO remove
-            fileChooser.setInitialDirectory(new File("D:\\Working\\_Yoda\\YExplorer\\other\\Yoda Stories (14.02.1997)"));
-            fileChooser.getExtensionFilters().addAll(
-                    new FileChooser.ExtensionFilter("Executable Files", "*.exe"));
-            File selectedFile = fileChooser.showOpenDialog(JavaFxUtils.getStage());
+            //TODO remove hardcoded
+            File file = JavaFxUtils.showEXELoadDialog("Open Executable File", "D:\\Working\\_Yoda\\YExplorer\\other\\Yoda Stories (14.02.1997)", "yodesk.dta");
 
-            if (selectedFile != null) {
-                loadFileToArray(selectedFile);
-                yodesk = Yodesk.fromFile(IOUtils.getDtaPath(selectedFile.toPath().getParent()).toString(), release.getCharset());
+            if (file != null) {
+                exeFile = file;
+                dtaFile = IOUtils.getDtaPath(file.toPath().getParent());
+                loadFileToArray(file);
+                yodesk = Yodesk.fromFile(dtaFile.toString(), release.getCharset());
 
                 JavaFxUtils.showMainPanel();
+            } else {
+                exeFile = null;
+                dtaFile = null;
             }
         } catch (Exception e) {
-            JavaFxUtils.showAlert("EXE file loading error", e);
+            JavaFxUtils.showAlert("Executable file loading error", e);
         }
     }
 
     public void saveMenuItemClick() {
-        //TODO
-        /*
-    procedure TMainForm.Button6Click(Sender: TObject);
-    begin
-  if SaveDTADialog.Execute then DTA.SaveToFile(SaveDTADialog.FileName);
-    end;
-        */
-        /*// Save
-        procedure TMainForm.Save1Click(Sender: TObject);
-        begin
-        Hex.LoadFromStream(DTA.data);
-        Hex.Save;
-        ShowMessage('OK');
-        end;
+        try {
+            String[] chunks = dtaFile.getFileName().toString().split("\\.");
+            IOUtils.copyFile(dtaFile, dtaFile.getParent().resolve(chunks[0] + ".bak"));
+            yodesk.write(new ByteBufferKaitaiOutputStream(dtaFile));
+            //TODO confirmation
+        } catch (Exception e) {
+            JavaFxUtils.showAlert("DTA file saving error", e);
+        }
+    }
 
-// Save...
-        procedure TMainForm.Save2Click(Sender: TObject);
-        begin
-        if SaveDTADialog.Execute then
-        begin
-        Hex.LoadFromStream(DTA.data);
-        Hex.SaveToFile(SaveDTADialog.FileName, true);
-        end;
-        end;*/
+    public void saveAsMenuItemClick() {
+        try {
+            //TODO remove hardcoded
+            File file = JavaFxUtils.showDTASaveDialog("Save DTA File", "D:\\Working\\_Yoda\\YExplorer\\other\\Yoda Stories (14.02.1997)", "yodesk.dta");
+
+            if (file != null) {
+                yodesk.write(new ByteBufferKaitaiOutputStream(file));
+                //TODO confirmation
+            }
+        } catch (Exception e) {
+            JavaFxUtils.showAlert("DTA file saving error", e);
+        }
     }
 
     public void closeMenuItemClick() {

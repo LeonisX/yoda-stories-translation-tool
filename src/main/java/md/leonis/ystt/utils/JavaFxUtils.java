@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
@@ -12,11 +13,13 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import md.leonis.config.Config;
 import md.leonis.ystt.MainApp;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 public class JavaFxUtils {
 
@@ -75,7 +78,7 @@ public class JavaFxUtils {
         }
     }
 
-    public static void showAlert(String title, String header, String text, Alert.AlertType alertType) {
+    public static Optional<ButtonType> showAlert(String title, String header, String text, Alert.AlertType alertType) {
         Alert alert = new Alert(alertType);
         alert.setTitle(title);
         alert.setHeaderText(header);
@@ -92,11 +95,13 @@ public class JavaFxUtils {
         //alert.getDialogPane().setContent(textArea);
 
         alert.setResizable(true);
-        alert.setContentText(text);
+        if (StringUtils.isNotBlank(text)) {
+            alert.setContentText(text);
+        }
         //alert.setWidth(800);
         alert.getDialogPane().setPrefSize(880, 320);
         alert.getDialogPane().getChildren().stream().filter(node -> node instanceof Label).forEach(node -> ((Label) node).setMinHeight(Region.USE_PREF_SIZE));
-        alert.showAndWait();
+        return alert.showAndWait();
     }
 
     public static void showAlert(String title, String header, Alert.AlertType alertType) {
@@ -112,15 +117,31 @@ public class JavaFxUtils {
     }
 
     public static File showBMPLoadDialog(String title, String initialDir, String initialFile) {
-        return getFileChooser(title, getBMPExtensionFilters(), initialDir, initialFile).showOpenDialog(JavaFxUtils.getStage());
+        return getFileChooser(title, getBMPExtensionFilters(), initialDir, initialFile).showOpenDialog(stage);
+    }
+
+    public static File showEXELoadDialog(String title, String initialDir, String initialFile) {
+        return getFileChooser(title, getEXEExtensionFilters(), initialDir, initialFile).showOpenDialog(stage);
     }
 
     public static File showBMPSaveDialog(String title, String initialDir, String initialFile) {
-        return getFileChooser(title, getBMPExtensionFilters(), initialDir, initialFile).showSaveDialog(JavaFxUtils.getStage());
+        return getFileChooser(title, getBMPExtensionFilters(), initialDir, initialFile).showSaveDialog(stage);
+    }
+
+    public static File showDTASaveDialog(String title, String initialDir, String initialFile) {
+        return getFileChooser(title, getDTAExtensionFilters(), initialDir, initialFile).showSaveDialog(stage);
     }
 
     private static List<FileChooser.ExtensionFilter> getBMPExtensionFilters() {
         return Collections.singletonList(new FileChooser.ExtensionFilter("BMP files (*.bmp)", "*.bmp"));
+    }
+
+    private static List<FileChooser.ExtensionFilter> getDTAExtensionFilters() {
+        return Collections.singletonList(new FileChooser.ExtensionFilter("DTA files (*.dta)", "*.dta"));
+    }
+
+    private static List<FileChooser.ExtensionFilter> getEXEExtensionFilters() {
+        return Collections.singletonList(new FileChooser.ExtensionFilter("Executable Files", "*.exe"));
     }
 
     private static FileChooser getFileChooser(String title, List<FileChooser.ExtensionFilter> extensionFilters, String initialDir, String initialFile) {

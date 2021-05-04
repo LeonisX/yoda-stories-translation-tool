@@ -19,6 +19,7 @@ public class Character extends KaitaiStruct {
     private byte[] marker;
     private Long size;
     private String name;
+    private byte[] rawName; // TODO - if rename - overwrite bytes with new name
     private CharacterType type;
     private MovementType movementType;
     private Integer probablyGarbage1;
@@ -60,7 +61,8 @@ public class Character extends KaitaiStruct {
             }
 
             size = io.readU4le();
-            name = io.readNullTerminatedString(16);
+            rawName = io.readBytes(16);
+            name = io.readNullTerminatedString(16, rawName);
             type = CharacterType.byId(io.readU2le());
             movementType = MovementType.byId(io.readU2le());
             probablyGarbage1 = io.readU2le();
@@ -73,13 +75,13 @@ public class Character extends KaitaiStruct {
 
     @Override
     public void write(KaitaiOutputStream os) {
+
         os.writeU2le(index);
 
         if (index != 65535) {
             os.writeBytesFull(marker);
-
             os.writeU4le(size);
-            os.writeNullTerminatedString(name);
+            os.writeBytesFull(rawName);
             os.writeU2le(type.getId());
             os.writeU2le(movementType.getId());
             os.writeU2le(probablyGarbage1);
