@@ -8,11 +8,12 @@ import md.leonis.ystt.model.yodesk.Yodesk;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Condition extends KaitaiStruct implements TextContainer {
 
     private ConditionOpcode opcode;
-    private ArrayList<Short> arguments;
+    private List<Short> arguments;
     private int lenText;
     // The `text_attribute` is never used, but seems to be included to shared the type with instructions.
     private String text;
@@ -64,7 +65,7 @@ public class Condition extends KaitaiStruct implements TextContainer {
         return opcode;
     }
 
-    public ArrayList<Short> getArguments() {
+    public List<Short> getArguments() {
         return arguments;
     }
 

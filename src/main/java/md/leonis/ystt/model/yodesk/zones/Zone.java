@@ -10,6 +10,7 @@ import md.leonis.ystt.model.yodesk.Zones;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class Zone extends KaitaiStruct {
 
@@ -39,15 +40,15 @@ public class Zone extends KaitaiStruct {
      * Tiles are often references via 3 coordinates (xyz), which
      * corresponds to an index into this array calculated as `n = y * width * 3 + x * 3 = z`.
      */
-    private ArrayList<ZoneSpot> tileIds;
+    private List<ZoneSpot> tileIds;
     private int numHotspots;
-    private ArrayList<Hotspot> hotspots;
+    private List<Hotspot> hotspots;
     private ZoneAuxiliary izax;
     private ZoneAuxiliary2 izx2;
     private ZoneAuxiliary3 izx3;
     private ZoneAuxiliary4 izx4;
     private int numActions;
-    private ArrayList<Action> actions;
+    private List<Action> actions;
 
     private final Yodesk root;
     private final Zones parent;
@@ -187,7 +188,7 @@ public class Zone extends KaitaiStruct {
         return planetAgain;
     }
 
-    public ArrayList<ZoneSpot> getTileIds() {
+    public List<ZoneSpot> getTileIds() {
         return tileIds;
     }
 
@@ -195,7 +196,7 @@ public class Zone extends KaitaiStruct {
         return numHotspots;
     }
 
-    public ArrayList<Hotspot> getHotspots() {
+    public List<Hotspot> getHotspots() {
         return hotspots;
     }
 
@@ -219,7 +220,7 @@ public class Zone extends KaitaiStruct {
         return numActions;
     }
 
-    public ArrayList<Action> getActions() {
+    public List<Action> getActions() {
         return actions;
     }
 

@@ -130,6 +130,7 @@ public class MainPaneController {
     public CheckBox saveUnusedTilesCheckBox;
     public ListView<String> mapsListView;
     public Canvas mapCanvas;
+    public Button showActionsButton;
     public CheckBox showMapMonstersCheckBox;
     public CheckBox showMapHotspotsCheckBox;
     public Label mapSizeLabel;
@@ -673,6 +674,32 @@ public class MainPaneController {
             }
         }
     };
+
+    public void showActionsButtonClick() {
+
+        Zone zone = yodesk.getZones().getZones().get(mapsListView.getSelectionModel().getSelectedIndex());
+        List<Action> actions = zone.getActions();
+        StringBuilder sb = new StringBuilder();
+
+        for (int i = 0; i < actions.size(); i++) {
+            Action a = actions.get(i);
+            sb.append("Action ").append(i).append("\n");
+            sb.append("if").append("\n");
+            a.getConditions().forEach(c -> {
+                sb.append("    ").append(c.getOpcode().name().toLowerCase().replace("_", "-")).append(": ");
+                sb.append(c.getArguments().stream().map(Object::toString).collect(Collectors.joining(" "))).append("\n");
+            });
+            sb.append("then").append("\n");
+            a.getInstructions().forEach(c -> {
+                sb.append("    ").append(c.getOpcode().name().toLowerCase().replace("_", "-")).append(": ");
+                sb.append(c.getArguments().stream().map(Object::toString).collect(Collectors.joining(" ")));
+                sb.append(" \"").append(c.getText()).append("\"").append("\n");
+            });
+            sb.append("\n");
+        }
+
+        JavaFxUtils.showActionsWindow("Zone #" + zone.getIndex() + " actions", sb.toString());
+    }
 
     private void drawEditorMap(int zoneId) {
         try {

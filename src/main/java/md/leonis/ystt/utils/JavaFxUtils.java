@@ -13,6 +13,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import md.leonis.config.Config;
 import md.leonis.ystt.MainApp;
+import md.leonis.ystt.view.ActionController;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
@@ -73,6 +74,22 @@ public class JavaFxUtils {
             currentController = loader.getController();
             //if (controller instanceof SubPane) ((SubPane) controller).init();
             rootLayout.setCenter(innerPanel);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void showActionsWindow(String title, String text) {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader();
+            fxmlLoader.setLocation(MainApp.class.getResource(Config.resourcePath + "ActionPane.fxml"));
+
+            Scene scene = new Scene(fxmlLoader.load(), 600, stage.getHeight());
+            Stage stage = new Stage();
+            stage.setTitle(title);
+            stage.setScene(scene);
+            stage.show();
+            ((ActionController) fxmlLoader.getController()).setValues(title, text);
         } catch (IOException e) {
             e.printStackTrace();
         }

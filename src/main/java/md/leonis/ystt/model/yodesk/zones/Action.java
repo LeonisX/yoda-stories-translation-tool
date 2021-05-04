@@ -9,6 +9,7 @@ import md.leonis.ystt.model.yodesk.Yodesk;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Actions are the game's way to make static tile based maps more engaging
@@ -49,9 +50,9 @@ public class Action extends KaitaiStruct {
     private byte[] marker;
     private long size;
     private int numConditions;
-    private ArrayList<Condition> conditions;
+    private List<Condition> conditions;
     private int numInstructions;
-    private ArrayList<Instruction> instructions;
+    private List<Instruction> instructions;
 
     private final Yodesk root;
     private final Zone parent;
@@ -122,7 +123,7 @@ public class Action extends KaitaiStruct {
         return numConditions;
     }
 
-    public ArrayList<Condition> getConditions() {
+    public List<Condition> getConditions() {
         return conditions;
     }
 
@@ -130,7 +131,7 @@ public class Action extends KaitaiStruct {
         return numInstructions;
     }
 
-    public ArrayList<Instruction> getInstructions() {
+    public List<Instruction> getInstructions() {
         return instructions;
     }
 

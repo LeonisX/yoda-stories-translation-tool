@@ -8,11 +8,12 @@ import md.leonis.ystt.model.yodesk.Yodesk;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Instruction extends KaitaiStruct implements TextContainer {
 
     private InstructionOpcode opcode;
-    private ArrayList<Short> arguments;
+    private List<Short> arguments;
     private int lenText;
     private String text;
 
@@ -63,7 +64,7 @@ public class Instruction extends KaitaiStruct implements TextContainer {
         return opcode;
     }
 
-    public ArrayList<Short> getArguments() {
+    public List<Short> getArguments() {
         return arguments;
     }
 
