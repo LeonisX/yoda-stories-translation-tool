@@ -12,17 +12,16 @@ An original version: https://github.com/LeonisX/YExplorer
 
 ## TODO
 
-* Save DAT file
-* Show monsters, hotspots if selected
 * Show map actions (new window)
+* Scan all translated IACTs for lost ¥, ¢
+* Show monsters, hotspots if selected
 * Show tile IDs for 3 layers
 * Draw map icon from minimap
-* Save + backup
 * Log
 * HEX
 * Тяжёлые процессы дампинга лучше вынести в отдельный поток
 
-* Сломан вывод таблицы Map ( нужна ли?)
+* Сломан вывод таблицы Map (нужна ли?)
 
 * Prepare translated DTA & dump it here
 
@@ -57,6 +56,10 @@ An original version: https://github.com/LeonisX/YExplorer
 * Full instruction: EXE, DTA: MarkDown
 
 * Identify Characters MovementTypes
+
+* Resolve all TODO
+
+* remove all [CR2], [CR] code
 
 ### Other YS / DA solutions
 

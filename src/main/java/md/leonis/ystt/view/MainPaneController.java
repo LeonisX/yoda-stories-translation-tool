@@ -1433,6 +1433,8 @@ public class MainPaneController {
     public void replaceActionTextClick() {
 
         try {
+            actionTexts.forEach(a -> a.setTranslation(a.getTranslation().replace("[CR2]", "[CR][CR]").replace("[CR]", "\r\n")));
+
             if (trimActionsTrailSpacesCheckBox.isSelected()) {
                 actionTexts.forEach(a -> a.setTranslation(a.getTranslation().trim()));
             }
@@ -1606,8 +1608,10 @@ public class MainPaneController {
     public void replacePuzzlesTextClick() {
 
         try {
+            puzzlesTexts.forEach(t -> t.setTranslation(t.getTranslation().replace("[CR2]", "[CR][CR]").replace("[CR]", "\r\n")));
+
             if (trimPuzzlesTrailSpacesCheckBox.isSelected()) {
-                puzzlesTexts.forEach(a -> a.setTranslation(a.getTranslation().trim()));
+                puzzlesTexts.forEach(t -> t.setTranslation(t.getTranslation().trim()));
             }
 
             if (isBadTranslation(puzzlesTexts, puzzleIdPattern, getPuzzlesTexts(), strictPuzzlesReplacingRulesCheckBox.isSelected())) {

@@ -380,58 +380,55 @@
                                                 <BorderPane layoutX="850.0" layoutY="15.0" prefHeight="424.0" prefWidth="531.0">
                                                     <center>
                                                         <VBox prefWidth="531.0" BorderPane.alignment="CENTER">
-                                                            <HBox alignment="TOP_LEFT" prefHeight="22.0" prefWidth="531.0">
+                                                            <HBox prefHeight="22.0" prefWidth="531.0">
                                                                 <Label prefWidth="95.0" text="Size:" />
                                                                 <Label fx:id="mapSizeLabel" />
                                                             </HBox>
-                                                            <HBox alignment="TOP_LEFT" prefHeight="22.0" prefWidth="531.0">
+                                                            <HBox prefHeight="22.0" prefWidth="531.0">
                                                                 <Label prefWidth="95.0" text="Type:" />
                                                                 <Label fx:id="mapTypeLabel" />
                                                             </HBox>
-                                                            <HBox alignment="TOP_LEFT" prefHeight="22.0" prefWidth="531.0">
+                                                            <HBox prefHeight="22.0" prefWidth="531.0">
                                                                 <Label prefWidth="95.0" text="Planet:" />
                                                                 <Label fx:id="mapPlanetLabel" />
                                                             </HBox>
-                                                            <HBox alignment="TOP_LEFT" prefHeight="22.0" prefWidth="531.0">
+                                                            <HBox prefHeight="22.0" prefWidth="531.0">
                                                                 <Label prefWidth="95.0" text="Actions:" />
                                                                 <Label fx:id="mapActionsLabel" />
                                                             </HBox>
-                                                            <HBox alignment="TOP_LEFT" prefHeight="24.0" prefWidth="531.0">
+                                                            <HBox prefHeight="24.0" prefWidth="531.0">
                                                                 <Label prefWidth="95.0" text="Goal:" />
                                                                 <FlowPane fx:id="mapGoalTilesFlowPane" columnHalignment="CENTER"
                                                                           prefWidth="280.0"
                                                                           prefWrapLength="280.0" hgap="1.0" vgap="1.0"/>
                                                             </HBox>
-                                                            <HBox alignment="TOP_LEFT" prefHeight="22.0" prefWidth="531.0">
+                                                            <HBox prefHeight="22.0" prefWidth="531.0">
                                                                 <Label prefWidth="95.0" text="Provided items:" />
                                                                 <FlowPane fx:id="mapProvidedItemsTilesFlowPane" columnHalignment="CENTER"
                                                                           prefWidth="280.0"
                                                                           prefWrapLength="280.0" hgap="1.0" vgap="1.0"/>
                                                             </HBox>
-                                                            <HBox alignment="TOP_LEFT" prefHeight="22.0" prefWidth="531.0">
+                                                            <HBox prefHeight="22.0" prefWidth="531.0">
                                                                 <Label prefWidth="95.0" text="Required items:" />
                                                                 <FlowPane fx:id="mapRequiredItemsTilesFlowPane" columnHalignment="CENTER"
                                                                           prefWidth="280.0"
                                                                           prefWrapLength="280.0" hgap="1.0" vgap="1.0"/>
                                                             </HBox>
-                                                            <HBox alignment="TOP_LEFT" prefHeight="24.0" prefWidth="531.0">
+                                                            <HBox prefHeight="24.0" prefWidth="531.0">
                                                                 <Label prefWidth="95.0" text="NPCs:" />
                                                                 <FlowPane fx:id="mapNpcsTilesFlowPane" columnHalignment="CENTER"
                                                                           prefWidth="280.0"
                                                                           prefWrapLength="280.0" hgap="1.0" vgap="1.0"/>
                                                             </HBox>
-                                                            <HBox alignment="TOP_LEFT" prefHeight="22.0" prefWidth="531.0">
+                                                            <HBox prefHeight="22.0" prefWidth="531.0">
                                                                 <Label prefWidth="95.0" text="IZAX Unnamed2:" />
                                                                 <Label fx:id="mapIzaxUnnamedLabel" />
                                                             </HBox>
-                                                            <HBox alignment="TOP_LEFT" prefHeight="22.0" prefWidth="531.0">
+                                                            <HBox prefHeight="22.0" prefWidth="531.0">
                                                                 <Label prefWidth="95.0" text="ZAX4 Unnamed2:" />
                                                                 <Label fx:id="mapZax4Unnamed2Label" />
                                                             </HBox>
-                                                            <HBox alignment="TOP_LEFT" prefHeight="20.0" prefWidth="531.0">
-
-
-                                                            </HBox>
+                                                            <HBox prefHeight="20.0" prefWidth="531.0"/>
                                                         </VBox>
                                                     </center>
                                                 </BorderPane>
