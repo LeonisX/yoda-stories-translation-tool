@@ -646,20 +646,6 @@ public class MainPaneController {
         drawTilesOnFlowPane(mapProvidedItemsTilesFlowPane, zone.getIzx2().getProvidedItems());
         drawTilesOnFlowPane(mapRequiredItemsTilesFlowPane, zone.getIzax().getRequiredItems());
 
-        if (showMapMonstersCheckBox.isSelected()) {
-            zone.getIzax().getMonsters().forEach(m -> {
-                int tileId = yodesk.getCharacters().getCharacters().get(m.getCharacter()).getTileIds().get(0);
-                drawTileOnCanvas(tileId, mapCanvas, m.getX() * TILE_SIZE, m.getY() * TILE_SIZE, null);
-                drawBorderOnCanvas(mapCanvas, m.getX() * TILE_SIZE, m.getY() * TILE_SIZE, Color.rgb(127, 255, 255));
-            });
-        }
-
-        if (showMapHotspotsCheckBox.isSelected()) {
-            zone.getHotspots().forEach(h -> {
-                drawBorderOnCanvas(mapCanvas, h.getX() * TILE_SIZE, h.getY() * TILE_SIZE, Color.rgb(255, 0, 255));
-            });
-        }
-
         //TODO ArrayList<Action> actions;
     }
 
@@ -860,9 +846,32 @@ public class MainPaneController {
 
     private void drawZone(Canvas canvas, Zone zone) {
 
+        if (bottomCheckBox.isSelected()) {
+            drawZoneLayer(canvas, zone, 0);
+        }
+        if (middleCheckBox.isSelected()) {
+            drawZoneLayer(canvas, zone, 1);
+        }
+        if (showMapMonstersCheckBox.isSelected()) {
+            zone.getIzax().getMonsters().forEach(m -> {
+                    int tileId = yodesk.getCharacters().getCharacters().get(m.getCharacter()).getTileIds().get(0);
+                    drawTileOnCanvas(tileId, canvas, m.getX() * TILE_SIZE, m.getY() * TILE_SIZE, null);
+                    drawBorderOnCanvas(canvas, m.getX() * TILE_SIZE, m.getY() * TILE_SIZE, Color.rgb(127, 255, 255));
+            });
+        }
+        if (topCheckBox.isSelected()) {
+            drawZoneLayer(canvas, zone, 2);
+        }
+        if (showMapHotspotsCheckBox.isSelected()) {
+            zone.getHotspots().forEach(h -> drawBorderOnCanvas(canvas, h.getX() * TILE_SIZE, h.getY() * TILE_SIZE, Color.rgb(255, 0, 255)));
+        }
+    }
+
+    private void drawZoneLayer(Canvas canvas, Zone zone, int layerId) {
+
         for (int y = 0; y < zone.getHeight(); y++) {
             for (int x = 0; x < zone.getWidth(); x++) {
-                drawZoneSpot(canvas, zone, x, y);
+                drawTileOnMap(canvas, zone, x, y, layerId);
             }
         }
     }
@@ -877,14 +886,30 @@ public class MainPaneController {
         if (middleCheckBox.isSelected()) {
             drawTileOnMap(canvas, zone, x, y, 1);
         }
+        if (showMapMonstersCheckBox.isSelected()) {
+            zone.getIzax().getMonsters().forEach(m -> {
+                if (m.getX() == x && m.getY() == y) {
+                    int tileId = yodesk.getCharacters().getCharacters().get(m.getCharacter()).getTileIds().get(0);
+                    drawTileOnCanvas(tileId, canvas, m.getX() * TILE_SIZE, m.getY() * TILE_SIZE, null);
+                    drawBorderOnCanvas(canvas, m.getX() * TILE_SIZE, m.getY() * TILE_SIZE, Color.rgb(127, 255, 255));
+                }
+            });
+        }
         if (topCheckBox.isSelected()) {
             drawTileOnMap(canvas, zone, x, y, 2);
         }
+        if (showMapHotspotsCheckBox.isSelected()) {
+            zone.getHotspots().forEach(h -> {
+                if (h.getX() == x && h.getY() == y) {
+                    drawBorderOnCanvas(canvas, h.getX() * TILE_SIZE, h.getY() * TILE_SIZE, Color.rgb(255, 0, 255));
+                }
+            });
+        }
     }
 
-    private void drawTileOnMap(Canvas canvas, Zone zone, int x, int y, int layer) {
+    private void drawTileOnMap(Canvas canvas, Zone zone, int x, int y, int layerId) {
 
-        int tileId = zone.getTileIds().get(y * zone.getWidth() + x).getColumn().get(layer);
+        int tileId = zone.getTileIds().get(y * zone.getWidth() + x).getColumn().get(layerId);
         if (tileId < yodesk.getTiles().getTiles().size()) {
             usedTiles.set(tileId, true);
             drawTileOnCanvas(tileId, canvas, x * TILE_SIZE, y * TILE_SIZE, null);
@@ -892,9 +917,7 @@ public class MainPaneController {
     }
 
     public void layerCheckBoxClick() {
-
-        Zone zone = getEditorZone();
-        drawZone(mapEditorCanvas, zone);
+        drawZone(mapEditorCanvas, getEditorZone());
     }
 
     private Zone getEditorZone() {
@@ -905,9 +928,9 @@ public class MainPaneController {
         return mapEditorListView.getSelectionModel().getSelectedIndex();
     }
 
-    private void ReadIZON(int id, boolean save) throws IOException {
+    private void ReadIZON(int zoneId, boolean save) throws IOException {
 
-        ReadMap(mapCanvas, id, normalSaveCheckBox.isSelected() || groupByFlagsCheckBox.isSelected() || groupByPlanetTypeCheckBox.isSelected(), save);
+        ReadMap(mapCanvas, zoneId, normalSaveCheckBox.isSelected() || groupByFlagsCheckBox.isSelected() || groupByPlanetTypeCheckBox.isSelected(), save);
 
         //TODO
         //MapProgressBar.Position :=id;
