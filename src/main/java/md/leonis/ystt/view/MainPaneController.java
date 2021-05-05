@@ -37,6 +37,7 @@ import md.leonis.ystt.model.yodesk.characters.CharacterAuxiliary;
 import md.leonis.ystt.model.yodesk.characters.CharacterWeapon;
 import md.leonis.ystt.model.yodesk.puzzles.PrefixedStr;
 import md.leonis.ystt.model.yodesk.puzzles.Puzzle;
+import md.leonis.ystt.model.yodesk.puzzles.PuzzleItemClass;
 import md.leonis.ystt.model.yodesk.puzzles.StringMeaning;
 import md.leonis.ystt.model.yodesk.tiles.TileName;
 import md.leonis.ystt.model.yodesk.zones.*;
@@ -612,15 +613,21 @@ public class MainPaneController {
         @Override
         public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
             if (mapsListView.getSelectionModel().getSelectedIndex() >= 0) {
-                int zoneId = mapsListView.getSelectionModel().getSelectedIndex();
-
-                drawViewMap(zoneId);
-                showMapInfo(zoneId);
-
-                undoMapEdit.setVisible(null != zoneHistoryMap.get(zoneId));
+                undoMapEdit.setVisible(null != zoneHistoryMap.get(drawViewZone()));
             }
         }
     };
+
+    public int drawViewZone() {
+
+        int zoneId = mapsListView.getSelectionModel().getSelectedIndex();
+
+        drawViewMap(zoneId);
+        showMapInfo(zoneId);
+
+        return zoneId;
+    }
+
 
     private void showMapInfo(int zoneId) {
 
@@ -814,7 +821,7 @@ public class MainPaneController {
         Zone zone = yodesk.getZones().getZones().get(zoneId);
 
         //TODO offset if need
-        Log.debug("Map #" + zoneId + " offset: " + "section.intToHex(section.GetPosition(), 8)");
+        //Log.debug("Map #" + zoneId + " offset: " + "section.intToHex(section.GetPosition(), 8)");
         statusLabel.setText("Map: " + zoneId + " (" + zone.getPlanet().name() + ")");
 
         if (show) {
@@ -1551,16 +1558,16 @@ public class MainPaneController {
 
             Map<Long, List<String>> byType = yodesk.getPuzzles().getFilteredPuzzles().stream().filter(p -> p.getType() != null).collect(Collectors.groupingBy(Puzzle::getType, Collectors.mapping(p -> Long.toHexString(p.getIndex()), Collectors.toList())));
 
-            Map<Long, List<String>> byUnnamed4 = yodesk.getPuzzles().getFilteredPuzzles().stream().filter(p -> p.get_unnamed4() != null).collect(Collectors.groupingBy(Puzzle::get_unnamed4, Collectors.mapping(p -> Long.toHexString(p.getIndex()), Collectors.toList())));
+            Map<PuzzleItemClass, List<String>> byItemClass1 = yodesk.getPuzzles().getFilteredPuzzles().stream().filter(p -> p.getItem1Class() != null).collect(Collectors.groupingBy(Puzzle::getItem1Class, Collectors.mapping(p -> Long.toHexString(p.getIndex()), Collectors.toList())));
 
-            Map<Long, List<String>> byUnnamed5 = yodesk.getPuzzles().getFilteredPuzzles().stream().filter(p -> p.get_unnamed5() != null && p.getItem2() != 0).collect(Collectors.groupingBy(Puzzle::get_unnamed5, Collectors.mapping(p -> Long.toHexString(p.getIndex()), Collectors.toList())));
+            Map<PuzzleItemClass, List<String>> byItemClass2 = yodesk.getPuzzles().getFilteredPuzzles().stream().filter(p -> p.getItem2Class() != null && p.getItem2() != 0).collect(Collectors.groupingBy(Puzzle::getItem2Class, Collectors.mapping(p -> Long.toHexString(p.getIndex()), Collectors.toList())));
 
             Map<Integer, List<String>> byUnnamed6 = yodesk.getPuzzles().getFilteredPuzzles().stream().filter(p -> p.get_unnamed6() != null).collect(Collectors.groupingBy(Puzzle::get_unnamed6, Collectors.mapping(p -> Integer.toHexString(p.getIndex()), Collectors.toList())));
 
             //TODO dump groups
             System.out.println(byType);
-            System.out.println(byUnnamed4); // Item1 type
-            System.out.println(byUnnamed5); // Item2 type
+            System.out.println(byItemClass1); // Item1 type
+            System.out.println(byItemClass2); // Item2 type
             System.out.println(byUnnamed6); // Flag??
 
             List<Integer> items1 = yodesk.getPuzzles().getFilteredPuzzles().stream().map(Puzzle::getItem1).distinct().filter(i -> i <= yodesk.getTiles().getTiles().size()).sorted().collect(Collectors.toList());

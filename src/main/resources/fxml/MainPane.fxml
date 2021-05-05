@@ -384,8 +384,8 @@
                                                                 <Button fx:id="showActionsButton" layoutX="14.0" layoutY="40.0"
                                                                         mnemonicParsing="false" onAction="#showActionsButtonClick"
                                                                         text="Show actions"/>
-                                                                <CheckBox fx:id="showMapMonstersCheckBox" mnemonicParsing="false" selected="true" text="Show mosters"/>
-                                                                <CheckBox fx:id="showMapHotspotsCheckBox" mnemonicParsing="false" selected="true" text="Show hotspots"/>
+                                                                <CheckBox fx:id="showMapMonstersCheckBox" onAction="#drawViewZone" mnemonicParsing="false" selected="true" text="Show mosters"/>
+                                                                <CheckBox fx:id="showMapHotspotsCheckBox" onAction="#drawViewZone" mnemonicParsing="false" selected="true" text="Show hotspots"/>
                                                             </HBox>
                                                             <HBox prefHeight="22.0" prefWidth="531.0">
                                                                 <Label prefWidth="95.0" text="Size:" />
