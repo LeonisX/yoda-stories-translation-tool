@@ -2,15 +2,22 @@
 
 Utility Yoda Stories Translation Tool
 
-**Current status: read only, dumping**
+**Current status: read/modify, dump, translate DTA**
 
-**Current stage: port from Delphi**
+**Current stage: polishing**
 
 **Powered with Kaitai structure format**
 
 An original version: https://github.com/LeonisX/YExplorer
 
 ## TODO
+
+* Source character encoding: Cp1252
+* Destination character encoding: Cp1251
+
+* Doc: https://docs.oracle.com/javase/8/docs/technotes/guides/intl/encoding.doc.html
+
+* Show puzzles in UI (table + tiles)
 
 * Scan all translated IACTs for lost ¥ Ґ, ¢ ў
 * Probably replace ¥ with Ґ, ¢ with ў
