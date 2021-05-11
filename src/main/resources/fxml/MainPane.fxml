@@ -215,6 +215,9 @@
                                 <Button fx:id="addNewTile"
                                         mnemonicParsing="false" onAction="#addNewTileClick"
                                         text="+" prefWidth="32" prefHeight="32"/>
+                                <Button fx:id="deleteTile"
+                                        mnemonicParsing="false" onAction="#deleteTileClick"
+                                        text="-" prefWidth="32" prefHeight="32"/>
                                 <Label layoutX="12.0" layoutY="18.0" text="Tiles count:"/>
                                 <Label fx:id="tilesCountLabel" layoutX="88.0" layoutY="18.0"/>
                                 <Button fx:id="saveTilesToSeparateFiles" layoutX="10.0" layoutY="42.0"
@@ -337,13 +340,10 @@
                                                         <RadioMenuItem userData="2147483680" text="Current position"/>
                                                     </Menu>
                                                 </Menu>
-                                                <MenuItem mnemonicParsing="false" text="Add tile(s)"/>
-                                                <MenuItem mnemonicParsing="false" text="Delete this tile"/>
                                             </items>
                                         </ContextMenu>
                                     </contextMenu>
                                 </Label>
-
                             </AnchorPane>
                         </Tab>
                         <Tab text="Zones/Maps">

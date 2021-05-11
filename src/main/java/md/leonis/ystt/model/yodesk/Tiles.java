@@ -91,6 +91,13 @@ public class Tiles extends KaitaiStruct {
         parent.setSize(rawTiles.length);
     }
 
+    public void deleteTile() {
+
+        rawTiles = Arrays.copyOf(rawTiles, rawTiles.length - tiles.get(0).byteSize());
+        tilesEntries.getTiles().remove(tilesEntries.getTiles().size() - 1);
+        parent.setSize(rawTiles.length);
+    }
+
     public void replaceTile(int tileId, byte[] pixels) {
 
         getTiles().get(tileId).setPixels(pixels);

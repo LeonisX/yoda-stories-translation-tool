@@ -2,8 +2,6 @@ package md.leonis.ystt.view;
 
 import io.kaitai.struct.ByteBufferKaitaiOutputStream;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingFXUtils;
@@ -118,6 +116,7 @@ public class MainPaneController {
     public ToggleGroup tilesToggleGroup;
     private final Map<String, RadioMenuItem> tileFlagsMap = new HashMap<>();
     public Button addNewTile;
+    public Button deleteTile;
 
     private Node currentTile;
 
@@ -292,11 +291,11 @@ public class MainPaneController {
         // Maps
         mapsCountLabel.setText(Integer.toString(yodesk.getZones().getZones().size()));
         mapsListView.setItems(FXCollections.observableList(yodesk.getZones().getZones().stream().map(m -> "Map #" + m.getIndex()).collect(Collectors.toList())));
-        mapsListView.getSelectionModel().selectedItemProperty().addListener(mapsListViewChangeListener);
+        mapsListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> drawViewZone());
         mapsListView.getSelectionModel().select(0);
         mapsTableView.setItems(FXCollections.observableList(yodesk.getZones().getZones()));
         mapEditorListView.setItems(FXCollections.observableList(yodesk.getZones().getZones().stream().map(m -> "Map #" + m.getIndex()).collect(Collectors.toList())));
-        mapEditorListView.getSelectionModel().selectedItemProperty().addListener(mapsEditorListViewChangeListener);
+        mapEditorListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> drawEditZone());
         mapEditorListView.getSelectionModel().select(0);
         drawMapEditorTiles();
 
@@ -378,7 +377,7 @@ public class MainPaneController {
 
     private void selectTileMenuItem(WindowEvent event) {
         String flag = getTileFlag(currentTile);
-        tileFlagsMap.get(flag).setSelected(true);
+        //TODO fix this tileFlagsMap.get(flag).setSelected(true);
     }
 
     private void drawPalette() {
@@ -398,6 +397,7 @@ public class MainPaneController {
                 tilesFlowPane.getChildren().add(newTile(i, true));
             }
             tilesFlowPane.getChildren().add(addNewTile);
+            tilesFlowPane.getChildren().add(deleteTile);
         } catch (Exception e) {
             JavaFxUtils.showAlert("Tiles display error", e);
         }
@@ -419,8 +419,25 @@ public class MainPaneController {
             tilesFlowPane.getChildren().add(tileId, newTile(tileId, true));
             mapEditorTilesFlowPane.getChildren().add(tileId, newTile(tileId, false));
             usedTiles.add(false);
+            drawViewZone();
+            drawEditZone();
         } catch (Exception e) {
-            JavaFxUtils.showAlert("Error adding tiles", e);
+            JavaFxUtils.showAlert("Error adding tile", e);
+        }
+    }
+
+    public void deleteTileClick() {
+
+        try {
+            yodesk.getTiles().deleteTile();
+            int tileId = yodesk.getTiles().getTiles().size();
+            tilesFlowPane.getChildren().remove(tileId);
+            mapEditorTilesFlowPane.getChildren().remove(tileId);
+            usedTiles.remove(usedTiles.size() - 1);
+            drawViewZone();
+            drawEditZone();
+        } catch (Exception e) {
+            JavaFxUtils.showAlert("Error deleting tile", e);
         }
     }
 
@@ -610,16 +627,6 @@ public class MainPaneController {
     end;*/
     }
 
-    ChangeListener<String> mapsListViewChangeListener = new ChangeListener<String>() {
-
-        @Override
-        public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-            if (mapsListView.getSelectionModel().getSelectedIndex() >= 0) {
-                undoMapEdit.setVisible(null != zoneHistoryMap.get(drawViewZone()));
-            }
-        }
-    };
-
     public int drawViewZone() {
 
         int zoneId = mapsListView.getSelectionModel().getSelectedIndex();
@@ -659,18 +666,14 @@ public class MainPaneController {
         }
     }
 
-    ChangeListener<String> mapsEditorListViewChangeListener = new ChangeListener<String>() {
-
-        @Override
-        public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-            if (getEditorZoneId() >= 0) {
-                int zoneId = getEditorZoneId();
-                drawEditorMap(zoneId);
-                mapEditorTilesScrollPane.setLayoutX(mapEditorCanvas.getLayoutX() + mapEditorCanvas.getWidth() + 8);
-                undoMapEdit.setVisible(null != zoneHistoryMap.get(zoneId));
-            }
+    private void drawEditZone() {
+        if (getEditorZoneId() >= 0) {
+            int zoneId = getEditorZoneId();
+            drawEditorMap(zoneId);
+            mapEditorTilesScrollPane.setLayoutX(mapEditorCanvas.getLayoutX() + mapEditorCanvas.getWidth() + 8);
+            undoMapEdit.setVisible(null != zoneHistoryMap.get(zoneId));
         }
-    };
+    }
 
     public void showActionsButtonClick() {
 

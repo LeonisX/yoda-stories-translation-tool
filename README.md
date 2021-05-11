@@ -12,8 +12,6 @@ An original version: https://github.com/LeonisX/YExplorer
 
 ## TODO
 
-* Redraw maps after tiles manipulations
-
 * Export also and FUCHSIA palette
 
 * Source character encoding: Cp1252
@@ -30,6 +28,10 @@ An original version: https://github.com/LeonisX/YExplorer
 * Log
 * HEX
 * Тяжёлые процессы дампинга лучше вынести в отдельный поток
+
+* Map View + Map Editor in one Tab. New TabPane: View, Edit, Dump
+
+* When delete tile - validate all maps first
 
 * Сломан вывод таблицы Map (нужна ли?)
 
