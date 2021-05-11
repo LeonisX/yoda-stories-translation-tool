@@ -1,6 +1,5 @@
 package md.leonis.ystt.utils;
 
-import md.leonis.ystt.model.yodesk.Yodesk;
 import md.leonis.ystt.model.yodesk.characters.Character;
 import md.leonis.ystt.model.yodesk.characters.CharacterAuxiliary;
 import md.leonis.ystt.model.yodesk.characters.CharacterWeapon;
@@ -9,20 +8,24 @@ import org.apache.poi.ss.usermodel.ClientAnchor;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.AreaReference;
 import org.apache.poi.ss.util.CellReference;
-import org.apache.poi.util.IOUtils;
 import org.apache.poi.xssf.usermodel.*;
 
-import java.io.FileInputStream;
+import javax.imageio.ImageIO;
+import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static md.leonis.config.Config.icm;
+import static md.leonis.config.Config.yodesk;
+import static md.leonis.ystt.utils.ImageUtils.getTile;
+
 public class ExcelUtils {
 
-    public static void saveCharacters(Yodesk yodesk) throws IOException {
+    public static void saveCharacters(Path path) throws IOException {
 
         List<Character> characters = yodesk.getCharacters().getCharacters();
         List<CharacterAuxiliary> auxiliaries = yodesk.getCharacterAuxiliaries().getAuxiliaries();
@@ -98,11 +101,10 @@ public class ExcelUtils {
                         Integer pictureId = imagesMap.get(tileId);
 
                         if (null == pictureId) {
-                            //TODO
-                            InputStream inputStream = new FileInputStream("D:\\yoda-stories-translation-tool\\output-eng-1.2\\Tiles\\" + sizeInt(tileId, 4) + ".png");
-                            byte[] bytes = IOUtils.toByteArray(inputStream);
-                            pictureId = workbook.addPicture(bytes, Workbook.PICTURE_TYPE_PNG);
-                            inputStream.close();
+                            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                            ImageIO.write(getTile(tileId, icm), "PNG", baos);
+
+                            pictureId = workbook.addPicture(baos.toByteArray(), Workbook.PICTURE_TYPE_PNG);
                             imagesMap.put(tileId, pictureId);
                         }
 
@@ -138,7 +140,7 @@ public class ExcelUtils {
             sheet.autoSizeColumn(x);
         }
 
-        try (FileOutputStream outputStream = new FileOutputStream("characters.xlsx")) {
+        try (FileOutputStream outputStream = new FileOutputStream(path.toFile())) {
             workbook.write(outputStream);
         }
     }

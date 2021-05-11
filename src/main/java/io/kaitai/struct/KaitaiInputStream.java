@@ -594,7 +594,7 @@ public abstract class KaitaiInputStream implements Closeable {
     }
 
     private String newString(byte[] bytes) {
-        return new String(bytes, Charset.forName(Yodesk.getCharset()));
+        return new String(bytes, Charset.forName(Yodesk.getInputCharset()));
     }
 
     /**

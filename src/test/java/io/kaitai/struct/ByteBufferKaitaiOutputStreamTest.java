@@ -633,9 +633,10 @@ public class ByteBufferKaitaiOutputStreamTest extends TestCase {
 
     public void testWriteStringRus() {
 
-        String charset = Yodesk.getCharset();
+        String charset = Yodesk.getInputCharset();
 
-        Yodesk.setCharset("Cp1251");
+        Yodesk.setInputCharset("Cp1251");
+        Yodesk.setOutputCharset("Cp1251");
 
         ByteBufferKaitaiOutputStream bbkos = new ByteBufferKaitaiOutputStream(new byte[5]);
         bbkos.writeString("ТЕСТ");
@@ -648,7 +649,7 @@ public class ByteBufferKaitaiOutputStreamTest extends TestCase {
         assertEquals("ТЕСТ", bbkis.readString(4));
         assertEquals(0, bbkis.readS1());
 
-        Yodesk.setCharset(charset);
+        Yodesk.setInputCharset(charset);
     }
 
     public void testReadNullTerminatedString() {

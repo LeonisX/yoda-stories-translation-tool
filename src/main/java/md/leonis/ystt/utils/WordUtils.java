@@ -1,40 +1,32 @@
 package md.leonis.ystt.utils;
 
-import md.leonis.ystt.model.docx.ImageRecord;
-import md.leonis.ystt.model.docx.StringImagesRecord;
+import md.leonis.ystt.model.docx.PropertyName;
 import md.leonis.ystt.model.docx.StringRecord;
 import md.leonis.ystt.model.docx.WordRecord;
+import md.leonis.ystt.model.yodesk.Yodesk;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.util.Units;
 import org.apache.poi.xwpf.usermodel.*;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTAbstractNum;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTLvl;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.STNumberFormat;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.math.BigInteger;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class WordUtils {
 
-    public static void saveZones(List<StringRecord> records, List<String> strings, Path path) throws IOException, InvalidFormatException {
+    public static void saveZones(String crc32, Path path) throws IOException, InvalidFormatException {
 
         XWPFDocument document = new XWPFDocument();
+        addHeader(document, "Zone actions", crc32);
 
-        XWPFParagraph paragraph = document.createParagraph();
-        XWPFRun run = paragraph.createRun();
-
-        run.setFontSize(18);
-        run.setBold(true);
-        run.setText("Zone actions");
-        paragraph.setAlignment(ParagraphAlignment.CENTER);
-
-        strings.forEach(s -> document.createParagraph().createRun().setText(s));
-
-        List<List<Object>> matrix = records.stream().map(r -> {
+        List<List<Object>> matrix = WordHelper.getActionsTexts().stream().map(r -> {
             List<Object> objects = new ArrayList<>(new ArrayList<>(Collections.singletonList(r.getId())));
             /*if (!r.getType().isEmpty()) {
                 objects.add("\n");
@@ -54,21 +46,12 @@ public class WordUtils {
         System.out.println(path.toString() + " written successfully");
     }
 
-    public static void savePuzzles(List<StringImagesRecord> records, List<String> strings, Path path) throws IOException, InvalidFormatException {
+    public static void savePuzzles(String crc32, Path path) throws IOException, InvalidFormatException {
 
         XWPFDocument document = new XWPFDocument();
+        addHeader(document, "Puzzles", crc32);
 
-        XWPFParagraph paragraph = document.createParagraph();
-        XWPFRun run = paragraph.createRun();
-
-        run.setFontSize(18);
-        run.setBold(true);
-        run.setText("Puzzles");
-        paragraph.setAlignment(ParagraphAlignment.CENTER);
-
-        strings.forEach(s -> document.createParagraph().createRun().setText(s));
-
-        List<List<Object>> matrix = records.stream().map(r -> {
+        List<List<Object>> matrix = WordHelper.getPuzzlesTexts().stream().map(r -> {
             List<Object> objects = new ArrayList<>(new ArrayList<>(Collections.singletonList(r.getId())));
             if (!r.getImages().isEmpty()) {
                 objects.add("\n");
@@ -86,44 +69,12 @@ public class WordUtils {
         System.out.println(path.toString() + " written successfully");
     }
 
-    public static void saveCharacters(List<ImageRecord> records, List<String> strings, Path path) throws IOException, InvalidFormatException {
+    public static void saveNames(String crc32, Path path) throws IOException, InvalidFormatException {
 
         XWPFDocument document = new XWPFDocument();
+        addHeader(document, "Tile names", crc32);
 
-        XWPFParagraph paragraph = document.createParagraph();
-        XWPFRun run = paragraph.createRun();
-
-        run.setFontSize(18);
-        run.setBold(true);
-        run.setText("Characters");
-        paragraph.setAlignment(ParagraphAlignment.CENTER);
-
-        strings.forEach(s -> document.createParagraph().createRun().setText(s));
-
-        List<List<Object>> matrix = records.stream().map(r -> Arrays.asList(r.getOriginal(), r.getImages())).collect(Collectors.toList());
-
-        createTable(document, Arrays.asList("Name", "Sprites"), matrix);
-
-        FileOutputStream out = new FileOutputStream(path.toFile());
-        document.write(out);
-        out.close();
-        System.out.println(path.toString() + " written successully");
-    }
-
-    public static void saveNames(List<StringImagesRecord> records, List<String> strings, Path path) throws IOException, InvalidFormatException {
-
-        XWPFDocument document = new XWPFDocument();
-
-        XWPFParagraph paragraph = document.createParagraph();
-        XWPFRun run = paragraph.createRun();
-
-        run.setFontSize(18);
-        run.setBold(true);
-        run.setText("Tile names");
-        paragraph.setAlignment(ParagraphAlignment.CENTER);
-
-        strings.forEach(s -> document.createParagraph().createRun().setText(s));
-        List<List<Object>> matrix = records.stream().map(r -> Arrays.asList(r.getId(), r.getImages(), r.getOriginal(), r.getTranslation())).collect(Collectors.toList());
+        List<List<Object>> matrix = WordHelper.getNamesTexts().stream().map(r -> Arrays.asList(r.getId(), r.getImages(), r.getOriginal(), r.getTranslation())).collect(Collectors.toList());
 
         createTable(document, Arrays.asList("ID", "Tile", "Original text", "Translated text"), matrix);
 
@@ -133,75 +84,100 @@ public class WordUtils {
         System.out.println(path.toString() + " written successully");
     }
 
-    //TODO add release metrics, comments
-    public static void saveRecords(String title, List<StringRecord> records, List<String> strings, Path path) throws IOException {
+    public static void saveCharacters(String title, String crc32, Path path) throws IOException, InvalidFormatException {
 
         XWPFDocument document = new XWPFDocument();
+        addNoTranslationHeader(document, title, crc32);
 
-        document.createParagraph().createRun().setText(title);
+        List<List<Object>> matrix = WordHelper.getCharactersImages().stream()
+                .map(r -> Arrays.asList(Collections.singletonList(r.getId()), r.getImages(), r.getOriginal())).collect(Collectors.toList());
 
-        strings.forEach(s -> document.createParagraph().createRun().setText(s));
-
-        XWPFTable table = document.createTable();
-
-        XWPFTableRow header = table.getRow(0);
-        header.getCell(0).setText("ID");
-        header.getCell(0).setWidth("20%");
-        header.addNewTableCell().setText("Original text");
-        header.addNewTableCell().setText("Translated text");
-
-        records.forEach(r -> {
-            XWPFTableRow row = table.createRow();
-            row.getCell(0).setText(r.getId());
-            row.addNewTableCell().setText(r.getOriginal());
-            row.addNewTableCell().setText(r.getTranslation());
-        });
-
-        // Customize cell
-        /*int twipsPerInch = 1440;
-        tableRowTwo.setHeight((int) (twipsPerInch * 1 / 10)); //set height 1/10 inch.
-        tableRowTwo.getCtRow().getTrPr().getTrHeightArray(0).setHRule(STHeightRule.AT_LEAST); //set w:hRule="exact"
-
-        //create third row
-        XWPFTableRow tableRowThree = table.createRow();
-        tableRowThree.getCell(0).setText("col one, row three");
-        tableRowThree.getCell(1).setText("col two, row three");
-        tableRowThree.getCell(2).setText("col three, row three");
-
-        twipsPerInch = 1440;
-        tableRowThree.setHeight(twipsPerInch * 1); //set height 1 inch.
-
-        XWPFTableRow rowOne = table.getRow(0);
-        rowOne.getCell(0).removeParagraph(0);
-        XWPFParagraph paragraph = rowOne.getCell(0).addParagraph();
-        setRun(paragraph.createRun(), "Calibre Light", 10, "2b5079", "Some string", false, false);*/
-
-        /*XWPFRun run = table.getRow(1).addNewTableCell().addParagraph().createRun();
-        run.setBold(true);run.setText("Your Text");*/
-
-
-        // Add image
-        /*XWPFParagraph title = document.createParagraph();
-        XWPFRun run = title.createRun();
-        run.setText("Fig.1 A Natural Scene");
-        run.setBold(true);
-        title.setAlignment(ParagraphAlignment.CENTER);
-
-        String imgFile = "0354.bmp";
-        FileInputStream is = new FileInputStream(imgFile);
-        run.addBreak();
-        //run.addPicture(is, XWPFDocument.PICTURE_TYPE_DIB, imgFile, Units.toEMU(200), Units.toEMU(200)); // 200x200 pixels
-        run.addPicture(is, XWPFDocument.PICTURE_TYPE_DIB, imgFile, Units.toEMU(32), Units.toEMU(32)); // 200x200 pixels
-        is.close();*/
-
-//auto-size picture relative to its top-left corner
-        //pict.resize();
-
+        createTable(document, Arrays.asList("ID", "Tiles", "Name"), matrix);
 
         FileOutputStream out = new FileOutputStream(path.toFile());
         document.write(out);
         out.close();
         System.out.println(path.toString() + " written successully");
+    }
+
+    private static void addNoTranslationHeader(XWPFDocument document, String title, String crc32) {
+
+        addTitle(document, title);
+        addBulletsList(document, Collections.singletonList(PropertyName.CRC32.getTextHeader() + crc32));
+        addItalicParagraph(document, "//TODO not need to translate"); // TODO
+    }
+
+    private static void addHeader(XWPFDocument document, String title, String crc32) {
+
+        addTitle(document, title);
+        addBullets(document, crc32);
+        addItalicParagraph(document, "//TODO about available charsets"); // TODO
+    }
+
+    private static void addTitle(XWPFDocument document, String title) {
+
+        XWPFParagraph paragraph = document.createParagraph();
+        XWPFRun run = paragraph.createRun();
+
+        run.setFontSize(18);
+        run.setBold(true);
+        run.setText(title);
+        paragraph.setAlignment(ParagraphAlignment.CENTER);
+    }
+
+    private static void addItalicParagraph(XWPFDocument document, String text) {
+
+        XWPFParagraph paragraph = document.createParagraph();
+        XWPFRun run = paragraph.createRun();
+
+        run.setItalic(true);
+        run.setText(text);
+    }
+
+    private static void addBullets(XWPFDocument document, String crc32) {
+
+        List<String> items = Arrays.asList(
+                PropertyName.CRC32.getTextHeader() + crc32,
+                PropertyName.SRC_CHARSET.getTextHeader() + Yodesk.getInputCharset(), // Cp1252
+                PropertyName.DST_CHARSET.getTextHeader() + Yodesk.getOutputCharset() // Cp1251
+        );
+
+        addBulletsList(document, items);
+    }
+
+    private static void addBulletsList(XWPFDocument document, List<String> items) {
+
+        CTAbstractNum cTAbstractNum = CTAbstractNum.Factory.newInstance();
+        //Next we set the AbstractNumId. This requires care.
+        //Since we are in a new document we can start numbering from 0.
+        //But if we have an existing document, we must determine the next free number first.
+        cTAbstractNum.setAbstractNumId(BigInteger.valueOf(0));
+
+        // Bullet list
+        CTLvl cTLvl = cTAbstractNum.addNewLvl();
+        cTLvl.addNewNumFmt().setVal(STNumberFormat.BULLET);
+        cTLvl.addNewLvlText().setVal("•");
+
+        // Decimal list
+        /*CTLvl cTLvl = cTAbstractNum.addNewLvl();
+        cTLvl.addNewNumFmt().setVal(STNumberFormat.DECIMAL);
+        cTLvl.addNewLvlText().setVal("%1.");
+        cTLvl.addNewStart().setVal(BigInteger.valueOf(1));*/
+
+        XWPFAbstractNum abstractNum = new XWPFAbstractNum(cTAbstractNum);
+
+        XWPFNumbering numbering = document.createNumbering();
+
+        BigInteger abstractNumID = numbering.addAbstractNum(abstractNum);
+
+        BigInteger numID = numbering.addNum(abstractNumID);
+
+        for (String string : items) {
+            XWPFParagraph paragraph = document.createParagraph();
+            paragraph.setNumID(numID);
+            XWPFRun run = paragraph.createRun();
+            run.setText(string);
+        }
     }
 
     private static void createTable(XWPFDocument document, List<String> titles, List<List<Object>> objectsMatrix) throws IOException, InvalidFormatException {
@@ -285,37 +261,48 @@ public class WordUtils {
 
     public static WordRecord loadRecords(Path path) throws IOException {
 
-        List<StringRecord> records = new ArrayList<>();
+        try (FileInputStream fis = new FileInputStream(path.toFile())) {
+            XWPFDocument doc = new XWPFDocument(fis);
+            XWPFTable table = doc.getTables().get(0);
 
-        FileInputStream fis = new FileInputStream(path.toFile());
-        XWPFDocument doc = new XWPFDocument(fis);
-        XWPFTable table = doc.getTables().get(0);
+            List<StringRecord> records = new ArrayList<>();
 
-        for (int i = 1; i < table.getRows().size(); i++) {
-            XWPFTableRow row = table.getRows().get(i);
-            records.add(new StringRecord(row.getCell(0).getText(), row.getCell(1).getText(), row.getCell(2).getText()));
+            for (int i = 1; i < table.getRows().size(); i++) {
+                XWPFTableRow row = table.getRows().get(i);
+                records.add(new StringRecord(row.getCell(0).getText(), row.getCell(1).getText(), row.getCell(2).getText()));
+            }
+
+            return formatRecord(doc, records);
         }
-
-        List<String> strings = doc.getParagraphs().stream().map(XWPFParagraph::getText).collect(Collectors.toList());
-
-        return new WordRecord(strings, records);
     }
 
     public static WordRecord loadNames(Path path) throws IOException {
 
-        List<StringRecord> records = new ArrayList<>();
+        try (FileInputStream fis = new FileInputStream(path.toFile())) {
+            XWPFDocument doc = new XWPFDocument(fis);
+            XWPFTable table = doc.getTables().get(0);
 
-        FileInputStream fis = new FileInputStream(path.toFile());
-        XWPFDocument doc = new XWPFDocument(fis);
-        XWPFTable table = doc.getTables().get(0);
+            List<StringRecord> records = new ArrayList<>();
 
-        for (int i = 1; i < table.getRows().size(); i++) {
-            XWPFTableRow row = table.getRows().get(i);
-            records.add(new StringRecord(row.getCell(0).getText(), row.getCell(2).getText(), row.getCell(3).getText()));
+            for (int i = 1; i < table.getRows().size(); i++) {
+                XWPFTableRow row = table.getRows().get(i);
+                records.add(new StringRecord(row.getCell(0).getText(), row.getCell(2).getText(), row.getCell(3).getText()));
+            }
+
+            return formatRecord(doc, records);
         }
+    }
 
-        List<String> strings = doc.getParagraphs().stream().map(XWPFParagraph::getText).collect(Collectors.toList());
+    private static WordRecord formatRecord(XWPFDocument doc, List<StringRecord> records) {
 
-        return new WordRecord(strings, records);
+        List<String> numbers = doc.getParagraphs().stream().filter(p -> p.getNumID() != null).map(XWPFParagraph::getText).collect(Collectors.toList());
+        List<String> strings = doc.getParagraphs().stream().filter(p -> p.getNumID() == null).map(p -> p.getNumID() + p.getText()).collect(Collectors.toList());
+
+        Map<PropertyName, String> props = new HashMap<>();
+
+        Arrays.asList(PropertyName.values()).forEach(p -> numbers.stream().filter(n -> n.startsWith(p.getTextHeader())).findFirst()
+                .ifPresent(value -> props.put(p, value.replace(p.getTextHeader(), "").trim())));
+
+        return new WordRecord(strings, numbers, props, records);
     }
 }

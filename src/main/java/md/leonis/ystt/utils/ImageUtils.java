@@ -10,8 +10,21 @@ import java.awt.image.IndexColorModel;
 import java.awt.image.WritableRaster;
 
 import static md.leonis.config.Config.palette;
+import static md.leonis.config.Config.yodesk;
 
 public class ImageUtils {
+
+    private static final int TILE_SIZE = 32;
+
+    public static BufferedImage getTile(int tileId) {
+        return getTile(tileId, Config.icm0);
+    }
+
+    public static BufferedImage getTile(int tileId, IndexColorModel icm) {
+
+        int position = yodesk.getTiles().getTilePixelsPosition(tileId);
+        return ImageUtils.readBPicture(yodesk.getTiles().getRawTiles(), position, TILE_SIZE, TILE_SIZE, icm);
+    }
 
     public static WritableImage readWPicture(byte[] bytes, int position, int width, int height, Color transparentColor) {
 

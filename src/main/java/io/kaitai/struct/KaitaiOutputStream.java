@@ -528,7 +528,7 @@ public abstract class KaitaiOutputStream implements Closeable {
 
     public void writeString(String string) {
 
-        for (byte b : string.getBytes(Charset.forName(Yodesk.getCharset()))) {
+        for (byte b : string.getBytes(Charset.forName(Yodesk.getOutputCharset()))) {
             writeS1(b);
         }
     }

@@ -59,10 +59,12 @@ public class Yodesk extends KaitaiStruct {
     private final Yodesk root;
     private final KaitaiStruct parent;
 
-    private static String charset = "Cp1252";
+    private static String inputCharset = "Cp1252";
+    private static String outputCharset = "Cp1252";
 
     public static Yodesk fromFile(String fileName, String charset) throws IOException {
-        Yodesk.charset = charset;
+        Yodesk.inputCharset = charset;
+        Yodesk.outputCharset = charset;
         return new Yodesk(new RandomAccessFileKaitaiInputStream(fileName));
     }
 
@@ -229,11 +231,19 @@ public class Yodesk extends KaitaiStruct {
         return parent;
     }
 
-    public static String getCharset() {
-        return charset;
+    public static String getInputCharset() {
+        return inputCharset;
     }
 
-    public static void setCharset(String charset) {
-        Yodesk.charset = charset;
+    public static void setInputCharset(String charset) {
+        inputCharset = charset;
+    }
+
+    public static String getOutputCharset() {
+        return outputCharset;
+    }
+
+    public static void setOutputCharset(String charset) {
+        outputCharset = charset;
     }
 }

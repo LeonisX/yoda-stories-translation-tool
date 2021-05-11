@@ -12,9 +12,6 @@ An original version: https://github.com/LeonisX/YExplorer
 
 ## TODO
 
-* Source character encoding: Cp1252
-* Destination character encoding: Cp1251
-
 * Doc: https://docs.oracle.com/javase/8/docs/technotes/guides/intl/encoding.doc.html
 
 * Show puzzles in UI (table + tiles)
