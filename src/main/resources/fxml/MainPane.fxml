@@ -686,6 +686,7 @@
                                                         onDragEntered="#mapEditorCanvasDragEntered"
                                                         onDragExited="#mapEditorCanvasDragExited"
                                                         onDragDropped="#mapEditorCanvasDragDropped"
+                                                        onMouseMoved="#mapEditorCanvasMouseMoved"
                                                 />
                                                 <ScrollPane fx:id="mapEditorTilesScrollPane" layoutX="700.0"
                                                             layoutY="15.0" prefHeight="392.0"
@@ -694,6 +695,17 @@
                                                               prefHeight="390.0" prefWidth="463.0"
                                                               prefWrapLength="482.0" hgap="1.0" vgap="1.0"/>
                                                 </ScrollPane>
+                                                <Label visible="false">
+                                                    <contextMenu>
+                                                        <ContextMenu fx:id="mapEditorContextMenu">
+                                                            <items>
+                                                                <MenuItem onAction="#clearBottomLayer" mnemonicParsing="false" text="Clear bottom layer"/>
+                                                                <MenuItem onAction="#clearMiddleLayer" mnemonicParsing="false" text="Clear middle layer"/>
+                                                                <MenuItem onAction="#clearTopLayer" mnemonicParsing="false" text="Clear top layer"/>
+                                                            </items>
+                                                        </ContextMenu>
+                                                    </contextMenu>
+                                                </Label>
                                             </AnchorPane>
                                         </Tab>
                                         <Tab text="Text Translation">

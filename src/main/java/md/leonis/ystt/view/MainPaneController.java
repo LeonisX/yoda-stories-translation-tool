@@ -158,6 +158,10 @@ public class MainPaneController {
     public ScrollPane mapEditorTilesScrollPane;
     public FlowPane mapEditorTilesFlowPane;
     public Button undoMapEdit;
+    public ContextMenu mapEditorContextMenu;
+
+    private int mapEditorX;
+    private int mapEditorY;
 
     public Button dumpActionsTextToDocx;
     public Button loadTranslatedActionsText;
@@ -297,6 +301,7 @@ public class MainPaneController {
         mapEditorListView.setItems(FXCollections.observableList(yodesk.getZones().getZones().stream().map(m -> "Map #" + m.getIndex()).collect(Collectors.toList())));
         mapEditorListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> drawEditZone());
         mapEditorListView.getSelectionModel().select(0);
+        mapEditorCanvas.setOnContextMenuRequested(e -> mapEditorContextMenu.show((Node) e.getSource(), e.getScreenX(), e.getScreenY()));
         drawMapEditorTiles();
 
         actionTexts = getActionsTexts();
@@ -753,21 +758,42 @@ public class MainPaneController {
             int tileId = Integer.parseInt(db.getString());
             int x = ((int) event.getX()) / TILE_SIZE;
             int y = ((int) event.getY()) / TILE_SIZE;
-
             int layerId = Integer.parseInt((String) mapLayerToggleGroup.getSelectedToggle().getUserData());
 
-            Zone zone = getEditorZone();
-            int oldValue = zone.getTileIds().get(y * zone.getWidth() + x).getColumn().get(layerId);
-
-            modifyZoneSpot(zone.getIndex(), x, y, layerId, tileId);
-
-            addToMapsHistory(zone.getIndex(), x, y, layerId, oldValue, tileId);
-
-            undoMapEdit.setVisible(true);
+            changeZoneSpot(x, y, layerId, tileId);
         }
         event.setDropCompleted(true);
 
         event.consume();
+    }
+
+    public void mapEditorCanvasMouseMoved(MouseEvent event) {
+        mapEditorX = (int) (event.getX() / TILE_SIZE);
+        mapEditorY = (int) (event.getY() / TILE_SIZE);
+    }
+
+    public void clearBottomLayer() {
+        changeZoneSpot(mapEditorX, mapEditorY, 0, 0xFFFF);
+    }
+
+    public void clearMiddleLayer() {
+        changeZoneSpot(mapEditorX, mapEditorY, 1, 0xFFFF);
+    }
+
+    public void clearTopLayer() {
+        changeZoneSpot(mapEditorX, mapEditorY, 2, 0xFFFF);
+    }
+
+    private void changeZoneSpot(int x, int y, int layerId, int tileId) {
+
+        Zone zone = getEditorZone();
+        int oldValue = zone.getTileIds().get(y * zone.getWidth() + x).getColumn().get(layerId);
+
+        modifyZoneSpot(zone.getIndex(), x, y, layerId, tileId);
+
+        addToMapsHistory(zone.getIndex(), x, y, layerId, oldValue, tileId);
+
+        undoMapEdit.setVisible(true);
     }
 
     private void addToMapsHistory(int zoneId, int x, int y, int layerId, int oldValue, int newValue) {
@@ -803,6 +829,10 @@ public class MainPaneController {
         column.set(layerId, tileId);
 
         drawZoneSpot(mapEditorCanvas, zone, x, y);
+
+        if (zone.getIndex() == mapsListView.getSelectionModel().getSelectedIndex()) {
+            drawZoneSpot(mapCanvas, zone, x, y);
+        }
     }
 
 
@@ -850,6 +880,8 @@ public class MainPaneController {
     }
 
     private void drawZone(Canvas canvas, Zone zone) {
+
+        fillZone(canvas, transparentColor);
 
         if (bottomCheckBox.isSelected()) {
             drawZoneLayer(canvas, zone, 0);
@@ -1893,6 +1925,10 @@ public class MainPaneController {
 
     private void drawBorderOnCanvas(Canvas canvas, int xOffset, int yOffset, Color borderColor) {
         ImageUtils.drawBorderOnCanvas(canvas, xOffset, yOffset, borderColor);
+    }
+
+    private void fillZone(Canvas canvas, Color color) {
+        ImageUtils.fillCanvas(canvas, color);
     }
 
     private void fillZoneTile(Canvas canvas, int xOffset, int yOffset, Color color) {
