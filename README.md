@@ -21,7 +21,6 @@ An original version: https://github.com/LeonisX/YExplorer
 
 * Scan all translated IACTs for lost ¥ Ґ, ¢ ў
 * Probably replace ¥ with Ґ, ¢ with ў
-* Show tile IDs for 3 layers
 * Draw map icon from minimap
 * Log
 * HEX

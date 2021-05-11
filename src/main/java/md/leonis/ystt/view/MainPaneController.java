@@ -770,6 +770,10 @@ public class MainPaneController {
     public void mapEditorCanvasMouseMoved(MouseEvent event) {
         mapEditorX = (int) (event.getX() / TILE_SIZE);
         mapEditorY = (int) (event.getY() / TILE_SIZE);
+
+        Zone zone = getEditorZone();
+        List<Integer> column = zone.getTileIds().get(mapEditorY * zone.getWidth() + mapEditorX).getColumn();
+        statusLabel.setText(String.format("Bottom tileId: %s; Middle tileId: %s; Top tileId: %s", column.get(0), column.get(1), column.get(2)));
     }
 
     public void clearBottomLayer() {
