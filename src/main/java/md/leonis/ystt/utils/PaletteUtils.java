@@ -39,22 +39,22 @@ public class PaletteUtils {
     These numbers are respectively the Red, Green and Blue values (the so-called RGB palette).
     For example, the color white would be '255 255 255' and black '0 0 0' (255 is the most bright, 0 the less bright)
     */
-    public static void saveToFile(int[] gamePalette, Path path) throws IOException {
-        saveToFile(gamePalette, path.toFile());
+    public static void saveToFile(int[] palette, Path path) throws IOException {
+        saveToFile(palette, path.toFile());
     }
 
-    public static void saveToFile(int[] gamePalette, File file) throws IOException {
+    public static void saveToFile(int[] palette, File file) throws IOException {
 
         FileWriter fileWriter = new FileWriter(file);
         PrintWriter printWriter = new PrintWriter(fileWriter);
         printWriter.println("JASC-PAL");
         printWriter.println("0100");
-        printWriter.println(gamePalette.length / 4);
+        printWriter.println(palette.length / 4);
 
-        for (int i = 0; i < gamePalette.length; i += 4) {
-            int r = gamePalette[i + 2];
-            int g = gamePalette[i + 1];
-            int b = gamePalette[i];
+        for (int i = 0; i < palette.length; i += 4) {
+            int r = palette[i + 2];
+            int g = palette[i + 1];
+            int b = palette[i];
             printWriter.printf("%s %s %s\n", r, g, b);
         }
         printWriter.close();

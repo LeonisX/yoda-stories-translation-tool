@@ -12,8 +12,6 @@ An original version: https://github.com/LeonisX/YExplorer
 
 ## TODO
 
-* Export also and FUCHSIA palette
-
 * Source character encoding: Cp1252
 * Destination character encoding: Cp1251
 

@@ -1084,7 +1084,7 @@ public class MainPaneController {
         Config.transparentColor = (Color) transparentColorToggleGroup.getSelectedToggle().getUserData();
         Config.updatePalette();
         ObservableList<Node> children = tilesFlowPane.getChildren();
-        for (int i = 0; i < children.size() - 1; i++) {
+        for (int i = 0; i < children.size() - 2; i++) {
             ImageView imageView = (ImageView) children.get(i);
             imageView.setImage(drawTileOnImage(i));
         }
@@ -1183,6 +1183,7 @@ public class MainPaneController {
     public void dumpPaletteButtonButtonClick() {
         try {
             PaletteUtils.saveToFile(gamePalette, opath.resolve("palette.pal"));
+            PaletteUtils.saveToFile(fuchsiaPalette, opath.resolve("palette-fuchsia.pal"));
         } catch (Exception e) {
             JavaFxUtils.showAlert("Palette saving error", e);
         }

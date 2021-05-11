@@ -11,6 +11,7 @@ import java.awt.image.IndexColorModel;
 import java.io.*;
 import java.lang.reflect.Type;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
@@ -83,6 +84,8 @@ public class Config {
             0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
             0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF, 0xFF, 0x00};
 
+    public static int[] fuchsiaPalette = new int[1024];
+
     public static Color[] palette = new Color[256];
 
     public static byte[] ra = new byte[256];
@@ -113,6 +116,12 @@ public class Config {
     public static Yodesk yodesk;
 
     public static void updatePalette() {
+
+        fuchsiaPalette = Arrays.copyOf(gamePalette, gamePalette.length); // BGRA
+        fuchsiaPalette[0] = 0xFF;
+        fuchsiaPalette[1] = 0x00;
+        fuchsiaPalette[2] = 0xFF;
+        fuchsiaPalette[3] = 0x00;
 
         for (int i = 0; i < 1024; i += 4) {
             int id = i / 4;
