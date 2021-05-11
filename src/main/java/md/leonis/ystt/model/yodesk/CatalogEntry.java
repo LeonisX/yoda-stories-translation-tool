@@ -180,6 +180,12 @@ public class CatalogEntry extends KaitaiStruct {
         return size;
     }
 
+    public void setSize(long size) {
+        long diff = fullSize - size;
+        this.size = size;
+        this.fullSize = fullSize + diff;
+    }
+
     public int getPosition() {
         return position;
     }

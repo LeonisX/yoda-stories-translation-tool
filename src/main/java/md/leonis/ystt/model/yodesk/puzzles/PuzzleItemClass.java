@@ -8,6 +8,7 @@ public enum PuzzleItemClass {
     KEYCARD(0),
     TOOL(1),
     PART(2),        // PUZZLE_ITEM_RARE
+    UNKNOWN(3),
     VALUABLE(4),    // PUZZLE_ITEM
     NONE(4294967295L);
 

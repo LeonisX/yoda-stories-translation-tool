@@ -88,15 +88,9 @@ public class Tiles extends KaitaiStruct {
 
         rawTiles = Arrays.copyOf(rawTiles, rawTiles.length + tiles.get(0).byteSize());
         tilesEntries.getTiles().add(new Tile(tilesEntries, root));
+        parent.setSize(rawTiles.length);
     }
 
-    public void addTile(byte[] pixels) {
-
-        rawTiles = Arrays.copyOf(rawTiles, rawTiles.length + tiles.get(0).byteSize());
-        tilesEntries.getTiles().add(new Tile(pixels, tilesEntries, root));
-    }
-
-    //TODO need to test this
     public void replaceTile(int tileId, byte[] pixels) {
 
         getTiles().get(tileId).setPixels(pixels);

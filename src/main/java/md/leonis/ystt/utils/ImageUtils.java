@@ -142,20 +142,20 @@ public class ImageUtils {
         return result.snapshot(null, null);
     }
 
-    public static byte[] getBytes(Canvas canvas, int x, int y, int width, int height) {
+    public static byte[] getBytes(Canvas canvas, int x, int y, int width, int height, Color transparentColor) {
 
         WritableImage snap = canvas.snapshot(null, null);
-        return getBytes(snap, x, y, width, height);
+        return getBytes(snap, x, y, width, height, transparentColor);
     }
 
-    public static byte[] getBytes(WritableImage image) {
+    public static byte[] getBytes(WritableImage image, Color transparentColor) {
 
         int width = (int) image.getWidth();
         int height = (int) image.getHeight();
-        return getBytes(image, 0, 0, width, height);
+        return getBytes(image, 0, 0, width, height, transparentColor);
     }
 
-    public static byte[] getBytes(WritableImage image, int x, int y, int width, int height) {
+    public static byte[] getBytes(WritableImage image, int x, int y, int width, int height, Color transparentColor) {
 
         byte[] raster = new byte[width * height];
 
@@ -170,6 +170,9 @@ public class ImageUtils {
                         id = i;
                         break;
                     }
+                }
+                if (color.equals(transparentColor)) {
+                    id = 0;
                 }
                 raster[k++] = (byte) (id & 0xff);
             }

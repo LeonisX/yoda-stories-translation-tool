@@ -395,7 +395,7 @@ public class MainPaneController {
         try {
             tilesFlowPane.getChildren().clear();
             for (int i = 0; i < yodesk.getTiles().getTiles().size(); i++) {
-                tilesFlowPane.getChildren().add(newTile(i));
+                tilesFlowPane.getChildren().add(newTile(i, true));
             }
             tilesFlowPane.getChildren().add(addNewTile);
         } catch (Exception e) {
@@ -407,7 +407,7 @@ public class MainPaneController {
 
         flowPane.getChildren().clear();
         for (Integer tileId : tileIds) {
-            flowPane.getChildren().add(newTile(tileId));
+            flowPane.getChildren().add(newTile(tileId, true));
         }
     }
 
@@ -416,21 +416,23 @@ public class MainPaneController {
         try {
             yodesk.getTiles().addTile();
             int tileId = yodesk.getTiles().getTiles().size() - 1;
-            tilesFlowPane.getChildren().add(tileId, newTile(tileId));
-            mapEditorTilesFlowPane.getChildren().add(tileId, newTile(tileId));
+            tilesFlowPane.getChildren().add(tileId, newTile(tileId, true));
+            mapEditorTilesFlowPane.getChildren().add(tileId, newTile(tileId, false));
             usedTiles.add(false);
         } catch (Exception e) {
             JavaFxUtils.showAlert("Error adding tiles", e);
         }
     }
 
-    private ImageView newTile(int tileId) {
+    private ImageView newTile(int tileId, boolean contextMenu) {
 
         ImageView image = new ImageView(drawTileOnImage(tileId));
         image.setUserData(tileId);
         image.setOnMouseEntered(mouseEnteredHandler);
         image.setOnMouseExited(mouseExitedHandler);
-        image.setOnContextMenuRequested(e -> tilesContextMenu.show((Node) e.getSource(), e.getScreenX(), e.getScreenY()));
+        if (contextMenu) {
+            image.setOnContextMenuRequested(e -> tilesContextMenu.show((Node) e.getSource(), e.getScreenX(), e.getScreenY()));
+        }
 
         image.setOnDragDetected(event -> {
             Dragboard db = image.startDragAndDrop(TransferMode.ANY);
@@ -465,7 +467,7 @@ public class MainPaneController {
                 WritableImage wi = ImageUtils.snapshot(clipboardCanvas, x, y, TILE_SIZE, TILE_SIZE);
                 image.setImage(wi);
                 ((ImageView) mapEditorTilesFlowPane.getChildren().get(tileId)).setImage(wi);
-                yodesk.getTiles().replaceTile(tileId, ImageUtils.getBytes(wi));
+                yodesk.getTiles().replaceTile(tileId, ImageUtils.getBytes(wi, transparentColor));
             }
             event.setDropCompleted(true);
 
@@ -863,7 +865,7 @@ public class MainPaneController {
             drawZoneLayer(canvas, zone, 2);
         }
         if (showMapHotspotsCheckBox.isSelected()) {
-            zone.getHotspots().forEach(h -> drawBorderOnCanvas(canvas, h.getX() * TILE_SIZE, h.getY() * TILE_SIZE, Color.rgb(255, 0, 255)));
+            zone.getHotspots().forEach(h -> drawBorderOnCanvas(canvas, h.getX() * TILE_SIZE, h.getY() * TILE_SIZE, Color.FUCHSIA));
         }
     }
 
