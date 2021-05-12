@@ -53,6 +53,7 @@ import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
@@ -65,6 +66,8 @@ import static md.leonis.ystt.utils.ImageUtils.readWPicture;
 import static md.leonis.ystt.utils.WordHelper.getActionsTexts;
 
 public class MainPaneController {
+
+    private static final int STANDARD_PALETTE_LOCATION = 0x550F0;
 
     public MenuItem openMenuItem;
     public MenuItem saveMenuItem;
@@ -216,7 +219,7 @@ public class MainPaneController {
     private File clipboardFile;
     private BufferedImage clipboardBufferedImage = new BufferedImage(288, 288, BufferedImage.TYPE_BYTE_INDEXED, icm);
 
-    public static Dump dtaDump;
+    private static long dtaSize;
     public static Dump exeDump;
     public static String exeCrc32;
     public static String dtaCrc32;
@@ -275,7 +278,7 @@ public class MainPaneController {
         // Common information, sections
         versionLabel.setText(yodesk.getVersion().getVersion());
         nameLabel.setText(release.getTitle());
-        fileSizeLabel.setText(dtaDump.size() + " / " + exeDump.size());
+        fileSizeLabel.setText(dtaSize + " / " + exeDump.size());
         crc32Label.setText(dtaCrc32 + " / " + exeCrc32);
         charsetLabel.setText(release.getCharset());
 
@@ -1427,14 +1430,6 @@ public class MainPaneController {
         if (dumpActionsTextCheckBox.isSelected()) {
             dumpActionsTextToDocxClick();
         }
-        //TODO uncomment, if need
-        //ViewMap(MapsListStringGrid.Row);
-    }
-
-
-    //TODO need to test signed
-    private String IntToBin(long value) {
-        return Long.toBinaryString(value);
     }
 
     public void dumpActionsTextToDocxClick() {
@@ -1896,8 +1891,7 @@ public class MainPaneController {
             throw new RuntimeException("Palette isn't found in EXE file");
         }
 
-        //TODO const
-        boolean otherPaletteLocation = (0x550F0 != paletteStartIndex);
+        boolean otherPaletteLocation = (STANDARD_PALETTE_LOCATION != paletteStartIndex);
 
         Log.newLine();
         Log.debug("EXE:");
@@ -1914,14 +1908,13 @@ public class MainPaneController {
 
         dumpPalette(paletteStartIndex);
 
-        dtaDump = new Dump(dtaPath);
-        dtaDump.setByteOrder(ByteOrder.LITTLE_ENDIAN);
+        dtaSize = Files.size(dtaFile);
 
         Log.newLine();
         Log.debug("Sections:");
         Log.debug("---------");
         Log.newLine();
-        Log.debug("Size: " + dtaDump.size());
+        Log.debug("Size: " + dtaSize);
         Log.debug("CRC-32: " + dtaCrc32);
         Log.debug("DTA revision: " + release.getTitle());
     }
@@ -1930,11 +1923,6 @@ public class MainPaneController {
 
         gamePalette = PaletteUtils.dumpBGRAPalette(exeDump.getDump(), paletteStartIndex);
         Config.updatePalette();
-    }
-
-
-    public void SaveToFile(String fileName) throws IOException {
-        dtaDump.saveToFile(fileName);
     }
 
     public static String intToHex(int value, int size) {
