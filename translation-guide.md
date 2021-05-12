@@ -17,7 +17,6 @@ Yoda Stories Translation Guide
 * Puzzles
 * Tile Names
 
-[](#charset)
 
 ### Character encodings
 
@@ -58,7 +57,7 @@ Source character encoding (dumping) -> Unicode (internal representation) -> Dest
 
 #### Word files
 
-Если вы обратите внимание на [crcs.json](/src/main/java/resources/crcs.json), то в нём как раз и описаны исходные кодировки для каждого известного релиза игры.
+Если вы обратите внимание на [crcs.json](/src/main/resources/crcs.json), то в нём как раз и описаны исходные кодировки для каждого известного релиза игры.
 
 Она используется при дампинге текста из файла данных yodesk.dta.
 

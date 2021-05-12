@@ -106,14 +106,25 @@ public class WordUtils {
 
         addTitle(document, title);
         addBulletsList(document, Collections.singletonList(PropertyName.CRC32.getTextHeader() + crc32));
-        addItalicParagraph(document, "//TODO not need to translate"); // TODO
+        addItalicParagraph(document, "These values should not be translated. ");
+    }
+
+    private static XWPFParagraph addItalicParagraph(XWPFDocument document, String text) {
+
+        XWPFParagraph paragraph = document.createParagraph();
+        XWPFRun run = paragraph.createRun();
+        run.setItalic(true);
+        run.setText(text);
+
+        return paragraph;
     }
 
     private static void addHeader(XWPFDocument document, String title, String crc32) {
 
         addTitle(document, title);
         addBullets(document, crc32);
-        addItalicParagraph(document, "//TODO about available charsets"); // TODO
+        XWPFParagraph paragraph = addItalicParagraph(document, "You can read about the available code pages "); // TODO
+        addItalicHyperlinkParagraph(paragraph, "here", "https://github.com/LeonisX/yoda-stories-translation-tool/blob/main/translation-guide.md#character-encodings"); // TODO
     }
 
     private static void addTitle(XWPFDocument document, String title) {
@@ -127,12 +138,13 @@ public class WordUtils {
         paragraph.setAlignment(ParagraphAlignment.CENTER);
     }
 
-    private static void addItalicParagraph(XWPFDocument document, String text) {
+    private static void addItalicHyperlinkParagraph(XWPFParagraph paragraph, String text, String hyperlink) {
 
-        XWPFParagraph paragraph = document.createParagraph();
-        XWPFRun run = paragraph.createRun();
-
+        XWPFHyperlinkRun run = paragraph.createHyperlinkRun(hyperlink);
         run.setItalic(true);
+        run.setUnderline(UnderlinePatterns.SINGLE);
+        run.setUnderlineColor("0000FF");
+        run.setColor("0000FF");
         run.setText(text);
     }
 

@@ -4,9 +4,11 @@ Utility Yoda Stories Translation Tool
 
 **Current status: read/modify, dump, translate DTA**
 
-**Current stage: polishing**
+**Current stage: polishing, testing**
 
 **Powered with Kaitai structure format**
+
+[Read Yoda Stories Translation Guide](translation-guide.md)
 
 An original version: https://github.com/LeonisX/YExplorer
 
