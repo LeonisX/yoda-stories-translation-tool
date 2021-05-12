@@ -1495,7 +1495,12 @@ public class MainPaneController {
     public void replaceActionTextClick() {
 
         try {
-            actionTexts.forEach(a -> a.setTranslation(a.getTranslation().replace("[CR2]", "[CR][CR]").replace("[CR]", "\r\n")));
+            actionTexts.forEach(a -> a.setTranslation(a.getTranslation()
+                    .replace("\r\n", "\n")
+                    .replace("\n", "\r\n")
+                    .replace("[CR2]", "[CR][CR]")
+                    .replace("[CR]", "\r\n"))
+            );
 
             if (trimActionsTrailSpacesCheckBox.isSelected()) {
                 actionTexts.forEach(a -> a.setTranslation(a.getTranslation().trim()));
@@ -1531,7 +1536,7 @@ public class MainPaneController {
             strings.add("Broken or missing identifiers");
         }
         if (translatedRecords.stream().anyMatch(tr -> records.stream()
-                .noneMatch(r -> r.getOriginal().trim().equals(tr.getOriginal().trim()) && r.getId().trim().equals(tr.getId().trim())))) {
+                .allMatch(r -> r.getOriginal().trim().equals(tr.getOriginal().trim()) && r.getId().trim().equals(tr.getId().trim())))) {
             strings.add("Original text does not match IDs");
         }
 
@@ -1640,7 +1645,12 @@ public class MainPaneController {
     public void replacePuzzlesTextClick() {
 
         try {
-            puzzlesTexts.forEach(t -> t.setTranslation(t.getTranslation().replace("[CR2]", "[CR][CR]").replace("[CR]", "\r\n")));
+            puzzlesTexts.forEach(t -> t.setTranslation(t.getTranslation()
+                    .replace("\r\n", "\n")
+                    .replace("\n", "\r\n")
+                    .replace("[CR2]", "[CR][CR]")
+                    .replace("[CR]", "\r\n"))
+            );
 
             if (trimPuzzlesTrailSpacesCheckBox.isSelected()) {
                 puzzlesTexts.forEach(t -> t.setTranslation(t.getTranslation().trim()));
