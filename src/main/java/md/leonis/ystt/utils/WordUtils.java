@@ -58,7 +58,9 @@ public class WordUtils {
                 objects.add(r.getImages().get(0));
             }
 
-            return Arrays.asList(objects, r.getOriginal(), r.getTranslation());
+            List<String> lines = Arrays.stream(r.getOriginal().replace("\r\n", "\t\r\n\t").split("\t")).collect(Collectors.toList());
+
+            return Arrays.asList(objects, lines, r.getTranslation());
         }).collect(Collectors.toList());
 
         createTable(document, Arrays.asList("Info", "Original", "Translated"), matrix);
