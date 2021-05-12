@@ -12,8 +12,6 @@ An original version: https://github.com/LeonisX/YExplorer
 
 ## TODO
 
-* Doc: https://docs.oracle.com/javase/8/docs/technotes/guides/intl/encoding.doc.html
-
 * Show puzzles in UI (table + tiles)
 
 * Scan all translated IACTs for lost ¥ Ґ, ¢ ў

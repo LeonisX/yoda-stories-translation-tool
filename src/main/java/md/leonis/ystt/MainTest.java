@@ -7,12 +7,27 @@ import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class MainTest {
 
     public static void main(String[] args) throws IOException {
+
+        byte[] bytes = new byte[256];
+
+        for (int i = 128; i < 256; i++) {
+            bytes[i] = (byte) i;
+        }
+
+        System.out.println("ASCII:  " + new String(bytes, StandardCharsets.US_ASCII));
+        System.out.println("Cp1252: " + new String(bytes, Charset.forName("Cp1252")));
+        System.out.println("Cp1250: " + new String(bytes, Charset.forName("Cp1250")));
+        System.out.println("Cp1251: " + new String(bytes, Charset.forName("Cp1251")));
+
 
         //ExcelUtils.saveCharacters(new Yodesk(new ByteBufferKaitaiInputStream("D:\\Working\\_Yoda\\YExplorer\\other\\Yoda Stories (14.02.1997)\\Yodesk.dta")));
 
@@ -31,7 +46,7 @@ public class MainTest {
         out.close();
         document.close();*/
 
-        FileInputStream fis = new FileInputStream("CreateWordSimplestNumberingList.docx");
+        /*FileInputStream fis = new FileInputStream("CreateWordSimplestNumberingList.docx");
         XWPFDocument doc = new XWPFDocument(fis);
         XWPFNumbering numbering = doc.getNumbering();
 
@@ -47,7 +62,7 @@ public class MainTest {
         List<String> strings = doc.getParagraphs().stream().filter(p -> p.getNumID() == null).map(p -> p.getNumID() + p.getText()).collect(Collectors.toList());
 
         System.out.println(numbers);
-        System.out.println(strings);
+        System.out.println(strings);*/
     }
 
 
