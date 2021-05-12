@@ -16,7 +16,6 @@ An original version: https://github.com/LeonisX/YExplorer
 
 * Show puzzles in UI (table + tiles)
 
-* Scan all translated IACTs for lost ¥ Ґ, ¢ ў
 * Probably replace ¥ with Ґ, ¢ with ў
 * Draw map icon from minimap
 * Log

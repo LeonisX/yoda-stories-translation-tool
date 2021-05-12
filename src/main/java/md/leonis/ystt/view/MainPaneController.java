@@ -1539,11 +1539,29 @@ public class MainPaneController {
                 .allMatch(r -> r.getOriginal().trim().equals(tr.getOriginal().trim()) && r.getId().trim().equals(tr.getId().trim())))) {
             strings.add("Original text does not match IDs");
         }
+        translatedRecords.forEach(r -> {
+            if (StringUtils.countMatches(r.getOriginal(), "¥") != StringUtils.countMatches(r.getTranslation(), "¥")) {
+                strings.add("Missing variable(s) ¥: " + r.getId());
+            }
+            if (StringUtils.countMatches(r.getOriginal(), "¢") != StringUtils.countMatches(r.getTranslation(), "¢")) {
+                strings.add("Missing variable(s) ¢: " + r.getId());
+            }
+        });
 
         if (!strings.isEmpty()) {
+
+            List<String> strings2 = strings;
+
+            int size = strings2.size();
+
+            if (size > 40) {
+                strings2 = strings.subList(0, 40);
+                strings2.add("... and " + (size - 40) + " other exceptions...");
+            }
+
             JavaFxUtils.showAlert(strict ? "The text has not been replaced" : "Replacement of text was done with remarks",
                     "During the check, the following errors were identified:",
-                    String.join("\n", strings), strict ? Alert.AlertType.ERROR : Alert.AlertType.WARNING
+                    String.join("\n", strings2), strict ? Alert.AlertType.ERROR : Alert.AlertType.WARNING
             );
         }
 
