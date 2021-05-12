@@ -59,6 +59,10 @@ public class PrefixedStr extends KaitaiStruct {
     }
 
     public void setContent(String content) {
+
+        int diff = content.length() - lenContent;
+        parent.getParent().getParent().setSize(parent.getParent().getParent().getSize() + diff);
+
         this.content = content;
         this.lenContent = content.length();
     }
