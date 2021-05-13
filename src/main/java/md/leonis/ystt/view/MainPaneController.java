@@ -900,9 +900,9 @@ public class MainPaneController {
         }
         if (showMapMonstersCheckBox.isSelected()) {
             zone.getIzax().getMonsters().forEach(m -> {
-                    int tileId = yodesk.getCharacters().getCharacters().get(m.getCharacter()).getTileIds().get(0);
-                    drawTileOnCanvas(tileId, canvas, m.getX() * TILE_SIZE, m.getY() * TILE_SIZE, null);
-                    drawBorderOnCanvas(canvas, m.getX() * TILE_SIZE, m.getY() * TILE_SIZE, Color.rgb(127, 255, 255));
+                int tileId = yodesk.getCharacters().getCharacters().get(m.getCharacter()).getTileIds().get(0);
+                drawTileOnCanvas(tileId, canvas, m.getX() * TILE_SIZE, m.getY() * TILE_SIZE, null);
+                drawBorderOnCanvas(canvas, m.getX() * TILE_SIZE, m.getY() * TILE_SIZE, Color.rgb(127, 255, 255));
             });
         }
         if (topCheckBox.isSelected()) {
@@ -1491,10 +1491,15 @@ public class MainPaneController {
 
         try {
             actionTexts.forEach(a -> a.setTranslation(a.getTranslation()
-                    .replace("\r\n", "\n")
-                    .replace("\n", "\r\n")
-                    .replace("[CR2]", "[CR][CR]")
-                    .replace("[CR]", "\r\n"))
+                            .replace("\r\n", "\n")
+                            .replace("\n", "\r\n")
+                            .replace("[CR2]", "[CR][CR]")
+                            .replace("[CR]", "\r\n")
+                            .replace("[CR]", "\r\n")
+                            .replace("¥", var2(Yodesk.getOutputCharset()))
+                            .replace("¢", var1(Yodesk.getOutputCharset()))
+                            .replace("…", "...")
+                    )
             );
 
             if (trimActionsTrailSpacesCheckBox.isSelected()) {
@@ -1512,6 +1517,14 @@ public class MainPaneController {
         } catch (Exception e) {
             JavaFxUtils.showAlert("Error replacing Actions text", e);
         }
+    }
+
+    private String var1(String charset) {
+        return new String(new byte[]{(byte) 0xA2}, Charset.forName(charset));
+    }
+
+    private String var2(String charset) {
+        return new String(new byte[]{(byte) 0xA5}, Charset.forName(charset));
     }
 
     private boolean isBadTranslation(List<? extends StringRecord> translatedRecords, Pattern pattern, List<? extends StringRecord> records, boolean strict) {
@@ -1534,12 +1547,18 @@ public class MainPaneController {
                 .allMatch(r -> r.getOriginal().trim().equals(tr.getOriginal().trim()) && r.getId().trim().equals(tr.getId().trim())))) {
             strings.add("Original text does not match IDs");
         }
+
+        String sourceVar1 = var1(Yodesk.getInputCharset());
+        String sourceVar2 = var2(Yodesk.getInputCharset());
+        String destinationVar1 = var1(Yodesk.getOutputCharset());
+        String destinationVar2 = var2(Yodesk.getOutputCharset());
+
         translatedRecords.forEach(r -> {
-            if (StringUtils.countMatches(r.getOriginal(), "¥") != StringUtils.countMatches(r.getTranslation(), "¥")) {
-                strings.add("Missing variable(s) ¥: " + r.getId());
+            if (StringUtils.countMatches(r.getOriginal(), sourceVar1) != StringUtils.countMatches(r.getTranslation(), destinationVar1)) {
+                strings.add(String.format("Missing variable(s) %s: %s", sourceVar1, r.getId()));
             }
-            if (StringUtils.countMatches(r.getOriginal(), "¢") != StringUtils.countMatches(r.getTranslation(), "¢")) {
-                strings.add("Missing variable(s) ¢: " + r.getId());
+            if (StringUtils.countMatches(r.getOriginal(), sourceVar2) != StringUtils.countMatches(r.getTranslation(), destinationVar2)) {
+                strings.add(String.format("Missing variable(s) %s: %s", sourceVar2, r.getId()));
             }
         });
 
@@ -1659,10 +1678,14 @@ public class MainPaneController {
 
         try {
             puzzlesTexts.forEach(t -> t.setTranslation(t.getTranslation()
-                    .replace("\r\n", "\n")
-                    .replace("\n", "\r\n")
-                    .replace("[CR2]", "[CR][CR]")
-                    .replace("[CR]", "\r\n"))
+                            .replace("\r\n", "\n")
+                            .replace("\n", "\r\n")
+                            .replace("[CR2]", "[CR][CR]")
+                            .replace("[CR]", "\r\n")
+                            .replace("¥", var2(Yodesk.getOutputCharset()))
+                            .replace("¢", var1(Yodesk.getOutputCharset()))
+                            .replace("…", "...")
+                    )
             );
 
             if (trimPuzzlesTrailSpacesCheckBox.isSelected()) {

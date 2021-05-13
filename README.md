@@ -15,8 +15,12 @@ An original version: https://github.com/LeonisX/YExplorer
 ## TODO
 
 * Show puzzles in UI (table + tiles)
+* Show in UI info about puzzles (id, size, phrases count)
 
-* Probably replace ¥ with Ґ, ¢ with ў
+
+* Show <-> encodings
+* Need somehow set src encoding manually for unknown
+
 * Draw map icon from minimap
 * Log
 * HEX
@@ -34,7 +38,6 @@ An original version: https://github.com/LeonisX/YExplorer
 
 * Text descriptions for each release
 
-* Show in UI info about puzzles (id, size, phrases count)
 * IACT: show phrases count
 
 * Dump iact scripts
