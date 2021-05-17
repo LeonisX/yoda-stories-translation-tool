@@ -11,11 +11,11 @@ All found offsets are valid for `Yoda Stories (10.08.1998) (Eng) (v1.2) (Patch v
 
 Original example:
 
-![](images/after-resize.png)
+![](images/before-resize.png)
 
 After the changes: 
 
-![](images/before-resize.png)
+![](images/after-resize.png)
 
 
 ## Main Window
