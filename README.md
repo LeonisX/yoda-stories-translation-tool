@@ -8,11 +8,17 @@ Utility Yoda Stories Translation Tool
 
 **Powered with Kaitai structure format**
 
-[Read Yoda Stories Translation Guide](translation-guide.md)
+[Read Yoda Stories Translation Guide](documents/translation-guide.md)
+
+[Read Guide About YODESK.EXE Modifying](documents/modify-exe.md)
 
 An original version: https://github.com/LeonisX/YExplorer
 
 ## TODO
+
+* Edit EXE file
+* Describe
+* Notify if need to resize window (tilenames)
 
 * Show puzzles in UI (table + tiles)
 * Show in UI info about puzzles (id, size, phrases count)

@@ -1,6 +1,11 @@
 Yoda Stories Translation Guide
 ==============================
 
+## Exe modifications
+
+[Read Guide About YODESK.EXE Modifying](modify-exe.md)
+
+
 ## Graphics translation
 
 * Startup screen
@@ -57,7 +62,7 @@ Source character encoding (dumping) -> Unicode (internal representation) -> Dest
 
 #### Word files
 
-Если вы обратите внимание на [crcs.json](/src/main/resources/crcs.json), то в нём как раз и описаны исходные кодировки для каждого известного релиза игры.
+Если вы обратите внимание на [crcs.json](/crcs.json), то в нём как раз и описаны исходные кодировки для каждого известного релиза игры.
 
 Она используется при дампинге текста из файла данных yodesk.dta.
 
