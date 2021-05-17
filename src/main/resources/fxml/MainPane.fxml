@@ -10,6 +10,7 @@
 <?import javafx.scene.text.Font?>
 <?import md.leonis.ystt.view.*?>
 <?import javafx.scene.Group?>
+<?import javafx.scene.image.Image?>
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
             xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="md.leonis.ystt.view.MainPaneController">
@@ -148,30 +149,55 @@
                                         text="Dump All Sections"/>
                             </AnchorPane>
                         </Tab>
-                        <Tab text="Portable Executable">
+                        <Tab text="Executable File">
                             <BorderPane prefHeight="200.0" prefWidth="200.0">
                                 <center>
-                                    <TextArea prefHeight="200.0" prefWidth="200.0" text="Yoda Stories Translation Tool originally planned to translate text in an EXE file as well. However, there is currently no off-the-shelf Java solution for editing Windows PE headers. In addition, this data structure is complex enough to quickly implement it yourself.&#10;&#10;However, not everything is so hopeless. There are many Portable Executables editors out there, and in fact, the main difficulty is in choosing the one that suits best.&#10;&#10;Our choice settled on the Restorator utility, but it is paid, therefore, we will publish a list of several more found tools, so that you choose the one that will allow you to perform the translation with comfort. Any allows you to fully translate text strings, menus and dialog boxes." wrapText="true" BorderPane.alignment="CENTER" />
+                                    <TextArea prefHeight="240.0" prefWidth="430.0" text="Yoda Stories Translation Tool originally planned to translate text in an EXE file as well. However, there is currently no off-the-shelf Java solution for editing Windows PE headers. In addition, this data structure is complex enough to quickly implement it yourself.&#10;&#10;However, not everything is so hopeless. There are many Portable Executables editors out there, and in fact, the main difficulty is in choosing the one that suits best.&#10;&#10;Our choice settled on the Restorator utility, but it is paid, therefore, we will publish a list of several more found tools, so that you choose the one that will allow you to perform the translation with comfort. Any allows you to fully translate text strings, menus and dialog boxes." wrapText="true" BorderPane.alignment="CENTER" />
                                 </center>
                                 <right>
-                                    <VBox prefHeight="750.0" prefWidth="310.0" BorderPane.alignment="CENTER">
-                                        <Label text="In alphabet order:"/>
-                                        <Hyperlink text="PE Explorer (129$)" onAction="#peExplorerHyperlinkClick"
-                                                   underline="true"/>
-                                        <Hyperlink text="ResEdit (Free)" onAction="#resEditHyperlinkClick"
-                                                   underline="true"/>
-                                        <Hyperlink text="Resource Builder (59$)"
-                                                   onAction="#resourceBuilderHyperlinkClick" underline="true"/>
-                                        <Hyperlink text="Resource Hacker (Free)"
-                                                   onAction="#resourceHackerHyperlinkClick" underline="true"/>
-                                        <Hyperlink text="Resource Tuner (49$)" onAction="#resourceTunerHyperlinkClick"
-                                                   underline="true"/>
-                                        <Hyperlink text="Restorator (72$)" onAction="#restoratorHyperlinkClick"
-                                                   underline="true"/>
-                                        <Hyperlink text="XN Resource Editor (Free)"
-                                                   onAction="#xnResourceEditorHyperlinkClick" underline="true"/>
+                                    <VBox prefHeight="184.0" prefWidth="510.0" BorderPane.alignment="CENTER">
+                                        <Label text="In alphabet order:" />
+                                        <Hyperlink onAction="#peExplorerHyperlinkClick" text="PE Explorer (129$)" underline="true" />
+                                        <Hyperlink onAction="#resEditHyperlinkClick" text="ResEdit (Free)" underline="true" />
+                                        <Hyperlink onAction="#resourceBuilderHyperlinkClick" text="Resource Builder (59$)" underline="true" />
+                                        <Hyperlink onAction="#resourceHackerHyperlinkClick" text="Resource Hacker (Free)" underline="true" />
+                                        <Hyperlink onAction="#resourceTunerHyperlinkClick" text="Resource Tuner (49$)" underline="true" />
+                                        <Hyperlink onAction="#restoratorHyperlinkClick" text="Restorator (72$)" underline="true" />
+                                        <Hyperlink onAction="#xnResourceEditorHyperlinkClick" text="XN Resource Editor (Free)" underline="true" />
                                     </VBox>
                                 </right>
+                                <bottom>
+                                    <AnchorPane prefHeight="300.0" prefWidth="859.0" BorderPane.alignment="CENTER">
+                                        <Label layoutX="14.0" layoutY="14.0" text="Resize Window (and Inventory Table View)">
+                                            <font>
+                                                <Font name="System Bold" size="12.0"/>
+                                            </font>
+                                        </Label>
+                                        <Label layoutX="14.0" layoutY="41.0" text="Default width (px):"/>
+                                        <Label layoutX="118.0" layoutY="41.0" text="525"/>
+                                        <Label layoutX="161.0" layoutY="41.0" text="Expanded by:"/>
+                                        <TextField fx:id="windowSizeTextField" layoutX="236.0" layoutY="37.0" prefHeight="25.0" prefWidth="47.0"/>
+                                        <Line endX="270.0" layoutX="111.0" layoutY="81.0" startX="-100.0"
+                                              stroke="#6b6969"/>
+                                        <Button onAction="#setWindowSizeButtonClick" layoutX="281.0" layoutY="37.0" mnemonicParsing="false" text="Apply"/>
+
+                                        <Label layoutX="14.0" layoutY="101.0" text="Resize Dialog Tool Tip Text Field">
+                                            <font>
+                                                <Font name="System Bold" size="12.0"/>
+                                            </font>
+                                        </Label>
+                                        <Label layoutX="14.0" layoutY="128.0" text="Default width (px):"/>
+                                        <Label layoutX="118.0" layoutY="128.0" text="130"/>
+                                        <Label layoutX="161.0" layoutY="128.0" text="Expanded by:"/>
+                                        <TextField fx:id="toolTipSizeTextField" layoutX="236.0" layoutY="124.0" prefHeight="25.0" prefWidth="47.0"/>
+                                        <Button onAction="#setToolTipSizeButtonClick" layoutX="281.0" layoutY="124.0" mnemonicParsing="false" text="Apply"/>
+                                        <ImageView fitHeight="300.0" fitWidth="519.0" layoutX="200.0" layoutY="6.0"
+                                                   pickOnBounds="true" preserveRatio="true" smooth="false"
+                                                   AnchorPane.leftAnchor="398.0" AnchorPane.topAnchor="0.0">
+                                            <Image url="@../game-screen.png"/>
+                                        </ImageView>
+                                    </AnchorPane>
+                                </bottom>
                             </BorderPane>
                         </Tab>
                         <Tab text="Title Screen/Palette">
@@ -435,7 +461,7 @@
                                                                 <Label prefWidth="95.0" text="ZAX4 Unnamed2:" />
                                                                 <Label fx:id="mapZax4Unnamed2Label" />
                                                             </HBox>
-                                                            <HBox prefHeight="20.0" prefWidth="531.0"></HBox>
+                                                            <HBox prefHeight="20.0" prefWidth="531.0"/>
                                                         </VBox>
                                                     </center>
                                                 </BorderPane>

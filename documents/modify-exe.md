@@ -2,8 +2,8 @@
 
 The main goal of these changes is to expand the window controls to accommodate longer text strings.
 
-[Hacking Yoda Stories article (Eng)](http://tv-games.ru/forum/blog.php?b=2683)
-[Hacking Yoda Stories article (Rus)](http://tv-games.ru/forum/blog.php?b=2682)
+* Read article [Hacking Yoda Stories article (Eng)](http://tv-games.ru/forum/blog.php?b=2683)
+* Read article [Hacking Yoda Stories article (Rus)](http://tv-games.ru/forum/blog.php?b=2682)
 
 All found offsets are valid for `Yoda Stories (10.08.1998) (Eng) (v1.2) (Patch v6)`.
 
@@ -40,7 +40,7 @@ Offset: 0x52DF
 
 ```
        vvvv
-8D3C45 0D020000 00006A808FF     (width)  	
+8D3C45 0D020000 6A08FF     (width)  	
 ```
 
 It also needs to be replaced at this address:  
@@ -48,8 +48,8 @@ It also needs to be replaced at this address:
 Offset: 0x5393
 
 ```
-         vvvv
-C7470800 0D020000 C7470C
+       vvvv
+C74708 0D020000 C7470C
 ```
 
 ### Inventory Grid View

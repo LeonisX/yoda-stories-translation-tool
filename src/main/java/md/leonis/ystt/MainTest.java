@@ -1,5 +1,7 @@
 package md.leonis.ystt;
 
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFNum;
 import org.apache.poi.xwpf.usermodel.XWPFNumbering;

@@ -39,6 +39,7 @@ public class IOUtils {
         backupFile(path.toFile());
     }
 
+    @SuppressWarnings("all")
     public static void backupFile(File file) {
         if (file.exists()) {
             File backupFile = new File(file.getAbsolutePath() + ".bak");

@@ -16,10 +16,6 @@ An original version: https://github.com/LeonisX/YExplorer
 
 ## TODO
 
-* Edit EXE file
-* Describe
-* Notify if need to resize window (tilenames)
-
 * Show puzzles in UI (table + tiles)
 * Show in UI info about puzzles (id, size, phrases count)
 

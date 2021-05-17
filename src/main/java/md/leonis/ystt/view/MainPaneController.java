@@ -17,6 +17,8 @@ import javafx.scene.input.*;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.stage.WindowEvent;
 import md.leonis.bin.ByteOrder;
 import md.leonis.bin.Dump;
@@ -93,6 +95,9 @@ public class MainPaneController {
     public Label charsetLabel;
     public TableView<CatalogEntry> commonInformationTableView;
     public Button dumpAllSectionsButton;
+
+    public TextField windowSizeTextField;
+    public TextField toolTipSizeTextField;
 
     public Button saveToBitmapButton;
     public Button loadFromBitmapButton;
@@ -230,6 +235,13 @@ public class MainPaneController {
 
     private final Map<Integer, ArrayDeque<ZoneHistory>> zoneHistoryMap = new HashMap<>();
 
+    private static Map<Integer, Long> windowMap; // 525
+    private static Map<Integer, Long> window2Map; // 525
+    private static Map<Integer, Long> toolTipMap; // C2039B148D     833284150413
+    private static Map<Integer, Long> gridViewMap; // 489
+    private static Map<Integer, Long> scrollBarLeftMap; // 496
+    private static Map<Integer, Long> scrollBarRightMap; // 512
+
     public MainPaneController() {
         spath = Paths.get(".");
     }
@@ -283,6 +295,20 @@ public class MainPaneController {
         charsetLabel.setText(release.getCharset());
 
         commonInformationTableView.setItems(FXCollections.observableList(yodesk.getCatalog()));
+
+        //EXE
+        if (windowMap.size() == 1) {
+            windowSizeTextField.setText(String.valueOf(getValue(windowMap) - 525));
+        }
+        if (toolTipMap.size() == 1) {
+            long value = getValue(toolTipMap);
+            String hex = longToHex(value, 10);
+            if (hex.equals("C2039B148D") || !hex.startsWith("000000") || !hex.endsWith("B8")) {
+                toolTipSizeTextField.setText("0");
+            } else { // 000000a2b8
+                toolTipSizeTextField.setText(String.valueOf(Integer.parseInt(hex.substring(6, 8), 16) - 130));
+            }
+        }
 
         // Title image, palette
         drawTitleImage();
@@ -1089,7 +1115,11 @@ public class MainPaneController {
     public void saveMenuItemClick() {
         try {
             String[] chunks = dtaFile.getFileName().toString().split("\\.");
-            IOUtils.copyFile(dtaFile, dtaFile.getParent().resolve(chunks[0] + ".bak"));
+            IOUtils.copyFile(exeFile.toPath(), exeFile.toPath().getParent().resolve(chunks[0] + ".exe.bak"));
+            exeDump.saveToFile(exeFile);
+
+            chunks = dtaFile.getFileName().toString().split("\\.");
+            IOUtils.copyFile(dtaFile, dtaFile.getParent().resolve(chunks[0] + ".dta.bak"));
             yodesk.write(new ByteBufferKaitaiOutputStream(dtaFile));
             //TODO confirmation
         } catch (Exception e) {
@@ -1821,6 +1851,26 @@ public class MainPaneController {
             validateProps(wordRecord.getProps());
             namesTexts = wordRecord.getStringRecords().stream().map(s -> new StringImagesRecord(s.getId(), Collections.emptyList(), s.getOriginal(), s.getTranslation())).collect(Collectors.toList());
             namesTextTableView.setItems(FXCollections.observableList(namesTexts));
+
+            double maxWidth = 0;
+
+            for (StringImagesRecord n : namesTexts) {
+                final Text text = new Text(n.getTranslation());
+                Font font = Font.font("Microsoft Sans Serif", 10);
+                text.setFont(font);
+                maxWidth = Math.max(maxWidth, text.getLayoutBounds().getWidth());
+            }
+
+            maxWidth = maxWidth * 179 / 130;
+
+            if (maxWidth > 143) {
+                JavaFxUtils.showAlert("Too long tile name(s)", "Please consider increasing the window width by at least " + (int) Math.ceil(maxWidth - 143) + "px", Alert.AlertType.INFORMATION);
+            }
+
+
+
+
+
         } catch (Exception e) {
             JavaFxUtils.showAlert("Error loading Puzzles text from file", e);
         }
@@ -1890,6 +1940,7 @@ public class MainPaneController {
         Path exePath = file.toPath();
         Path dtaPath = IOUtils.getDtaPath(exePath.getParent());
 
+        //TODO get dump crc32
         exeCrc32 = intToHex(BinaryUtils.crc32(exePath), 8);
         dtaCrc32 = intToHex(BinaryUtils.crc32(dtaPath), 8);
 
@@ -1907,6 +1958,9 @@ public class MainPaneController {
         exeDump = new Dump(exePath);
         exeDump.setCharset(release.getCharset());
         exeDump.setByteOrder(ByteOrder.LITTLE_ENDIAN);
+        exeDump.setIndex(0);
+
+        getControlsBounds();
 
         int paletteStartIndex = exeDump.findAddress(PaletteUtils.getBGRASample(gamePalette));
 
@@ -1924,7 +1978,7 @@ public class MainPaneController {
         Log.debug("CRC-32: " + exeCrc32);
         Log.debug("DTA revision: " + release.getTitle());
         Log.debug("Palette address: " + intToHex(paletteStartIndex, 6));
-        exeDump.setIndex(0);
+
         if (otherPaletteLocation) {
             Log.debug("Unknown palette location. Standard is: 0x550F0");
         }
@@ -1942,6 +1996,63 @@ public class MainPaneController {
         Log.debug("DTA revision: " + release.getTitle());
     }
 
+    private static void getControlsBounds() {
+
+        windowMap = exeDump.findValueAddressByMask("8D3C45 ????0000 6A08FF"); // 525
+        window2Map = exeDump.findValueAddressByMask("C74708 ????0000 C7470C"); // 525
+        gridViewMap = exeDump.findValueAddressByMask("C7828C320000 ????0000 C78294"); // 489
+        scrollBarLeftMap = exeDump.findValueAddressByMask("C78294320000 ????0000 B8FC00"); // 496
+        scrollBarRightMap = exeDump.findValueAddressByMask("C7829C320000 ????0000 C782A4"); // 512
+
+        toolTipMap = exeDump.findValueAddressByMask("4F4433F6 ?????????? 8BCF8947"); // C2039B148D     833284150413
+    }
+
+    private static int getIndex(Map<Integer, Long> map) {
+
+        Map.Entry<Integer, Long> entry = map.entrySet().iterator().next();
+        return entry.getKey();
+    }
+
+    private static long getValue(Map<Integer, Long> map) {
+
+        Map.Entry<Integer, Long> entry = map.entrySet().iterator().next();
+        return entry.getValue();
+    }
+
+    public void setWindowSizeButtonClick() {
+
+        try {
+            int value = Integer.parseInt(windowSizeTextField.getText());
+            if (value < -525 || value > 4096) {
+                throw new RuntimeException("There is no need to change the width of the Window so much!");
+            }
+
+            exeDump.writeHexDump(getIndex(windowMap), intToHex(525 + value, 4));
+            exeDump.writeHexDump(getIndex(window2Map), intToHex(525 + value, 4));
+
+            exeDump.writeHexDump(getIndex(gridViewMap), intToHex(489 + value, 4));
+            exeDump.writeHexDump(getIndex(scrollBarLeftMap), intToHex(496 + value, 4));
+            exeDump.writeHexDump(getIndex(scrollBarRightMap), intToHex(512 + value, 4));
+        } catch (Exception e) {
+            JavaFxUtils.showAlert("Error when resizing window", e);
+        }
+    }
+
+    public void setToolTipSizeButtonClick() {
+
+        try {
+            int value = Integer.parseInt(toolTipSizeTextField.getText());
+            if (value < -130 || value > 125) {
+                throw new RuntimeException("There is no need to change the width of the The Tool Tip Text Field  so much!");
+            }
+            // 000000a2b8
+            exeDump.writeHexDump(getIndex(toolTipMap), "000000" + intToHex(130 + value, 2) + "B8");
+
+        } catch (Exception e) {
+            JavaFxUtils.showAlert("Error when resizing Tool Tip Text Field", e);
+        }
+    }
+
     private static void dumpPalette(int paletteStartIndex) {
 
         gamePalette = PaletteUtils.dumpBGRAPalette(exeDump.getDump(), paletteStartIndex);
@@ -1956,7 +2067,7 @@ public class MainPaneController {
 
     public String longToHex(long value, int size) {
 
-        String result = Long.toHexString(value);
+        String result = Long.toHexString(value).toUpperCase();
         return StringUtils.leftPad(result, size, '0');
     }
 

@@ -6,7 +6,8 @@ import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
+import java.nio.file.Paths;
+import java.util.*;
 
 public class Dump {
 
@@ -38,11 +39,15 @@ public class Dump {
     }
 
     public void saveToFile(String file) throws IOException {
-        saveToFile(new File(file));
+        saveToFile(Paths.get(file));
     }
 
     public void saveToFile(File file) throws IOException {
-        Files.write(file.toPath(), dump);
+        saveToFile(file.toPath());
+    }
+
+    public void saveToFile(Path path) throws IOException {
+        Files.write(path, dump);
     }
 
     public int size() {
@@ -106,6 +111,30 @@ public class Dump {
         return result;
     }
 
+    // 2 bytes
+    public int getWord3() {
+        int result;
+        switch (byteOrder) {
+            case LITTLE_ENDIAN:
+                result = Byte.toUnsignedInt(dump[index]);
+                index++;
+                result += Byte.toUnsignedInt(dump[index]) * 256;
+                index++;
+                result += Byte.toUnsignedInt(dump[index]) * 256 * 256;
+                index++;
+                break;
+            default:
+                result = Byte.toUnsignedInt(dump[index]) * 256 * 256;
+                index++;
+                result += Byte.toUnsignedInt(dump[index]) * 256;
+                index++;
+                result += Byte.toUnsignedInt(dump[index]);
+                index++;
+                break;
+        }
+        return result;
+    }
+
     // 4 bytes
     public long getLongWord() {
         long result;
@@ -126,6 +155,38 @@ public class Dump {
                 result += Byte.toUnsignedInt(dump[index]) * 256 * 256;
                 index++;
                 result += Byte.toUnsignedInt(dump[index]) * 256;
+                index++;
+                result += Byte.toUnsignedInt(dump[index]);
+                index++;
+                break;
+        }
+        return result;
+    }
+
+    // 5 bytes
+    public long getLongWord5() {
+        long result;
+        switch (byteOrder) {
+            case LITTLE_ENDIAN:
+                result = Byte.toUnsignedInt(dump[index]);
+                index++;
+                result += Byte.toUnsignedInt(dump[index]) * 256L;
+                index++;
+                result += Byte.toUnsignedInt(dump[index]) * 256L * 256;
+                index++;
+                result += Byte.toUnsignedInt(dump[index]) * 256L * 256 * 256;
+                index++;
+                result += Byte.toUnsignedInt(dump[index]) * 256L * 256 * 256 * 256;
+                index++;
+                break;
+            default:
+                result = Byte.toUnsignedInt(dump[index]) * 256L * 256 * 256 * 256;
+                index++;
+                result += Byte.toUnsignedInt(dump[index]) * 256L * 256 * 256;
+                index++;
+                result += Byte.toUnsignedInt(dump[index]) * 256L * 256;
+                index++;
+                result += Byte.toUnsignedInt(dump[index]) * 256L;
                 index++;
                 result += Byte.toUnsignedInt(dump[index]);
                 index++;
@@ -339,19 +400,26 @@ public class Dump {
         index++;
     }
 
-
-    //TODO byteorder, test
     public void writeHexDump(int address, String data) {
         moveToAddress(address);
         writeHexDump(data);
     }
 
-    //TODO byteorder, test
     public void writeHexDump(String data) {
         data = data.replace(" ", "");
-        if (data.length() % 2 != 0) throw new RuntimeException("Bad HexDump: " + data);
-        for (int i = 0; i < data.length() / 2; i++) {
-            setByte(Integer.parseInt(data.substring(i * 2, i * 2 + 2) + "", 16));
+        if (data.length() % 2 != 0) {
+            throw new RuntimeException("Bad HexDump: " + data);
+        }
+
+        //TODO middle endian
+        if (byteOrder == ByteOrder.BIG_ENDIAN) {
+            for (int i = 0; i < data.length() / 2; i++) {
+                setByte(Integer.parseInt(data.substring(i * 2, i * 2 + 2) + "", 16));
+            }
+        } else { // Little Endian
+            for (int i = data.length() / 2 - 1; i >= 0; i--) {
+                setByte(Integer.parseInt(data.substring(i * 2, i * 2 + 2) + "", 16));
+            }
         }
     }
 
@@ -453,6 +521,117 @@ public class Dump {
         }
 
         return startIndex;
+    }
+
+    // "??" as mask
+    public Map<Integer, Long> findValueAddressByMask(String data) {
+
+        data = data.replace(" ", "");
+        if (data.length() % 2 != 0) {
+            throw new RuntimeException("Bad HexDump: " + data);
+        }
+        int[] sample = new int[data.length() / 2];
+        for (int i = 0; i < sample.length; i++) {
+            try {
+                sample[i] = Integer.parseInt(data.substring(i * 2, i * 2 + 2) + "", 16);
+            } catch (Exception e) {
+                sample[i] = Integer.MAX_VALUE;
+            }
+        }
+
+        int firstIndex = getFirstIndex(sample);
+
+        if (firstIndex == -1) {
+            throw new RuntimeException("Please, use another method to search w/o mask");
+        }
+
+        Map<Integer, Long> result = new LinkedHashMap<>();
+
+        int startIndex = 0;
+        int index;
+
+        do {
+            index = findAddressWithMask(startIndex, sample);
+
+            if (index == -1) {
+                break;
+            }
+
+            result.put(index + firstIndex, getMaskValue(index, sample));
+
+            startIndex = index + 1;
+
+        } while (true);
+
+        return result;
+    }
+
+    private long getMaskValue(int index, int[] sample) {
+
+        int firstIndex = getFirstIndex(sample);
+        int lastIndex = getLastIndex(sample);
+        int maskLength = lastIndex - firstIndex + 1;
+
+        setIndex(index + firstIndex);
+
+        switch (maskLength) {
+            case 1:
+                return getByte();
+            case 2:
+                return getWord();
+            case 3:
+                return getWord3();
+            case 4:
+                return getLongWord();
+            case 5:
+                return getLongWord5();
+            default:
+                throw new RuntimeException("Bad or not supported mask length: " + maskLength);
+        }
+    }
+
+    private int getFirstIndex(int[] sample) {
+
+        for (int i = 0; i < sample.length; i++) {
+            if (sample[i] > 255) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private int getLastIndex(int[] sample) {
+
+        for (int i = sample.length - 1; i >= 0; i--) {
+            if (sample[i] > 255) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public int findAddressWithMask(int[] sample) {
+        return findAddressWithMask(-1, sample);
+    }
+
+    public int findAddressWithMask(int startIndex, int[] sample) {
+
+        boolean done;
+
+        for (int i = startIndex; i < dump.length - sample.length; i++) {
+            done = true;
+            for (int j = 0; j < sample.length; j++) {
+                if (sample[j] <= 255 && !(Byte.toUnsignedInt(dump[i + j]) == sample[j])) {
+                    done = false;
+                    break;
+                }
+            }
+            if (done) {
+                return i;
+            }
+        }
+
+        return -1;
     }
 
     public String getCharset() {
