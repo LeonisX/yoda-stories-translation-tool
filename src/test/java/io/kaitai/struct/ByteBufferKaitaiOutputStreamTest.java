@@ -635,8 +635,8 @@ public class ByteBufferKaitaiOutputStreamTest extends TestCase {
 
         String charset = Yodesk.getInputCharset();
 
-        Yodesk.setInputCharset("Cp1251");
-        Yodesk.setOutputCharset("Cp1251");
+        Yodesk.setInputCharset("windows-1251");
+        Yodesk.setOutputCharset("windows-1251");
 
         ByteBufferKaitaiOutputStream bbkos = new ByteBufferKaitaiOutputStream(new byte[5]);
         bbkos.writeString("ТЕСТ");

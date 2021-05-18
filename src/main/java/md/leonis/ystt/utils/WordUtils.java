@@ -152,8 +152,8 @@ public class WordUtils {
 
         List<String> items = Arrays.asList(
                 PropertyName.CRC32.getTextHeader() + crc32,
-                PropertyName.SRC_CHARSET.getTextHeader() + Yodesk.getInputCharset(), // Cp1252
-                PropertyName.DST_CHARSET.getTextHeader() + Yodesk.getOutputCharset() // Cp1251
+                PropertyName.SRC_CHARSET.getTextHeader() + Yodesk.getInputCharset(), // windows-1252
+                PropertyName.DST_CHARSET.getTextHeader() + Yodesk.getOutputCharset() // windows-1251
         );
 
         addBulletsList(document, items);

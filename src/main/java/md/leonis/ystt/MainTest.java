@@ -1,23 +1,43 @@
 package md.leonis.ystt;
 
-import javafx.scene.text.Font;
-import javafx.scene.text.Text;
-import org.apache.poi.xwpf.usermodel.XWPFDocument;
-import org.apache.poi.xwpf.usermodel.XWPFNum;
-import org.apache.poi.xwpf.usermodel.XWPFNumbering;
-import org.apache.poi.xwpf.usermodel.XWPFParagraph;
+import com.google.gson.Gson;
+import md.leonis.ystt.model.Encoding;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class MainTest {
 
     public static void main(String[] args) throws IOException {
+
+        List<Encoding> encodings = new ArrayList<>();
+        encodings.add(new Encoding("windows-1250", "Eastern European (Latin 2)"));
+        encodings.add(new Encoding("windows-1251", "Cyrillic (Slavic)"));
+        encodings.add(new Encoding("windows-1252", "Western European (Latin-1, ANSI)"));
+        encodings.add(new Encoding("windows-1253", "Greek"));
+        encodings.add(new Encoding("windows-1254", "Turkish (Latin 5)"));
+        encodings.add(new Encoding("windows-1255", "Hebrew"));
+        encodings.add(new Encoding("windows-1256", "Arabic"));
+        encodings.add(new Encoding("windows-1257", "Baltic"));
+        encodings.add(new Encoding("windows-1258", "Vietnamese"));
+        encodings.add(new Encoding("x-windows-874", "Thai"));
+        encodings.add(new Encoding("windows-31j", "Japanese"));
+        encodings.add(new Encoding("x-windows-iso2022jp", "Japanese ISO-2022"));
+        encodings.add(new Encoding("x-mswin-936", "Chinese Simplified"));
+        encodings.add(new Encoding("x-windows-950", "Chinese Traditional"));
+        encodings.add(new Encoding("x-MS950-HKSCS", "Chinese Traditional + Hong Kong"));
+        encodings.add(new Encoding("x-windows-949", "Korean"));
+        encodings.add(new Encoding("x-Johab", "Korean (Johab)"));
+
+        System.out.println(new Gson().toJson(encodings));
+
+
+        Charset charset = Charset.forName("windows-1252");
+
+        System.out.println(charset);
 
         byte[] bytes = new byte[256];
 
@@ -26,9 +46,9 @@ public class MainTest {
         }
 
         System.out.println("ASCII:  " + new String(bytes, StandardCharsets.US_ASCII));
-        System.out.println("Cp1252: " + new String(bytes, Charset.forName("Cp1252")));
-        System.out.println("Cp1250: " + new String(bytes, Charset.forName("Cp1250")));
-        System.out.println("Cp1251: " + new String(bytes, Charset.forName("Cp1251")));
+        System.out.println("windows-1252: " + new String(bytes, Charset.forName("windows-1252")));
+        System.out.println("windows-1250: " + new String(bytes, Charset.forName("windows-1250")));
+        System.out.println("windows-1251: " + new String(bytes, Charset.forName("windows-1251")));
 
 
         //ExcelUtils.saveCharacters(new Yodesk(new ByteBufferKaitaiInputStream("D:\\Working\\_Yoda\\YExplorer\\other\\Yoda Stories (14.02.1997)\\Yodesk.dta")));

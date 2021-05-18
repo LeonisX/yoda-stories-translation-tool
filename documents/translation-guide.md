@@ -32,9 +32,9 @@ Yoda Stories Translation Guide
 Первые 127 символов кодировки ASCII оставались неизменными, но все последующие могли сильно различаться:
 
 ```
-Cp1252: € ‚ƒ„…†‡ˆ‰Š‹Œ Ž  ‘’“”•–—˜™š›œ žŸ ¡¢£¤¥¦§¨©ª«¬­®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ
-Cp1250: € ‚ „…†‡ ‰Š‹ŚŤŽŹ ‘’“”•–— ™š›śťžź ˇ˘Ł¤Ą¦§¨©Ş«¬­®Ż°±˛ł´µ¶·¸ąş»Ľ˝ľżŔÁÂĂÄĹĆÇČÉĘËĚÍÎĎĐŃŇÓÔŐÖ×ŘŮÚŰÜÝŢßŕáâăäĺćçčéęëěíîďđńňóôőö÷řůúűüýţ˙
-Cp1251: ЂЃ‚ѓ„…†‡€‰Љ‹ЊЌЋЏђ‘’“”•–— ™љ›њќћџ ЎўЈ¤Ґ¦§Ё©Є«¬­®Ї°±Ііґµ¶·ё№є»јЅѕїАБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдежзийклмнопрстуфхцчшщъыьэюя
+windows-1252: € ‚ƒ„…†‡ˆ‰Š‹Œ Ž  ‘’“”•–—˜™š›œ žŸ ¡¢£¤¥¦§¨©ª«¬­®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ
+windows-1250: € ‚ „…†‡ ‰Š‹ŚŤŽŹ ‘’“”•–— ™š›śťžź ˇ˘Ł¤Ą¦§¨©Ş«¬­®Ż°±˛ł´µ¶·¸ąş»Ľ˝ľżŔÁÂĂÄĹĆÇČÉĘËĚÍÎĎĐŃŇÓÔŐÖ×ŘŮÚŰÜÝŢßŕáâăäĺćçčéęëěíîďđńňóôőö÷řůúűüýţ˙
+windows-1251: ЂЃ‚ѓ„…†‡€‰Љ‹ЊЌЋЏђ‘’“”•–— ™љ›њќћџ ЎўЈ¤Ґ¦§Ё©Є«¬­®Ї°±Ііґµ¶·ё№є»јЅѕїАБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдежзийклмнопрстуфхцчшщъыьэюя
 ```
 
 Это приводило к определённым трудностям в то время, но и при переводе игры этому следует уделить внимание.
@@ -54,7 +54,7 @@ Source character encoding (dumping) -> Unicode (internal representation) -> Dest
 
 При переводе важно, чтобы эти специальные символы оставались неизменными. В коде реализована такая проверка.
 
-Поэтому оригинальная кодировка будет не ASCII, а Cp1252 (Latin-1). Эта кодировка автоматически подходит
+Поэтому оригинальная кодировка будет не ASCII, а windows-1252 (Latin-1). Эта кодировка автоматически подходит
 для таких западноевропейских вариантов как: испанский, итальянский и французский.
 
 В настоящее время всё ещё не найдены французский и итальянский переводы игры. Напишите мне на tv-games@mail.ru, если у вас есть эти игры. 
@@ -68,29 +68,31 @@ Source character encoding (dumping) -> Unicode (internal representation) -> Dest
 
 В DOCX файлах это значение указано в справочных целях как "Source character encoding", и его нет смысла менять на что-то другое.
 
-Зато есть смысл поменять значение "Destination character encoding", если игра переводится на язык, не принадлежащий кодировке Cp1252.
+Зато есть смысл поменять значение "Destination character encoding", если игра переводится на язык, не принадлежащий кодировке windows-1252.
 
 
 #### Encodings (code pages)
 
 | Encoding | Name  |
 |:-:|---|
-| Cp1250 | Eastern European (Latin 2) |
-| Cp1251 | Cyrillic (Slavic) |
-| Cp1252 | Western European (Latin-1, ANSI) |
-| Cp1253 | Greek |
-| Cp1254 | Turkish (Latin 5) |
-| Cp1255 | Hebrew |
-| Cp1256 | Arabic |
-| Cp1257 | Baltic |
-| Cp1258 | Vietnamese |
-| MS874 | Thai |
-| MS932 | Japanese |
-| MS936 | Simplified Chinese |
-| MS949 | Korean |
-| MS950 | Traditional Chinese |
-| MS950_HKSCS | Traditional Chinese + Hong Kong |
+| windows-1250 | Eastern European (Latin 2) |
+| windows-1251 | Cyrillic (Slavic) |
+| windows-1252 | Western European (Latin-1, ANSI) |
+| windows-1253 | Greek |
+| windows-1254 | Turkish (Latin 5) |
+| windows-1255 | Hebrew |
+| windows-1256 | Arabic |
+| windows-1257 | Baltic |
+| windows-1258 | Vietnamese |
+| x-windows-874 | Thai |
+| windows-31j | Japanese |
+| x-windows-iso2022jp | Japanese ISO-2022 |
+| x-mswin-936 | Chinese Simplified |
+| x-windows-950 | Chinese Traditional |
+| x-MS950-HKSCS | Chinese Traditional + Hong Kong |
+| x-windows-949 | Korean |
 | x-Johab | Korean (Johab) |
 
 Остальные названия кодировок можно посмотреть в [этом документе](https://docs.oracle.com/javase/8/docs/technotes/guides/intl/encoding.doc.html) (вторая колонка). 
 
+Если в программе не оказалось нужной вам кодировки, то добавьте её вручную в файл charsets.json.

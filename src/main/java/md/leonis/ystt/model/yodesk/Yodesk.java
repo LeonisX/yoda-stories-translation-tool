@@ -59,8 +59,8 @@ public class Yodesk extends KaitaiStruct {
     private final Yodesk root;
     private final KaitaiStruct parent;
 
-    private static String inputCharset = "Cp1252";
-    private static String outputCharset = "Cp1252";
+    private static String inputCharset = "windows-1252";
+    private static String outputCharset = "windows-1252";
 
     public static Yodesk fromFile(String fileName, String charset) throws IOException {
         Yodesk.inputCharset = charset;

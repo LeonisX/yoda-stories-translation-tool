@@ -16,12 +16,6 @@ An original version: https://github.com/LeonisX/YExplorer
 
 ## TODO
 
-* Show in UI info about puzzles (id, size, phrases count)
-
-
-* Show <-> encodings
-* Need somehow set src encoding manually for unknown
-
 * Draw map icon from minimap
 * Log
 * HEX

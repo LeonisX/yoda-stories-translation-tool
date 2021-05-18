@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import javafx.scene.paint.Color;
+import md.leonis.ystt.model.Encoding;
 import md.leonis.ystt.model.Release;
 import md.leonis.ystt.model.yodesk.Yodesk;
 
@@ -12,10 +13,13 @@ import java.io.*;
 import java.lang.reflect.Type;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Properties;
 
 public class Config {
+
+    private static final ClassLoader classLoader = Config.class.getClassLoader();
 
     // BGRA
     public static int[] gamePalette = {
@@ -166,24 +170,48 @@ public class Config {
         }
     }
 
-
     public static void loadCRCs() {
 
-        ClassLoader classLoader = Config.class.getClassLoader();
         File file = new File(classLoader.getResource("crcs.json").getFile());
         Type releaseType = new TypeToken<List<Release>>() {
         }.getType();
-        Gson gson = new Gson();
 
         try {
             JsonReader reader = new JsonReader(new FileReader(file));
-            releases = gson.fromJson(reader, releaseType);
+            releases = new Gson().fromJson(reader, releaseType);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void loadCharsets() {
+
+        File file = new File(classLoader.getResource("charsets.json").getFile());
+        Type releaseType = new TypeToken<List<Encoding>>() {
+        }.getType();
+
+        try {
+            JsonReader reader = new JsonReader(new FileReader(file));
+            charsets = new Gson().fromJson(reader, releaseType);
+            charsets.sort(Comparator.comparing(Encoding::getDescription));
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     public static List<Release> releases;
+    public static List<Encoding> charsets;
+
+    public static Encoding getUnknownCharset() {
+        return charsets.stream().filter(e -> e.getCode().isEmpty()).findFirst().orElse(new Encoding("windows-1252", "_UNKNOWN"));
+    }
+
+    public static Encoding getCharset(String code) {
+        return charsets.stream().filter(e -> e.getCode().equals(code)).findFirst().orElse(getUnknownCharset());
+    }
+
+    public static Encoding sourceCharset;
+    public static Encoding destinationCharset;
 
     public static Release release;
 }

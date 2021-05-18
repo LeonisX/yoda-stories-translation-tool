@@ -11,6 +11,7 @@ public class MainApp extends Application {
     public void start(Stage primaryStage) throws Exception {
 
         Config.loadCRCs();
+        Config.loadCharsets();
         //Config.loadLevels();
         //Config.loadProperties();
         Config.loadLanguageTable();

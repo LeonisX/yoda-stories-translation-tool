@@ -4,62 +4,62 @@
     "title": "Yoda Stories (14.02.1997) (Eng) (v1.0)",
     "exeCrc32": "7E7250C9",
     "dtaCrc32": "1A8764FB",
-    "charset": "Cp1252"
+    "charset": "windows-1252"
   },
   {
     "id": "eng-1-patched",
     "title": "Yoda Stories (14.02.1997) (Eng) (v1.0) (Patch v6)",
     "exeCrc32": "7E7250C9",
     "dtaCrc32": "6B79555B",
-    "charset": "Cp1252"
+    "charset": "windows-1252"
   },
   {
     "id": "eng-1.1",
     "title": "Yoda Stories (20.03.1997) (Eng) (v1.1)",
     "exeCrc32": "B4E9D59F",
     "dtaCrc32": "B0FE9C2A",
-    "charset": "Cp1252"
+    "charset": "windows-1252"
   },
   {
     "id": "eng-1.2",
     "title": "Yoda Stories (10.08.1998) (Eng) (v1.2) (Patch v6)",
     "exeCrc32": "B4E9D59F",
     "dtaCrc32": "6B79555B",
-    "charset": "Cp1252"
+    "charset": "windows-1252"
   },
   {
     "id": "eng-1-demo",
     "title": "Yoda Stories (18.02.1997) (Eng) (Demo)",
     "exeCrc32": "E89D0EB1",
     "dtaCrc32": "F9543F00",
-    "charset": "Cp1252"
+    "charset": "windows-1252"
   },
   {
     "id": "spa-1",
     "title": "Yoda Stories (22.05.1997) (Spa)",
     "exeCrc32": "82CFC2E8",
     "dtaCrc32": "A0CE2095",
-    "charset": "Cp1252"
+    "charset": "windows-1252"
   },
   {
     "id": "ger-1",
     "title": "Yoda Stories (25.06.1997) (Ger)",
     "exeCrc32": "3AD6EF74",
     "dtaCrc32": "E7DB255D",
-    "charset": "Cp1252"
+    "charset": "windows-1252"
   },
   {
     "id": "spa-2",
     "title": "Yoda Stories (13.12.2001) (T+Spa_Selva Translators)",
     "exeCrc32": "8E4CAB0D",
     "dtaCrc32": "A0CE2095",
-    "charset": "Cp1252"
+    "charset": "windows-1252"
   },
   {
     "id": "rus-1",
     "title": "Yoda Stories (12.11.2006) (T-Rus_PRO)",
     "exeCrc32": "4B91AA5C",
     "dtaCrc32": "2350308B",
-    "charset": "Cp1251"
+    "charset": "windows-1251"
   }
 ]

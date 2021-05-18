@@ -23,6 +23,7 @@ import javafx.stage.WindowEvent;
 import md.leonis.bin.ByteOrder;
 import md.leonis.bin.Dump;
 import md.leonis.config.Config;
+import md.leonis.ystt.model.Encoding;
 import md.leonis.ystt.model.Release;
 import md.leonis.ystt.model.Section;
 import md.leonis.ystt.model.ZoneHistory;
@@ -92,9 +93,12 @@ public class MainPaneController {
     public Label fileSizeLabel;
     public Label crc32Label;
     public Label nameLabel;
-    public Label charsetLabel;
     public TableView<CatalogEntry> commonInformationTableView;
     public Button dumpAllSectionsButton;
+    public Label sourceCharsetLabel;
+    public Button changeSourceCharsetButton;
+    public Label destinationCharsetLabel;
+    public Button changeDestinationCharsetButton;
 
     public TextField windowSizeTextField;
     public TextField toolTipSizeTextField;
@@ -292,7 +296,8 @@ public class MainPaneController {
         nameLabel.setText(release.getTitle());
         fileSizeLabel.setText(dtaSize + " / " + exeDump.size());
         crc32Label.setText(dtaCrc32 + " / " + exeCrc32);
-        charsetLabel.setText(release.getCharset());
+        sourceCharsetLabel.setText(sourceCharset.getDescription());
+        updateDestinationCharset();
 
         commonInformationTableView.setItems(FXCollections.observableList(yodesk.getCatalog()));
 
@@ -419,6 +424,10 @@ public class MainPaneController {
 
         namesTexts = WordHelper.getNamesTexts();
         namesTextTableView.setItems(FXCollections.observableList(namesTexts));
+    }
+
+    private void updateDestinationCharset() {
+        destinationCharsetLabel.setText(destinationCharset.getDescription());
     }
 
     private void updateTilesCount() {
@@ -687,14 +696,14 @@ public class MainPaneController {
     end;*/
     }
 
-    public int drawViewZone() {
+    public void drawViewZone() {
 
-        int zoneId = mapsListView.getSelectionModel().getSelectedIndex();
+        if (mapsListView.getSelectionModel().getSelectedIndex() >= 0) {
+            int zoneId = mapsListView.getSelectionModel().getSelectedIndex();
 
-        drawViewMap(zoneId);
-        showMapInfo(zoneId);
-
-        return zoneId;
+            drawViewMap(zoneId);
+            showMapInfo(zoneId);
+        }
     }
 
 
@@ -1123,7 +1132,7 @@ public class MainPaneController {
                 exeFile = file;
                 dtaFile = IOUtils.getDtaPath(file.toPath().getParent());
                 loadFileToArray(file);
-                yodesk = Yodesk.fromFile(dtaFile.toString(), release.getCharset());
+                yodesk = Yodesk.fromFile(dtaFile.toString(), sourceCharset.getCode());
 
                 usedTiles.clear();
                 JavaFxUtils.showMainPanel();
@@ -1503,8 +1512,10 @@ public class MainPaneController {
             JavaFxUtils.showAlert("Wrong or absent: " + PropertyName.SRC_CHARSET, "Perhaps this translation is for another version of the game.", Alert.AlertType.WARNING);
         }
         validateCharset(props, PropertyName.SRC_CHARSET);
-        if (validateCharset(props, PropertyName.DST_CHARSET)) {
-            Yodesk.setOutputCharset(props.get(PropertyName.DST_CHARSET));
+        if (validateCharset(props, PropertyName.DST_CHARSET) && !destinationCharset.getCode().equals(props.get(PropertyName.DST_CHARSET))) {
+            destinationCharset = Config.getCharset(props.get(PropertyName.DST_CHARSET));
+            Yodesk.setOutputCharset(destinationCharset.getCode());
+            JavaFxUtils.showAlert("Destination charset has changed", "New charset is: " + destinationCharset.getDescription(), Alert.AlertType.INFORMATION);
         }
     }
 
@@ -1890,11 +1901,6 @@ public class MainPaneController {
             if (maxWidth > 143) {
                 JavaFxUtils.showAlert("Too long tile name(s)", "Please consider increasing the window width by at least " + (int) Math.ceil(maxWidth - 143) + "px", Alert.AlertType.INFORMATION);
             }
-
-
-
-
-
         } catch (Exception e) {
             JavaFxUtils.showAlert("Error loading Puzzles text from file", e);
         }
@@ -1972,15 +1978,18 @@ public class MainPaneController {
 
         if (null == release) {
             release = new Release();
-            release.setCharset("Cp1252");
+            release.setCharset("");
             release.setId("unk");
             release.setTitle("Unknown combination of files");
             release.setDtaCrc32("????????");
             release.setExeCrc32("????????");
         }
 
+        sourceCharset = getCharset(release.getCharset());
+        destinationCharset = sourceCharset;
+
         exeDump = new Dump(exePath);
-        exeDump.setCharset(release.getCharset());
+        exeDump.setCharset(sourceCharset.getCode());
         exeDump.setByteOrder(ByteOrder.LITTLE_ENDIAN);
         exeDump.setIndex(0);
 
@@ -2121,6 +2130,43 @@ public class MainPaneController {
 
     public void xnResourceEditorHyperlinkClick() {
         JavaFxUtils.openUrl("https://stefansundin.github.io/xn_resource_editor");
+    }
+
+    public void changeSourceCharsetButtonClick() {
+
+        try {
+            ChoiceDialog<Encoding> dialog = new ChoiceDialog<>(sourceCharset, charsets);
+            dialog.setTitle("Choose charset");
+            dialog.setHeaderText("Please, select new charset");
+            dialog.setContentText("Source charset:");
+
+            Optional<Encoding> result = dialog.showAndWait();
+            if (result.isPresent()) {
+                sourceCharset = result.get();
+                yodesk = Yodesk.fromFile(dtaFile.toString(), sourceCharset.getCode());
+                updateUI();
+            }
+        } catch (Exception e) {
+            JavaFxUtils.showAlert("Error of changing the source charset", e);
+        }
+    }
+
+    public void changeDestinationCharsetButtonClick() {
+
+        try {
+            ChoiceDialog<Encoding> dialog = new ChoiceDialog<>(destinationCharset, charsets);
+            dialog.setTitle("Choose charset");
+            dialog.setHeaderText("Please, select new charset");
+            dialog.setContentText("Destination charset:");
+
+            dialog.showAndWait().ifPresent(e -> {
+                destinationCharset = e;
+                Yodesk.setOutputCharset(e.getCode());
+                updateDestinationCharset();
+            });
+        } catch (Exception e) {
+            JavaFxUtils.showAlert("Error of changing the destination charset", e);
+        }
     }
 
     //TODO

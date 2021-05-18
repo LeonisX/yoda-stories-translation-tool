@@ -1,0 +1,70 @@
+[
+  {
+    "code": "windows-1250",
+    "description": "Eastern European (Latin 2)"
+  },
+  {
+    "code": "windows-1251",
+    "description": "Cyrillic (Slavic)"
+  },
+  {
+    "code": "windows-1252",
+    "description": "Western European (Latin-1)"
+  },
+  {
+    "code": "windows-1253",
+    "description": "Greek"
+  },
+  {
+    "code": "windows-1254",
+    "description": "Turkish (Latin 5)"
+  },
+  {
+    "code": "windows-1255",
+    "description": "Hebrew"
+  },
+  {
+    "code": "windows-1256",
+    "description": "Arabic"
+  },
+  {
+    "code": "windows-1257",
+    "description": "Baltic"
+  },
+  {
+    "code": "windows-1258",
+    "description": "Vietnamese"
+  },
+  {
+    "code": "x-windows-874",
+    "description": "Thai"
+  },
+  {
+    "code": "windows-31j",
+    "description": "Japanese"
+  },
+  {
+    "code": "x-windows-iso2022jp",
+    "description": "Japanese ISO-2022"
+  },
+  {
+    "code": "x-mswin-936",
+    "description": "Chinese Simplified"
+  },
+  {
+    "code": "x-windows-950",
+    "description": "Chinese Traditional"
+  },
+  {
+    "code": "x-MS950-HKSCS",
+    "description": "Chinese Traditional + HK"
+  },
+  {
+    "code": "x-windows-949",
+    "description": "Korean"
+  },
+  {
+    "code": "x-Johab",
+    "description": "Korean (Johab)"
+  }
+]
