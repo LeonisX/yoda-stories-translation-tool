@@ -2,6 +2,7 @@ package md.leonis.ystt.view;
 
 import io.kaitai.struct.ByteBufferKaitaiOutputStream;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingFXUtils;
@@ -101,7 +102,20 @@ public class MainPaneController {
     public Button changeDestinationCharsetButton;
 
     public TextField windowSizeTextField;
+    public TextField inventoryTextField;
+    public Label inventoryErrorLabel;
+    public Label inventoryLabel;
+
     public TextField toolTipSizeTextField;
+    public TextField dialogTextField;
+    public Label dialogErrorLabel;
+    public Label dialogLabel;
+
+    public ImageView gameImageView;
+    public ImageView dialogButtonImageView;
+    public Rectangle dialogRectangle;
+    public Rectangle shapeRectangle;
+    public ImageView inventoryImageView;
 
     public Button saveToBitmapButton;
     public Button loadFromBitmapButton;
@@ -246,6 +260,15 @@ public class MainPaneController {
     private static Map<Integer, Long> scrollBarLeftMap; // 496
     private static Map<Integer, Long> scrollBarRightMap; // 512
 
+    boolean firstRun = true;
+
+    double dialogButtonOffset;
+    double dialogRectangleOffset;
+    double dialogRectangleWidth;
+    double dialogLabelOffset;
+
+    double inventoryImageViewOffset;
+
     public MainPaneController() {
         spath = Paths.get(".");
     }
@@ -291,6 +314,16 @@ public class MainPaneController {
 
     private void updateUI() {
 
+        if (firstRun) {
+            dialogButtonOffset = dialogButtonImageView.getLayoutX();
+            dialogRectangleOffset = dialogRectangle.getLayoutX();
+            dialogRectangleWidth = dialogRectangle.getWidth();
+            dialogLabelOffset = dialogLabel.getLayoutX();
+
+            inventoryImageViewOffset = inventoryImageView.getLayoutX();
+            firstRun = false;
+        }
+
         // Common information, sections
         versionLabel.setText(yodesk.getVersion().getVersion());
         nameLabel.setText(release.getTitle());
@@ -303,17 +336,27 @@ public class MainPaneController {
 
         //EXE
         if (windowMap.size() == 1) {
-            windowSizeTextField.setText(String.valueOf(getValue(windowMap) - 525));
+            int value = (int) getValue(windowMap) - 525;
+            windowSizeTextField.setText(String.valueOf(value));
+            resizeInventory(value);
         }
         if (toolTipMap.size() == 1) {
-            long value = getValue(toolTipMap);
-            String hex = longToHex(value, 10);
+            long longValue = getValue(toolTipMap);
+            String hex = longToHex(longValue, 10);
             if (hex.equals("C2039B148D") || !hex.startsWith("000000") || !hex.endsWith("B8")) {
                 toolTipSizeTextField.setText("0");
             } else { // 000000a2b8
-                toolTipSizeTextField.setText(String.valueOf(Integer.parseInt(hex.substring(6, 8), 16) - 130));
+                int value = Integer.parseInt(hex.substring(6, 8), 16) - 130;
+                toolTipSizeTextField.setText(String.valueOf(value));
+                resizeToolTip(value);
             }
         }
+
+        windowSizeTextField.textProperty().addListener(windowSizeChangeListener());
+        inventoryTextField.textProperty().addListener((observable, oldValue, newValue) -> inventoryLabel.setText(newValue));
+
+        toolTipSizeTextField.textProperty().addListener(toolTipSizeChangeListener());
+        dialogTextField.textProperty().addListener((observable, oldValue, newValue) -> dialogLabel.setText(newValue));
 
         // Title image, palette
         drawTitleImage();
@@ -478,6 +521,78 @@ public class MainPaneController {
         for (Integer tileId : tileIds) {
             flowPane.getChildren().add(newTile(tileId, true));
         }
+    }
+
+    private ChangeListener<String> windowSizeChangeListener() {
+        return (observable, oldValue, newValue) -> {
+            int value = 0;
+            inventoryErrorLabel.setVisible(true);
+            try {
+                value = Integer.parseInt(newValue);
+                if (value >= -120 && value <= 170) {
+                    exeDump.writeHexDump(getIndex(windowMap), intToHex(525 + value, 4));
+                    exeDump.writeHexDump(getIndex(window2Map), intToHex(525 + value, 4));
+
+                    exeDump.writeHexDump(getIndex(gridViewMap), intToHex(489 + value, 4));
+                    exeDump.writeHexDump(getIndex(scrollBarLeftMap), intToHex(496 + value, 4));
+                    exeDump.writeHexDump(getIndex(scrollBarRightMap), intToHex(512 + value, 4));
+
+                    inventoryErrorLabel.setVisible(false);
+                } else {
+                    value = 0;
+                }
+            } catch (Exception ignored) {
+                //
+            }
+
+            resizeInventory(value);
+        };
+    }
+
+    private void resizeInventory(int value) {
+        inventoryImageView.setLayoutX(inventoryImageViewOffset + value);
+    }
+
+    private ChangeListener<? super String> toolTipSizeChangeListener() {
+        return (observable, oldValue, newValue) -> {
+            int value = 0;
+            dialogErrorLabel.setVisible(true);
+            try {
+                value = Integer.parseInt(toolTipSizeTextField.getText());
+                if (value == 0) {
+                    exeDump.writeHexDump(getIndex(toolTipMap), "C2039B148D");
+                    dialogErrorLabel.setVisible(false);
+                    //TODO return
+                } else if (value >= -78 && value <= 125) {
+                    // 000000a2b8
+                    exeDump.writeHexDump(getIndex(toolTipMap), "000000" + intToHex(130 + value, 2) + "B8");
+                    dialogErrorLabel.setVisible(false);
+                } else {
+                    value = 0;
+                }
+            } catch (Exception ignored) {
+                //
+            }
+
+            resizeToolTip(value);
+        };
+    }
+
+    private void resizeToolTip(int value) {
+
+        int moveLeft = value > 53 ? value - 53 : 0;
+        int right = Math.min(value, 53);
+
+        if (moveLeft > 55) {
+            right += moveLeft - 55;
+            moveLeft = 55;
+        }
+
+        dialogButtonImageView.setLayoutX(dialogButtonOffset + right);
+        dialogRectangle.setWidth(dialogRectangleWidth + value);
+
+        dialogRectangle.setLayoutX(dialogRectangleOffset - moveLeft);
+        dialogLabel.setLayoutX(dialogLabelOffset - moveLeft);
     }
 
     public void addNewTileClick() {
@@ -1891,15 +2006,15 @@ public class MainPaneController {
 
             for (StringImagesRecord n : namesTexts) {
                 final Text text = new Text(n.getTranslation());
-                Font font = Font.font("Microsoft Sans Serif", 10);
+                Font font = Font.font("Microsoft Sans Serif", 12.7); // Why not 10???
                 text.setFont(font);
                 maxWidth = Math.max(maxWidth, text.getLayoutBounds().getWidth());
             }
 
-            maxWidth = maxWidth * 179 / 130;
+            //maxWidth = maxWidth * 179 / 130;
 
-            if (maxWidth > 143) {
-                JavaFxUtils.showAlert("Too long tile name(s)", "Please consider increasing the window width by at least " + (int) Math.ceil(maxWidth - 143) + "px", Alert.AlertType.INFORMATION);
+            if (maxWidth > 141) {
+                JavaFxUtils.showAlert("Too long tile name(s)", "Please consider increasing the window width by at least " + (int) Math.ceil(maxWidth - 141) + "px", Alert.AlertType.INFORMATION);
             }
         } catch (Exception e) {
             JavaFxUtils.showAlert("Error loading Puzzles text from file", e);
@@ -2050,40 +2165,6 @@ public class MainPaneController {
 
         Map.Entry<Integer, Long> entry = map.entrySet().iterator().next();
         return entry.getValue();
-    }
-
-    public void setWindowSizeButtonClick() {
-
-        try {
-            int value = Integer.parseInt(windowSizeTextField.getText());
-            if (value < -525 || value > 4096) {
-                throw new RuntimeException("There is no need to change the width of the Window so much!");
-            }
-
-            exeDump.writeHexDump(getIndex(windowMap), intToHex(525 + value, 4));
-            exeDump.writeHexDump(getIndex(window2Map), intToHex(525 + value, 4));
-
-            exeDump.writeHexDump(getIndex(gridViewMap), intToHex(489 + value, 4));
-            exeDump.writeHexDump(getIndex(scrollBarLeftMap), intToHex(496 + value, 4));
-            exeDump.writeHexDump(getIndex(scrollBarRightMap), intToHex(512 + value, 4));
-        } catch (Exception e) {
-            JavaFxUtils.showAlert("Error when resizing window", e);
-        }
-    }
-
-    public void setToolTipSizeButtonClick() {
-
-        try {
-            int value = Integer.parseInt(toolTipSizeTextField.getText());
-            if (value < -130 || value > 125) {
-                throw new RuntimeException("There is no need to change the width of the The Tool Tip Text Field  so much!");
-            }
-            // 000000a2b8
-            exeDump.writeHexDump(getIndex(toolTipMap), "000000" + intToHex(130 + value, 2) + "B8");
-
-        } catch (Exception e) {
-            JavaFxUtils.showAlert("Error when resizing Tool Tip Text Field", e);
-        }
     }
 
     private static void dumpPalette(int paletteStartIndex) {

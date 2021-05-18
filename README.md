@@ -2,11 +2,11 @@
 
 Utility Yoda Stories Translation Tool
 
-**Current status: read/modify, dump, translate DTA**
+**Current status: read/modify, dump, translate DTA, hack EXE file**
 
 **Current stage: polishing, testing**
 
-**Powered with Kaitai structure format**
+**Powered with Kaitai structure format from Cyco**
 
 [Read Yoda Stories Translation Guide](documents/translation-guide.md)
 

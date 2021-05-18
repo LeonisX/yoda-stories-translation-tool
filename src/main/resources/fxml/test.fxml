@@ -1,67 +1,153 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Hyperlink?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.shape.Line?>
+<?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane prefHeight="561.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="md.leonis.ystt.view.TestController">
-   <BorderPane>
-      <center>
-         <TextArea prefHeight="240.0" prefWidth="478.0" text="Yoda Stories Translation Tool originally planned to translate text in an EXE file as well. However, there is currently no off-the-shelf Java solution for editing Windows PE headers. In addition, this data structure is complex enough to quickly implement it yourself.&#10;&#10;However, not everything is so hopeless. There are many Portable Executables editors out there, and in fact, the main difficulty is in choosing the one that suits best.&#10;&#10;Our choice settled on the Restorator utility, but it is paid, therefore, we will publish a list of several more found tools, so that you choose the one that will allow you to perform the translation with comfort. Any allows you to fully translate text strings, menus and dialog boxes." wrapText="true" BorderPane.alignment="CENTER" />
-      </center>
-      <right>
-         <VBox prefHeight="184.0" prefWidth="310.0" BorderPane.alignment="CENTER">
-            <Label text="In alphabet order:" />
-            <Hyperlink onAction="#peExplorerHyperlinkClick" text="PE Explorer (129$)" underline="true" />
-            <Hyperlink onAction="#resEditHyperlinkClick" text="ResEdit (Free)" underline="true" />
-            <Hyperlink onAction="#resourceBuilderHyperlinkClick" text="Resource Builder (59$)" underline="true" />
-            <Hyperlink onAction="#resourceHackerHyperlinkClick" text="Resource Hacker (Free)" underline="true" />
-            <Hyperlink onAction="#resourceTunerHyperlinkClick" text="Resource Tuner (49$)" underline="true" />
-            <Hyperlink onAction="#restoratorHyperlinkClick" text="Restorator (72$)" underline="true" />
-            <Hyperlink onAction="#xnResourceEditorHyperlinkClick" text="XN Resource Editor (Free)" underline="true" />
-         </VBox>
-      </right>
-      <bottom>
-         <AnchorPane prefHeight="300.0" prefWidth="859.0" BorderPane.alignment="CENTER">
-            <children>
-               <Label layoutX="14.0" layoutY="14.0" text="Resize Inventory Table View">
-                  <font>
-                     <Font name="System Bold" size="12.0" />
-                  </font>
-               </Label>
-               <Label layoutX="14.0" layoutY="41.0" text="Default width (px):" />
-               <Label layoutX="118.0" layoutY="41.0" text="Label" />
-               <Label layoutX="161.0" layoutY="41.0" text="Expand by:" />
-               <TextField layoutX="226.0" layoutY="37.0" prefHeight="25.0" prefWidth="47.0" />
-               <Line endX="220.0" layoutX="111.0" layoutY="81.0" startX="-100.0" stroke="#6b6969" />
-               <Button layoutX="281.0" layoutY="37.0" mnemonicParsing="false" text="Apply" />
+   <BorderPane prefHeight="200.0" prefWidth="200.0">
+      <left>
+         <AnchorPane prefHeight="477.0" prefWidth="1093.0" BorderPane.alignment="CENTER">
 
-               <Label layoutX="14.0" layoutY="101.0" text="Resize Dialog Tool Tip">
-                  <font>
-                     <Font name="System Bold" size="12.0" />
-                  </font>
+            <Label layoutX="20.0" layoutY="19.0"
+                   text="Resize Window (and Inventory Table View)">
+               <font>
+                  <Font name="System Bold" size="12.0"/>
+               </font>
+            </Label>
+            <Label layoutX="20.0" layoutY="46.0" text="Default width (px):"/>
+            <Label layoutX="124.0" layoutY="46.0" text="525"/>
+            <Label layoutX="167.0" layoutY="46.0" text="Expanded by:"/>
+            <TextField fx:id="windowSizeTextField" layoutX="246.0" layoutY="42.0"
+                       prefHeight="25.0" prefWidth="64.0" text="0"/>
+            <Label layoutX="20.0" layoutY="83.0" text="Inventory text example:"/>
+            <TextField fx:id="inventoryTextField" layoutX="167.0" layoutY="79.0"
+                       prefHeight="25.0" prefWidth="212.0" text="Inventory Item #3"/>
+            <Label fx:id="inventoryErrorLabel" layoutX="317.0" layoutY="41.0" text="!!!"
+                   textFill="RED" visible="false">
+               <font>
+                  <Font name="System Bold" size="18.0"/>
+               </font>
+            </Label>
+            <Rectangle disable="true" fill="#1f93ff00" height="106.0" layoutX="9.0"
+                       layoutY="8.0" stroke="#00000054" strokeType="INSIDE" width="384.0"/>
+
+            <Label layoutX="20.0" layoutY="131.0" text="Resize Dialog Tool Tip Text Field">
+               <font>
+                  <Font name="System Bold" size="12.0"/>
+               </font>
+            </Label>
+            <Label layoutX="20.0" layoutY="158.0" text="Default width (px):"/>
+            <Label layoutX="124.0" layoutY="158.0" text="130"/>
+            <Label layoutX="167.0" layoutY="158.0" text="Expanded by:"/>
+            <TextField fx:id="toolTipSizeTextField" layoutX="246.0" layoutY="154.0"
+                       prefHeight="25.0" prefWidth="64.0" text="0"/>
+
+            <Label layoutX="20.0" layoutY="194.0" text="Dialog text example:"/>
+            <TextField fx:id="dialogTextField" layoutX="167.0" layoutY="190.0"
+                       prefHeight="25.0" prefWidth="212.0"
+                       text="Let's resize this dialog box!"/>
+            <Label fx:id="dialogErrorLabel" layoutX="317.0" layoutY="153.0" text="!!!"
+                   textFill="RED" visible="false">
+               <font>
+                  <Font name="System Bold" size="18.0"/>
+               </font>
+            </Label>
+
+            <Rectangle disable="true" fill="#1f93ff00" height="106.0" layoutX="9.0"
+                       layoutY="119.0" stroke="#00000054" strokeType="INSIDE"
+                       width="384.0"/>
+
+            <ImageView fx:id="inventoryImageView" fitHeight="240.0" fitWidth="347.0"
+                       layoutX="570.0" pickOnBounds="true" preserveRatio="true"
+                       smooth="false">
+               <Image url="@../inventory.png"/>
+            </ImageView>
+
+            <Label fx:id="inventoryLabel" layoutX="742.0" layoutY="81.0"
+                   text="Inventory Item #3">
+               <font>
+                  <Font name="Microsoft Sans Serif" size="12.7"/>
+               </font>
+            </Label>
+
+            <ImageView fx:id="gameImageView" fitHeight="300.0" fitWidth="519.0"
+                       layoutX="200.0" layoutY="6.0" pickOnBounds="true"
+                       preserveRatio="true" smooth="false" AnchorPane.leftAnchor="398.0"
+                       AnchorPane.topAnchor="0.0">
+               <Image url="@../game-screen.png"/>
+            </ImageView>
+
+            <Rectangle fx:id="dialogRectangle" arcHeight="18.0" arcWidth="18.0" fill="WHITE"
+                       height="24.0" layoutX="465.0" layoutY="99.0" smooth="false"
+                       stroke="BLACK" strokeType="INSIDE" width="170.0"/>
+            <Rectangle fx:id="shapeRectangle" fill="WHITE" height="5.0" layoutX="539.0"
+                       layoutY="118.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0"
+                       width="12.0"/>
+            <ImageView fx:id="dialogButtonImageView" fitHeight="16.0" fitWidth="16.0"
+                       layoutX="614.0" layoutY="103.0" pickOnBounds="true"
+                       preserveRatio="true">
+               <Image url="@../button.png"/>
+            </ImageView>
+
+            <Label fx:id="dialogLabel" layoutX="472.0" layoutY="104.0"
+                   text="Let's resize this dialog box!">
+               <font>
+                  <Font name="Microsoft Sans Serif" size="10.8"/>
+               </font>
+            </Label>
+
+            <HBox alignment="CENTER" prefHeight="143.0" prefWidth="917.0"
+                  AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="300.0">
+               <padding>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+               </padding>
+               <Label prefHeight="180.0" prefWidth="704.0"
+                      text="Yoda Stories Translation Tool originally planned to translate text in an EXE file as well. However, the structure of Windows PE headers is complex enough to quickly implement it.&#10;&#10;There are many third-party Portable Executables editors, and in fact, the main difficulty is in choosing the one that suits best.&#10;&#10;Our choice settled on the Restorator utility, but it is paid, therefore, we will publish a list of several more tools in alphabetical order, so that you choose the one that will allow you to perform the translation with comfort. Any allows you to fully translate text strings, menus and dialog boxes."
+                      wrapText="true" BorderPane.alignment="CENTER">
+                  <padding>
+                     <Insets right="15.0"/>
+                  </padding>
                </Label>
-               <Label layoutX="14.0" layoutY="128.0" text="Default width (px):" />
-               <Label layoutX="118.0" layoutY="128.0" text="Label" />
-               <Label layoutX="161.0" layoutY="128.0" text="Expand by:" />
-               <TextField layoutX="226.0" layoutY="124.0" prefHeight="25.0" prefWidth="47.0" />
-               <Button layoutX="281.0" layoutY="124.0" mnemonicParsing="false" text="Apply" />
-               <ImageView fitHeight="300.0" fitWidth="519.0" layoutX="340.0" layoutY="6.0" pickOnBounds="true" preserveRatio="true" smooth="false" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                  <image>
-                     <Image url="@../game-screen.png" />
-                  </image>
-               </ImageView>
-            </children>
+               <VBox prefHeight="180.0" prefWidth="214.0" BorderPane.alignment="CENTER">
+                  <HBox.margin>
+                     <Insets/>
+                  </HBox.margin>
+                  <Hyperlink minHeight="22.0" onAction="#peExplorerHyperlinkClick"
+                             text="PE Explorer (129$)" underline="true"/>
+                  <Hyperlink minHeight="22.0" onAction="#resEditHyperlinkClick"
+                             text="ResEdit (Free)" underline="true"/>
+                  <Hyperlink minHeight="22.0"
+                             onAction="#resourceBuilderHyperlinkClick"
+                             text="Resource Builder (59$)" underline="true"/>
+                  <Hyperlink minHeight="22.0" onAction="#resourceHackerHyperlinkClick"
+                             text="Resource Hacker (Free)" underline="true"/>
+                  <Hyperlink minHeight="22.0" onAction="#resourceTunerHyperlinkClick"
+                             text="Resource Tuner (49$)" underline="true"/>
+                  <Hyperlink minHeight="22.0" onAction="#restoratorHyperlinkClick"
+                             text="Restorator (72$)" underline="true"/>
+                  <Hyperlink minHeight="22.0"
+                             onAction="#xnResourceEditorHyperlinkClick"
+                             text="XN Resource Editor (Free)" underline="true"/>
+               </VBox>
+            </HBox>
+
+            <Rectangle disable="true" fill="#1f93ff00" height="170.0" layoutX="9.0"
+                       layoutY="307.0" stroke="#00000028" strokeType="INSIDE"
+                       width="686.0"/>
+            <Rectangle disable="true" fill="#1f93ff00" height="170.0" layoutX="694.0"
+                       layoutY="307.0" stroke="#00000028" strokeType="INSIDE"
+                       width="222.0"/>
          </AnchorPane>
-      </bottom>
+      </left>
    </BorderPane>
 </AnchorPane>
