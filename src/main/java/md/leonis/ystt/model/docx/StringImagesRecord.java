@@ -1,10 +1,12 @@
 package md.leonis.ystt.model.docx;
 
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.List;
 
 public class StringImagesRecord extends StringRecord {
 
+    private List<Integer> tileIds = new ArrayList<>();
     private List<BufferedImage> images;
 
     public StringImagesRecord(String id, List<BufferedImage> images, String original, String translation) {
@@ -26,5 +28,13 @@ public class StringImagesRecord extends StringRecord {
 
     public void setImages(List<BufferedImage> images) {
         this.images = images;
+    }
+
+    public List<Integer> getTileIds() {
+        return tileIds;
+    }
+
+    public void setTileIds(List<Integer> tileIds) {
+        this.tileIds = tileIds;
     }
 }

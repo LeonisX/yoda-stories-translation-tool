@@ -809,6 +809,34 @@
                                                         mnemonicParsing="false"
                                                         onAction="#savePuzzlesToFilesButtonClick"
                                                         text="Save puzzles to files"/>
+                                                <TableView fx:id="puzzlesTableView" layoutX="146.0" layoutY="14.0" prefHeight="400.0"
+                                                           prefWidth="1060.0">
+                                                    <columns>
+                                                        <TableColumn editable="false" prefWidth="81.0" text="ID">
+                                                            <cellValueFactory>
+                                                                <PropertyValueFactory property="id"/>
+                                                            </cellValueFactory>
+                                                            <cellFactory>
+                                                                <StringCellFactory alignment="left">
+                                                                </StringCellFactory>
+                                                            </cellFactory>
+                                                        </TableColumn>
+                                                        <TableColumn editable="false" prefWidth="70.0" text="Items">
+                                                            <cellValueFactory>
+                                                                <PropertyValueFactory property="tileIds"/>
+                                                            </cellValueFactory>
+                                                        </TableColumn>
+                                                        <TableColumn editable="false" prefWidth="895.0" text="Text">
+                                                            <cellValueFactory>
+                                                                <PropertyValueFactory property="original"/>
+                                                            </cellValueFactory>
+                                                            <cellFactory>
+                                                                <StringCellFactory alignment="left">
+                                                                </StringCellFactory>
+                                                            </cellFactory>
+                                                        </TableColumn>
+                                                    </columns>
+                                                </TableView>
                                             </AnchorPane>
                                         </Tab>
                                         <Tab text="Text Translation">

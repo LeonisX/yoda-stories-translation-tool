@@ -183,10 +183,10 @@ public class MainPaneController {
 
     public Label puzzlesCountLabel;
     public Button savePuzzlesToFilesButton;
+    public TableView<StringImagesRecord> puzzlesTableView;
     public Button dumpPuzzlesTextToDocx;
     public Button loadTranslatedPuzzlesText;
     public Button replacePuzzlesText;
-
     public CheckBox trimPuzzlesTrailSpacesCheckBox;
     public CheckBox strictPuzzlesReplacingRulesCheckBox;
     public TableView<StringImagesRecord> puzzlesTextTableView;
@@ -342,6 +342,30 @@ public class MainPaneController {
         puzzlesCountLabel.setText(Integer.toString(yodesk.getPuzzles().getPuzzles().size()));
         puzzlesTexts = WordHelper.getPuzzlesTexts();
         puzzlesTextTableView.setItems(FXCollections.observableList(puzzlesTexts));
+        @SuppressWarnings("all")
+        TableColumn<StringImagesRecord, List<Integer>> puzzlesColumn = (TableColumn<StringImagesRecord, List<Integer>>) puzzlesTableView.getColumns().get(1);
+        puzzlesColumn.setCellFactory(c -> {
+
+            Canvas canvas = new Canvas();
+
+            TableCell<StringImagesRecord, List<Integer>> cell = new TableCell<StringImagesRecord, List<Integer>>() {
+                public void updateItem(List<Integer> tileIds, boolean empty) {
+                    if (tileIds != null) {
+                        canvas.setWidth(tileIds.size() * TILE_SIZE);
+                        canvas.setHeight(TILE_SIZE);
+                        for (int i = 0; i < tileIds.size(); i++) {
+                            drawTileOnCanvas(tileIds.get(i), canvas, i * TILE_SIZE, 0, null);
+                        }
+                    } else {
+                        canvas.setWidth(0);
+                    }
+                }
+            };
+            cell.setGraphic(canvas);
+            cell.setAlignment(Pos.CENTER);
+            return cell;
+        });
+        puzzlesTableView.setItems(FXCollections.observableList(puzzlesTexts));
 
         // Characters
         charactersCountLabel.setText(Integer.toString(yodesk.getCharacters().getCharacters().size()));

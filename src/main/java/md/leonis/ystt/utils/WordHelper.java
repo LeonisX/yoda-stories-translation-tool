@@ -77,9 +77,13 @@ public class WordHelper {
             }
 
             pz.get(0).setImages(Stream.of(p.getItem1()).map(tileId -> ImageUtils.getTile(tileId, icmw)).collect(Collectors.toList()));
+            pz.get(0).getTileIds().add(p.getItem1());
 
             List<BufferedImage> image2 = Stream.of(p.getItem2()).filter(i -> i <= yodesk.getTiles().getTiles().size() && i >= 418)
                     .map(tileId -> ImageUtils.getTile(tileId, icmw)).collect(Collectors.toList());
+            if (!image2.isEmpty()) {
+                pz.get(0).getTileIds().add(p.getItem2());
+            }
 
             if (pz.size() < 2) {
                 pz.get(0).getImages().addAll(image2);
