@@ -21,8 +21,6 @@ An original version: https://github.com/LeonisX/YExplorer
 * HEX
 * Тяжёлые процессы дампинга лучше вынести в отдельный поток
 
-* Map View + Map Editor in one Tab. New TabPane: View, Edit, Dump
-
 * When delete tile - validate all maps first
 
 * Сломан вывод таблицы Map (нужна ли?)
@@ -54,6 +52,7 @@ An original version: https://github.com/LeonisX/YExplorer
 * Full instruction: EXE, DTA: MarkDown
 * Resolve all TODO
 * remove all [CR2], [CR] code
+* Bug when show-hide zone layers (#0 map)
 
 * Identify Characters MovementTypes
 

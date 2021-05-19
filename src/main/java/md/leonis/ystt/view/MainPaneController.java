@@ -157,8 +157,6 @@ public class MainPaneController {
     public CheckBox dumpActionsCheckBox;
     public CheckBox dumpActionsTextCheckBox;
     public CheckBox saveUnusedTilesCheckBox;
-    public ListView<String> mapsListView;
-    public Canvas mapCanvas;
     public Button showActionsButton;
     public CheckBox showMapMonstersCheckBox;
     public CheckBox showMapHotspotsCheckBox;
@@ -188,6 +186,7 @@ public class MainPaneController {
     public FlowPane mapEditorTilesFlowPane;
     public Button undoMapEdit;
     public ContextMenu mapEditorContextMenu;
+    public TabPane zoneOptionsTabPane;
 
     private int mapEditorX;
     private int mapEditorY;
@@ -372,16 +371,13 @@ public class MainPaneController {
         tilesContextMenu.setOnShown(this::selectTileMenuItem);
 
         // Maps
-        mapsCountLabel.setText(Integer.toString(yodesk.getZones().getZones().size()));
-        mapsListView.setItems(FXCollections.observableList(yodesk.getZones().getZones().stream().map(m -> "Map #" + m.getIndex()).collect(Collectors.toList())));
-        mapsListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> drawViewZone());
-        mapsListView.getSelectionModel().select(0);
         mapsTableView.setItems(FXCollections.observableList(yodesk.getZones().getZones()));
         mapEditorListView.setItems(FXCollections.observableList(yodesk.getZones().getZones().stream().map(m -> "Map #" + m.getIndex()).collect(Collectors.toList())));
         mapEditorListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> drawEditZone());
         mapEditorListView.getSelectionModel().select(0);
         mapEditorCanvas.setOnContextMenuRequested(e -> mapEditorContextMenu.show((Node) e.getSource(), e.getScreenX(), e.getScreenY()));
         drawMapEditorTiles();
+        zoneOptionsTabPane.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> positionZoneOptionsTabPane());
 
         actionTexts = getActionsTexts();
         actionsTextTableView.setItems(FXCollections.observableList(actionTexts));
@@ -603,7 +599,6 @@ public class MainPaneController {
             tilesFlowPane.getChildren().add(tileId, newTile(tileId, true));
             mapEditorTilesFlowPane.getChildren().add(tileId, newTile(tileId, false));
             usedTiles.add(false);
-            drawViewZone();
             drawEditZone();
         } catch (Exception e) {
             JavaFxUtils.showAlert("Error adding tile", e);
@@ -618,7 +613,6 @@ public class MainPaneController {
             tilesFlowPane.getChildren().remove(tileId);
             mapEditorTilesFlowPane.getChildren().remove(tileId);
             usedTiles.remove(usedTiles.size() - 1);
-            drawViewZone();
             drawEditZone();
         } catch (Exception e) {
             JavaFxUtils.showAlert("Error deleting tile", e);
@@ -811,17 +805,6 @@ public class MainPaneController {
     end;*/
     }
 
-    public void drawViewZone() {
-
-        if (mapsListView.getSelectionModel().getSelectedIndex() >= 0) {
-            int zoneId = mapsListView.getSelectionModel().getSelectedIndex();
-
-            drawViewMap(zoneId);
-            showMapInfo(zoneId);
-        }
-    }
-
-
     private void showMapInfo(int zoneId) {
 
         Zone zone = yodesk.getZones().getZones().get(zoneId);
@@ -842,26 +825,29 @@ public class MainPaneController {
         //TODO ArrayList<Action> actions;
     }
 
-    private void drawViewMap(int zoneId) {
-        try {
-            ReadMap(mapCanvas, zoneId, true, normalSaveCheckBox.isSelected() || groupByFlagsCheckBox.isSelected() || groupByPlanetTypeCheckBox.isSelected());
-        } catch (Exception e) {
-            JavaFxUtils.showAlert(String.format("Map %s display error", zoneId), e);
-        }
-    }
-
+    @FXML
     private void drawEditZone() {
         if (getEditorZoneId() >= 0) {
             int zoneId = getEditorZoneId();
             drawEditorMap(zoneId);
-            mapEditorTilesScrollPane.setLayoutX(mapEditorCanvas.getLayoutX() + mapEditorCanvas.getWidth() + 8);
+            showMapInfo(zoneId);
+            positionZoneOptionsTabPane();
             undoMapEdit.setVisible(null != zoneHistoryMap.get(zoneId));
+        }
+    }
+
+    private void positionZoneOptionsTabPane() {
+
+        if (zoneOptionsTabPane.getSelectionModel().getSelectedIndex() == 1) {
+            zoneOptionsTabPane.setLayoutX(mapEditorCanvas.getLayoutX() + mapEditorCanvas.getWidth() + 8);
+        } else {
+            zoneOptionsTabPane.setLayoutX(mapEditorCanvas.getLayoutX() + 18 * 32 + 8);
         }
     }
 
     public void showActionsButtonClick() {
 
-        Zone zone = yodesk.getZones().getZones().get(mapsListView.getSelectionModel().getSelectedIndex());
+        Zone zone = yodesk.getZones().getZones().get(mapEditorListView.getSelectionModel().getSelectedIndex());
         List<Action> actions = zone.getActions();
         StringBuilder sb = new StringBuilder();
 
@@ -1013,8 +999,8 @@ public class MainPaneController {
 
         drawZoneSpot(mapEditorCanvas, zone, x, y);
 
-        if (zone.getIndex() == mapsListView.getSelectionModel().getSelectedIndex()) {
-            drawZoneSpot(mapCanvas, zone, x, y);
+        if (zone.getIndex() == mapEditorListView.getSelectionModel().getSelectedIndex()) {
+            drawZoneSpot(mapEditorCanvas, zone, x, y);
         }
     }
 
@@ -1150,7 +1136,7 @@ public class MainPaneController {
 
     private void ReadIZON(int zoneId, boolean save) throws IOException {
 
-        ReadMap(mapCanvas, zoneId, normalSaveCheckBox.isSelected() || groupByFlagsCheckBox.isSelected() || groupByPlanetTypeCheckBox.isSelected(), save);
+        ReadMap(mapEditorCanvas, zoneId, normalSaveCheckBox.isSelected() || groupByFlagsCheckBox.isSelected() || groupByPlanetTypeCheckBox.isSelected(), save);
 
         //TODO
         //MapProgressBar.Position :=id;
@@ -1316,7 +1302,6 @@ public class MainPaneController {
         drawTitleImage();
         clipboardBufferedImage = ImageUtils.replaceIcm(clipboardBufferedImage, icm);
         ImageUtils.drawOnCanvas(clipboardBufferedImage, clipboardCanvas, transparentColor);
-        drawZone(mapCanvas, mapsListView.getSelectionModel().getSelectedIndex());
         drawZone(mapEditorCanvas, mapEditorListView.getSelectionModel().getSelectedIndex());
         namesTableView.refresh();
     }

@@ -1,122 +1,121 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
-<?import javafx.scene.canvas.Canvas?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.control.cell.*?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.shape.*?>
-<?import javafx.scene.text.Font?>
-<?import md.leonis.ystt.view.*?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.Group?>
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ContextMenu?>
+<?import javafx.scene.control.Hyperlink?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.RadioMenuItem?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
 <?import javafx.scene.image.Image?>
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
-            xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="md.leonis.ystt.view.MainPaneController">
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
+
+<?import md.leonis.ystt.view.StringCellFactory?>
+<?import md.leonis.ystt.view.HexCellFactory?>
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="765.0" prefWidth="1216.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="md.leonis.ystt.view.MainPaneController">
     <center>
-        <SplitPane dividerPositions="0.7038461538461539" orientation="VERTICAL" BorderPane.alignment="CENTER">
+        <SplitPane dividerPositions="0.7238461538461539" orientation="VERTICAL" BorderPane.alignment="CENTER">
             <BorderPane>
                 <top>
                     <MenuBar>
                         <Menu text="File">
-                            <MenuItem fx:id="openMenuItem" mnemonicParsing="false" onAction="#openMenuItemClick"
-                                      text="Open"/>
-                            <MenuItem fx:id="saveMenuItem" mnemonicParsing="false" onAction="#saveMenuItemClick"
-                                      text="Save"/>
-                            <MenuItem fx:id="saveAsMenuItem" mnemonicParsing="false" onAction="#saveAsMenuItemClick"
-                                      text="Save As..."/>
-                            <MenuItem fx:id="closeMenuItem" mnemonicParsing="false" onAction="#closeMenuItemClick"
-                                      text="Close"/>
-                            <SeparatorMenuItem mnemonicParsing="false"/>
-                            <MenuItem fx:id="exitMenuItem" mnemonicParsing="false" onAction="#exitMenuItemClick"
-                                      text="Exit"/>
+                            <MenuItem fx:id="openMenuItem" mnemonicParsing="false" onAction="#openMenuItemClick" text="Open" />
+                            <MenuItem fx:id="saveMenuItem" mnemonicParsing="false" onAction="#saveMenuItemClick" text="Save" />
+                            <MenuItem fx:id="saveAsMenuItem" mnemonicParsing="false" onAction="#saveAsMenuItemClick" text="Save As..." />
+                            <MenuItem fx:id="closeMenuItem" mnemonicParsing="false" onAction="#closeMenuItemClick" text="Close" />
+                            <SeparatorMenuItem mnemonicParsing="false" />
+                            <MenuItem fx:id="exitMenuItem" mnemonicParsing="false" onAction="#exitMenuItemClick" text="Exit" />
                         </Menu>
                         <Menu mnemonicParsing="false" text="Settings">
                             <Menu mnemonicParsing="false" text="Transparent Color">
-                                <RadioMenuItem fx:id="noColorMenuItem" mnemonicParsing="false"
-                                               onAction="#transparentColorMenuItemClick" selected="true"
-                                               text="No color">
+                                <RadioMenuItem fx:id="noColorMenuItem" mnemonicParsing="false" onAction="#transparentColorMenuItemClick" selected="true" text="No color">
                                     <toggleGroup>
-                                        <ToggleGroup fx:id="transparentColorToggleGroup"/>
+                                        <ToggleGroup fx:id="transparentColorToggleGroup" />
                                     </toggleGroup>
                                     <graphic>
-                                        <Rectangle fill="#F4F4F4" height="16.0" stroke="BLACK" strokeType="INSIDE"
-                                                   width="16.0"/>
+                                        <Rectangle fill="#F4F4F4" height="16.0" stroke="BLACK" strokeType="INSIDE" width="16.0" />
                                     </graphic>
                                 </RadioMenuItem>
-                                <RadioMenuItem fx:id="fuchsiaMenuItem" mnemonicParsing="false"
-                                               onAction="#transparentColorMenuItemClick" text="Fuchsia"
-                                               toggleGroup="$transparentColorToggleGroup">
+                                <RadioMenuItem fx:id="fuchsiaMenuItem" mnemonicParsing="false" onAction="#transparentColorMenuItemClick" text="Fuchsia" toggleGroup="$transparentColorToggleGroup">
 
                                     <graphic>
-                                        <Rectangle fill="MAGENTA" height="16.0" stroke="BLACK" strokeType="INSIDE"
-                                                   width="16.0"/>
+                                        <Rectangle fill="MAGENTA" height="16.0" stroke="BLACK" strokeType="INSIDE" width="16.0" />
                                     </graphic>
                                 </RadioMenuItem>
-                                <RadioMenuItem fx:id="blackMenuItem" mnemonicParsing="false"
-                                               onAction="#transparentColorMenuItemClick" text="Black"
-                                               toggleGroup="$transparentColorToggleGroup">
+                                <RadioMenuItem fx:id="blackMenuItem" mnemonicParsing="false" onAction="#transparentColorMenuItemClick" text="Black" toggleGroup="$transparentColorToggleGroup">
                                     <graphic>
-                                        <Rectangle fill="BLACK" height="16.0" stroke="BLACK" strokeType="INSIDE"
-                                                   width="16.0"/>
+                                        <Rectangle fill="BLACK" height="16.0" stroke="BLACK" strokeType="INSIDE" width="16.0" />
                                     </graphic>
                                 </RadioMenuItem>
-                                <RadioMenuItem fx:id="whiteMenuItem" mnemonicParsing="false"
-                                               onAction="#transparentColorMenuItemClick" text="White"
-                                               toggleGroup="$transparentColorToggleGroup">
+                                <RadioMenuItem fx:id="whiteMenuItem" mnemonicParsing="false" onAction="#transparentColorMenuItemClick" text="White" toggleGroup="$transparentColorToggleGroup">
                                     <graphic>
-                                        <Rectangle fill="WHITE" height="16.0" stroke="BLACK" strokeType="INSIDE"
-                                                   width="16.0"/>
+                                        <Rectangle fill="WHITE" height="16.0" stroke="BLACK" strokeType="INSIDE" width="16.0" />
                                     </graphic>
                                 </RadioMenuItem>
                             </Menu>
 
                         </Menu>
                         <Menu mnemonicParsing="false" text="Operations">
-                            <MenuItem fx:id="addTilesMenuItem" mnemonicParsing="false" onAction="#addTilesMenuItemClick"
-                                      text="Add Tile(s)"/>
+                            <MenuItem fx:id="addTilesMenuItem" mnemonicParsing="false" onAction="#addTilesMenuItemClick" text="Add Tile(s)" />
                         </Menu>
                         <Menu mnemonicParsing="false" text="Help">
-                            <MenuItem fx:id="howToMenuItem" mnemonicParsing="false" onAction="#howToMenuItemClick"
-                                      text="How To..."/>
-                            <MenuItem fx:id="aboutMenuItem" mnemonicParsing="false" onAction="#aboutMenuItemClick"
-                                      text="About"/>
+                            <MenuItem fx:id="howToMenuItem" mnemonicParsing="false" onAction="#howToMenuItemClick" text="How To..." />
+                            <MenuItem fx:id="aboutMenuItem" mnemonicParsing="false" onAction="#aboutMenuItemClick" text="About" />
                         </Menu>
                     </MenuBar>
                 </top>
                 <center>
-                    <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE"
-                             BorderPane.alignment="CENTER">
+                    <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
                         <Tab text="Common Information">
                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                 <Label fx:id="nameLabel" layoutX="14.0" layoutY="14.0">
                                     <font>
-                                        <Font name="System Bold" size="14.0"/>
+                                        <Font name="System Bold" size="14.0" />
                                     </font>
                                 </Label>
-                                <Label layoutX="14.0" layoutY="35.0" text="CRC32:"/>
-                                <Label layoutX="14.0" layoutY="52.0" text="Size:"/>
-                                <Label layoutX="14.0" layoutY="69.0" text="Version:"/>
-                                <Label fx:id="crc32Label" layoutX="80.0" layoutY="35.0"/>
-                                <Label fx:id="fileSizeLabel" layoutX="80.0" layoutY="52.0"/>
-                                <Label fx:id="versionLabel" layoutX="80.0" layoutY="69.0"/>
-                                <Label layoutX="320.0" layoutY="35.0" text="Source Charset:"/>
-                                <Label fx:id="sourceCharsetLabel" layoutX="433.0" layoutY="35.0"/>
-                                <Button fx:id="changeSourceCharsetButton" layoutX="588.0" layoutY="32.0"
-                                        mnemonicParsing="false" onAction="#changeSourceCharsetButtonClick"
-                                        text="Change"/>
-                                <Label layoutX="320.0" layoutY="63.0" text="Destination Charset:"/>
-                                <Label fx:id="destinationCharsetLabel" layoutX="433.0" layoutY="63.0"/>
-                                <Button fx:id="changeDestinationCharsetButton" layoutX="588.0" layoutY="60.0"
-                                        mnemonicParsing="false" onAction="#changeDestinationCharsetButtonClick"
-                                        text="Change"/>
-                                <TableView fx:id="commonInformationTableView" layoutX="14.0" layoutY="95.0"
-                                           prefHeight="315.0" prefWidth="300.0">
+                                <Label layoutX="14.0" layoutY="35.0" text="CRC32:" />
+                                <Label layoutX="14.0" layoutY="52.0" text="Size:" />
+                                <Label layoutX="14.0" layoutY="69.0" text="Version:" />
+                                <Label fx:id="crc32Label" layoutX="80.0" layoutY="35.0" />
+                                <Label fx:id="fileSizeLabel" layoutX="80.0" layoutY="52.0" />
+                                <Label fx:id="versionLabel" layoutX="80.0" layoutY="69.0" />
+                                <Label layoutX="320.0" layoutY="35.0" text="Source Charset:" />
+                                <Label fx:id="sourceCharsetLabel" layoutX="433.0" layoutY="35.0" />
+                                <Button fx:id="changeSourceCharsetButton" layoutX="588.0" layoutY="32.0" mnemonicParsing="false" onAction="#changeSourceCharsetButtonClick" text="Change" />
+                                <Label layoutX="320.0" layoutY="63.0" text="Destination Charset:" />
+                                <Label fx:id="destinationCharsetLabel" layoutX="433.0" layoutY="63.0" />
+                                <Button fx:id="changeDestinationCharsetButton" layoutX="588.0" layoutY="60.0" mnemonicParsing="false" onAction="#changeDestinationCharsetButtonClick" text="Change" />
+                                <TableView fx:id="commonInformationTableView" layoutX="14.0" layoutY="95.0" prefHeight="334.0" prefWidth="300.0">
                                     <columns>
                                         <TableColumn editable="false" prefWidth="60.0" text="Section">
                                             <cellValueFactory>
-                                                <PropertyValueFactory property="type"/>
+                                                <PropertyValueFactory property="type" />
                                             </cellValueFactory>
                                             <cellFactory>
                                                 <StringCellFactory alignment="center">
@@ -125,7 +124,7 @@
                                         </TableColumn>
                                         <TableColumn editable="false" prefWidth="81.0" text="Offset">
                                             <cellValueFactory>
-                                                <PropertyValueFactory property="position"/>
+                                                <PropertyValueFactory property="position" />
                                             </cellValueFactory>
                                             <cellFactory>
                                                 <HexCellFactory alignment="right">
@@ -134,7 +133,7 @@
                                         </TableColumn>
                                         <TableColumn editable="false" prefWidth="60.0" text="Full Size">
                                             <cellValueFactory>
-                                                <PropertyValueFactory property="size"/>
+                                                <PropertyValueFactory property="size" />
                                             </cellValueFactory>
                                             <cellFactory>
                                                 <StringCellFactory alignment="right">
@@ -143,7 +142,7 @@
                                         </TableColumn>
                                         <TableColumn editable="false" prefWidth="81.0" text="Data Offset">
                                             <cellValueFactory>
-                                                <PropertyValueFactory property="dataPosition"/>
+                                                <PropertyValueFactory property="dataPosition" />
                                             </cellValueFactory>
                                             <cellFactory>
                                                 <HexCellFactory alignment="right">
@@ -152,9 +151,7 @@
                                         </TableColumn>
                                     </columns>
                                 </TableView>
-                                <Button fx:id="dumpAllSectionsButton" layoutX="14.0" layoutY="415.0"
-                                        mnemonicParsing="false" onAction="#dumpAllSectionsButtonClick"
-                                        text="Dump All Sections"/>
+                                <Button fx:id="dumpAllSectionsButton" layoutX="14.0" layoutY="438.0" mnemonicParsing="false" onAction="#dumpAllSectionsButtonClick" text="Dump All Sections" />
                             </AnchorPane>
                         </Tab>
                         <Tab text="Executable File">
@@ -162,303 +159,197 @@
                                 <left>
                                     <AnchorPane prefHeight="477.0" prefWidth="1093.0" BorderPane.alignment="CENTER">
 
-                                        <Label layoutX="20.0" layoutY="19.0"
-                                               text="Resize Window (and Inventory Table View)">
+                                        <Label layoutX="20.0" layoutY="19.0" text="Resize Window (and Inventory Table View)">
                                             <font>
-                                                <Font name="System Bold" size="12.0"/>
+                                                <Font name="System Bold" size="12.0" />
                                             </font>
                                         </Label>
-                                        <Label layoutX="20.0" layoutY="46.0" text="Default width (px):"/>
-                                        <Label layoutX="124.0" layoutY="46.0" text="525"/>
-                                        <Label layoutX="167.0" layoutY="46.0" text="Expanded by:"/>
-                                        <TextField fx:id="windowSizeTextField" layoutX="246.0" layoutY="42.0"
-                                                   prefHeight="25.0" prefWidth="64.0" text="0"/>
-                                        <Label layoutX="20.0" layoutY="83.0" text="Inventory text example:"/>
-                                        <TextField fx:id="inventoryTextField" layoutX="167.0" layoutY="79.0"
-                                                   prefHeight="25.0" prefWidth="212.0" text="Inventory Item #3"/>
-                                        <Label fx:id="inventoryErrorLabel" layoutX="317.0" layoutY="41.0" text="!!!"
-                                               textFill="RED" visible="false">
+                                        <Label layoutX="20.0" layoutY="46.0" text="Default width (px):" />
+                                        <Label layoutX="124.0" layoutY="46.0" text="525" />
+                                        <Label layoutX="167.0" layoutY="46.0" text="Expanded by:" />
+                                        <TextField fx:id="windowSizeTextField" layoutX="246.0" layoutY="42.0" prefHeight="25.0" prefWidth="64.0" text="0" />
+                                        <Label layoutX="20.0" layoutY="83.0" text="Inventory text example:" />
+                                        <TextField fx:id="inventoryTextField" layoutX="167.0" layoutY="79.0" prefHeight="25.0" prefWidth="212.0" text="Inventory Item #3" />
+                                        <Label fx:id="inventoryErrorLabel" layoutX="317.0" layoutY="41.0" text="!!!" textFill="RED" visible="false">
                                             <font>
-                                                <Font name="System Bold" size="18.0"/>
+                                                <Font name="System Bold" size="18.0" />
                                             </font>
                                         </Label>
-                                        <Rectangle disable="true" fill="#1f93ff00" height="106.0" layoutX="9.0"
-                                                   layoutY="8.0" stroke="#00000054" strokeType="INSIDE" width="384.0"/>
+                                        <Rectangle disable="true" fill="#1f93ff00" height="106.0" layoutX="9.0" layoutY="8.0" stroke="#00000054" strokeType="INSIDE" width="384.0" />
 
                                         <Label layoutX="20.0" layoutY="131.0" text="Resize Dialog Tool Tip Text Field">
                                             <font>
-                                                <Font name="System Bold" size="12.0"/>
+                                                <Font name="System Bold" size="12.0" />
                                             </font>
                                         </Label>
-                                        <Label layoutX="20.0" layoutY="158.0" text="Default width (px):"/>
-                                        <Label layoutX="124.0" layoutY="158.0" text="130"/>
-                                        <Label layoutX="167.0" layoutY="158.0" text="Expanded by:"/>
-                                        <TextField fx:id="toolTipSizeTextField" layoutX="246.0" layoutY="154.0"
-                                                   prefHeight="25.0" prefWidth="64.0" text="0"/>
+                                        <Label layoutX="20.0" layoutY="158.0" text="Default width (px):" />
+                                        <Label layoutX="124.0" layoutY="158.0" text="130" />
+                                        <Label layoutX="167.0" layoutY="158.0" text="Expanded by:" />
+                                        <TextField fx:id="toolTipSizeTextField" layoutX="246.0" layoutY="154.0" prefHeight="25.0" prefWidth="64.0" text="0" />
 
-                                        <Label layoutX="20.0" layoutY="194.0" text="Dialog text example:"/>
-                                        <TextField fx:id="dialogTextField" layoutX="167.0" layoutY="190.0"
-                                                   prefHeight="25.0" prefWidth="212.0"
-                                                   text="Let's resize this dialog box!"/>
-                                        <Label fx:id="dialogErrorLabel" layoutX="317.0" layoutY="153.0" text="!!!"
-                                               textFill="RED" visible="false">
+                                        <Label layoutX="20.0" layoutY="194.0" text="Dialog text example:" />
+                                        <TextField fx:id="dialogTextField" layoutX="167.0" layoutY="190.0" prefHeight="25.0" prefWidth="212.0" text="Let's resize this dialog box!" />
+                                        <Label fx:id="dialogErrorLabel" layoutX="317.0" layoutY="153.0" text="!!!" textFill="RED" visible="false">
                                             <font>
-                                                <Font name="System Bold" size="18.0"/>
+                                                <Font name="System Bold" size="18.0" />
                                             </font>
                                         </Label>
 
-                                        <Rectangle disable="true" fill="#1f93ff00" height="106.0" layoutX="9.0"
-                                                   layoutY="119.0" stroke="#00000054" strokeType="INSIDE"
-                                                   width="384.0"/>
+                                        <Rectangle disable="true" fill="#1f93ff00" height="106.0" layoutX="9.0" layoutY="119.0" stroke="#00000054" strokeType="INSIDE" width="384.0" />
 
-                                        <ImageView fx:id="inventoryImageView" fitHeight="240.0" fitWidth="347.0"
-                                                   layoutX="570.0" pickOnBounds="true" preserveRatio="true"
-                                                   smooth="false">
-                                            <Image url="@../inventory.png"/>
+                                        <ImageView fx:id="inventoryImageView" fitHeight="240.0" fitWidth="347.0" layoutX="570.0" pickOnBounds="true" preserveRatio="true" smooth="false">
+                                            <Image url="@../inventory.png" />
                                         </ImageView>
 
-                                        <Label fx:id="inventoryLabel" layoutX="742.0" layoutY="81.0"
-                                               text="Inventory Item #3">
+                                        <Label fx:id="inventoryLabel" layoutX="742.0" layoutY="81.0" text="Inventory Item #3">
                                             <font>
-                                                <Font name="Microsoft Sans Serif" size="12.7"/>
+                                                <Font name="Microsoft Sans Serif" size="12.7" />
                                             </font>
                                         </Label>
 
-                                        <ImageView fx:id="gameImageView" fitHeight="300.0" fitWidth="519.0"
-                                                   layoutX="200.0" layoutY="6.0" pickOnBounds="true"
-                                                   preserveRatio="true" smooth="false" AnchorPane.leftAnchor="398.0"
-                                                   AnchorPane.topAnchor="0.0">
-                                            <Image url="@../game-screen.png"/>
+                                        <ImageView fx:id="gameImageView" fitHeight="300.0" fitWidth="519.0" layoutX="200.0" layoutY="6.0" pickOnBounds="true" preserveRatio="true" smooth="false" AnchorPane.leftAnchor="398.0" AnchorPane.topAnchor="0.0">
+                                            <Image url="@../game-screen.png" />
                                         </ImageView>
 
-                                        <Rectangle fx:id="dialogRectangle" arcHeight="18.0" arcWidth="18.0" fill="WHITE"
-                                                   height="24.0" layoutX="465.0" layoutY="99.0" smooth="false"
-                                                   stroke="BLACK" strokeType="INSIDE" width="170.0"/>
-                                        <Rectangle fx:id="shapeRectangle" fill="WHITE" height="5.0" layoutX="539.0"
-                                                   layoutY="118.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0"
-                                                   width="12.0"/>
-                                        <ImageView fx:id="dialogButtonImageView" fitHeight="16.0" fitWidth="16.0"
-                                                   layoutX="614.0" layoutY="103.0" pickOnBounds="true"
-                                                   preserveRatio="true">
-                                            <Image url="@../button.png"/>
+                                        <Rectangle fx:id="dialogRectangle" arcHeight="18.0" arcWidth="18.0" fill="WHITE" height="24.0" layoutX="465.0" layoutY="99.0" smooth="false" stroke="BLACK" strokeType="INSIDE" width="170.0" />
+                                        <Rectangle fx:id="shapeRectangle" fill="WHITE" height="5.0" layoutX="539.0" layoutY="118.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="12.0" />
+                                        <ImageView fx:id="dialogButtonImageView" fitHeight="16.0" fitWidth="16.0" layoutX="614.0" layoutY="103.0" pickOnBounds="true" preserveRatio="true">
+                                            <Image url="@../button.png" />
                                         </ImageView>
 
-                                        <Label fx:id="dialogLabel" layoutX="472.0" layoutY="104.0"
-                                               text="Let's resize this dialog box!">
+                                        <Label fx:id="dialogLabel" layoutX="472.0" layoutY="104.0" text="Let's resize this dialog box!">
                                             <font>
-                                                <Font name="Microsoft Sans Serif" size="10.8"/>
+                                                <Font name="Microsoft Sans Serif" size="10.8" />
                                             </font>
                                         </Label>
 
-                                        <HBox alignment="CENTER" prefHeight="143.0" prefWidth="917.0"
-                                              AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="300.0">
+                                        <HBox alignment="CENTER" prefHeight="143.0" prefWidth="917.0" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="300.0">
                                             <padding>
-                                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                             </padding>
-                                            <Label prefHeight="180.0" prefWidth="704.0"
-                                                   text="Yoda Stories Translation Tool originally planned to translate text in an EXE file as well. However, the structure of Windows PE headers is complex enough to quickly implement it.&#10;&#10;There are many third-party Portable Executables editors, and in fact, the main difficulty is in choosing the one that suits best.&#10;&#10;Our choice settled on the Restorator utility, but it is paid, therefore, we will publish a list of several more tools in alphabetical order, so that you choose the one that will allow you to perform the translation with comfort. Any allows you to fully translate text strings, menus and dialog boxes."
-                                                   wrapText="true" BorderPane.alignment="CENTER">
+                                            <Label prefHeight="180.0" prefWidth="704.0" text="Yoda Stories Translation Tool originally planned to translate text in an EXE file as well. However, the structure of Windows PE headers is complex enough to quickly implement it.&#10;&#10;There are many third-party Portable Executables editors, and in fact, the main difficulty is in choosing the one that suits best.&#10;&#10;Our choice settled on the Restorator utility, but it is paid, therefore, we will publish a list of several more tools in alphabetical order, so that you choose the one that will allow you to perform the translation with comfort. Any allows you to fully translate text strings, menus and dialog boxes." wrapText="true" BorderPane.alignment="CENTER">
                                                 <padding>
-                                                    <Insets right="15.0"/>
+                                                    <Insets right="15.0" />
                                                 </padding>
                                             </Label>
                                             <VBox prefHeight="180.0" prefWidth="214.0" BorderPane.alignment="CENTER">
                                                 <HBox.margin>
-                                                    <Insets/>
+                                                    <Insets />
                                                 </HBox.margin>
-                                                <Hyperlink minHeight="22.0" onAction="#peExplorerHyperlinkClick"
-                                                           text="PE Explorer (129$)" underline="true"/>
-                                                <Hyperlink minHeight="22.0" onAction="#resEditHyperlinkClick"
-                                                           text="ResEdit (Free)" underline="true"/>
-                                                <Hyperlink minHeight="22.0"
-                                                           onAction="#resourceBuilderHyperlinkClick"
-                                                           text="Resource Builder (59$)" underline="true"/>
-                                                <Hyperlink minHeight="22.0" onAction="#resourceHackerHyperlinkClick"
-                                                           text="Resource Hacker (Free)" underline="true"/>
-                                                <Hyperlink minHeight="22.0" onAction="#resourceTunerHyperlinkClick"
-                                                           text="Resource Tuner (49$)" underline="true"/>
-                                                <Hyperlink minHeight="22.0" onAction="#restoratorHyperlinkClick"
-                                                           text="Restorator (72$)" underline="true"/>
-                                                <Hyperlink minHeight="22.0"
-                                                           onAction="#xnResourceEditorHyperlinkClick"
-                                                           text="XN Resource Editor (Free)" underline="true"/>
+                                                <Hyperlink minHeight="22.0" onAction="#peExplorerHyperlinkClick" text="PE Explorer (129$)" underline="true" />
+                                                <Hyperlink minHeight="22.0" onAction="#resEditHyperlinkClick" text="ResEdit (Free)" underline="true" />
+                                                <Hyperlink minHeight="22.0" onAction="#resourceBuilderHyperlinkClick" text="Resource Builder (59$)" underline="true" />
+                                                <Hyperlink minHeight="22.0" onAction="#resourceHackerHyperlinkClick" text="Resource Hacker (Free)" underline="true" />
+                                                <Hyperlink minHeight="22.0" onAction="#resourceTunerHyperlinkClick" text="Resource Tuner (49$)" underline="true" />
+                                                <Hyperlink minHeight="22.0" onAction="#restoratorHyperlinkClick" text="Restorator (72$)" underline="true" />
+                                                <Hyperlink minHeight="22.0" onAction="#xnResourceEditorHyperlinkClick" text="XN Resource Editor (Free)" underline="true" />
                                             </VBox>
                                         </HBox>
 
-                                        <Rectangle disable="true" fill="#1f93ff00" height="170.0" layoutX="9.0"
-                                                   layoutY="307.0" stroke="#00000028" strokeType="INSIDE"
-                                                   width="686.0"/>
-                                        <Rectangle disable="true" fill="#1f93ff00" height="170.0" layoutX="694.0"
-                                                   layoutY="307.0" stroke="#00000028" strokeType="INSIDE"
-                                                   width="222.0"/>
+                                        <Rectangle disable="true" fill="#1f93ff00" height="170.0" layoutX="9.0" layoutY="307.0" stroke="#00000028" strokeType="INSIDE" width="686.0" />
+                                        <Rectangle disable="true" fill="#1f93ff00" height="170.0" layoutX="694.0" layoutY="307.0" stroke="#00000028" strokeType="INSIDE" width="222.0" />
                                     </AnchorPane>
                                 </left>
                             </BorderPane>
                         </Tab>
                         <Tab text="Title Screen/Palette">
                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                                <Button fx:id="saveToBitmapButton" layoutX="14.0" layoutY="14.0" mnemonicParsing="false"
-                                        onAction="#saveToBitmapButtonClick" prefHeight="25.0" prefWidth="112.0"
-                                        text="Save to Bitmap"/>
-                                <Button fx:id="loadFromBitmapButton" layoutX="14.0" layoutY="47.0"
-                                        mnemonicParsing="false" onAction="#loadFromBitmapButtonClick"
-                                        text="Load from Bitmap"/>
-                                <ImageView fx:id="titleScreenImageView" fitHeight="288.0" fitWidth="288.0"
-                                           layoutX="141.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true"/>
-                                <Canvas fx:id="paletteCanvas" height="288.0" layoutX="450.0" layoutY="14.0"
-                                        width="288.0"/>
-                                <Button fx:id="savePaletteButton" layoutX="14.0" layoutY="100.0" mnemonicParsing="false"
-                                        onAction="#savePaletteButtonButtonClick" prefHeight="25.0" prefWidth="112.0"
-                                        text="Save Palette"/>
-                                <Button fx:id="dumpPaletteButton" layoutX="14.0" layoutY="133.0" mnemonicParsing="false"
-                                        onAction="#dumpPaletteButtonButtonClick" prefHeight="25.0" prefWidth="112.0"
-                                        text="Dump Palette"/>
+                                <Button fx:id="saveToBitmapButton" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#saveToBitmapButtonClick" prefHeight="25.0" prefWidth="112.0" text="Save to Bitmap" />
+                                <Button fx:id="loadFromBitmapButton" layoutX="14.0" layoutY="47.0" mnemonicParsing="false" onAction="#loadFromBitmapButtonClick" text="Load from Bitmap" />
+                                <ImageView fx:id="titleScreenImageView" fitHeight="288.0" fitWidth="288.0" layoutX="141.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" />
+                                <Canvas fx:id="paletteCanvas" height="288.0" layoutX="450.0" layoutY="14.0" width="288.0" />
+                                <Button fx:id="savePaletteButton" layoutX="14.0" layoutY="100.0" mnemonicParsing="false" onAction="#savePaletteButtonButtonClick" prefHeight="25.0" prefWidth="112.0" text="Save Palette" />
+                                <Button fx:id="dumpPaletteButton" layoutX="14.0" layoutY="133.0" mnemonicParsing="false" onAction="#dumpPaletteButtonButtonClick" prefHeight="25.0" prefWidth="112.0" text="Dump Palette" />
                             </AnchorPane>
                         </Tab>
                         <Tab text="Sounds">
                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                                <Label layoutX="14.0" layoutY="14.0" text="Sounds count:"/>
-                                <Label fx:id="soundsCountLabel" layoutX="100.0" layoutY="14.0"/>
-                                <Button fx:id="saveSoundsListToFileButton" layoutX="14.0" layoutY="36.0"
-                                        mnemonicParsing="false" onAction="#saveSoundsListToFileButtonClick"
-                                        text="Save list to file"/>
-                                <TextArea layoutX="150.0" layoutY="14.0" prefHeight="430.0" prefWidth="300.0"
-                                          fx:id="soundsTextArea" editable="false"/>
+                                <Label layoutX="14.0" layoutY="14.0" text="Sounds count:" />
+                                <Label fx:id="soundsCountLabel" layoutX="100.0" layoutY="14.0" />
+                                <Button fx:id="saveSoundsListToFileButton" layoutX="14.0" layoutY="36.0" mnemonicParsing="false" onAction="#saveSoundsListToFileButtonClick" text="Save list to file" />
+                                <TextArea fx:id="soundsTextArea" editable="false" layoutX="150.0" layoutY="14.0" prefHeight="457.0" prefWidth="300.0" />
                             </AnchorPane>
                         </Tab>
                         <Tab text="Tiles/Sprites">
                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                                <ScrollPane layoutX="166.0" layoutY="13.0" prefHeight="422.0" prefWidth="545.0">
-                                    <FlowPane fx:id="tilesFlowPane" columnHalignment="CENTER" prefHeight="420.0"
-                                              prefWidth="527.0"
-                                              prefWrapLength="540.0" hgap="1.0" vgap="1.0"/>
+                                <ScrollPane layoutX="166.0" layoutY="13.0" prefHeight="458.0" prefWidth="545.0">
+                                    <FlowPane fx:id="tilesFlowPane" columnHalignment="CENTER" hgap="1.0" prefHeight="455.0" prefWidth="527.0" prefWrapLength="540.0" vgap="1.0" />
                                 </ScrollPane>
-                                <Button fx:id="addNewTile"
-                                        mnemonicParsing="false" onAction="#addNewTileClick"
-                                        text="+" prefWidth="32" prefHeight="32"/>
-                                <Button fx:id="deleteTile"
-                                        mnemonicParsing="false" onAction="#deleteTileClick"
-                                        text="-" prefWidth="32" prefHeight="32"/>
-                                <Label layoutX="12.0" layoutY="18.0" text="Tiles count:"/>
-                                <Label fx:id="tilesCountLabel" layoutX="88.0" layoutY="18.0"/>
-                                <Button fx:id="saveTilesToSeparateFiles" layoutX="10.0" layoutY="42.0"
-                                        mnemonicParsing="false" onAction="#saveTilesToSeparateFilesClick"
-                                        text="Save to separate files"/>
-                                <CheckBox fx:id="decimalFilenamesCheckBox" layoutX="26.0" layoutY="72.0"
-                                          mnemonicParsing="false" selected="true" text="Decimal filenames"/>
-                                <CheckBox fx:id="hexFilenamesCheckBox" layoutX="26.0" layoutY="96.0"
-                                          mnemonicParsing="false" selected="true" text="HEX filenames"/>
-                                <CheckBox fx:id="groupByAttributesFilenamesCheckBox" layoutX="26.0" layoutY="122.0"
-                                          mnemonicParsing="false" selected="true" text="Group by attributes"/>
-                                <Button fx:id="saveTilesToOneFile" layoutX="10.0" layoutY="161.0"
-                                        mnemonicParsing="false" onAction="#saveTilesToOneFileClick"
-                                        text="Save tiles to one file"/>
-                                <Label layoutX="12.0" layoutY="195.0" text="Tiles in a row:"/>
-                                <TextField fx:id="tilesInARowTextField" layoutX="96.0" layoutY="191.0" prefHeight="25.0"
-                                           prefWidth="39.0" text="16"/>
-                                <Rectangle fill="TRANSPARENT" height="288.0" layoutX="720.0"
-                                           layoutY="14.0" smooth="false" stroke="BLACK" strokeType="OUTSIDE"
-                                           width="288.0"/>
-                                <Canvas fx:id="clipboardCanvas" height="288.0" width="288.0" layoutX="720.0"
-                                        layoutY="14.0" pickOnBounds="true"
-                                        onMouseEntered="#clipboardCanvasMouseEntered"
-                                        onMouseExited="#clipboardCanvasMouseExited"
-                                        onMouseMoved="#clipboardCanvasMouseMoved"
-                                        onDragDetected="#clipboardCanvasDragDetected"
-                                        onDragOver="#clipboardCanvasDragOver"
-                                        onDragEntered="#clipboardCanvasDragEntered"
-                                        onDragExited="#clipboardCanvasDragExited"
-                                        onDragDropped="#clipboardCanvasDragDropped"
-                                />
-                                <Label layoutX="824.0" layoutY="382.0" text="Clipboard image"/>
-                                <Button fx:id="loadClipboardImage" layoutX="764.0" layoutY="407.0" minWidth="64.0"
-                                        mnemonicParsing="false" onAction="#loadClipboardImageClick" text="Load"/>
-                                <Button fx:id="saveClipboardImage" layoutX="836.0" layoutY="407.0" minWidth="64.0"
-                                        mnemonicParsing="false" onAction="#saveClipboardImageClick" text="Save"/>
-                                <Button fx:id="clearClipboardImage" layoutX="908.0" layoutY="407.0" minWidth="64.0"
-                                        mnemonicParsing="false" onAction="#clearClipboardImageClick" text="Clear"/>
-                                <Rectangle fx:id="clipboardRectangle" fill="TRANSPARENT" height="32.0" layoutX="194.0"
-                                           layoutY="80.0" smooth="false" stroke="BLACK" strokeType="OUTSIDE"
-                                           width="32.0" visible="false" mouseTransparent="true"/>
+                                <Button fx:id="addNewTile" mnemonicParsing="false" onAction="#addNewTileClick" prefHeight="32" prefWidth="32" text="+" />
+                                <Button fx:id="deleteTile" mnemonicParsing="false" onAction="#deleteTileClick" prefHeight="32" prefWidth="32" text="-" />
+                                <Label layoutX="12.0" layoutY="18.0" text="Tiles count:" />
+                                <Label fx:id="tilesCountLabel" layoutX="88.0" layoutY="18.0" />
+                                <Button fx:id="saveTilesToSeparateFiles" layoutX="10.0" layoutY="42.0" mnemonicParsing="false" onAction="#saveTilesToSeparateFilesClick" text="Save to separate files" />
+                                <CheckBox fx:id="decimalFilenamesCheckBox" layoutX="26.0" layoutY="72.0" mnemonicParsing="false" selected="true" text="Decimal filenames" />
+                                <CheckBox fx:id="hexFilenamesCheckBox" layoutX="26.0" layoutY="96.0" mnemonicParsing="false" selected="true" text="HEX filenames" />
+                                <CheckBox fx:id="groupByAttributesFilenamesCheckBox" layoutX="26.0" layoutY="122.0" mnemonicParsing="false" selected="true" text="Group by attributes" />
+                                <Button fx:id="saveTilesToOneFile" layoutX="10.0" layoutY="161.0" mnemonicParsing="false" onAction="#saveTilesToOneFileClick" text="Save tiles to one file" />
+                                <Label layoutX="12.0" layoutY="195.0" text="Tiles in a row:" />
+                                <TextField fx:id="tilesInARowTextField" layoutX="96.0" layoutY="191.0" prefHeight="25.0" prefWidth="39.0" text="16" />
+                                <Rectangle fill="TRANSPARENT" height="288.0" layoutX="720.0" layoutY="14.0" smooth="false" stroke="BLACK" strokeType="OUTSIDE" width="288.0" />
+                                <Canvas fx:id="clipboardCanvas" height="288.0" layoutX="720.0" layoutY="14.0" onDragDetected="#clipboardCanvasDragDetected" onDragDropped="#clipboardCanvasDragDropped" onDragEntered="#clipboardCanvasDragEntered" onDragExited="#clipboardCanvasDragExited" onDragOver="#clipboardCanvasDragOver" onMouseEntered="#clipboardCanvasMouseEntered" onMouseExited="#clipboardCanvasMouseExited" onMouseMoved="#clipboardCanvasMouseMoved" pickOnBounds="true" width="288.0" />
+                                <Label layoutX="824.0" layoutY="417.0" text="Clipboard image" />
+                                <Button fx:id="loadClipboardImage" layoutX="764.0" layoutY="442.0" minWidth="64.0" mnemonicParsing="false" onAction="#loadClipboardImageClick" text="Load" />
+                                <Button fx:id="saveClipboardImage" layoutX="836.0" layoutY="442.0" minWidth="64.0" mnemonicParsing="false" onAction="#saveClipboardImageClick" text="Save" />
+                                <Button fx:id="clearClipboardImage" layoutX="908.0" layoutY="442.0" minWidth="64.0" mnemonicParsing="false" onAction="#clearClipboardImageClick" text="Clear" />
+                                <Rectangle fx:id="clipboardRectangle" fill="TRANSPARENT" height="32.0" layoutX="194.0" layoutY="80.0" mouseTransparent="true" smooth="false" stroke="BLACK" strokeType="OUTSIDE" visible="false" width="32.0" />
                                 <Label visible="false">
                                     <contextMenu>
                                         <ContextMenu fx:id="tilesContextMenu">
                                             <items>
                                                 <Menu mnemonicParsing="false" text="Set flag">
 
-                                                    <RadioMenuItem userData="2" text="Bottom layer">
+                                                    <RadioMenuItem text="Bottom layer" userData="2">
                                                         <toggleGroup>
-                                                            <ToggleGroup fx:id="tilesToggleGroup"/>
+                                                            <ToggleGroup fx:id="tilesToggleGroup" />
                                                         </toggleGroup>
                                                     </RadioMenuItem>
-                                                    <RadioMenuItem toggleGroup="$tilesToggleGroup" userData="4"
-                                                                   text="Middle layer"/>
-                                                    <RadioMenuItem toggleGroup="$tilesToggleGroup" userData="5"
-                                                                   text="Middle layer (transparent)"/>
-                                                    <RadioMenuItem toggleGroup="$tilesToggleGroup" userData="13"
-                                                                   text="Movable item"/>
-                                                    <RadioMenuItem toggleGroup="$tilesToggleGroup" userData="16"
-                                                                   text="Top layer"/>
-                                                    <RadioMenuItem toggleGroup="$tilesToggleGroup" userData="17"
-                                                                   text="Top layer (transparent)"/>
+                                                    <RadioMenuItem text="Middle layer" toggleGroup="$tilesToggleGroup" userData="4" />
+                                                    <RadioMenuItem text="Middle layer (transparent)" toggleGroup="$tilesToggleGroup" userData="5" />
+                                                    <RadioMenuItem text="Movable item" toggleGroup="$tilesToggleGroup" userData="13" />
+                                                    <RadioMenuItem text="Top layer" toggleGroup="$tilesToggleGroup" userData="16" />
+                                                    <RadioMenuItem text="Top layer (transparent)" toggleGroup="$tilesToggleGroup" userData="17" />
 
                                                     <Menu mnemonicParsing="false" text="Weapons">
-                                                        <RadioMenuItem toggleGroup="$tilesToggleGroup" userData="65601"
-                                                                       text="Light Blaster"/>
-                                                        <RadioMenuItem toggleGroup="$tilesToggleGroup" userData="131137"
-                                                                       text="Heavy Blaster, Thermal Detonator"/>
-                                                        <RadioMenuItem toggleGroup="$tilesToggleGroup" userData="262209"
-                                                                       text="Lightsaber"/>
-                                                        <RadioMenuItem toggleGroup="$tilesToggleGroup" userData="524353"
-                                                                       text="The Force"/>
+                                                        <RadioMenuItem text="Light Blaster" toggleGroup="$tilesToggleGroup" userData="65601" />
+                                                        <RadioMenuItem text="Heavy Blaster, Thermal Detonator" toggleGroup="$tilesToggleGroup" userData="131137" />
+                                                        <RadioMenuItem text="Lightsaber" toggleGroup="$tilesToggleGroup" userData="262209" />
+                                                        <RadioMenuItem text="The Force" toggleGroup="$tilesToggleGroup" userData="524353" />
                                                     </Menu>
 
                                                     <Menu mnemonicParsing="false" text="Items">
-                                                        <RadioMenuItem toggleGroup="$tilesToggleGroup" userData="65665"
-                                                                       text="Keycard"/>
-                                                        <RadioMenuItem toggleGroup="$tilesToggleGroup" userData="131201"
-                                                                       text="Item (for use)"/>
-                                                        <RadioMenuItem toggleGroup="$tilesToggleGroup" userData="262273"
-                                                                       text="Item (part)"/>
-                                                        <RadioMenuItem toggleGroup="$tilesToggleGroup" userData="524417"
-                                                                       text="Item (to trade)"/>
-                                                        <RadioMenuItem toggleGroup="$tilesToggleGroup"
-                                                                       userData="1048705" text="Locator"/>
-                                                        <RadioMenuItem toggleGroup="$tilesToggleGroup"
-                                                                       userData="4194433" text="Health pack"/>
+                                                        <RadioMenuItem text="Keycard" toggleGroup="$tilesToggleGroup" userData="65665" />
+                                                        <RadioMenuItem text="Item (for use)" toggleGroup="$tilesToggleGroup" userData="131201" />
+                                                        <RadioMenuItem text="Item (part)" toggleGroup="$tilesToggleGroup" userData="262273" />
+                                                        <RadioMenuItem text="Item (to trade)" toggleGroup="$tilesToggleGroup" userData="524417" />
+                                                        <RadioMenuItem text="Locator" toggleGroup="$tilesToggleGroup" userData="1048705" />
+                                                        <RadioMenuItem text="Health pack" toggleGroup="$tilesToggleGroup" userData="4194433" />
                                                     </Menu>
 
                                                     <Menu mnemonicParsing="false" text="Characters">
-                                                        <RadioMenuItem toggleGroup="$tilesToggleGroup" userData="65793"
-                                                                       text="Luke"/>
-                                                        <RadioMenuItem toggleGroup="$tilesToggleGroup" userData="131329"
-                                                                       text="Enemy"/>
-                                                        <RadioMenuItem toggleGroup="$tilesToggleGroup" userData="262401"
-                                                                       text="Friendly"/>
+                                                        <RadioMenuItem text="Luke" toggleGroup="$tilesToggleGroup" userData="65793" />
+                                                        <RadioMenuItem text="Enemy" toggleGroup="$tilesToggleGroup" userData="131329" />
+                                                        <RadioMenuItem text="Friendly" toggleGroup="$tilesToggleGroup" userData="262401" />
                                                     </Menu>
 
-                                                    <RadioMenuItem userData="65538" text="Door, passage, ladder"/>
+                                                    <RadioMenuItem text="Door, passage, ladder" userData="65538" />
 
                                                     <Menu mnemonicParsing="false" text="Mini map">
-                                                        <RadioMenuItem userData="131104" text="Starting point"/>
-                                                        <RadioMenuItem userData="262176" text="Puzzle"/>
-                                                        <RadioMenuItem userData="524320" text="Puzzle (solved)"/>
-                                                        <RadioMenuItem userData="1048608" text="Gateway"/>
-                                                        <RadioMenuItem userData="2097184" text="Gateway (solved)"/>
-                                                        <RadioMenuItem userData="4194336"
-                                                                       text="Upper barrier (locked)"/>
-                                                        <RadioMenuItem userData="8388640"
-                                                                       text="Bottom barrier (locked)"/>
-                                                        <RadioMenuItem userData="16777248"
-                                                                       text="Left barrier (locked)"/>
-                                                        <RadioMenuItem userData="33554464"
-                                                                       text="Right barrier (locked)"/>
-                                                        <RadioMenuItem userData="67108896" text="Upper barrier"/>
-                                                        <RadioMenuItem userData="134217760" text="Bottom barrier"/>
-                                                        <RadioMenuItem userData="268435488" text="Left barrier"/>
-                                                        <RadioMenuItem userData="536870944" text="Right barrier"/>
-                                                        <RadioMenuItem userData="1073741856" text="Objective"/>
-                                                        <RadioMenuItem userData="2147483680" text="Current position"/>
+                                                        <RadioMenuItem text="Starting point" userData="131104" />
+                                                        <RadioMenuItem text="Puzzle" userData="262176" />
+                                                        <RadioMenuItem text="Puzzle (solved)" userData="524320" />
+                                                        <RadioMenuItem text="Gateway" userData="1048608" />
+                                                        <RadioMenuItem text="Gateway (solved)" userData="2097184" />
+                                                        <RadioMenuItem text="Upper barrier (locked)" userData="4194336" />
+                                                        <RadioMenuItem text="Bottom barrier (locked)" userData="8388640" />
+                                                        <RadioMenuItem text="Left barrier (locked)" userData="16777248" />
+                                                        <RadioMenuItem text="Right barrier (locked)" userData="33554464" />
+                                                        <RadioMenuItem text="Upper barrier" userData="67108896" />
+                                                        <RadioMenuItem text="Bottom barrier" userData="134217760" />
+                                                        <RadioMenuItem text="Left barrier" userData="268435488" />
+                                                        <RadioMenuItem text="Right barrier" userData="536870944" />
+                                                        <RadioMenuItem text="Objective" userData="1073741856" />
+                                                        <RadioMenuItem text="Current position" userData="2147483680" />
                                                     </Menu>
                                                 </Menu>
                                             </items>
@@ -470,125 +361,171 @@
                         <Tab text="Zones/Maps">
                             <BorderPane prefHeight="200.0" prefWidth="200.0">
                                 <center>
-                                    <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE"
-                                             BorderPane.alignment="CENTER">
-                                        <Tab text="General Information">
-                                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0"
-                                                        prefWidth="200.0">
-                                                <Label layoutX="14.0" layoutY="14.0" text="Maps count:"/>
-                                                <Label fx:id="mapsCountLabel" layoutX="98.0" layoutY="14.0"/>
-                                                <CheckBox fx:id="normalSaveCheckBox" layoutX="25.0" layoutY="73.0"
-                                                          mnemonicParsing="false" selected="true" text="Normal save"/>
-                                                <CheckBox fx:id="groupByFlagsCheckBox" layoutX="25.0" layoutY="98.0"
-                                                          mnemonicParsing="false" text="Group by flags"/>
-                                                <CheckBox fx:id="groupByPlanetTypeCheckBox" layoutX="25.0"
-                                                          layoutY="123.0" mnemonicParsing="false"
-                                                          text="Group by planet type"/>
-                                                <CheckBox fx:id="dumpActionsCheckBox" layoutX="25.0" layoutY="148.0"
-                                                          mnemonicParsing="false" selected="true" text="Dump actions"/>
-                                                <CheckBox fx:id="dumpActionsTextCheckBox" layoutX="25.0" layoutY="174.0"
-                                                          mnemonicParsing="false" selected="true" text="Dump text"/>
-                                                <CheckBox fx:id="saveUnusedTilesCheckBox" layoutX="25.0" layoutY="199.0"
-                                                          mnemonicParsing="false" text="Save non-map tiles"/>
-                                                <Button fx:id="saveMapsToFilesButton" layoutX="14.0" layoutY="40.0"
-                                                        mnemonicParsing="false" onAction="#saveMapsToFilesButtonClick"
-                                                        text="Save maps to files"/>
-                                                <ListView fx:id="mapsListView" layoutX="171.0" layoutY="15.0"
-                                                          prefHeight="400.0"
-                                                          prefWidth="93.0"/>
+                                    <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+                                        <Tab text="Viewer/Editor">
+                                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+
+                                                <TitledPane animated="false" layoutX="7.0" layoutY="6.0" prefHeight="92.0" prefWidth="93.0" text="Map layer">
+                                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                                        <CheckBox fx:id="topCheckBox" layoutX="5.0" layoutY="4.0" mnemonicParsing="false" onAction="#layerCheckBoxClick" selected="true" userData="2" />
+                                                        <CheckBox fx:id="middleCheckBox" layoutX="5.0" layoutY="23.0" mnemonicParsing="false" onAction="#layerCheckBoxClick" selected="true" userData="1" />
+                                                        <CheckBox fx:id="bottomCheckBox" layoutX="5.0" layoutY="42.0" mnemonicParsing="false" onAction="#layerCheckBoxClick" selected="true" userData="0" />
+                                                        <RadioButton fx:id="topRadioButton" layoutX="25.0" layoutY="4.0" mnemonicParsing="false" selected="true" text="Top" userData="2">
+                                                            <toggleGroup>
+                                                                <ToggleGroup fx:id="mapLayerToggleGroup" />
+                                                            </toggleGroup>
+                                                        </RadioButton>
+                                                        <RadioButton fx:id="middleRadioButton" layoutX="25.0" layoutY="23.0" mnemonicParsing="false" text="Middle" toggleGroup="$mapLayerToggleGroup" userData="1" />
+                                                        <RadioButton fx:id="bottomRadioButton" layoutX="25.0" layoutY="42.0" mnemonicParsing="false" text="Bottom" toggleGroup="$mapLayerToggleGroup" userData="0" />
+                                                    </AnchorPane>
+                                                </TitledPane>
+                                                <ListView fx:id="mapEditorListView" layoutX="7.0" layoutY="102.0" prefHeight="312.0" prefWidth="93.0" />
+                                                <Button fx:id="undoMapEdit" layoutX="7.0" layoutY="418.0" minWidth="93.0" mnemonicParsing="false" onAction="#undoMapEditClick" text="Undo" />
+
                                                 <Group>
-                                                    <Canvas fx:id="mapCanvas" height="576.0" width="576.0"
-                                                            layoutX="271.0"
-                                                            layoutY="15.0"/>
+                                                    <Canvas fx:id="mapEditorCanvas" height="576.0" layoutX="115.0" layoutY="6.0" onDragDetected="#mapEditorCanvasDragDetected" onDragDropped="#mapEditorCanvasDragDropped" onDragEntered="#mapEditorCanvasDragEntered" onDragExited="#mapEditorCanvasDragExited" onDragOver="#mapEditorCanvasDragOver" onMouseMoved="#mapEditorCanvasMouseMoved" width="576.0" />
                                                 </Group>
-                                                <BorderPane layoutX="850.0" layoutY="15.0" prefHeight="424.0"
-                                                            prefWidth="531.0">
-                                                    <center>
-                                                        <VBox prefWidth="531.0" BorderPane.alignment="CENTER">
-                                                            <HBox prefHeight="20.0" prefWidth="531.0" spacing="5">
-                                                                <Button fx:id="showActionsButton" layoutX="14.0"
-                                                                        layoutY="40.0"
-                                                                        mnemonicParsing="false"
-                                                                        onAction="#showActionsButtonClick"
-                                                                        text="Show actions"/>
-                                                                <CheckBox fx:id="showMapMonstersCheckBox"
-                                                                          onAction="#drawViewZone"
-                                                                          mnemonicParsing="false" selected="true"
-                                                                          text="Show mosters"/>
-                                                                <CheckBox fx:id="showMapHotspotsCheckBox"
-                                                                          onAction="#drawViewZone"
-                                                                          mnemonicParsing="false" selected="true"
-                                                                          text="Show hotspots"/>
-                                                            </HBox>
-                                                            <HBox prefHeight="22.0" prefWidth="531.0">
-                                                                <Label prefWidth="95.0" text="Size:"/>
-                                                                <Label fx:id="mapSizeLabel"/>
-                                                            </HBox>
-                                                            <HBox prefHeight="22.0" prefWidth="531.0">
-                                                                <Label prefWidth="95.0" text="Type:"/>
-                                                                <Label fx:id="mapTypeLabel"/>
-                                                            </HBox>
-                                                            <HBox prefHeight="22.0" prefWidth="531.0">
-                                                                <Label prefWidth="95.0" text="Planet:"/>
-                                                                <Label fx:id="mapPlanetLabel"/>
-                                                            </HBox>
-                                                            <HBox prefHeight="22.0" prefWidth="531.0">
-                                                                <Label prefWidth="95.0" text="Actions:"/>
-                                                                <Label fx:id="mapActionsLabel"/>
-                                                            </HBox>
-                                                            <HBox prefHeight="24.0" prefWidth="531.0">
-                                                                <Label prefWidth="95.0" text="Goal:"/>
-                                                                <FlowPane fx:id="mapGoalTilesFlowPane"
-                                                                          columnHalignment="CENTER"
-                                                                          prefWidth="280.0"
-                                                                          prefWrapLength="280.0" hgap="1.0" vgap="1.0"/>
-                                                            </HBox>
-                                                            <HBox prefHeight="22.0" prefWidth="531.0">
-                                                                <Label prefWidth="95.0" text="Provided items:"/>
-                                                                <FlowPane fx:id="mapProvidedItemsTilesFlowPane"
-                                                                          columnHalignment="CENTER"
-                                                                          prefWidth="280.0"
-                                                                          prefWrapLength="280.0" hgap="1.0" vgap="1.0"/>
-                                                            </HBox>
-                                                            <HBox prefHeight="22.0" prefWidth="531.0">
-                                                                <Label prefWidth="95.0" text="Required items:"/>
-                                                                <FlowPane fx:id="mapRequiredItemsTilesFlowPane"
-                                                                          columnHalignment="CENTER"
-                                                                          prefWidth="280.0"
-                                                                          prefWrapLength="280.0" hgap="1.0" vgap="1.0"/>
-                                                            </HBox>
-                                                            <HBox prefHeight="24.0" prefWidth="531.0">
-                                                                <Label prefWidth="95.0" text="NPCs:"/>
-                                                                <FlowPane fx:id="mapNpcsTilesFlowPane"
-                                                                          columnHalignment="CENTER"
-                                                                          prefWidth="280.0"
-                                                                          prefWrapLength="280.0" hgap="1.0" vgap="1.0"/>
-                                                            </HBox>
-                                                            <HBox prefHeight="22.0" prefWidth="531.0">
-                                                                <Label prefWidth="95.0" text="IZAX Unnamed2:"/>
-                                                                <Label fx:id="mapIzaxUnnamedLabel"/>
-                                                            </HBox>
-                                                            <HBox prefHeight="22.0" prefWidth="531.0">
-                                                                <Label prefWidth="95.0" text="ZAX4 Unnamed2:"/>
-                                                                <Label fx:id="mapZax4Unnamed2Label"/>
-                                                            </HBox>
-                                                            <HBox prefHeight="20.0" prefWidth="531.0"/>
-                                                        </VBox>
-                                                    </center>
-                                                </BorderPane>
+
+                                                <TabPane fx:id="zoneOptionsTabPane" style="-fx-background-color: #E8E8E8;" layoutX="593.0" layoutY="6.0" prefHeight="442.0" prefWidth="495.0" tabClosingPolicy="UNAVAILABLE">
+                                                    <Tab text="Info">
+                                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                                            <VBox layoutX="5.0" layoutY="10.0" prefWidth="531.0">
+                                                                <HBox prefHeight="20.0" prefWidth="531.0" spacing="5">
+                                                                    <Button fx:id="showActionsButton" layoutX="14.0" layoutY="40.0" mnemonicParsing="false" onAction="#showActionsButtonClick" text="Show actions" />
+                                                                    <CheckBox fx:id="showMapMonstersCheckBox" mnemonicParsing="false" onAction="#drawEditZone" selected="true" text="Show mosters" />
+                                                                    <CheckBox fx:id="showMapHotspotsCheckBox" mnemonicParsing="false" onAction="#drawEditZone" selected="true" text="Show hotspots" />
+                                                                </HBox>
+                                                                <HBox prefHeight="22.0" prefWidth="531.0">
+                                                                    <Label prefWidth="95.0" text="Size:" />
+                                                                    <Label fx:id="mapSizeLabel" />
+                                                                </HBox>
+                                                                <HBox prefHeight="22.0" prefWidth="531.0">
+                                                                    <Label prefWidth="95.0" text="Type:" />
+                                                                    <Label fx:id="mapTypeLabel" />
+                                                                </HBox>
+                                                                <HBox prefHeight="22.0" prefWidth="531.0">
+                                                                    <Label prefWidth="95.0" text="Planet:" />
+                                                                    <Label fx:id="mapPlanetLabel" />
+                                                                </HBox>
+                                                                <HBox prefHeight="22.0" prefWidth="531.0">
+                                                                    <Label prefWidth="95.0" text="Actions:" />
+                                                                    <Label fx:id="mapActionsLabel" />
+                                                                </HBox>
+                                                                <HBox prefHeight="24.0" prefWidth="531.0">
+                                                                    <Label prefWidth="95.0" text="Goal:" />
+                                                                    <FlowPane fx:id="mapGoalTilesFlowPane" columnHalignment="CENTER" hgap="1.0" prefWidth="280.0" prefWrapLength="280.0" vgap="1.0" />
+                                                                </HBox>
+                                                                <HBox prefHeight="22.0" prefWidth="531.0">
+                                                                    <Label prefWidth="95.0" text="Provided items:" />
+                                                                    <FlowPane fx:id="mapProvidedItemsTilesFlowPane" columnHalignment="CENTER" hgap="1.0" prefWidth="280.0" prefWrapLength="280.0" vgap="1.0" />
+                                                                </HBox>
+                                                                <HBox prefHeight="22.0" prefWidth="531.0">
+                                                                    <Label prefWidth="95.0" text="Required items:" />
+                                                                    <FlowPane fx:id="mapRequiredItemsTilesFlowPane" columnHalignment="CENTER" hgap="1.0" prefWidth="280.0" prefWrapLength="280.0" vgap="1.0" />
+                                                                </HBox>
+                                                                <HBox prefHeight="24.0" prefWidth="531.0">
+                                                                    <Label prefWidth="95.0" text="NPCs:" />
+                                                                    <FlowPane fx:id="mapNpcsTilesFlowPane" columnHalignment="CENTER" hgap="1.0" prefWidth="280.0" prefWrapLength="280.0" vgap="1.0" />
+                                                                </HBox>
+                                                                <HBox prefHeight="22.0" prefWidth="531.0">
+                                                                    <Label prefWidth="95.0" text="IZAX Unnamed2:" />
+                                                                    <Label fx:id="mapIzaxUnnamedLabel" />
+                                                                </HBox>
+                                                                <HBox prefHeight="22.0" prefWidth="531.0">
+                                                                    <Label prefWidth="95.0" text="ZAX4 Unnamed2:" />
+                                                                    <Label fx:id="mapZax4Unnamed2Label" />
+                                                                </HBox>
+                                                                <HBox prefHeight="20.0" prefWidth="531.0" />
+                                                            </VBox>
+                                                        </AnchorPane>
+                                                    </Tab>
+                                                    <Tab text="Edit">
+                                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                                            <ScrollPane fx:id="mapEditorTilesScrollPane" layoutX="5.0" layoutY="5.0" prefHeight="402.0" prefWidth="481.0">
+                                                                <FlowPane fx:id="mapEditorTilesFlowPane" columnHalignment="CENTER" hgap="1.0" prefHeight="400.0" prefWidth="463.0" prefWrapLength="482.0" vgap="1.0" />
+                                                            </ScrollPane>
+                                                            <Label visible="false">
+                                                                <contextMenu>
+                                                                    <ContextMenu fx:id="mapEditorContextMenu">
+                                                                        <items>
+                                                                            <MenuItem mnemonicParsing="false" onAction="#clearBottomLayer" text="Clear bottom layer" />
+                                                                            <MenuItem mnemonicParsing="false" onAction="#clearMiddleLayer" text="Clear middle layer" />
+                                                                            <MenuItem mnemonicParsing="false" onAction="#clearTopLayer" text="Clear top layer" />
+                                                                        </items>
+                                                                    </ContextMenu>
+                                                                </contextMenu>
+                                                            </Label>
+                                                        </AnchorPane>
+                                                    </Tab>
+                                                    <Tab text="Dump">
+                                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                                            <Label layoutX="14.0" layoutY="14.0" text="Maps count:" />
+                                                            <Label fx:id="mapsCountLabel" layoutX="98.0" layoutY="14.0" />
+                                                            <CheckBox fx:id="normalSaveCheckBox" layoutX="25.0" layoutY="73.0" mnemonicParsing="false" selected="true" text="Normal save" />
+                                                            <CheckBox fx:id="groupByFlagsCheckBox" layoutX="25.0" layoutY="98.0" mnemonicParsing="false" text="Group by flags" />
+                                                            <CheckBox fx:id="groupByPlanetTypeCheckBox" layoutX="25.0" layoutY="123.0" mnemonicParsing="false" text="Group by planet type" />
+                                                            <CheckBox fx:id="dumpActionsCheckBox" layoutX="25.0" layoutY="148.0" mnemonicParsing="false" selected="true" text="Dump actions" />
+                                                            <CheckBox fx:id="dumpActionsTextCheckBox" layoutX="25.0" layoutY="174.0" mnemonicParsing="false" selected="true" text="Dump text" />
+                                                            <CheckBox fx:id="saveUnusedTilesCheckBox" layoutX="25.0" layoutY="199.0" mnemonicParsing="false" text="Save non-map tiles" />
+                                                            <Button fx:id="saveMapsToFilesButton" layoutX="14.0" layoutY="40.0" mnemonicParsing="false" onAction="#saveMapsToFilesButtonClick" text="Save maps to files" />
+                                                        </AnchorPane>
+                                                    </Tab>
+                                       <opaqueInsets>
+                                          <Insets />
+                                       </opaqueInsets>
+                                                </TabPane>
+
                                             </AnchorPane>
                                         </Tab>
+                                        <Tab text="Text Translation">
+                                            <BorderPane prefHeight="200.0" prefWidth="200.0">
+                                                <top>
+                                                    <HBox alignment="CENTER_LEFT" prefHeight="44.0" prefWidth="1135.0" spacing="5.0" BorderPane.alignment="CENTER">
+                                                        <padding>
+                                                            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                                        </padding>
+                                                        <Button fx:id="dumpActionsTextToDocx" mnemonicParsing="false" onAction="#dumpActionsTextToDocxClick" text="Dump text to DOCX" />
+                                                        <Button fx:id="loadTranslatedActionsText" mnemonicParsing="false" onAction="#loadTranslatedActionsTextClick" text="Load translated text" />
+                                                        <Button fx:id="replaceActionText" mnemonicParsing="false" onAction="#replaceActionTextClick" text="Replace text in DTA" />
+                                                        <CheckBox fx:id="trimActionsTrailSpacesCheckBox" mnemonicParsing="false" selected="true" text="Trim unneeded trail spaces" />
+                                                        <CheckBox fx:id="strictActionsReplacingRulesCheckBox" mnemonicParsing="false" selected="true" text="Strict replacing rules" />
+                                                    </HBox>
+                                                </top>
+                                                <center>
+                                                    <TableView fx:id="actionsTextTableView" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                                                        <columns>
+                                                            <TableColumn editable="false" prefWidth="600.0" sortable="false" text="Original">
+                                                                <cellValueFactory>
+                                                                    <PropertyValueFactory property="original" />
+                                                                </cellValueFactory>
+                                                                <cellFactory>
+                                                                    <StringCellFactory alignment="LEFT">
+                                                                    </StringCellFactory>
+                                                                </cellFactory>
+                                                            </TableColumn>
+                                                            <TableColumn editable="false" minWidth="0.0" prefWidth="600.0" sortable="false" text="Translated">
+                                                                <cellValueFactory>
+                                                                    <PropertyValueFactory property="translation" />
+                                                                </cellValueFactory>
+                                                                <cellFactory>
+                                                                    <StringCellFactory alignment="LEFT">
+                                                                    </StringCellFactory>
+                                                                </cellFactory>
+                                                            </TableColumn>
+                                                        </columns>
+                                                    </TableView>
+                                                </center>
+                                            </BorderPane>
+                                        </Tab>
                                         <Tab text="HEX Offsets">
-                                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0"
-                                                        prefWidth="200.0">
-                                                <TableView fx:id="mapsTableView" layoutX="14.0" layoutY="14.0"
-                                                           prefHeight="400.0" prefWidth="1105.0">
+                                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                                <TableView fx:id="mapsTableView" layoutX="14.0" layoutY="14.0" prefHeight="430.0" prefWidth="1100.0">
                                                     <columns>
                                                         <TableColumn prefWidth="60.0" text="Map">
                                                             <columns>
                                                                 <TableColumn prefWidth="40.0" text="ID">
                                                                     <cellValueFactory>
-                                                                        <PropertyValueFactory property="id"/>
+                                                                        <PropertyValueFactory property="id" />
                                                                     </cellValueFactory>
                                                                     <cellFactory>
                                                                         <StringCellFactory alignment="right">
@@ -597,7 +534,7 @@
                                                                 </TableColumn>
                                                                 <TableColumn prefWidth="79.0" text="Offset">
                                                                     <cellValueFactory>
-                                                                        <PropertyValueFactory property="position"/>
+                                                                        <PropertyValueFactory property="position" />
                                                                     </cellValueFactory>
                                                                     <cellFactory>
                                                                         <HexCellFactory alignment="right">
@@ -606,7 +543,7 @@
                                                                 </TableColumn>
                                                                 <TableColumn prefWidth="45.0" text="Size">
                                                                     <cellValueFactory>
-                                                                        <PropertyValueFactory property="size"/>
+                                                                        <PropertyValueFactory property="size" />
                                                                     </cellValueFactory>
                                                                     <cellFactory>
                                                                         <StringCellFactory alignment="right">
@@ -619,7 +556,7 @@
                                                             <columns>
                                                                 <TableColumn prefWidth="79.0" text="Offset">
                                                                     <cellValueFactory>
-                                                                        <PropertyValueFactory property="izonPosition"/>
+                                                                        <PropertyValueFactory property="izonPosition" />
                                                                     </cellValueFactory>
                                                                     <cellFactory>
                                                                         <HexCellFactory alignment="right">
@@ -628,7 +565,7 @@
                                                                 </TableColumn>
                                                                 <TableColumn prefWidth="45.0" text="Size">
                                                                     <cellValueFactory>
-                                                                        <PropertyValueFactory property="izonSize"/>
+                                                                        <PropertyValueFactory property="izonSize" />
                                                                     </cellValueFactory>
                                                                     <cellFactory>
                                                                         <StringCellFactory alignment="right">
@@ -641,7 +578,7 @@
                                                             <columns>
                                                                 <TableColumn prefWidth="79.0" text="Offset">
                                                                     <cellValueFactory>
-                                                                        <PropertyValueFactory property="oiePosition"/>
+                                                                        <PropertyValueFactory property="oiePosition" />
                                                                     </cellValueFactory>
                                                                     <cellFactory>
                                                                         <HexCellFactory alignment="right">
@@ -650,7 +587,7 @@
                                                                 </TableColumn>
                                                                 <TableColumn prefWidth="45.0" text="Size">
                                                                     <cellValueFactory>
-                                                                        <PropertyValueFactory property="oieSize"/>
+                                                                        <PropertyValueFactory property="oieSize" />
                                                                     </cellValueFactory>
                                                                     <cellFactory>
                                                                         <StringCellFactory alignment="right">
@@ -659,7 +596,7 @@
                                                                 </TableColumn>
                                                                 <TableColumn prefWidth="45.0" text="Count">
                                                                     <cellValueFactory>
-                                                                        <PropertyValueFactory property="oieCount"/>
+                                                                        <PropertyValueFactory property="oieCount" />
                                                                     </cellValueFactory>
                                                                     <cellFactory>
                                                                         <StringCellFactory alignment="right">
@@ -672,7 +609,7 @@
                                                             <columns>
                                                                 <TableColumn prefWidth="79.0" text="Offset">
                                                                     <cellValueFactory>
-                                                                        <PropertyValueFactory property="izaxPosition"/>
+                                                                        <PropertyValueFactory property="izaxPosition" />
                                                                     </cellValueFactory>
                                                                     <cellFactory>
                                                                         <HexCellFactory alignment="right">
@@ -681,7 +618,7 @@
                                                                 </TableColumn>
                                                                 <TableColumn prefWidth="45.0" text="Size">
                                                                     <cellValueFactory>
-                                                                        <PropertyValueFactory property="izaxSize"/>
+                                                                        <PropertyValueFactory property="izaxSize" />
                                                                     </cellValueFactory>
                                                                     <cellFactory>
                                                                         <StringCellFactory alignment="right">
@@ -694,7 +631,7 @@
                                                             <columns>
                                                                 <TableColumn prefWidth="79.0" text="Offset">
                                                                     <cellValueFactory>
-                                                                        <PropertyValueFactory property="izx2Position"/>
+                                                                        <PropertyValueFactory property="izx2Position" />
                                                                     </cellValueFactory>
                                                                     <cellFactory>
                                                                         <HexCellFactory alignment="right">
@@ -703,7 +640,7 @@
                                                                 </TableColumn>
                                                                 <TableColumn prefWidth="45.0" text="Size">
                                                                     <cellValueFactory>
-                                                                        <PropertyValueFactory property="izx2Size"/>
+                                                                        <PropertyValueFactory property="izx2Size" />
                                                                     </cellValueFactory>
                                                                     <cellFactory>
                                                                         <StringCellFactory alignment="right">
@@ -716,7 +653,7 @@
                                                             <columns>
                                                                 <TableColumn prefWidth="79.0" text="Offset">
                                                                     <cellValueFactory>
-                                                                        <PropertyValueFactory property="izx3Position"/>
+                                                                        <PropertyValueFactory property="izx3Position" />
                                                                     </cellValueFactory>
                                                                     <cellFactory>
                                                                         <HexCellFactory alignment="right">
@@ -725,7 +662,7 @@
                                                                 </TableColumn>
                                                                 <TableColumn prefWidth="45.0" text="Size">
                                                                     <cellValueFactory>
-                                                                        <PropertyValueFactory property="izx3Size"/>
+                                                                        <PropertyValueFactory property="izx3Size" />
                                                                     </cellValueFactory>
                                                                     <cellFactory>
                                                                         <StringCellFactory alignment="right">
@@ -738,7 +675,7 @@
                                                             <columns>
                                                                 <TableColumn prefWidth="79.0" text="Offset">
                                                                     <cellValueFactory>
-                                                                        <PropertyValueFactory property="izx4Position"/>
+                                                                        <PropertyValueFactory property="izx4Position" />
                                                                     </cellValueFactory>
                                                                     <cellFactory>
                                                                         <HexCellFactory alignment="right">
@@ -747,7 +684,7 @@
                                                                 </TableColumn>
                                                                 <TableColumn prefWidth="45.0" text="Size">
                                                                     <cellValueFactory>
-                                                                        <PropertyValueFactory property="izx4Size"/>
+                                                                        <PropertyValueFactory property="izx4Size" />
                                                                     </cellValueFactory>
                                                                     <cellFactory>
                                                                         <StringCellFactory alignment="right">
@@ -760,7 +697,7 @@
                                                             <columns>
                                                                 <TableColumn prefWidth="79.0" text="Offset">
                                                                     <cellValueFactory>
-                                                                        <PropertyValueFactory property="iactPosition"/>
+                                                                        <PropertyValueFactory property="iactPosition" />
                                                                     </cellValueFactory>
                                                                     <cellFactory>
                                                                         <HexCellFactory alignment="right">
@@ -769,7 +706,7 @@
                                                                 </TableColumn>
                                                                 <TableColumn prefWidth="45.0" text="Size">
                                                                     <cellValueFactory>
-                                                                        <PropertyValueFactory property="iactSize"/>
+                                                                        <PropertyValueFactory property="iactSize" />
                                                                     </cellValueFactory>
                                                                     <cellFactory>
                                                                         <StringCellFactory alignment="right">
@@ -782,135 +719,6 @@
                                                 </TableView>
                                             </AnchorPane>
                                         </Tab>
-                                        <Tab text="Map Editor">
-                                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0"
-                                                        prefWidth="200.0">
-                                                <TitledPane animated="false" layoutX="14.0" layoutY="15.0"
-                                                            prefHeight="92.0" prefWidth="93.0" text="Map layer">
-                                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0"
-                                                                prefWidth="200.0">
-                                                        <CheckBox fx:id="topCheckBox" layoutX="5.0" layoutY="4.0"
-                                                                  mnemonicParsing="false" selected="true" userData="2"
-                                                                  onAction="#layerCheckBoxClick"/>
-                                                        <CheckBox fx:id="middleCheckBox" layoutX="5.0" layoutY="23.0"
-                                                                  mnemonicParsing="false" selected="true" userData="1"
-                                                                  onAction="#layerCheckBoxClick"/>
-                                                        <CheckBox fx:id="bottomCheckBox" layoutX="5.0" layoutY="42.0"
-                                                                  mnemonicParsing="false" selected="true" userData="0"
-                                                                  onAction="#layerCheckBoxClick"/>
-                                                        <RadioButton fx:id="topRadioButton" layoutX="25.0" layoutY="4.0"
-                                                                     mnemonicParsing="false" selected="true" text="Top"
-                                                                     userData="2">
-                                                            <toggleGroup>
-                                                                <ToggleGroup fx:id="mapLayerToggleGroup"/>
-                                                            </toggleGroup>
-                                                        </RadioButton>
-                                                        <RadioButton fx:id="middleRadioButton" layoutX="25.0"
-                                                                     layoutY="23.0" mnemonicParsing="false" userData="1"
-                                                                     text="Middle" toggleGroup="$mapLayerToggleGroup"/>
-                                                        <RadioButton fx:id="bottomRadioButton" layoutX="25.0"
-                                                                     layoutY="42.0" mnemonicParsing="false" userData="0"
-                                                                     text="Bottom" toggleGroup="$mapLayerToggleGroup"/>
-                                                    </AnchorPane>
-                                                </TitledPane>
-                                                <ListView fx:id="mapEditorListView" layoutX="14.0" layoutY="109.0"
-                                                          prefHeight="270.0" prefWidth="93.0"/>
-                                                <Button fx:id="undoMapEdit" layoutX="14.0" layoutY="386.0"
-                                                        minWidth="93.0"
-                                                        mnemonicParsing="false" onAction="#undoMapEditClick"
-                                                        text="Undo" visible="false"/>
-                                                <Canvas fx:id="mapEditorCanvas" height="576.0" width="576.0"
-                                                        layoutX="115.0" layoutY="15.0"
-                                                        onDragDetected="#mapEditorCanvasDragDetected"
-                                                        onDragOver="#mapEditorCanvasDragOver"
-                                                        onDragEntered="#mapEditorCanvasDragEntered"
-                                                        onDragExited="#mapEditorCanvasDragExited"
-                                                        onDragDropped="#mapEditorCanvasDragDropped"
-                                                        onMouseMoved="#mapEditorCanvasMouseMoved"
-                                                />
-                                                <ScrollPane fx:id="mapEditorTilesScrollPane" layoutX="700.0"
-                                                            layoutY="15.0" prefHeight="392.0"
-                                                            prefWidth="481.0">
-                                                    <FlowPane fx:id="mapEditorTilesFlowPane" columnHalignment="CENTER"
-                                                              prefHeight="390.0" prefWidth="463.0"
-                                                              prefWrapLength="482.0" hgap="1.0" vgap="1.0"/>
-                                                </ScrollPane>
-                                                <Label visible="false">
-                                                    <contextMenu>
-                                                        <ContextMenu fx:id="mapEditorContextMenu">
-                                                            <items>
-                                                                <MenuItem onAction="#clearBottomLayer"
-                                                                          mnemonicParsing="false"
-                                                                          text="Clear bottom layer"/>
-                                                                <MenuItem onAction="#clearMiddleLayer"
-                                                                          mnemonicParsing="false"
-                                                                          text="Clear middle layer"/>
-                                                                <MenuItem onAction="#clearTopLayer"
-                                                                          mnemonicParsing="false"
-                                                                          text="Clear top layer"/>
-                                                            </items>
-                                                        </ContextMenu>
-                                                    </contextMenu>
-                                                </Label>
-                                            </AnchorPane>
-                                        </Tab>
-                                        <Tab text="Text Translation">
-                                            <BorderPane prefHeight="200.0" prefWidth="200.0">
-                                                <top>
-                                                    <HBox alignment="CENTER_LEFT" prefHeight="44.0" prefWidth="1135.0"
-                                                          spacing="5.0" BorderPane.alignment="CENTER">
-                                                        <padding>
-                                                            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
-                                                        </padding>
-                                                        <Button fx:id="dumpActionsTextToDocx" mnemonicParsing="false"
-                                                                onAction="#dumpActionsTextToDocxClick"
-                                                                text="Dump text to DOCX"/>
-                                                        <Button fx:id="loadTranslatedActionsText"
-                                                                mnemonicParsing="false"
-                                                                onAction="#loadTranslatedActionsTextClick"
-                                                                text="Load translated text"/>
-                                                        <Button fx:id="replaceActionText" mnemonicParsing="false"
-                                                                onAction="#replaceActionTextClick"
-                                                                text="Replace text in DTA"/>
-                                                        <CheckBox fx:id="trimActionsTrailSpacesCheckBox"
-                                                                  mnemonicParsing="false" selected="true"
-                                                                  text="Trim unneeded trail spaces"/>
-                                                        <CheckBox fx:id="strictActionsReplacingRulesCheckBox"
-                                                                  mnemonicParsing="false" selected="true"
-                                                                  text="Strict replacing rules"/>
-                                                    </HBox>
-                                                </top>
-                                                <center>
-                                                    <TableView fx:id="actionsTextTableView" prefHeight="200.0"
-                                                               prefWidth="200.0"
-                                                               BorderPane.alignment="CENTER">
-                                                        <columns>
-                                                            <TableColumn editable="false" prefWidth="600.0"
-                                                                         sortable="false" text="Original">
-                                                                <cellValueFactory>
-                                                                    <PropertyValueFactory property="original"/>
-                                                                </cellValueFactory>
-                                                                <cellFactory>
-                                                                    <StringCellFactory alignment="LEFT">
-                                                                    </StringCellFactory>
-                                                                </cellFactory>
-                                                            </TableColumn>
-                                                            <TableColumn editable="false" minWidth="0.0"
-                                                                         prefWidth="600.0" sortable="false"
-                                                                         text="Translated">
-                                                                <cellValueFactory>
-                                                                    <PropertyValueFactory property="translation"/>
-                                                                </cellValueFactory>
-                                                                <cellFactory>
-                                                                    <StringCellFactory alignment="LEFT">
-                                                                    </StringCellFactory>
-                                                                </cellFactory>
-                                                            </TableColumn>
-                                                        </columns>
-                                                    </TableView>
-                                                </center>
-                                            </BorderPane>
-                                        </Tab>
                                     </TabPane>
                                 </center>
                             </BorderPane>
@@ -918,24 +726,17 @@
                         <Tab text="Puzzles">
                             <BorderPane prefHeight="200.0" prefWidth="200.0">
                                 <center>
-                                    <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE"
-                                             BorderPane.alignment="CENTER">
+                                    <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
                                         <Tab text="General Information">
-                                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0"
-                                                        prefWidth="200.0">
-                                                <Label layoutX="14.0" layoutY="14.0" text="Puzzles count:"/>
-                                                <Label fx:id="puzzlesCountLabel" layoutX="98.0" layoutY="14.0"/>
-                                                <Button fx:id="savePuzzlesToFilesButton" layoutX="14.0" layoutY="40.0"
-                                                        mnemonicParsing="false"
-                                                        onAction="#savePuzzlesToFilesButtonClick"
-                                                        text="Save puzzles to files"/>
-                                                <TableView fx:id="puzzlesTableView" layoutX="146.0" layoutY="14.0"
-                                                           prefHeight="400.0"
-                                                           prefWidth="1060.0">
+                                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                                <Label layoutX="14.0" layoutY="14.0" text="Puzzles count:" />
+                                                <Label fx:id="puzzlesCountLabel" layoutX="98.0" layoutY="14.0" />
+                                                <Button fx:id="savePuzzlesToFilesButton" layoutX="14.0" layoutY="40.0" mnemonicParsing="false" onAction="#savePuzzlesToFilesButtonClick" text="Save puzzles to files" />
+                                                <TableView fx:id="puzzlesTableView" layoutX="146.0" layoutY="14.0" prefHeight="429.0" prefWidth="1060.0">
                                                     <columns>
                                                         <TableColumn editable="false" prefWidth="81.0" text="ID">
                                                             <cellValueFactory>
-                                                                <PropertyValueFactory property="id"/>
+                                                                <PropertyValueFactory property="id" />
                                                             </cellValueFactory>
                                                             <cellFactory>
                                                                 <StringCellFactory alignment="left">
@@ -944,12 +745,12 @@
                                                         </TableColumn>
                                                         <TableColumn editable="false" prefWidth="70.0" text="Items">
                                                             <cellValueFactory>
-                                                                <PropertyValueFactory property="tileIds"/>
+                                                                <PropertyValueFactory property="tileIds" />
                                                             </cellValueFactory>
                                                         </TableColumn>
                                                         <TableColumn editable="false" prefWidth="895.0" text="Text">
                                                             <cellValueFactory>
-                                                                <PropertyValueFactory property="original"/>
+                                                                <PropertyValueFactory property="original" />
                                                             </cellValueFactory>
                                                             <cellFactory>
                                                                 <StringCellFactory alignment="left">
@@ -963,49 +764,32 @@
                                         <Tab text="Text Translation">
                                             <BorderPane prefHeight="200.0" prefWidth="200.0">
                                                 <top>
-                                                    <HBox alignment="CENTER_LEFT" prefHeight="44.0" prefWidth="1135.0"
-                                                          spacing="5.0" BorderPane.alignment="CENTER">
+                                                    <HBox alignment="CENTER_LEFT" prefHeight="44.0" prefWidth="1135.0" spacing="5.0" BorderPane.alignment="CENTER">
                                                         <padding>
-                                                            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                                                            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                                         </padding>
-                                                        <Button fx:id="dumpPuzzlesTextToDocx" mnemonicParsing="false"
-                                                                onAction="#dumpPuzzlesTextToDocxClick"
-                                                                text="Dump text to DOCX"/>
-                                                        <Button fx:id="loadTranslatedPuzzlesText"
-                                                                mnemonicParsing="false"
-                                                                onAction="#loadTranslatedPuzzlesTextClick"
-                                                                text="Load translated text"/>
-                                                        <Button fx:id="replacePuzzlesText" mnemonicParsing="false"
-                                                                onAction="#replacePuzzlesTextClick"
-                                                                text="Replace text in DTA"/>
-                                                        <CheckBox fx:id="trimPuzzlesTrailSpacesCheckBox"
-                                                                  mnemonicParsing="false" selected="true"
-                                                                  text="Trim unneeded trail spaces"/>
-                                                        <CheckBox fx:id="strictPuzzlesReplacingRulesCheckBox"
-                                                                  mnemonicParsing="false" selected="true"
-                                                                  text="Strict replacing rules"/>
+                                                        <Button fx:id="dumpPuzzlesTextToDocx" mnemonicParsing="false" onAction="#dumpPuzzlesTextToDocxClick" text="Dump text to DOCX" />
+                                                        <Button fx:id="loadTranslatedPuzzlesText" mnemonicParsing="false" onAction="#loadTranslatedPuzzlesTextClick" text="Load translated text" />
+                                                        <Button fx:id="replacePuzzlesText" mnemonicParsing="false" onAction="#replacePuzzlesTextClick" text="Replace text in DTA" />
+                                                        <CheckBox fx:id="trimPuzzlesTrailSpacesCheckBox" mnemonicParsing="false" selected="true" text="Trim unneeded trail spaces" />
+                                                        <CheckBox fx:id="strictPuzzlesReplacingRulesCheckBox" mnemonicParsing="false" selected="true" text="Strict replacing rules" />
                                                     </HBox>
                                                 </top>
                                                 <center>
-                                                    <TableView fx:id="puzzlesTextTableView" prefHeight="200.0"
-                                                               prefWidth="200.0"
-                                                               BorderPane.alignment="CENTER">
+                                                    <TableView fx:id="puzzlesTextTableView" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                                                         <columns>
-                                                            <TableColumn editable="false" prefWidth="600.0"
-                                                                         sortable="false" text="Original">
+                                                            <TableColumn editable="false" prefWidth="600.0" sortable="false" text="Original">
                                                                 <cellValueFactory>
-                                                                    <PropertyValueFactory property="original"/>
+                                                                    <PropertyValueFactory property="original" />
                                                                 </cellValueFactory>
                                                                 <cellFactory>
                                                                     <StringCellFactory alignment="LEFT">
                                                                     </StringCellFactory>
                                                                 </cellFactory>
                                                             </TableColumn>
-                                                            <TableColumn editable="false" minWidth="0.0"
-                                                                         prefWidth="600.0" sortable="false"
-                                                                         text="Translated">
+                                                            <TableColumn editable="false" minWidth="0.0" prefWidth="600.0" sortable="false" text="Translated">
                                                                 <cellValueFactory>
-                                                                    <PropertyValueFactory property="translation"/>
+                                                                    <PropertyValueFactory property="translation" />
                                                                 </cellValueFactory>
                                                                 <cellFactory>
                                                                     <StringCellFactory alignment="LEFT">
@@ -1023,28 +807,20 @@
                         </Tab>
                         <Tab text="Characters">
                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                                <Label layoutX="14.0" layoutY="14.0" text="Characters count:"/>
-                                <Label fx:id="charactersCountLabel" layoutX="115.0" layoutY="14.0"/>
-                                <Button fx:id="saveCharactersToFilesButton" layoutX="14.0" layoutY="40.0"
-                                        mnemonicParsing="false" onAction="#saveCharactersToFilesButtonClick"
-                                        text="Save characters to files"/>
-                                <Button fx:id="generateCharactersReportButton" layoutX="14.0" layoutY="78.0"
-                                        mnemonicParsing="false" onAction="#generateCharactersReportButton"
-                                        text="Generate characters report"/>
-                                <TextArea layoutX="14.0" layoutY="116.0" prefWidth="137" prefHeight="140"
-                                          wrapText="true"
-                                          editable="false"
-                                          text="Characters don't need to be translated. Don't waste your time :)">
+                                <Label layoutX="14.0" layoutY="14.0" text="Characters count:" />
+                                <Label fx:id="charactersCountLabel" layoutX="115.0" layoutY="14.0" />
+                                <Button fx:id="saveCharactersToFilesButton" layoutX="14.0" layoutY="40.0" mnemonicParsing="false" onAction="#saveCharactersToFilesButtonClick" text="Save characters to files" />
+                                <Button fx:id="generateCharactersReportButton" layoutX="14.0" layoutY="78.0" mnemonicParsing="false" onAction="#generateCharactersReportButton" text="Generate characters report" />
+                                <TextArea editable="false" layoutX="14.0" layoutY="116.0" prefHeight="140" prefWidth="137" text="Characters don't need to be translated. Don't waste your time :)" wrapText="true">
                                     <font>
-                                        <Font name="System Bold" size="12.0"/>
+                                        <Font name="System Bold" size="12.0" />
                                     </font>
                                 </TextArea>
-                                <TableView fx:id="charactersTableView" layoutX="160.0" layoutY="14.0" prefHeight="420.0"
-                                           prefWidth="760.0">
+                                <TableView fx:id="charactersTableView" layoutX="160.0" layoutY="14.0" prefHeight="459.0" prefWidth="760.0">
                                     <columns>
                                         <TableColumn editable="false" prefWidth="20.0" text="ID">
                                             <cellValueFactory>
-                                                <PropertyValueFactory property="index"/>
+                                                <PropertyValueFactory property="index" />
                                             </cellValueFactory>
                                             <cellFactory>
                                                 <StringCellFactory alignment="center">
@@ -1053,12 +829,12 @@
                                         </TableColumn>
                                         <TableColumn editable="false" prefWidth="580.0" text="Image">
                                             <cellValueFactory>
-                                                <PropertyValueFactory property="tileIds"/>
+                                                <PropertyValueFactory property="tileIds" />
                                             </cellValueFactory>
                                         </TableColumn>
                                         <TableColumn editable="false" prefWidth="140.0" text="Name">
                                             <cellValueFactory>
-                                                <PropertyValueFactory property="name"/>
+                                                <PropertyValueFactory property="name" />
                                             </cellValueFactory>
                                             <cellFactory>
                                                 <StringCellFactory alignment="left">
@@ -1072,27 +848,22 @@
                         <Tab text="Names">
                             <BorderPane prefHeight="200.0" prefWidth="200.0">
                                 <center>
-                                    <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE"
-                                             BorderPane.alignment="CENTER">
+                                    <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
                                         <Tab text="General Information">
-                                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0"
-                                                        prefWidth="200.0">
-                                                <Label layoutX="14.0" layoutY="14.0" text="Names count:"/>
-                                                <Label fx:id="namesCountLabel" layoutX="98.0" layoutY="14.0"/>
-                                                <Button fx:id="saveNamesToFilesButton" layoutX="14.0" layoutY="40.0"
-                                                        mnemonicParsing="false" onAction="#saveNamesToFileButtonClick"
-                                                        text="Save names to files"/>
-                                                <TableView fx:id="namesTableView" layoutX="150.0" layoutY="14.0"
-                                                           prefHeight="395.0" prefWidth="210.0">
+                                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                                <Label layoutX="14.0" layoutY="14.0" text="Names count:" />
+                                                <Label fx:id="namesCountLabel" layoutX="98.0" layoutY="14.0" />
+                                                <Button fx:id="saveNamesToFilesButton" layoutX="14.0" layoutY="40.0" mnemonicParsing="false" onAction="#saveNamesToFileButtonClick" text="Save names to files" />
+                                                <TableView fx:id="namesTableView" layoutX="150.0" layoutY="14.0" prefHeight="427.0" prefWidth="210.0">
                                                     <columns>
                                                         <TableColumn editable="false" prefWidth="50.0" text="Tile">
                                                             <cellValueFactory>
-                                                                <PropertyValueFactory property="tileId"/>
+                                                                <PropertyValueFactory property="tileId" />
                                                             </cellValueFactory>
                                                         </TableColumn>
                                                         <TableColumn editable="false" prefWidth="140.0" text="Name">
                                                             <cellValueFactory>
-                                                                <PropertyValueFactory property="name"/>
+                                                                <PropertyValueFactory property="name" />
                                                             </cellValueFactory>
                                                             <cellFactory>
                                                                 <StringCellFactory alignment="left">
@@ -1107,47 +878,32 @@
                                         <Tab text="Text Translation">
                                             <BorderPane prefHeight="200.0" prefWidth="200.0">
                                                 <top>
-                                                    <HBox alignment="CENTER_LEFT" prefHeight="44.0" prefWidth="1135.0"
-                                                          spacing="5.0" BorderPane.alignment="CENTER">
+                                                    <HBox alignment="CENTER_LEFT" prefHeight="44.0" prefWidth="1135.0" spacing="5.0" BorderPane.alignment="CENTER">
                                                         <padding>
-                                                            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                                                            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                                         </padding>
-                                                        <Button fx:id="dumpNamesTextToDocx" mnemonicParsing="false"
-                                                                onAction="#dumpNamesTextToDocxCLick"
-                                                                text="Dump text to DOCX"/>
-                                                        <Button fx:id="loadTranslatedNamesText" mnemonicParsing="false"
-                                                                onAction="#loadTranslatedNamesTextClick"
-                                                                text="Load translated text"/>
-                                                        <Button fx:id="replaceNamesText" mnemonicParsing="false"
-                                                                onAction="#replaceNamesTextClick"
-                                                                text="Replace text in DTA"/>
-                                                        <CheckBox fx:id="trimNamesSpacesCheckBox" selected="true"
-                                                                  mnemonicParsing="false" text="Trim spaces"/>
-                                                        <CheckBox fx:id="strictNamesReplacingRulesCheckBox"
-                                                                  mnemonicParsing="false" selected="true"
-                                                                  text="Strict replacing rules"/>
+                                                        <Button fx:id="dumpNamesTextToDocx" mnemonicParsing="false" onAction="#dumpNamesTextToDocxCLick" text="Dump text to DOCX" />
+                                                        <Button fx:id="loadTranslatedNamesText" mnemonicParsing="false" onAction="#loadTranslatedNamesTextClick" text="Load translated text" />
+                                                        <Button fx:id="replaceNamesText" mnemonicParsing="false" onAction="#replaceNamesTextClick" text="Replace text in DTA" />
+                                                        <CheckBox fx:id="trimNamesSpacesCheckBox" mnemonicParsing="false" selected="true" text="Trim spaces" />
+                                                        <CheckBox fx:id="strictNamesReplacingRulesCheckBox" mnemonicParsing="false" selected="true" text="Strict replacing rules" />
                                                     </HBox>
                                                 </top>
                                                 <center>
-                                                    <TableView fx:id="namesTextTableView" prefHeight="200.0"
-                                                               prefWidth="200.0"
-                                                               BorderPane.alignment="CENTER">
+                                                    <TableView fx:id="namesTextTableView" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                                                         <columns>
-                                                            <TableColumn editable="false" prefWidth="600.0"
-                                                                         sortable="false" text="Original">
+                                                            <TableColumn editable="false" prefWidth="600.0" sortable="false" text="Original">
                                                                 <cellValueFactory>
-                                                                    <PropertyValueFactory property="original"/>
+                                                                    <PropertyValueFactory property="original" />
                                                                 </cellValueFactory>
                                                                 <cellFactory>
                                                                     <StringCellFactory alignment="LEFT">
                                                                     </StringCellFactory>
                                                                 </cellFactory>
                                                             </TableColumn>
-                                                            <TableColumn editable="false" minWidth="0.0"
-                                                                         prefWidth="600.0" sortable="false"
-                                                                         text="Translated">
+                                                            <TableColumn editable="false" minWidth="0.0" prefWidth="600.0" sortable="false" text="Translated">
                                                                 <cellValueFactory>
-                                                                    <PropertyValueFactory property="translation"/>
+                                                                    <PropertyValueFactory property="translation" />
                                                                 </cellValueFactory>
                                                                 <cellFactory>
                                                                     <StringCellFactory alignment="LEFT">
@@ -1168,19 +924,18 @@
             </BorderPane>
             <BorderPane prefHeight="180.0" prefWidth="200.0">
                 <center>
-                    <TabPane prefHeight="180.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE"
-                             BorderPane.alignment="CENTER">
+                    <TabPane prefHeight="180.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
                         <Tab text="Logs">
                             <BorderPane prefHeight="180.0" prefWidth="200.0">
                                 <center>
-                                    <TextArea fx:id="logsTextArea"/>
+                                    <TextArea fx:id="logsTextArea" />
                                 </center>
                             </BorderPane>
                         </Tab>
                         <Tab text="HEX Viewer">
                             <BorderPane prefHeight="180.0" prefWidth="200.0">
                                 <center>
-                                    <TextArea fx:id="hexViewerTextArea"/>
+                                    <TextArea fx:id="hexViewerTextArea" />
                                 </center>
                             </BorderPane>
                         </Tab>
@@ -1189,9 +944,9 @@
                 <bottom>
                     <HBox alignment="CENTER_LEFT" prefHeight="25.0" prefWidth="1135.0" BorderPane.alignment="CENTER">
                         <padding>
-                            <Insets left="5.0" right="5.0"/>
+                            <Insets left="5.0" right="5.0" />
                         </padding>
-                        <Label fx:id="statusLabel"/>
+                        <Label fx:id="statusLabel" />
                     </HBox>
                 </bottom>
             </BorderPane>

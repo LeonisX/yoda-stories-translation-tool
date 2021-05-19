@@ -1,153 +1,423 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Hyperlink?>
+<?import javafx.scene.Group?>
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ContextMenu?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.shape.Rectangle?>
-<?import javafx.scene.text.Font?>
 
 <AnchorPane prefHeight="561.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="md.leonis.ystt.view.TestController">
-   <BorderPane prefHeight="200.0" prefWidth="200.0">
-      <left>
-         <AnchorPane prefHeight="477.0" prefWidth="1093.0" BorderPane.alignment="CENTER">
+   <BorderPane prefHeight="561.0" prefWidth="1100.0">
+      <center>
+         <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+            <Tab text="Viewer/Editor">
+               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                  <Group>
+                     <Canvas fx:id="mapEditorCanvas" height="576.0" layoutX="115.0" layoutY="15.0" onDragDetected="#mapEditorCanvasDragDetected" onDragDropped="#mapEditorCanvasDragDropped" onDragEntered="#mapEditorCanvasDragEntered" onDragExited="#mapEditorCanvasDragExited" onDragOver="#mapEditorCanvasDragOver" onMouseMoved="#mapEditorCanvasMouseMoved" width="576.0" />
+                  </Group>
 
-            <Label layoutX="20.0" layoutY="19.0"
-                   text="Resize Window (and Inventory Table View)">
-               <font>
-                  <Font name="System Bold" size="12.0"/>
-               </font>
-            </Label>
-            <Label layoutX="20.0" layoutY="46.0" text="Default width (px):"/>
-            <Label layoutX="124.0" layoutY="46.0" text="525"/>
-            <Label layoutX="167.0" layoutY="46.0" text="Expanded by:"/>
-            <TextField fx:id="windowSizeTextField" layoutX="246.0" layoutY="42.0"
-                       prefHeight="25.0" prefWidth="64.0" text="0"/>
-            <Label layoutX="20.0" layoutY="83.0" text="Inventory text example:"/>
-            <TextField fx:id="inventoryTextField" layoutX="167.0" layoutY="79.0"
-                       prefHeight="25.0" prefWidth="212.0" text="Inventory Item #3"/>
-            <Label fx:id="inventoryErrorLabel" layoutX="317.0" layoutY="41.0" text="!!!"
-                   textFill="RED" visible="false">
-               <font>
-                  <Font name="System Bold" size="18.0"/>
-               </font>
-            </Label>
-            <Rectangle disable="true" fill="#1f93ff00" height="106.0" layoutX="9.0"
-                       layoutY="8.0" stroke="#00000054" strokeType="INSIDE" width="384.0"/>
-
-            <Label layoutX="20.0" layoutY="131.0" text="Resize Dialog Tool Tip Text Field">
-               <font>
-                  <Font name="System Bold" size="12.0"/>
-               </font>
-            </Label>
-            <Label layoutX="20.0" layoutY="158.0" text="Default width (px):"/>
-            <Label layoutX="124.0" layoutY="158.0" text="130"/>
-            <Label layoutX="167.0" layoutY="158.0" text="Expanded by:"/>
-            <TextField fx:id="toolTipSizeTextField" layoutX="246.0" layoutY="154.0"
-                       prefHeight="25.0" prefWidth="64.0" text="0"/>
-
-            <Label layoutX="20.0" layoutY="194.0" text="Dialog text example:"/>
-            <TextField fx:id="dialogTextField" layoutX="167.0" layoutY="190.0"
-                       prefHeight="25.0" prefWidth="212.0"
-                       text="Let's resize this dialog box!"/>
-            <Label fx:id="dialogErrorLabel" layoutX="317.0" layoutY="153.0" text="!!!"
-                   textFill="RED" visible="false">
-               <font>
-                  <Font name="System Bold" size="18.0"/>
-               </font>
-            </Label>
-
-            <Rectangle disable="true" fill="#1f93ff00" height="106.0" layoutX="9.0"
-                       layoutY="119.0" stroke="#00000054" strokeType="INSIDE"
-                       width="384.0"/>
-
-            <ImageView fx:id="inventoryImageView" fitHeight="240.0" fitWidth="347.0"
-                       layoutX="570.0" pickOnBounds="true" preserveRatio="true"
-                       smooth="false">
-               <Image url="@../inventory.png"/>
-            </ImageView>
-
-            <Label fx:id="inventoryLabel" layoutX="742.0" layoutY="81.0"
-                   text="Inventory Item #3">
-               <font>
-                  <Font name="Microsoft Sans Serif" size="12.7"/>
-               </font>
-            </Label>
-
-            <ImageView fx:id="gameImageView" fitHeight="300.0" fitWidth="519.0"
-                       layoutX="200.0" layoutY="6.0" pickOnBounds="true"
-                       preserveRatio="true" smooth="false" AnchorPane.leftAnchor="398.0"
-                       AnchorPane.topAnchor="0.0">
-               <Image url="@../game-screen.png"/>
-            </ImageView>
-
-            <Rectangle fx:id="dialogRectangle" arcHeight="18.0" arcWidth="18.0" fill="WHITE"
-                       height="24.0" layoutX="465.0" layoutY="99.0" smooth="false"
-                       stroke="BLACK" strokeType="INSIDE" width="170.0"/>
-            <Rectangle fx:id="shapeRectangle" fill="WHITE" height="5.0" layoutX="539.0"
-                       layoutY="118.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0"
-                       width="12.0"/>
-            <ImageView fx:id="dialogButtonImageView" fitHeight="16.0" fitWidth="16.0"
-                       layoutX="614.0" layoutY="103.0" pickOnBounds="true"
-                       preserveRatio="true">
-               <Image url="@../button.png"/>
-            </ImageView>
-
-            <Label fx:id="dialogLabel" layoutX="472.0" layoutY="104.0"
-                   text="Let's resize this dialog box!">
-               <font>
-                  <Font name="Microsoft Sans Serif" size="10.8"/>
-               </font>
-            </Label>
-
-            <HBox alignment="CENTER" prefHeight="143.0" prefWidth="917.0"
-                  AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="300.0">
-               <padding>
-                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
-               </padding>
-               <Label prefHeight="180.0" prefWidth="704.0"
-                      text="Yoda Stories Translation Tool originally planned to translate text in an EXE file as well. However, the structure of Windows PE headers is complex enough to quickly implement it.&#10;&#10;There are many third-party Portable Executables editors, and in fact, the main difficulty is in choosing the one that suits best.&#10;&#10;Our choice settled on the Restorator utility, but it is paid, therefore, we will publish a list of several more tools in alphabetical order, so that you choose the one that will allow you to perform the translation with comfort. Any allows you to fully translate text strings, menus and dialog boxes."
-                      wrapText="true" BorderPane.alignment="CENTER">
-                  <padding>
-                     <Insets right="15.0"/>
-                  </padding>
-               </Label>
-               <VBox prefHeight="180.0" prefWidth="214.0" BorderPane.alignment="CENTER">
-                  <HBox.margin>
-                     <Insets/>
-                  </HBox.margin>
-                  <Hyperlink minHeight="22.0" onAction="#peExplorerHyperlinkClick"
-                             text="PE Explorer (129$)" underline="true"/>
-                  <Hyperlink minHeight="22.0" onAction="#resEditHyperlinkClick"
-                             text="ResEdit (Free)" underline="true"/>
-                  <Hyperlink minHeight="22.0"
-                             onAction="#resourceBuilderHyperlinkClick"
-                             text="Resource Builder (59$)" underline="true"/>
-                  <Hyperlink minHeight="22.0" onAction="#resourceHackerHyperlinkClick"
-                             text="Resource Hacker (Free)" underline="true"/>
-                  <Hyperlink minHeight="22.0" onAction="#resourceTunerHyperlinkClick"
-                             text="Resource Tuner (49$)" underline="true"/>
-                  <Hyperlink minHeight="22.0" onAction="#restoratorHyperlinkClick"
-                             text="Restorator (72$)" underline="true"/>
-                  <Hyperlink minHeight="22.0"
-                             onAction="#xnResourceEditorHyperlinkClick"
-                             text="XN Resource Editor (Free)" underline="true"/>
-               </VBox>
-            </HBox>
-
-            <Rectangle disable="true" fill="#1f93ff00" height="170.0" layoutX="9.0"
-                       layoutY="307.0" stroke="#00000028" strokeType="INSIDE"
-                       width="686.0"/>
-            <Rectangle disable="true" fill="#1f93ff00" height="170.0" layoutX="694.0"
-                       layoutY="307.0" stroke="#00000028" strokeType="INSIDE"
-                       width="222.0"/>
-         </AnchorPane>
-      </left>
+                           <TabPane layoutX="593.0" layoutY="6.0" prefHeight="442.0" prefWidth="495.0" style="-fx-background-color: #E8E8E8;" tabClosingPolicy="UNAVAILABLE">
+                    <tabs>
+                      <Tab text="Info">
+                        <content>
+                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                 <children>
+                                    <VBox layoutX="5.0" layoutY="10.0" prefWidth="531.0">
+                                       <children>
+                                          <HBox prefHeight="20.0" prefWidth="531.0" spacing="5">
+                                             <children>
+                                                <Button fx:id="showActionsButton" layoutX="14.0" layoutY="40.0" mnemonicParsing="false" onAction="#showActionsButtonClick" text="Show actions" />
+                                                <CheckBox fx:id="showMapMonstersCheckBox" mnemonicParsing="false" onAction="#drawViewZone" selected="true" text="Show mosters" />
+                                                <CheckBox fx:id="showMapHotspotsCheckBox" mnemonicParsing="false" onAction="#drawViewZone" selected="true" text="Show hotspots" />
+                                             </children>
+                                          </HBox>
+                                          <HBox prefHeight="22.0" prefWidth="531.0">
+                                             <children>
+                                                <Label prefWidth="95.0" text="Size:" />
+                                                <Label fx:id="mapSizeLabel" />
+                                             </children>
+                                          </HBox>
+                                          <HBox prefHeight="22.0" prefWidth="531.0">
+                                             <children>
+                                                <Label prefWidth="95.0" text="Type:" />
+                                                <Label fx:id="mapTypeLabel" />
+                                             </children>
+                                          </HBox>
+                                          <HBox prefHeight="22.0" prefWidth="531.0">
+                                             <children>
+                                                <Label prefWidth="95.0" text="Planet:" />
+                                                <Label fx:id="mapPlanetLabel" />
+                                             </children>
+                                          </HBox>
+                                          <HBox prefHeight="22.0" prefWidth="531.0">
+                                             <children>
+                                                <Label prefWidth="95.0" text="Actions:" />
+                                                <Label fx:id="mapActionsLabel" />
+                                             </children>
+                                          </HBox>
+                                          <HBox prefHeight="24.0" prefWidth="531.0">
+                                             <children>
+                                                <Label prefWidth="95.0" text="Goal:" />
+                                                <FlowPane fx:id="mapGoalTilesFlowPane" columnHalignment="CENTER" hgap="1.0" prefWidth="280.0" prefWrapLength="280.0" vgap="1.0" />
+                                             </children>
+                                          </HBox>
+                                          <HBox prefHeight="22.0" prefWidth="531.0">
+                                             <children>
+                                                <Label prefWidth="95.0" text="Provided items:" />
+                                                <FlowPane fx:id="mapProvidedItemsTilesFlowPane" columnHalignment="CENTER" hgap="1.0" prefWidth="280.0" prefWrapLength="280.0" vgap="1.0" />
+                                             </children>
+                                          </HBox>
+                                          <HBox prefHeight="22.0" prefWidth="531.0">
+                                             <children>
+                                                <Label prefWidth="95.0" text="Required items:" />
+                                                <FlowPane fx:id="mapRequiredItemsTilesFlowPane" columnHalignment="CENTER" hgap="1.0" prefWidth="280.0" prefWrapLength="280.0" vgap="1.0" />
+                                             </children>
+                                          </HBox>
+                                          <HBox prefHeight="24.0" prefWidth="531.0">
+                                             <children>
+                                                <Label prefWidth="95.0" text="NPCs:" />
+                                                <FlowPane fx:id="mapNpcsTilesFlowPane" columnHalignment="CENTER" hgap="1.0" prefWidth="280.0" prefWrapLength="280.0" vgap="1.0" />
+                                             </children>
+                                          </HBox>
+                                          <HBox prefHeight="22.0" prefWidth="531.0">
+                                             <children>
+                                                <Label prefWidth="95.0" text="IZAX Unnamed2:" />
+                                                <Label fx:id="mapIzaxUnnamedLabel" />
+                                             </children>
+                                          </HBox>
+                                          <HBox prefHeight="22.0" prefWidth="531.0">
+                                             <children>
+                                                <Label prefWidth="95.0" text="ZAX4 Unnamed2:" />
+                                                <Label fx:id="mapZax4Unnamed2Label" />
+                                             </children>
+                                          </HBox>
+                                          <HBox prefHeight="20.0" prefWidth="531.0" />
+                                       </children>
+                                    </VBox>
+                                 </children>
+                           </AnchorPane>
+                        </content>
+                      </Tab>
+                      <Tab text="Edit">
+                        <content>
+                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                              <ScrollPane fx:id="mapEditorTilesScrollPane" layoutX="5.0" layoutY="15.0" prefHeight="392.0" prefWidth="481.0">
+                                 <FlowPane fx:id="mapEditorTilesFlowPane" columnHalignment="CENTER" hgap="1.0" prefHeight="390.0" prefWidth="463.0" prefWrapLength="482.0" vgap="1.0" />
+                              </ScrollPane>
+                              <Label visible="false">
+                                 <contextMenu>
+                                    <ContextMenu fx:id="mapEditorContextMenu">
+                                       <items>
+                                          <MenuItem mnemonicParsing="false" onAction="#clearBottomLayer" text="Clear bottom layer" />
+                                          <MenuItem mnemonicParsing="false" onAction="#clearMiddleLayer" text="Clear middle layer" />
+                                          <MenuItem mnemonicParsing="false" onAction="#clearTopLayer" text="Clear top layer" />
+                                       </items>
+                                    </ContextMenu>
+                                 </contextMenu>
+                              </Label>
+                           </AnchorPane>
+                        </content>
+                      </Tab>
+                       <Tab text="Dump">
+                          <content>
+                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                <Label layoutX="14.0" layoutY="14.0" text="Maps count:" />
+                                <Label fx:id="mapsCountLabel" layoutX="98.0" layoutY="14.0" />
+                                <CheckBox fx:id="normalSaveCheckBox" layoutX="25.0" layoutY="73.0" mnemonicParsing="false" selected="true" text="Normal save" />
+                                <CheckBox fx:id="groupByFlagsCheckBox" layoutX="25.0" layoutY="98.0" mnemonicParsing="false" text="Group by flags" />
+                                <CheckBox fx:id="groupByPlanetTypeCheckBox" layoutX="25.0" layoutY="123.0" mnemonicParsing="false" text="Group by planet type" />
+                                <CheckBox fx:id="dumpActionsCheckBox" layoutX="25.0" layoutY="148.0" mnemonicParsing="false" selected="true" text="Dump actions" />
+                                <CheckBox fx:id="dumpActionsTextCheckBox" layoutX="25.0" layoutY="174.0" mnemonicParsing="false" selected="true" text="Dump text" />
+                                <CheckBox fx:id="saveUnusedTilesCheckBox" layoutX="25.0" layoutY="199.0" mnemonicParsing="false" text="Save non-map tiles" />
+                                <Button fx:id="saveMapsToFilesButton" layoutX="14.0" layoutY="40.0" mnemonicParsing="false" onAction="#saveMapsToFilesButtonClick" text="Save maps to files" />
+                             </AnchorPane>
+                          </content>
+                       </Tab>
+                    </tabs>
+                  </TabPane>
+                  <TitledPane animated="false" layoutX="7.0" layoutY="6.0" prefHeight="92.0" prefWidth="93.0" text="Map layer">
+                     <content>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                           <children>
+                              <CheckBox fx:id="topCheckBox" layoutX="5.0" layoutY="4.0" mnemonicParsing="false" onAction="#layerCheckBoxClick" selected="true" userData="2" />
+                              <CheckBox fx:id="middleCheckBox" layoutX="5.0" layoutY="23.0" mnemonicParsing="false" onAction="#layerCheckBoxClick" selected="true" userData="1" />
+                              <CheckBox fx:id="bottomCheckBox" layoutX="5.0" layoutY="42.0" mnemonicParsing="false" onAction="#layerCheckBoxClick" selected="true" userData="0" />
+                              <RadioButton fx:id="topRadioButton" layoutX="25.0" layoutY="4.0" mnemonicParsing="false" selected="true" text="Top" userData="2">
+                                 <toggleGroup>
+                                    <ToggleGroup fx:id="mapLayerToggleGroup" />
+                                 </toggleGroup>
+                              </RadioButton>
+                              <RadioButton fx:id="middleRadioButton" layoutX="25.0" layoutY="23.0" mnemonicParsing="false" text="Middle" toggleGroup="$mapLayerToggleGroup" userData="1" />
+                              <RadioButton fx:id="bottomRadioButton" layoutX="25.0" layoutY="42.0" mnemonicParsing="false" text="Bottom" toggleGroup="$mapLayerToggleGroup" userData="0" />
+                           </children>
+                        </AnchorPane>
+                     </content>
+                  </TitledPane>
+                  <ListView fx:id="mapEditorListView" layoutX="7.0" layoutY="102.0" prefHeight="270.0" prefWidth="93.0" />
+                  <Button fx:id="undoMapEdit" layoutX="7.0" layoutY="378.0" minWidth="93.0" mnemonicParsing="false" onAction="#undoMapEditClick" text="Undo" visible="false" />
+               </AnchorPane>
+            </Tab>
+            <Tab text="Text Translation">
+               <BorderPane prefHeight="200.0" prefWidth="200.0">
+                  <top>
+                     <HBox alignment="CENTER_LEFT" prefHeight="44.0" prefWidth="1135.0" spacing="5.0" BorderPane.alignment="CENTER">
+                        <padding>
+                           <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                        </padding>
+                        <Button fx:id="dumpActionsTextToDocx" mnemonicParsing="false" onAction="#dumpActionsTextToDocxClick" text="Dump text to DOCX" />
+                        <Button fx:id="loadTranslatedActionsText" mnemonicParsing="false" onAction="#loadTranslatedActionsTextClick" text="Load translated text" />
+                        <Button fx:id="replaceActionText" mnemonicParsing="false" onAction="#replaceActionTextClick" text="Replace text in DTA" />
+                        <CheckBox fx:id="trimActionsTrailSpacesCheckBox" mnemonicParsing="false" selected="true" text="Trim unneeded trail spaces" />
+                        <CheckBox fx:id="strictActionsReplacingRulesCheckBox" mnemonicParsing="false" selected="true" text="Strict replacing rules" />
+                     </HBox>
+                  </top>
+                  <center>
+                     <TableView fx:id="actionsTextTableView" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                        <columns>
+                           <TableColumn editable="false" prefWidth="600.0" sortable="false" text="Original">
+                              <cellValueFactory>
+                                 <PropertyValueFactory property="original" />
+                              </cellValueFactory>
+                              <cellFactory>
+                                 <StringCellFactory alignment="LEFT">
+                                 </StringCellFactory>
+                              </cellFactory>
+                           </TableColumn>
+                           <TableColumn editable="false" minWidth="0.0" prefWidth="600.0" sortable="false" text="Translated">
+                              <cellValueFactory>
+                                 <PropertyValueFactory property="translation" />
+                              </cellValueFactory>
+                              <cellFactory>
+                                 <StringCellFactory alignment="LEFT">
+                                 </StringCellFactory>
+                              </cellFactory>
+                           </TableColumn>
+                        </columns>
+                     </TableView>
+                  </center>
+               </BorderPane>
+            </Tab>
+            <Tab text="HEX Offsets">
+               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                  <TableView fx:id="mapsTableView" layoutX="14.0" layoutY="14.0" prefHeight="400.0" prefWidth="1105.0">
+                     <columns>
+                        <TableColumn prefWidth="60.0" text="Map">
+                           <columns>
+                              <TableColumn prefWidth="40.0" text="ID">
+                                 <cellValueFactory>
+                                    <PropertyValueFactory property="id" />
+                                 </cellValueFactory>
+                                 <cellFactory>
+                                    <StringCellFactory alignment="right">
+                                    </StringCellFactory>
+                                 </cellFactory>
+                              </TableColumn>
+                              <TableColumn prefWidth="79.0" text="Offset">
+                                 <cellValueFactory>
+                                    <PropertyValueFactory property="position" />
+                                 </cellValueFactory>
+                                 <cellFactory>
+                                    <HexCellFactory alignment="right">
+                                    </HexCellFactory>
+                                 </cellFactory>
+                              </TableColumn>
+                              <TableColumn prefWidth="45.0" text="Size">
+                                 <cellValueFactory>
+                                    <PropertyValueFactory property="size" />
+                                 </cellValueFactory>
+                                 <cellFactory>
+                                    <StringCellFactory alignment="right">
+                                    </StringCellFactory>
+                                 </cellFactory>
+                              </TableColumn>
+                           </columns>
+                        </TableColumn>
+                        <TableColumn prefWidth="60.0" text="IZON">
+                           <columns>
+                              <TableColumn prefWidth="79.0" text="Offset">
+                                 <cellValueFactory>
+                                    <PropertyValueFactory property="izonPosition" />
+                                 </cellValueFactory>
+                                 <cellFactory>
+                                    <HexCellFactory alignment="right">
+                                    </HexCellFactory>
+                                 </cellFactory>
+                              </TableColumn>
+                              <TableColumn prefWidth="45.0" text="Size">
+                                 <cellValueFactory>
+                                    <PropertyValueFactory property="izonSize" />
+                                 </cellValueFactory>
+                                 <cellFactory>
+                                    <StringCellFactory alignment="right">
+                                    </StringCellFactory>
+                                 </cellFactory>
+                              </TableColumn>
+                           </columns>
+                        </TableColumn>
+                        <TableColumn prefWidth="60.0" text="OIE">
+                           <columns>
+                              <TableColumn prefWidth="79.0" text="Offset">
+                                 <cellValueFactory>
+                                    <PropertyValueFactory property="oiePosition" />
+                                 </cellValueFactory>
+                                 <cellFactory>
+                                    <HexCellFactory alignment="right">
+                                    </HexCellFactory>
+                                 </cellFactory>
+                              </TableColumn>
+                              <TableColumn prefWidth="45.0" text="Size">
+                                 <cellValueFactory>
+                                    <PropertyValueFactory property="oieSize" />
+                                 </cellValueFactory>
+                                 <cellFactory>
+                                    <StringCellFactory alignment="right">
+                                    </StringCellFactory>
+                                 </cellFactory>
+                              </TableColumn>
+                              <TableColumn prefWidth="45.0" text="Count">
+                                 <cellValueFactory>
+                                    <PropertyValueFactory property="oieCount" />
+                                 </cellValueFactory>
+                                 <cellFactory>
+                                    <StringCellFactory alignment="right">
+                                    </StringCellFactory>
+                                 </cellFactory>
+                              </TableColumn>
+                           </columns>
+                        </TableColumn>
+                        <TableColumn prefWidth="60.0" text="IZAX">
+                           <columns>
+                              <TableColumn prefWidth="79.0" text="Offset">
+                                 <cellValueFactory>
+                                    <PropertyValueFactory property="izaxPosition" />
+                                 </cellValueFactory>
+                                 <cellFactory>
+                                    <HexCellFactory alignment="right">
+                                    </HexCellFactory>
+                                 </cellFactory>
+                              </TableColumn>
+                              <TableColumn prefWidth="45.0" text="Size">
+                                 <cellValueFactory>
+                                    <PropertyValueFactory property="izaxSize" />
+                                 </cellValueFactory>
+                                 <cellFactory>
+                                    <StringCellFactory alignment="right">
+                                    </StringCellFactory>
+                                 </cellFactory>
+                              </TableColumn>
+                           </columns>
+                        </TableColumn>
+                        <TableColumn prefWidth="60.0" text="IZX2">
+                           <columns>
+                              <TableColumn prefWidth="79.0" text="Offset">
+                                 <cellValueFactory>
+                                    <PropertyValueFactory property="izx2Position" />
+                                 </cellValueFactory>
+                                 <cellFactory>
+                                    <HexCellFactory alignment="right">
+                                    </HexCellFactory>
+                                 </cellFactory>
+                              </TableColumn>
+                              <TableColumn prefWidth="45.0" text="Size">
+                                 <cellValueFactory>
+                                    <PropertyValueFactory property="izx2Size" />
+                                 </cellValueFactory>
+                                 <cellFactory>
+                                    <StringCellFactory alignment="right">
+                                    </StringCellFactory>
+                                 </cellFactory>
+                              </TableColumn>
+                           </columns>
+                        </TableColumn>
+                        <TableColumn prefWidth="60.0" text="IZX3">
+                           <columns>
+                              <TableColumn prefWidth="79.0" text="Offset">
+                                 <cellValueFactory>
+                                    <PropertyValueFactory property="izx3Position" />
+                                 </cellValueFactory>
+                                 <cellFactory>
+                                    <HexCellFactory alignment="right">
+                                    </HexCellFactory>
+                                 </cellFactory>
+                              </TableColumn>
+                              <TableColumn prefWidth="45.0" text="Size">
+                                 <cellValueFactory>
+                                    <PropertyValueFactory property="izx3Size" />
+                                 </cellValueFactory>
+                                 <cellFactory>
+                                    <StringCellFactory alignment="right">
+                                    </StringCellFactory>
+                                 </cellFactory>
+                              </TableColumn>
+                           </columns>
+                        </TableColumn>
+                        <TableColumn prefWidth="60.0" text="IZX4">
+                           <columns>
+                              <TableColumn prefWidth="79.0" text="Offset">
+                                 <cellValueFactory>
+                                    <PropertyValueFactory property="izx4Position" />
+                                 </cellValueFactory>
+                                 <cellFactory>
+                                    <HexCellFactory alignment="right">
+                                    </HexCellFactory>
+                                 </cellFactory>
+                              </TableColumn>
+                              <TableColumn prefWidth="45.0" text="Size">
+                                 <cellValueFactory>
+                                    <PropertyValueFactory property="izx4Size" />
+                                 </cellValueFactory>
+                                 <cellFactory>
+                                    <StringCellFactory alignment="right">
+                                    </StringCellFactory>
+                                 </cellFactory>
+                              </TableColumn>
+                           </columns>
+                        </TableColumn>
+                        <TableColumn prefWidth="60.0" text="IACT">
+                           <columns>
+                              <TableColumn prefWidth="79.0" text="Offset">
+                                 <cellValueFactory>
+                                    <PropertyValueFactory property="iactPosition" />
+                                 </cellValueFactory>
+                                 <cellFactory>
+                                    <HexCellFactory alignment="right">
+                                    </HexCellFactory>
+                                 </cellFactory>
+                              </TableColumn>
+                              <TableColumn prefWidth="45.0" text="Size">
+                                 <cellValueFactory>
+                                    <PropertyValueFactory property="iactSize" />
+                                 </cellValueFactory>
+                                 <cellFactory>
+                                    <StringCellFactory alignment="right">
+                                    </StringCellFactory>
+                                 </cellFactory>
+                              </TableColumn>
+                           </columns>
+                        </TableColumn>
+                     </columns>
+                  </TableView>
+               </AnchorPane>
+            </Tab>
+         </TabPane>
+      </center>
    </BorderPane>
 </AnchorPane>
