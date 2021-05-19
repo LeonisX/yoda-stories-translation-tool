@@ -3,10 +3,7 @@ package md.leonis.ystt.utils;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Region;
 import javafx.stage.FileChooser;
@@ -18,9 +15,11 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class JavaFxUtils {
 
@@ -126,6 +125,43 @@ public class JavaFxUtils {
         alert.setTitle(title);
         alert.setHeaderText(header);
         alert.showAndWait();
+    }
+
+    @SuppressWarnings("all")
+    public static int showDeleteTileConfirmation(int tileId, List<Integer> zoneIds, List<Integer> puzzleIds, List<Integer> charactersIds, List<String> tileNameIds) {
+
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Delete tile #" + tileId);
+        alert.setHeaderText("Do you really want to delete this tile?");
+        List<String> lines = new ArrayList<>();
+        if (zoneIds.size() > 0) {
+            lines.add("This tile is used in the following zone(s): " + zoneIds.stream().map(id -> id.toString()).collect(Collectors.joining(", ")));
+        }
+        if (puzzleIds.size() > 0) {
+            lines.add("This tile is used in the following puzzle(s): " + puzzleIds.stream().map(id -> id.toString()).collect(Collectors.joining(", ")));
+        }
+        if (charactersIds.size() > 0) {
+            lines.add("This tile is used in the following character(s): " + charactersIds.stream().map(id -> id.toString()).collect(Collectors.joining(", ")));
+        }
+        if (tileNameIds.size() > 0) {
+            lines.add("This tile is used in the following tile name(s): " + tileNameIds.stream().collect(Collectors.joining(", ")));
+        }
+        alert.setContentText(lines.stream().collect(Collectors.joining("\n")));
+
+        ButtonType bffff = new ButtonType("No tile");
+        ButtonType b355 = new ButtonType("Transparent");
+        ButtonType buttonTypeCancel = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
+
+        alert.getButtonTypes().setAll(bffff, b355, buttonTypeCancel);
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == bffff){
+            return 0xFFFF;
+        } else if (result.get() == b355) {
+            return 355;
+        } else {
+            return -1;
+        }
     }
 
     public static void showAlert(String title, Exception exception) {

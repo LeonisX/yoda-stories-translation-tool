@@ -8,6 +8,7 @@ import md.leonis.ystt.model.yodesk.Yodesk;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class ZoneSpot extends KaitaiStruct {
@@ -51,6 +52,11 @@ public class ZoneSpot extends KaitaiStruct {
         for (int i = 0; i < 3; i++) {
             os.writeU2le(column.get(i));
         }
+    }
+
+    @SuppressWarnings("all")
+    public void replaceTile(int tileId, int newTileId) {
+        Collections.replaceAll(column, tileId, newTileId);
     }
 
     public List<Integer> getColumn() {

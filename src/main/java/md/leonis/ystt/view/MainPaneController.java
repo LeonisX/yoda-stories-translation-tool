@@ -610,15 +610,49 @@ public class MainPaneController {
     public void deleteTileClick() {
 
         try {
-            yodesk.getTiles().deleteTile();
-            int tileId = yodesk.getTiles().getTiles().size();
-            tilesFlowPane.getChildren().remove(tileId);
-            mapEditorTilesFlowPane.getChildren().remove(tileId);
-            usedTiles.remove(usedTiles.size() - 1);
-            drawEditZone();
+            int tileId = yodesk.getTiles().getTiles().size() - 1;
+            List<Integer> zoneIds = yodesk.getZones().getZones().stream().filter(z -> z.getTileIds().stream()
+                    .flatMap(l -> l.getColumn().stream()).anyMatch(i -> i.equals(tileId))).map(Zone::getIndex).collect(Collectors.toList());
+            zoneIds.addAll(yodesk.getZones().getZones().stream().filter(z->z.getIzax().getGoalItems().stream()
+                    .anyMatch(i -> i.equals(tileId))).map(Zone::getIndex).collect(Collectors.toList()));
+            zoneIds.addAll(yodesk.getZones().getZones().stream().filter(z->z.getIzax().getRequiredItems().stream()
+                    .anyMatch(i -> i.equals(tileId))).map(Zone::getIndex).collect(Collectors.toList()));
+            zoneIds.addAll(yodesk.getZones().getZones().stream().filter(z->z.getIzx2().getProvidedItems().stream()
+                    .anyMatch(i -> i.equals(tileId))).map(Zone::getIndex).collect(Collectors.toList()));
+            zoneIds = zoneIds.stream().distinct().sorted().collect(Collectors.toList());
+            List<Integer> puzzleIds = yodesk.getPuzzles().getPuzzles().stream()
+                    .filter(p -> (p.getItem2() != null && p.getItem2().equals(tileId)) || p.getItem1() != null && p.getItem1().equals(tileId))
+                    .map(Puzzle::getIndex).collect(Collectors.toList());
+            List<Integer> charactersIds = yodesk.getCharacters().getCharacters().stream().filter(c -> c.getTileIds().stream()
+                    .anyMatch(i -> i.equals(tileId))).map(Character::getIndex).collect(Collectors.toList());
+            List<String> tileNameIds = yodesk.getTileNames().getNames().stream().filter(t -> t.getTileId() == tileId).map(TileName::getName).collect(Collectors.toList());
+
+            boolean isSafe = (zoneIds.size() + puzzleIds.size() + charactersIds.size() + tileNameIds.size()) == 0;
+            if (isSafe) {
+                deleteTile(tileId, -1);
+            } else {
+                int newTileId = JavaFxUtils.showDeleteTileConfirmation(tileId, zoneIds, puzzleIds, charactersIds, tileNameIds);
+                if (newTileId > 0) {
+                    deleteTile(tileId, newTileId);
+                }
+            }
         } catch (Exception e) {
             JavaFxUtils.showAlert("Error deleting tile", e);
         }
+    }
+
+    private void deleteTile(int tileId, int newTileId) {
+
+        yodesk.getTiles().deleteTile();
+        tilesFlowPane.getChildren().remove(tileId);
+        mapEditorTilesFlowPane.getChildren().remove(tileId);
+        yodesk.getZones().getZones().forEach(z -> z.replaceTile(tileId, newTileId));
+        yodesk.getPuzzles().getPuzzles().forEach(p -> p.replaceTile(tileId, newTileId));
+        yodesk.getCharacters().getCharacters().forEach(c -> c.replaceTile(tileId, newTileId));
+        yodesk.getTileNames().getNames().forEach(t -> t.replaceTile(tileId, newTileId));
+
+        usedTiles.remove(usedTiles.size() - 1);
+        drawEditZone();
     }
 
     private ImageView newTile(int tileId, boolean contextMenu) {

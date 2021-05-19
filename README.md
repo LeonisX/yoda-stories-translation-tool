@@ -21,8 +21,6 @@ An original version: https://github.com/LeonisX/YExplorer
 * HEX
 * Тяжёлые процессы дампинга лучше вынести в отдельный поток
 
-* When delete tile - validate all maps first
-
 * Сломан вывод таблицы Map (нужна ли?)
 
 * Hide debug tabs by default

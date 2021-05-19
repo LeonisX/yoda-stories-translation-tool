@@ -10,6 +10,7 @@ import md.leonis.ystt.model.yodesk.Yodesk;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -120,6 +121,20 @@ public class Character extends KaitaiStruct {
         }
 
         return tileIds.stream().filter(id -> id != 0xFFFF).distinct().sorted().collect(Collectors.toList());
+    }
+
+    @SuppressWarnings("all")
+    public void replaceTile(int tileId, int newTileId) {
+
+        if (frame1 != null) {
+            Collections.replaceAll(frame1.getTiles(), tileId, newTileId);
+        }
+        if (frame2 != null) {
+            Collections.replaceAll(frame2.getTiles(), tileId, newTileId);
+        }
+        if (frame3 != null) {
+            Collections.replaceAll(frame3.getTiles(), tileId, newTileId);
+        }
     }
 
     public int getIndex() {

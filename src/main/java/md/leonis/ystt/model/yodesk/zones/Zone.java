@@ -10,6 +10,7 @@ import md.leonis.ystt.model.yodesk.Zones;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class Zone extends KaitaiStruct {
@@ -142,6 +143,16 @@ public class Zone extends KaitaiStruct {
         for (Action action : actions) {
             action.write(os);
         }
+    }
+
+    @SuppressWarnings("all")
+    public void replaceTile(int tileId, int newTileId) {
+
+        tileIds.forEach(zsp -> zsp.replaceTile(tileId, newTileId));
+
+        Collections.replaceAll(izax.getGoalItems(), tileId, newTileId);
+        Collections.replaceAll(izax.getRequiredItems(), tileId, newTileId);
+        Collections.replaceAll(izx2.getProvidedItems(), tileId, newTileId);
     }
 
     public Planet getPlanet() {

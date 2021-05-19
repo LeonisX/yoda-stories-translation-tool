@@ -55,6 +55,12 @@ public class TileName extends KaitaiStruct {
         }
     }
 
+    public void replaceTile(int tileId, int newTileId) {
+        if (this.tileId == tileId) {
+            this.tileId = newTileId;
+        }
+    }
+
     public int getTileId() {
         return tileId;
     }

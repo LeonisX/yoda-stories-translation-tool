@@ -134,6 +134,16 @@ public class Puzzle extends KaitaiStruct {
                         2;                          // item2
     }
 
+    public void replaceTile(int tileId, int newTileId) {
+
+        if (item1 != null && item1.equals(tileId)) {
+            item1 = newTileId;
+        }
+        if (item2 != null && item2.equals(tileId)) {
+            item2 = newTileId;
+        }
+    }
+
     public int getIndex() {
         return index;
     }

@@ -8,11 +8,12 @@ import md.leonis.ystt.model.yodesk.zones.Zone;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Zones extends KaitaiStruct {
 
     private int numZones;
-    private ArrayList<Zone> zones;
+    private List<Zone> zones;
 
     private final Yodesk root;
     private final CatalogEntry parent;
@@ -56,7 +57,7 @@ public class Zones extends KaitaiStruct {
         return numZones;
     }
 
-    public ArrayList<Zone> getZones() {
+    public List<Zone> getZones() {
         return zones;
     }
 
