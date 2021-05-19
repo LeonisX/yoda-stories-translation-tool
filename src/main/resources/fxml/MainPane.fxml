@@ -383,59 +383,56 @@
                                                 <Button fx:id="undoMapEdit" layoutX="7.0" layoutY="418.0" minWidth="93.0" mnemonicParsing="false" onAction="#undoMapEditClick" text="Undo" />
 
                                                 <Group>
-                                                    <Canvas fx:id="mapEditorCanvas" height="576.0" layoutX="115.0" layoutY="6.0" onDragDetected="#mapEditorCanvasDragDetected" onDragDropped="#mapEditorCanvasDragDropped" onDragEntered="#mapEditorCanvasDragEntered" onDragExited="#mapEditorCanvasDragExited" onDragOver="#mapEditorCanvasDragOver" onMouseMoved="#mapEditorCanvasMouseMoved" width="576.0" />
+                                                    <Canvas fx:id="mapEditorCanvas" height="576.0" layoutX="115.0" layoutY="6.0" onDragDetected="#mapEditorCanvasDragDetected" onDragDropped="#mapEditorCanvasDragDropped" onDragEntered="#mapEditorCanvasDragEntered" onDragExited="#mapEditorCanvasDragExited" onDragOver="#mapEditorCanvasDragOver" onMouseMoved="#mapEditorCanvasMouseMoved" onMouseExited="#mapEditorCanvasMouseExited" width="576.0" />
                                                 </Group>
 
-                                                <TabPane fx:id="zoneOptionsTabPane" style="-fx-background-color: #E8E8E8;" layoutX="593.0" layoutY="6.0" prefHeight="442.0" prefWidth="495.0" tabClosingPolicy="UNAVAILABLE">
+                                                <TabPane fx:id="zoneOptionsTabPane" style="-fx-background-color: #E8E8E8;" layoutX="593.0" layoutY="6.0" prefHeight="576.0" prefWidth="500.0" tabClosingPolicy="UNAVAILABLE">
                                                     <Tab text="Info">
                                                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                                             <VBox layoutX="5.0" layoutY="10.0" prefWidth="531.0">
-                                                                <HBox prefHeight="20.0" prefWidth="531.0" spacing="5">
-                                                                    <Button fx:id="showActionsButton" layoutX="14.0" layoutY="40.0" mnemonicParsing="false" onAction="#showActionsButtonClick" text="Show actions" />
+                                                                <HBox prefHeight="24.0" prefWidth="531.0" alignment="CENTER_LEFT" spacing="5">
+                                                                <HBox prefHeight="24.0" prefWidth="250.0" alignment="CENTER_LEFT" spacing="5">
+                                                                    <Canvas fx:id="zoneTypeCanvas" height="32.0" width="32.0" />
+                                                                    <Label fx:id="mapTypeLabel" />
+                                                                </HBox>
                                                                     <CheckBox fx:id="showMapMonstersCheckBox" mnemonicParsing="false" onAction="#drawEditZone" selected="true" text="Show mosters" />
                                                                     <CheckBox fx:id="showMapHotspotsCheckBox" mnemonicParsing="false" onAction="#drawEditZone" selected="true" text="Show hotspots" />
                                                                 </HBox>
-                                                                <HBox prefHeight="22.0" prefWidth="531.0">
-                                                                    <Label prefWidth="95.0" text="Size:" />
+                                                                <HBox prefHeight="24.0" prefWidth="531.0" alignment="CENTER_LEFT" spacing="5">
+                                                                    <Label prefWidth="90.0" text="Biome:" />
+                                                                    <Label fx:id="mapPlanetLabel" />
                                                                     <Label fx:id="mapSizeLabel" />
                                                                 </HBox>
-                                                                <HBox prefHeight="22.0" prefWidth="531.0">
-                                                                    <Label prefWidth="95.0" text="Type:" />
-                                                                    <Label fx:id="mapTypeLabel" />
-                                                                </HBox>
-                                                                <HBox prefHeight="22.0" prefWidth="531.0">
-                                                                    <Label prefWidth="95.0" text="Planet:" />
-                                                                    <Label fx:id="mapPlanetLabel" />
-                                                                </HBox>
-                                                                <HBox prefHeight="22.0" prefWidth="531.0">
-                                                                    <Label prefWidth="95.0" text="Actions:" />
+                                                                <HBox prefHeight="24.0" prefWidth="531.0" alignment="CENTER_LEFT" spacing="5">
+                                                                    <Label prefWidth="90.0" text="Actions:" />
                                                                     <Label fx:id="mapActionsLabel" />
+                                                                    <Button fx:id="showActionsButton" layoutX="14.0" layoutY="40.0" mnemonicParsing="false" onAction="#showActionsButtonClick" text="Show" />
                                                                 </HBox>
-                                                                <HBox prefHeight="24.0" prefWidth="531.0">
-                                                                    <Label prefWidth="95.0" text="Goal:" />
-                                                                    <FlowPane fx:id="mapGoalTilesFlowPane" columnHalignment="CENTER" hgap="1.0" prefWidth="280.0" prefWrapLength="280.0" vgap="1.0" />
+                                                                <HBox prefHeight="24.0" prefWidth="531.0" alignment="CENTER_LEFT" spacing="5">
+                                                                    <Label prefWidth="90.0" text="Goal:" />
+                                                                    <FlowPane fx:id="mapGoalTilesFlowPane" columnHalignment="CENTER" hgap="1.0" prefWidth="400.0" prefWrapLength="390.0" vgap="1.0" />
                                                                 </HBox>
-                                                                <HBox prefHeight="22.0" prefWidth="531.0">
-                                                                    <Label prefWidth="95.0" text="Provided items:" />
-                                                                    <FlowPane fx:id="mapProvidedItemsTilesFlowPane" columnHalignment="CENTER" hgap="1.0" prefWidth="280.0" prefWrapLength="280.0" vgap="1.0" />
+                                                                <HBox prefHeight="24.0" prefWidth="531.0" alignment="CENTER_LEFT" spacing="5">
+                                                                    <Label prefWidth="90.0" text="Provided items:" />
+                                                                    <FlowPane fx:id="mapProvidedItemsTilesFlowPane" columnHalignment="CENTER" hgap="1.0" prefWidth="400.0" prefWrapLength="390.0" vgap="1.0" />
                                                                 </HBox>
-                                                                <HBox prefHeight="22.0" prefWidth="531.0">
-                                                                    <Label prefWidth="95.0" text="Required items:" />
-                                                                    <FlowPane fx:id="mapRequiredItemsTilesFlowPane" columnHalignment="CENTER" hgap="1.0" prefWidth="280.0" prefWrapLength="280.0" vgap="1.0" />
+                                                                <HBox prefHeight="24.0" prefWidth="531.0" alignment="CENTER_LEFT" spacing="5">
+                                                                    <Label prefWidth="90.0" text="Required items:" />
+                                                                    <FlowPane fx:id="mapRequiredItemsTilesFlowPane" columnHalignment="CENTER" hgap="1.0" prefWidth="400.0" prefWrapLength="390.0" vgap="1.0" />
                                                                 </HBox>
-                                                                <HBox prefHeight="24.0" prefWidth="531.0">
-                                                                    <Label prefWidth="95.0" text="NPCs:" />
-                                                                    <FlowPane fx:id="mapNpcsTilesFlowPane" columnHalignment="CENTER" hgap="1.0" prefWidth="280.0" prefWrapLength="280.0" vgap="1.0" />
+                                                                <HBox prefHeight="24.0" prefWidth="531.0" alignment="CENTER_LEFT" spacing="5">
+                                                                    <Label prefWidth="90.0" text="NPCs:" />
+                                                                    <FlowPane fx:id="mapNpcsTilesFlowPane" columnHalignment="CENTER" hgap="1.0" prefWidth="400.0" prefWrapLength="390.0" vgap="1.0" />
                                                                 </HBox>
-                                                                <HBox prefHeight="22.0" prefWidth="531.0">
-                                                                    <Label prefWidth="95.0" text="IZAX Unnamed2:" />
+                                                                <HBox prefHeight="24.0" prefWidth="531.0" alignment="CENTER_LEFT" spacing="5">
+                                                                    <Label prefWidth="90.0" text="IZAX Unnamed2:" />
                                                                     <Label fx:id="mapIzaxUnnamedLabel" />
                                                                 </HBox>
-                                                                <HBox prefHeight="22.0" prefWidth="531.0">
-                                                                    <Label prefWidth="95.0" text="ZAX4 Unnamed2:" />
+                                                                <HBox prefHeight="24.0" prefWidth="531.0" alignment="CENTER_LEFT" spacing="5">
+                                                                    <Label prefWidth="90.0" text="ZAX4 Unnamed2:" />
                                                                     <Label fx:id="mapZax4Unnamed2Label" />
                                                                 </HBox>
-                                                                <HBox prefHeight="20.0" prefWidth="531.0" />
+                                                                <HBox prefHeight="20.0" prefWidth="531.0" alignment="CENTER_LEFT" spacing="5" />
                                                             </VBox>
                                                         </AnchorPane>
                                                     </Tab>

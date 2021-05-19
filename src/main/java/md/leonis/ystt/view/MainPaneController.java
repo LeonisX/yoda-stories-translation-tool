@@ -45,6 +45,7 @@ import md.leonis.ystt.model.yodesk.tiles.TileName;
 import md.leonis.ystt.model.yodesk.zones.Action;
 import md.leonis.ystt.model.yodesk.zones.TextContainer;
 import md.leonis.ystt.model.yodesk.zones.Zone;
+import md.leonis.ystt.model.yodesk.zones.ZoneType;
 import md.leonis.ystt.utils.*;
 import net.sf.image4j.codec.bmp.BMPImage;
 import net.sf.image4j.codec.bmp.BMPReader;
@@ -158,6 +159,7 @@ public class MainPaneController {
     public CheckBox dumpActionsTextCheckBox;
     public CheckBox saveUnusedTilesCheckBox;
     public Button showActionsButton;
+    public Canvas zoneTypeCanvas;
     public CheckBox showMapMonstersCheckBox;
     public CheckBox showMapHotspotsCheckBox;
     public Label mapSizeLabel;
@@ -809,20 +811,44 @@ public class MainPaneController {
 
         Zone zone = yodesk.getZones().getZones().get(zoneId);
 
+        boolean hasActiveTeleporter = zone.getType().equals(ZoneType.EMPTY) &&
+                zone.getTileIds().stream().flatMap(l -> l.getColumn().stream()).anyMatch(t -> t.equals(537));
+        boolean hasInActiveTeleporter = zone.getType().equals(ZoneType.EMPTY) &&
+                zone.getTileIds().stream().flatMap(l -> l.getColumn().stream()).anyMatch(t -> t.equals(536));
+
         mapSizeLabel.setText(zone.getWidth() + "x" + zone.getHeight());
-        mapTypeLabel.setText(zone.getType().name());
-        mapPlanetLabel.setText(zone.getPlanet().name());
+
+
+        if (zone.getIzx2().getProvidedItems().size() == 1 && zone.getIzx2().getProvidedItems().get(0).equals(511)) {
+            mapTypeLabel.setText("Find Force");
+        } else if (zone.getIzx2().getProvidedItems().size() == 1 && zone.getIzx2().getProvidedItems().get(0).equals(421)) {
+            mapTypeLabel.setText("Find Locator");
+        } else {
+            mapTypeLabel.setText(StringUtils.capitalize(zone.getType().name().toLowerCase().replace("_", " ")));
+        }
+
+        if (hasActiveTeleporter || hasInActiveTeleporter) {
+            mapTypeLabel.setText(mapTypeLabel.getText() + " with Teleporter");
+        }
+
+        mapPlanetLabel.setText(StringUtils.capitalize(zone.getPlanet().name().toLowerCase()));
         mapActionsLabel.setText(String.valueOf(zone.getActions().size()));
 
         mapIzaxUnnamedLabel.setText(String.valueOf(zone.getIzax().get_unnamed2()));
         mapZax4Unnamed2Label.setText(String.valueOf(zone.getIzx4().get_unnamed2()));
 
+        if (hasActiveTeleporter) {
+            drawTileOnCanvas(834, zoneTypeCanvas, 0, 0, darkerTransparentColor);
+        } else if (hasInActiveTeleporter) {
+            drawTileOnCanvas(833, zoneTypeCanvas, 0, 0, darkerTransparentColor);
+        } else {
+            drawTileOnCanvas(zone.getType().getTileId(), zoneTypeCanvas, 0, 0, darkerTransparentColor);
+        }
+
         drawTilesOnFlowPane(mapNpcsTilesFlowPane, zone.getIzx3().getNpcs());
         drawTilesOnFlowPane(mapGoalTilesFlowPane, zone.getIzax().getGoalItems());
         drawTilesOnFlowPane(mapProvidedItemsTilesFlowPane, zone.getIzx2().getProvidedItems());
         drawTilesOnFlowPane(mapRequiredItemsTilesFlowPane, zone.getIzax().getRequiredItems());
-
-        //TODO ArrayList<Action> actions;
     }
 
     @FXML
@@ -868,7 +894,7 @@ public class MainPaneController {
             sb.append("\n");
         }
 
-        JavaFxUtils.showActionsWindow("Zone #" + zone.getIndex() + " actions", sb.toString());
+        JavaFxUtils.showActionsWindow("Zone #" + zone.getIndex() + " actions", "Total actions count: " + zone.getActions().size(), sb.toString());
     }
 
     private void drawEditorMap(int zoneId) {
@@ -938,7 +964,12 @@ public class MainPaneController {
 
         Zone zone = getEditorZone();
         List<Integer> column = zone.getTileIds().get(mapEditorY * zone.getWidth() + mapEditorX).getColumn();
-        statusLabel.setText(String.format("Bottom tileId: %s; Middle tileId: %s; Top tileId: %s", column.get(0), column.get(1), column.get(2)));
+        showZoneStatus(zone);
+        statusLabel.setText(statusLabel.getText() + String.format("; Bottom tileId: %s; Middle tileId: %s; Top tileId: %s", column.get(0), column.get(1), column.get(2)));
+    }
+
+    public void mapEditorCanvasMouseExited() {
+        showZoneStatus(getEditorZone());
     }
 
     public void clearBottomLayer() {
@@ -1012,7 +1043,7 @@ public class MainPaneController {
 
         //TODO offset if need
         //Log.debug("Map #" + zoneId + " offset: " + "section.intToHex(section.GetPosition(), 8)");
-        statusLabel.setText("Map: " + zoneId + " (" + zone.getPlanet().name() + ")");
+        showZoneStatus(zone);
 
         if (show) {
             canvas.setWidth(zone.getWidth() * TILE_SIZE);
@@ -1042,6 +1073,10 @@ public class MainPaneController {
             IOUtils.createDirectories(path);
             BMPWriter.write8bit(canvas, path.resolve(StringUtils.leftPad(Integer.toString(zoneId), 3, '0') + E_BMP));
         }
+    }
+
+    private void showZoneStatus(Zone zone) {
+        statusLabel.setText("Map: " + zone.getIndex() + " (" + zone.getPlanet().name() + ")");
     }
 
     private void drawZone(Canvas canvas, int zoneId) {

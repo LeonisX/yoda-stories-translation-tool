@@ -79,7 +79,7 @@ public class JavaFxUtils {
         }
     }
 
-    public static void showActionsWindow(String title, String text) {
+    public static void showActionsWindow(String title, String description, String text) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader();
             fxmlLoader.setLocation(MainApp.class.getResource(Config.resourcePath + "ActionPane.fxml"));
@@ -89,7 +89,7 @@ public class JavaFxUtils {
             stage.setTitle(title);
             stage.setScene(scene);
             stage.show();
-            ((ActionController) fxmlLoader.getController()).setValues(title, text);
+            ((ActionController) fxmlLoader.getController()).setValues(description, text);
         } catch (IOException e) {
             e.printStackTrace();
         }

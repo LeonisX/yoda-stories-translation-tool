@@ -16,7 +16,7 @@ An original version: https://github.com/LeonisX/YExplorer
 
 ## TODO
 
-* Draw map icon from minimap
+* 
 * Log
 * HEX
 * Тяжёлые процессы дампинга лучше вынести в отдельный поток
@@ -53,6 +53,7 @@ An original version: https://github.com/LeonisX/YExplorer
 * Resolve all TODO
 * remove all [CR2], [CR] code
 * Bug when show-hide zone layers (#0 map)
+* Bug? Dump tiles by attr - negative values
 
 * Identify Characters MovementTypes
 
