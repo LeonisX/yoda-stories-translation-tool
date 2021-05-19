@@ -23,13 +23,9 @@ An original version: https://github.com/LeonisX/YExplorer
 
 * Сломан вывод таблицы Map (нужна ли?)
 
-* Hide debug tabs by default
-
 * Dump structure (hi, mid, lo levels)
 
 * Text descriptions for each release
-
-* IACT: show phrases count
 
 * Dump iact scripts
 * Show extra data in UI

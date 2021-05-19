@@ -42,10 +42,7 @@ import md.leonis.ystt.model.yodesk.puzzles.Puzzle;
 import md.leonis.ystt.model.yodesk.puzzles.PuzzleItemClass;
 import md.leonis.ystt.model.yodesk.puzzles.StringMeaning;
 import md.leonis.ystt.model.yodesk.tiles.TileName;
-import md.leonis.ystt.model.yodesk.zones.Action;
-import md.leonis.ystt.model.yodesk.zones.TextContainer;
-import md.leonis.ystt.model.yodesk.zones.Zone;
-import md.leonis.ystt.model.yodesk.zones.ZoneType;
+import md.leonis.ystt.model.yodesk.zones.*;
 import md.leonis.ystt.utils.*;
 import net.sf.image4j.codec.bmp.BMPImage;
 import net.sf.image4j.codec.bmp.BMPReader;
@@ -151,6 +148,7 @@ public class MainPaneController {
     private Node currentTile;
 
     public Label mapsCountLabel;
+    public Label phrasesCountLabel;
     public Button saveMapsToFilesButton;
     public CheckBox normalSaveCheckBox;
     public CheckBox groupByFlagsCheckBox;
@@ -373,13 +371,20 @@ public class MainPaneController {
         tilesContextMenu.setOnShown(this::selectTileMenuItem);
 
         // Maps
+        mapsCountLabel.setText(String.valueOf(yodesk.getZones().getZones().size()));
+        phrasesCountLabel.setText(
+                String.valueOf(yodesk.getZones().getZones().stream().mapToLong(z -> z.getActions().stream()
+                        .mapToLong(a -> a.getInstructions().stream().map(Instruction::getText).filter(StringUtils::isNotBlank).count() +
+                                a.getConditions().stream().map(Condition::getText).filter(StringUtils::isNotBlank).count()).sum()).sum()
+                )
+        );
         mapsTableView.setItems(FXCollections.observableList(yodesk.getZones().getZones()));
         mapEditorListView.setItems(FXCollections.observableList(yodesk.getZones().getZones().stream().map(m -> "Map #" + m.getIndex()).collect(Collectors.toList())));
         mapEditorListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> drawEditZone());
         mapEditorListView.getSelectionModel().select(0);
         mapEditorCanvas.setOnContextMenuRequested(e -> mapEditorContextMenu.show((Node) e.getSource(), e.getScreenX(), e.getScreenY()));
-        drawMapEditorTiles();
         zoneOptionsTabPane.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> positionZoneOptionsTabPane());
+        drawMapEditorTiles();
 
         actionTexts = getActionsTexts();
         actionsTextTableView.setItems(FXCollections.observableList(actionTexts));
@@ -613,11 +618,11 @@ public class MainPaneController {
             int tileId = yodesk.getTiles().getTiles().size() - 1;
             List<Integer> zoneIds = yodesk.getZones().getZones().stream().filter(z -> z.getTileIds().stream()
                     .flatMap(l -> l.getColumn().stream()).anyMatch(i -> i.equals(tileId))).map(Zone::getIndex).collect(Collectors.toList());
-            zoneIds.addAll(yodesk.getZones().getZones().stream().filter(z->z.getIzax().getGoalItems().stream()
+            zoneIds.addAll(yodesk.getZones().getZones().stream().filter(z -> z.getIzax().getGoalItems().stream()
                     .anyMatch(i -> i.equals(tileId))).map(Zone::getIndex).collect(Collectors.toList()));
-            zoneIds.addAll(yodesk.getZones().getZones().stream().filter(z->z.getIzax().getRequiredItems().stream()
+            zoneIds.addAll(yodesk.getZones().getZones().stream().filter(z -> z.getIzax().getRequiredItems().stream()
                     .anyMatch(i -> i.equals(tileId))).map(Zone::getIndex).collect(Collectors.toList()));
-            zoneIds.addAll(yodesk.getZones().getZones().stream().filter(z->z.getIzx2().getProvidedItems().stream()
+            zoneIds.addAll(yodesk.getZones().getZones().stream().filter(z -> z.getIzx2().getProvidedItems().stream()
                     .anyMatch(i -> i.equals(tileId))).map(Zone::getIndex).collect(Collectors.toList()));
             zoneIds = zoneIds.stream().distinct().sorted().collect(Collectors.toList());
             List<Integer> puzzleIds = yodesk.getPuzzles().getPuzzles().stream()
