@@ -27,7 +27,6 @@ An original version: https://github.com/LeonisX/YExplorer
 
 * Text descriptions for each release
 
-* Dump iact scripts
 * Show extra data in UI
 
 * TODO tests!!!!!!!!!!!!!!!

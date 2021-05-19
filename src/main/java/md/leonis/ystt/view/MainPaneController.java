@@ -917,24 +917,38 @@ public class MainPaneController {
         StringBuilder sb = new StringBuilder();
 
         for (int i = 0; i < actions.size(); i++) {
-            Action a = actions.get(i);
-            sb.append("Action ").append(i).append("\n");
-            sb.append("if").append("\n");
-            a.getConditions().forEach(c -> {
-                sb.append("    ").append(c.getOpcode().name().toLowerCase().replace("_", "-")).append(": ");
-                sb.append(c.getArguments().stream().map(Object::toString).collect(Collectors.joining(" "))).append("\n");
-            });
-            sb.append("then").append("\n");
-            a.getInstructions().forEach(c -> {
-                sb.append("    ").append(c.getOpcode().name().toLowerCase().replace("_", "-")).append(": ");
-                sb.append(c.getArguments().stream().map(Object::toString).collect(Collectors.joining(" ")));
-                sb.append(" \"").append(c.getText()).append("\"").append("\n");
-            });
-            sb.append("\n");
+            Action action = actions.get(i);
+            sb.append(getActionScript(action, i, false));
         }
 
         JavaFxUtils.showActionsWindow("Zone #" + zone.getIndex() + " actions", "Total actions count: " + zone.getActions().size(), sb.toString());
     }
+
+    private String getActionScript(Action action, int id, boolean noText) {
+
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("Action ").append(id).append("\n");
+        sb.append("if").append("\n");
+        action.getConditions().forEach(c -> {
+            sb.append("    ").append(c.getOpcode().name().toLowerCase().replace("_", "-")).append(": ");
+            sb.append(c.getArguments().stream().map(Object::toString).collect(Collectors.joining(" ")));
+            if (!c.getText().isEmpty()) {
+                sb.append(" \"").append(c.getText()).append("\"");
+            }
+            sb.append("\n");
+        });
+        sb.append("then").append("\n");
+        action.getInstructions().forEach(c -> {
+            sb.append("    ").append(c.getOpcode().name().toLowerCase().replace("_", "-")).append(": ");
+            sb.append(c.getArguments().stream().map(Object::toString).collect(Collectors.joining(" ")));
+            String text = noText ? "" : c.getText();
+            sb.append(" \"").append(text).append("\"").append("\n");
+        });
+        sb.append("\n");
+        return sb.toString();
+    }
+
 
     private void drawEditorMap(int zoneId) {
         try {
@@ -1634,6 +1648,10 @@ public class MainPaneController {
             IOUtils.createDirectories(opath.resolve("IZX4"));
             IOUtils.createDirectories(opath.resolve("IACT"));
             IOUtils.createDirectories(opath.resolve("OIE"));
+            IOUtils.createDirectories(opath.resolve("Actions"));
+            IOUtils.createDirectories(opath.resolve("ActionsNoText"));
+
+            dumpActionsScripts();
         }
 
         //TODO
@@ -1677,6 +1695,41 @@ public class MainPaneController {
             WordUtils.saveZones(dtaCrc32, opath.resolve("iact2" + E_DOCX));
         } catch (Exception e) {
             JavaFxUtils.showAlert("Error saving Actions text to file", e);
+        }
+    }
+
+    private void dumpActionsScripts() {
+
+        try {
+            StringBuilder sb = new StringBuilder();
+            StringBuilder sbn = new StringBuilder();
+
+            List<Zone> zones = yodesk.getZones().getZones();
+            for (int zoneId = 0; zoneId < zones.size(); zoneId++) {
+                Zone zone = zones.get(zoneId);
+
+                StringBuilder ssb = new StringBuilder();
+                StringBuilder ssbn = new StringBuilder();
+
+                for (int i = 0; i < zone.getActions().size(); i++) {
+                    String action = getActionScript(zone.getActions().get(i), i, false);
+                    ssb.append(action).append("\n");
+
+                    action = getActionScript(zone.getActions().get(i), i, true);
+                    ssbn.append(action).append("\n");
+                }
+
+                sb.append("Zone ").append(zoneId).append("\n").append("\n").append(ssb).append("\n");
+                sbn.append("Zone ").append(zoneId).append("\n").append("\n").append(ssbn).append("\n");
+
+                IOUtils.saveTextFile(ssb.toString(), opath.resolve("Actions").resolve(StringUtils.leftPad(Integer.toString(zoneId), 4, '0') + ".txt"));
+                IOUtils.saveTextFile(ssbn.toString(), opath.resolve("ActionsNoText").resolve(StringUtils.leftPad(Integer.toString(zoneId), 4, '0') + ".txt"));
+            }
+
+            IOUtils.saveTextFile(Collections.singletonList(sb.toString()), opath.resolve("actions.txt"));
+            IOUtils.saveTextFile(Collections.singletonList(sbn.toString()), opath.resolve("actionsNoText.txt"));
+        } catch (Exception e) {
+            JavaFxUtils.showAlert("Error saving Actions scripts to file", e);
         }
     }
 

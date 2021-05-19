@@ -460,7 +460,7 @@
                                                             <Label fx:id="mapsCountLabel" layoutX="98.0" layoutY="14.0" />
                                                             <Label layoutX="14.0" layoutY="40.0" text="Phrases count:" />
                                                             <Label fx:id="phrasesCountLabel" layoutX="98.0" layoutY="40.0" />
-                                                            <Button fx:id="saveMapsToFilesButton" layoutX="14.0" layoutY="70.0" mnemonicParsing="false" onAction="#saveMapsToFilesButtonClick" text="Save maps to files" />
+                                                            <Button fx:id="saveMapsToFilesButton" layoutX="14.0" layoutY="65.0" mnemonicParsing="false" onAction="#saveMapsToFilesButtonClick" text="Save maps to files" />
                                                             <CheckBox fx:id="normalSaveCheckBox" layoutX="25.0" layoutY="98.0" mnemonicParsing="false" selected="true" text="Normal save" />
                                                             <CheckBox fx:id="groupByFlagsCheckBox" layoutX="25.0" layoutY="123.0" mnemonicParsing="false" text="Group by flags" />
                                                             <CheckBox fx:id="groupByPlanetTypeCheckBox" layoutX="25.0" layoutY="148.0" mnemonicParsing="false" text="Group by planet type" />

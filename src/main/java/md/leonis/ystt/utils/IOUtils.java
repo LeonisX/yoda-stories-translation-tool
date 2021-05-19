@@ -8,10 +8,15 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
 public class IOUtils {
+
+    public static void saveTextFile(String text, Path path) throws IOException {
+        saveTextFile(Collections.singletonList(text), path);
+    }
 
     public static void saveTextFile(List<String> lines, Path path) throws IOException {
 
