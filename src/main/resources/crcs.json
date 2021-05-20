@@ -1,65 +1,74 @@
 [
   {
     "id": "eng-1",
-    "title": "Yoda Stories (14.02.1997) (Eng) (v1.0)",
+    "title": "Star Wars - Yoda Stories (14.02.1997) (Eng) (v1.0)",
     "exeCrc32": "7E7250C9",
     "dtaCrc32": "1A8764FB",
-    "charset": "windows-1252"
+    "charset": "windows-1252",
+    "description": "This is the very first and most widespread version of the game.\nOn pirated discs and compilations, it was most often delivered with Patch 6 preinstalled.\nThe Star Wars - Yoda Stories & Making Magic CD was recorded on 15.02.1997."
   },
   {
     "id": "eng-1-patched",
-    "title": "Yoda Stories (14.02.1997) (Eng) (v1.0) (Patch v6)",
+    "title": "Star Wars - Yoda Stories (14.02.1997) (Eng) (v1.0) (Patch v6)",
     "exeCrc32": "7E7250C9",
     "dtaCrc32": "6B79555B",
-    "charset": "windows-1252"
+    "charset": "windows-1252",
+    "description": "This is the first version of the game with Patch 6.\nFixed all found errors of the DTA file,\nbut the EXE file is still old."
   },
   {
     "id": "eng-1.1",
-    "title": "Yoda Stories (20.03.1997) (Eng) (v1.1)",
+    "title": "Star Wars - Yoda Stories (20.03.1997) (Eng) (v1.1)",
     "exeCrc32": "B4E9D59F",
     "dtaCrc32": "B0FE9C2A",
-    "charset": "windows-1252"
+    "charset": "windows-1252",
+    "description": "The rarest version of the English-language game. Compared to the first version, it has some fixes.\nThe files were modified on 18.02.1997."
   },
   {
     "id": "eng-1.2",
-    "title": "Yoda Stories (10.08.1998) (Eng) (v1.2) (Patch v6)",
+    "title": "Star Wars - Yoda Stories (10.08.1998) (Eng) (v1.2) (Patch v6)",
     "exeCrc32": "B4E9D59F",
     "dtaCrc32": "6B79555B",
-    "charset": "windows-1252"
+    "charset": "windows-1252",
+    "description": "This is the best version of the game, however, it has received little distribution.\nIt contains all the fixes from Patch 6, but the EXE file is also improved.\nStar Wars - Yoda Stories & Behind The Magic - Vehicles Special Edition was recorded on 10.08.1998."
   },
   {
     "id": "eng-1-demo",
-    "title": "Yoda Stories (18.02.1997) (Eng) (Demo)",
+    "title": "Star Wars - Yoda Stories (18.02.1997) (Eng) (Demo)",
     "exeCrc32": "E89D0EB1",
     "dtaCrc32": "F9543F00",
-    "charset": "windows-1252"
+    "charset": "windows-1252",
+    "description": "Demo version of the game released on 18.02.1997.\nThere is only one mission available on planet Neshtab."
   },
   {
     "id": "spa-1",
-    "title": "Yoda Stories (22.05.1997) (Spa)",
+    "title": "Star Wars - Yoda Stories (22.05.1997) (Spa)",
     "exeCrc32": "82CFC2E8",
     "dtaCrc32": "A0CE2095",
-    "charset": "windows-1252"
+    "charset": "windows-1252",
+    "description": "Spanish version of Yoda Stories.\nIn terms of the number of fixes it does not reach Patch 6.\nThe disc was recorded on 22.05.1997."
   },
   {
     "id": "ger-1",
-    "title": "Yoda Stories (25.06.1997) (Ger)",
+    "title": "Star Wars - Yoda Stories (25.06.1997) (Ger)",
     "exeCrc32": "3AD6EF74",
     "dtaCrc32": "E7DB255D",
-    "charset": "windows-1252"
+    "charset": "windows-1252",
+    "description": "German version of Yoda Stories.\nIn terms of the number of fixes it does not reach Patch 6.\nThe disc was recorded approximately on 25.06.1997."
   },
   {
     "id": "spa-2",
-    "title": "Yoda Stories (13.12.2001) (T-Spa_Selva Translators)",
+    "title": "Star Wars - Yoda Stories (13.12.2001) (T-Spa_Selva Translators)",
     "exeCrc32": "8E4CAB0D",
     "dtaCrc32": "A0CE2095",
-    "charset": "windows-1252"
+    "charset": "windows-1252",
+    "description": "Spanish version of Yoda Stories with a slightly modified EXE file.\n\"Selva Translators\" left their signature in the About window.\nIn terms of the number of corrections, it does not reach Patch 6."
   },
   {
     "id": "rus-1",
-    "title": "Yoda Stories (12.11.2006) (T-Rus_PRO)",
+    "title": "Star Wars - Yoda Stories (12.11.2006) (T-Rus_PRO)",
     "exeCrc32": "4B91AA5C",
     "dtaCrc32": "2350308B",
-    "charset": "windows-1251"
+    "charset": "windows-1251",
+    "description": "The first version of the translation of Yoda Stories into Russian.\nThe technology available at the time did not make it perfect.\nDespite the fact that the last DAT file is taken as a basis,\nIt comes with 2 weird changes that could potentially break the game.\nEXE file is from the first version. Translation date: 19.08.2006."
   }
 ]

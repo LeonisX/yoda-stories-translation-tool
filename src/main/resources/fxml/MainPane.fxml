@@ -152,6 +152,7 @@
                                     </columns>
                                 </TableView>
                                 <Button fx:id="dumpAllSectionsButton" layoutX="14.0" layoutY="438.0" mnemonicParsing="false" onAction="#dumpAllSectionsButtonClick" text="Dump All Sections" />
+                                <Label fx:id="descriptionLabel" layoutX="320.0" layoutY="95.0" prefWidth="700" prefHeight="334" alignment="TOP_LEFT"/>
                             </AnchorPane>
                         </Tab>
                         <Tab text="Executable File">

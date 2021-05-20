@@ -7,6 +7,7 @@ public class Release {
     private String exeCrc32;
     private String dtaCrc32;
     private String charset;
+    private String description;
 
     public String getId() {
         return id;
@@ -46,5 +47,13 @@ public class Release {
 
     public void setCharset(String charset) {
         this.charset = charset;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

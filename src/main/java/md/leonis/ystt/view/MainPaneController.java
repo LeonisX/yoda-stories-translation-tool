@@ -98,6 +98,7 @@ public class MainPaneController {
     public Button changeSourceCharsetButton;
     public Label destinationCharsetLabel;
     public Button changeDestinationCharsetButton;
+    public Label descriptionLabel;
 
     public TextField windowSizeTextField;
     public TextField inventoryTextField;
@@ -331,6 +332,13 @@ public class MainPaneController {
         sourceCharsetLabel.setText(sourceCharset.getDescription());
         updateDestinationCharset();
 
+        String note = (release.getId().equals("eng-1.2"))
+                ? "This is the best basis for future translation. Good luck!"
+                : "English version 1.2 is currently recommended for translation.\n" +
+                "It can be found in Star Wars - Yoda Stories & Behind The Magic - Vehicles Special Edition.\n" +
+                "But it's better to search for the name LucasArts Archives Vol. IV: Star Wars Collection II.";
+
+        descriptionLabel.setText(release.getDescription() + "\n\n" + note);
         commonInformationTableView.setItems(FXCollections.observableList(yodesk.getCatalog()));
 
         //EXE
@@ -2210,6 +2218,7 @@ public class MainPaneController {
             release.setTitle("Unknown combination of files");
             release.setDtaCrc32("????????");
             release.setExeCrc32("????????");
+            release.setDescription("This is an unknown combination of DTA/EXE files. Congratulations, You've probably found a new release of the game. Be sure to send it to us so we can analyze it. E-mail: tv-games@mail.ru");
         }
 
         sourceCharset = getCharset(release.getCharset());

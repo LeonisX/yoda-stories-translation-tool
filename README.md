@@ -16,7 +16,6 @@ An original version: https://github.com/LeonisX/YExplorer
 
 ## TODO
 
-* 
 * Log
 * HEX
 * Тяжёлые процессы дампинга лучше вынести в отдельный поток
@@ -25,11 +24,11 @@ An original version: https://github.com/LeonisX/YExplorer
 
 * Dump structure (hi, mid, lo levels)
 
-* Text descriptions for each release
-
 * Show extra data in UI
 
 * TODO tests!!!!!!!!!!!!!!!
+
+* Fix flags: https://www.webfun.io/docs/gameplay/tiles.html
 
 * Compare all characters dumps
 * UnsignedInt, ... - изучить доступные решения. идея простая - возвращать number, но если минус, то тип на порядок больше.
@@ -37,7 +36,10 @@ An original version: https://github.com/LeonisX/YExplorer
 
 * Remove all text from DTA, save puz2, iacts together, verify if all phrases was found
 * Paste from clipboard (good idea)
-* Validate loaded BMP palette
+* Validate loaded BMP palette OR not
+* Prepare "SAFE" palette to dump: https://www.webfun.io/docs/gameplay/color-palette.html
+
+* Hotspots: https://www.webfun.io/docs/gameplay/zones.html
 
 * Think how to drag-drop from UI to Windows Explorer
 * TODO 223.res in description, if need
@@ -49,6 +51,8 @@ An original version: https://github.com/LeonisX/YExplorer
 * Bug? Dump tiles by attr - negative values
 
 * Identify Characters MovementTypes
+
+* About Actions scripts: https://www.webfun.io/docs/scripting/index.html
 
 
 ### Other YS / DA solutions
