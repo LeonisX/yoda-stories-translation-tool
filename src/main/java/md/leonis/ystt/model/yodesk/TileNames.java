@@ -16,7 +16,7 @@ public class TileNames extends KaitaiStruct {
      * List of tile ids and their corresponding names. These are shown in the
      * inventory or used in dialogs (see `speak_hero` and `speak_npc` opcodes).
      */
-    private ArrayList<TileName> names;
+    private List<TileName> names;
 
     private final Yodesk root;
     private final CatalogEntry parent;
@@ -56,7 +56,7 @@ public class TileNames extends KaitaiStruct {
         names.forEach(n -> n.write(os));
     }
 
-    public ArrayList<TileName> getNames() {
+    public List<TileName> getNames() {
         return names;
     }
 

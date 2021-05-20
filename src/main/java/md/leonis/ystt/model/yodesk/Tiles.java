@@ -8,13 +8,13 @@ import md.leonis.ystt.model.yodesk.tiles.Tile;
 import md.leonis.ystt.model.yodesk.tiles.TilesEntries;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class Tiles extends KaitaiStruct {
 
     private TilesEntries tilesEntries;
-    private ArrayList<Tile> tiles;
+    private List<Tile> tiles;
     private byte[] rawTiles;
 
     private final Yodesk root;
@@ -68,7 +68,7 @@ public class Tiles extends KaitaiStruct {
         return tilesEntries;
     }
 
-    public ArrayList<Tile> getTiles() {
+    public List<Tile> getTiles() {
         return tiles;
     }
 

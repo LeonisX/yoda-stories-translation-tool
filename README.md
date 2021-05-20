@@ -34,12 +34,9 @@ An original version: https://github.com/LeonisX/YExplorer
 * UnsignedInt, ... - изучить доступные решения. идея простая - возвращать number, но если минус, то тип на порядок больше.
 * Article about unsigned (hex editor, port from delphi, mathematic, before java 8, current solutions, examples)
 
-* Remove all text from DTA, save puz2, iacts together, verify if all phrases was found
 * Paste from clipboard (good idea)
 * Validate loaded BMP palette OR not
 * Prepare "SAFE" palette to dump: https://www.webfun.io/docs/gameplay/color-palette.html
-
-* Hotspots: https://www.webfun.io/docs/gameplay/zones.html
 
 * Think how to drag-drop from UI to Windows Explorer
 * TODO 223.res in description, if need

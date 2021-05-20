@@ -38,7 +38,7 @@
                     <tabs>
                       <Tab text="Info">
                         <content>
-                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" style="-fx-border-color: #c0c0c0;">
                                  <children>
                                     <VBox layoutX="5.0" layoutY="10.0" prefWidth="531.0">
                                        <children>
@@ -51,7 +51,10 @@
                                           </HBox>
                                           <HBox prefHeight="22.0" prefWidth="531.0">
                                              <children>
-                                                <Label prefWidth="95.0" text="Size:" />
+                                                <Label prefWidth="95.0" style="-fx-background-color: #ffffff; -fx-opacity: 0.8;" text="Size:">
+                                                   <padding>
+                                                      <Insets left="5.0" right="5.0" />
+                                                   </padding></Label>
                                                 <Label fx:id="mapSizeLabel" />
                                              </children>
                                           </HBox>

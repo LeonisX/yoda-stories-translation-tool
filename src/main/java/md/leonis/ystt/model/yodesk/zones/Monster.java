@@ -8,6 +8,7 @@ import md.leonis.ystt.model.yodesk.Yodesk;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A monster is a enemy in a zone.
@@ -22,7 +23,7 @@ public class Monster extends KaitaiStruct {
     private int loot;
     // If this field is anything other than 0 the monster may drop an item when killed.
     private long dropsLoot;
-    private ArrayList<Waypoint> waypoints;
+    private List<Waypoint> waypoints;
 
     private final Yodesk root;
     private final ZoneAuxiliary parent;
@@ -91,7 +92,7 @@ public class Monster extends KaitaiStruct {
         return dropsLoot;
     }
 
-    public ArrayList<Waypoint> getWaypoints() {
+    public List<Waypoint> getWaypoints() {
         return waypoints;
     }
 

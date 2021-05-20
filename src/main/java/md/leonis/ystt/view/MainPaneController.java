@@ -36,6 +36,7 @@ import md.leonis.ystt.model.yodesk.CatalogEntry;
 import md.leonis.ystt.model.yodesk.Yodesk;
 import md.leonis.ystt.model.yodesk.characters.Character;
 import md.leonis.ystt.model.yodesk.characters.CharacterAuxiliary;
+import md.leonis.ystt.model.yodesk.characters.CharacterType;
 import md.leonis.ystt.model.yodesk.characters.CharacterWeapon;
 import md.leonis.ystt.model.yodesk.puzzles.PrefixedStr;
 import md.leonis.ystt.model.yodesk.puzzles.Puzzle;
@@ -171,6 +172,7 @@ public class MainPaneController {
     public FlowPane mapGoalTilesFlowPane;
     public FlowPane mapProvidedItemsTilesFlowPane;
     public FlowPane mapRequiredItemsTilesFlowPane;
+    public FlowPane lootTilesFlowPane;
 
     public TableView<Zone> mapsTableView;
 
@@ -188,9 +190,10 @@ public class MainPaneController {
     public Button undoMapEdit;
     public ContextMenu mapEditorContextMenu;
     public TabPane zoneOptionsTabPane;
+    public Label zoneSpotStatusLabel;
 
-    private int mapEditorX;
-    private int mapEditorY;
+    private int mapX;
+    private int mapY;
 
     public Button dumpActionsTextToDocx;
     public Button loadTranslatedActionsText;
@@ -228,6 +231,7 @@ public class MainPaneController {
     public TextArea hexViewerTextArea;
 
     public Label statusLabel;
+    public Canvas statusCanvas;
 
     private static final String OUTPUT = "output";
     private static final String E_BMP = ".bmp";
@@ -885,17 +889,27 @@ public class MainPaneController {
         mapZax4Unnamed2Label.setText(String.valueOf(zone.getIzx4().get_unnamed2()));
 
         if (hasActiveTeleporter) {
-            drawTileOnCanvas(834, zoneTypeCanvas, 0, 0, darkerTransparentColor);
+            drawTileOnCanvas(834, zoneTypeCanvas, 0, 0, transparentColor);
         } else if (hasInActiveTeleporter) {
-            drawTileOnCanvas(833, zoneTypeCanvas, 0, 0, darkerTransparentColor);
+            drawTileOnCanvas(833, zoneTypeCanvas, 0, 0, transparentColor);
         } else {
-            drawTileOnCanvas(zone.getType().getTileId(), zoneTypeCanvas, 0, 0, darkerTransparentColor);
+            drawTileOnCanvas(zone.getType().getTileId(), zoneTypeCanvas, 0, 0, transparentColor);
         }
 
         drawTilesOnFlowPane(mapNpcsTilesFlowPane, zone.getIzx3().getNpcs());
         drawTilesOnFlowPane(mapGoalTilesFlowPane, zone.getIzax().getGoalItems());
         drawTilesOnFlowPane(mapProvidedItemsTilesFlowPane, zone.getIzx2().getProvidedItems());
         drawTilesOnFlowPane(mapRequiredItemsTilesFlowPane, zone.getIzax().getRequiredItems());
+
+        List<Integer> lootTiles = new ArrayList<>();
+
+        zone.getIzax().getMonsters().forEach(monster -> {
+            if (monster.getDropsLoot() > 0 && monster.getLoot() > 0) {
+                lootTiles.add(monster.getLoot() - 1);
+            }
+        });
+
+        drawTilesOnFlowPane(lootTilesFlowPane, lootTiles);
     }
 
     @FXML
@@ -1020,29 +1034,101 @@ public class MainPaneController {
     }
 
     public void mapEditorCanvasMouseMoved(MouseEvent event) {
-        mapEditorX = (int) (event.getX() / TILE_SIZE);
-        mapEditorY = (int) (event.getY() / TILE_SIZE);
+
+        mapX = (int) (event.getX() / TILE_SIZE);
+        mapY = (int) (event.getY() / TILE_SIZE);
 
         Zone zone = getEditorZone();
-        List<Integer> column = zone.getTileIds().get(mapEditorY * zone.getWidth() + mapEditorX).getColumn();
+        List<Integer> column = zone.getTileIds().get(mapY * zone.getWidth() + mapX).getColumn();
         showZoneStatus(zone);
-        statusLabel.setText(statusLabel.getText() + String.format("; Bottom tileId: %s; Middle tileId: %s; Top tileId: %s", column.get(0), column.get(1), column.get(2)));
+
+        List<String> lines = new ArrayList<>();
+        lines.add(String.format("Top tileId: %s\nMiddle tileId: %s\nBottom tileId: %s", column.get(2), column.get(1), column.get(0)));
+
+        List<Monster> monsters = zone.getIzax().getMonsters().stream().filter(m -> m.getX() == mapX && m.getY() == mapY).collect(Collectors.toList());
+        List<Hotspot> hotspots = zone.getHotspots().stream().filter(m -> m.getX() == mapX && m.getY() == mapY).collect(Collectors.toList());
+
+        if (!monsters.isEmpty()) {
+            Monster monster = monsters.get(0);
+
+            Character character = yodesk.getCharacters().getCharacters().get(monster.getCharacter());
+
+
+            lines.add("Monster: " + character.getName());
+            lines.add("Movement type: " + StringUtils.capitalize(character.getMovementType().name().toLowerCase().replace("_", " ")));
+
+            int weapon = yodesk.getCharacterWeapons().getWeapons().get(monster.getCharacter()).getReference();
+
+            if (weapon == 65535) {
+                lines.add("Weapon: none");
+            } else if (character.getType() == CharacterType.ENEMY) {
+                lines.add("Weapon: " + yodesk.getCharacters().getCharacters().get(weapon).getName());
+            } else {
+                lines.add("Sound: " + yodesk.getSounds().getSounds().get(weapon));
+            }
+            lines.add("Damage: " + yodesk.getCharacterAuxiliaries().getAuxiliaries().get(monster.getCharacter()).getDamage());
+            lines.add("Health: " + yodesk.getCharacterWeapons().getWeapons().get(monster.getCharacter()).getHealth());
+            if (monster.getDropsLoot() > 0) {
+                if (monster.getLoot() == 0xFFFF) {
+                    lines.add("Loot: Zone's quest item");
+                } else if (monster.getLoot() > 0) {
+                    lines.add("Loot: " + yodesk.getTileNames().getNames().stream().filter(t -> t.getTileId() == monster.getLoot() - 1)
+                            .map(TileName::getName).findFirst().orElse(String.valueOf(monster.getLoot() - 1)));
+                }
+            }
+            if (monster.getWaypoints().get(0).getX() != 4294967295L) {
+                lines.add("Waypoints: " + String.format("[%s;%s],", Long.toHexString(monster.getWaypoints().get(0).getX()), Long.toHexString(monster.getWaypoints().get(0).getY())));
+                lines.add(monster.getWaypoints().subList(1, monster.getWaypoints().size()).stream().map(w -> String.format("[%s;%s]", Long.toHexString(w.getX()), Long.toHexString(w.getY()))).collect(Collectors.joining(", ")));
+            }
+        }
+
+        if (!hotspots.isEmpty()) {
+            lines.add("Hotspot: " + StringUtils.capitalize(hotspots.get(0).getType().name().toLowerCase().replace("_", " ")));
+            lines.add("Argument: " + hotspots.get(0).getArgument());
+            lines.add("Enabled: " + hotspots.get(0).getEnabled());
+        }
+
+        zoneSpotStatusLabel.setText(String.join("\n", lines));
+        zoneSpotStatusLabel.setLayoutX(event.getX() + zoneSpotStatusLabel.getWidth() - 20);
+        if (event.getY() + zoneSpotStatusLabel.getHeight() + 20 > mapEditorCanvas.getLayoutY() + 18 * TILE_SIZE) {
+            zoneSpotStatusLabel.setLayoutY(event.getY() - zoneSpotStatusLabel.getHeight() - 20);
+        } else {
+            zoneSpotStatusLabel.setLayoutY(event.getY() + 20);
+        }
+
+        statusCanvas.setHeight(TILE_SIZE);
+        statusCanvas.setWidth(TILE_SIZE * 3);
+        statusCanvas.getGraphicsContext2D().clearRect(0, 0, statusCanvas.getWidth(), statusCanvas.getHeight());
+        if (column.get(2) < yodesk.getTiles().getTiles().size()) {
+            drawTileOnCanvas(column.get(2), statusCanvas, 0, 0, Color.rgb(0xF4, 0xF4, 0xF4));
+        }
+        if (column.get(1) < yodesk.getTiles().getTiles().size()) {
+            drawTileOnCanvas(column.get(1), statusCanvas, TILE_SIZE, 0, Color.rgb(0xF4, 0xF4, 0xF4));
+        }
+        if (column.get(0) < yodesk.getTiles().getTiles().size()) {
+            drawTileOnCanvas(column.get(0), statusCanvas, TILE_SIZE * 2, 0, Color.rgb(0xF4, 0xF4, 0xF4));
+        }
+
+        zoneSpotStatusLabel.setVisible(true);
+        statusCanvas.setVisible(true);
     }
 
     public void mapEditorCanvasMouseExited() {
         showZoneStatus(getEditorZone());
+        zoneSpotStatusLabel.setVisible(false);
+        statusCanvas.setVisible(false);
     }
 
     public void clearBottomLayer() {
-        changeZoneSpot(mapEditorX, mapEditorY, 0, 0xFFFF);
+        changeZoneSpot(mapX, mapY, 0, 0xFFFF);
     }
 
     public void clearMiddleLayer() {
-        changeZoneSpot(mapEditorX, mapEditorY, 1, 0xFFFF);
+        changeZoneSpot(mapX, mapY, 1, 0xFFFF);
     }
 
     public void clearTopLayer() {
-        changeZoneSpot(mapEditorX, mapEditorY, 2, 0xFFFF);
+        changeZoneSpot(mapX, mapY, 2, 0xFFFF);
     }
 
     private void changeZoneSpot(int x, int y, int layerId, int tileId) {
