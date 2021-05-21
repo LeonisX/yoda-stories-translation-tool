@@ -10,6 +10,7 @@ public class MainApp extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
 
+        Config.loadSettings();
         Config.loadCRCs();
         Config.loadCharsets();
         //Config.loadLevels();
@@ -18,6 +19,10 @@ public class MainApp extends Application {
         JavaFxUtils.showMainPane(primaryStage, this);
     }
 
+    @Override
+    public void stop(){
+        Config.saveSettings();
+    }
 
     public static void main(String[] args) {
         launch(args);

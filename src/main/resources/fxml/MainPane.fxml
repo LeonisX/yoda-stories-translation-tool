@@ -72,10 +72,6 @@
                             </Menu>
 
                         </Menu>
-                        <Menu mnemonicParsing="false" text="Operations">
-                            <MenuItem fx:id="addTilesMenuItem" mnemonicParsing="false" onAction="#addTilesMenuItemClick"
-                                      text="Add Tile(s)"/>
-                        </Menu>
                         <Menu mnemonicParsing="false" text="Help">
                             <MenuItem fx:id="howToMenuItem" mnemonicParsing="false" onAction="#howToMenuItemClick"
                                       text="How To..."/>

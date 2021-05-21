@@ -201,7 +201,7 @@ public class JavaFxUtils {
 
         FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().addAll(extensionFilters);
-        if (initialDir != null) {
+        if (initialDir != null && new File(initialDir).exists()) {
             fileChooser.setInitialDirectory(new File(initialDir));
         }
         fileChooser.setInitialFileName(initialFile);

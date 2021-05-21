@@ -557,10 +557,8 @@ public class MainPaneController {
                 if (value == 0) {
                     exeDump.writeHexDump(getIndex(toolTipMap), "C2039B148D");
                     dialogErrorLabel.setVisible(false);
-                    //TODO return
                 } else if (value >= -78 && value <= 125) {
-                    // 000000a2b8
-                    exeDump.writeHexDump(getIndex(toolTipMap), "000000" + intToHex(130 + value, 2) + "B8");
+                    exeDump.writeHexDump(getIndex(toolTipMap), "000000" + intToHex(130 + value, 2) + "B8"); // 000000a2b8
                     dialogErrorLabel.setVisible(false);
                 } else {
                     value = 0;
@@ -1125,11 +1123,13 @@ public class MainPaneController {
         int zoneId = getEditorZoneId();
         ZoneHistory history = zoneHistoryMap.get(zoneId).pollLast();
 
-        modifyZoneSpot(zoneId, history.getX(), history.getY(), history.getLayerId(), history.getOldValue());
+        if (history != null) {
+            modifyZoneSpot(zoneId, history.getX(), history.getY(), history.getLayerId(), history.getOldValue());
 
-        if (histories.isEmpty()) {
-            zoneHistoryMap.remove(zoneId);
-            undoMapEdit.setVisible(false);
+            if (histories.isEmpty()) {
+                zoneHistoryMap.remove(zoneId);
+                undoMapEdit.setVisible(false);
+            }
         }
     }
 
@@ -1372,11 +1372,11 @@ public class MainPaneController {
     public static void openFile() {
 
         try {
-            //TODO remove hardcoded
-            File file = JavaFxUtils.showEXELoadDialog("Open Executable File", "D:\\Working\\_Yoda\\YExplorer\\other\\Yoda Stories (14.02.1997)", "yodesk.dta");
+            File file = JavaFxUtils.showEXELoadDialog("Open Executable File", lastVisitedDirectory, "yodesk.dta");
 
             if (file != null) {
                 exeFile = file;
+                lastVisitedDirectory = exeFile.toPath().getParent().toString();
                 dtaFile = IOUtils.getDtaPath(file.toPath().getParent());
                 loadFileToArray(file);
                 yodesk = Yodesk.fromFile(dtaFile.toString(), sourceCharset.getCode());
@@ -1409,10 +1409,10 @@ public class MainPaneController {
 
     public void saveAsMenuItemClick() {
         try {
-            //TODO remove hardcoded
-            File file = JavaFxUtils.showDTASaveDialog("Save DTA File", "D:\\Working\\_Yoda\\YExplorer\\other\\Yoda Stories (14.02.1997)", "yodesk.dta");
+            File file = JavaFxUtils.showDTASaveDialog("Save DTA File", lastVisitedDirectory, "yodesk.dta");
 
             if (file != null) {
+                lastVisitedDirectory = file.toPath().getParent().toString();
                 yodesk.write(new ByteBufferKaitaiOutputStream(file));
                 //TODO confirmation
             }
@@ -1450,10 +1450,6 @@ public class MainPaneController {
         ImageUtils.drawOnCanvas(clipboardBufferedImage, clipboardCanvas, transparentColor);
         drawZone(mapEditorCanvas, mapEditorListView.getSelectionModel().getSelectedIndex());
         namesTableView.refresh();
-    }
-
-    //TODO
-    public void addTilesMenuItemClick() {
     }
 
     //TODO
@@ -1508,7 +1504,6 @@ public class MainPaneController {
                 for (int x = 0; x < titleImage.getWidth(); x++) {
 
                     int sample = titleImage.getImage().getRaster().getSample(x, y, 0);
-                    //TODO need to test this
                     yodesk.getStartupImage().getPixels()[y * titleImage.getWidth() + x] = new Integer(sample).byteValue();
                 }
             }
@@ -1720,11 +1715,10 @@ public class MainPaneController {
         clipboardRectangle.setVisible(false);
     }
 
-    //TODO use workdir here, if no clipboardFile
     public void loadClipboardImageClick() {
         try {
             String initialFile = (null == clipboardFile) ? "clipboard.bmp" : clipboardFile.getName();
-            String initialDir = (null == clipboardFile) ? null : clipboardFile.getParent();
+            String initialDir = (null == clipboardFile) ? opath.toString() : clipboardFile.getParent();
             File file = JavaFxUtils.showBMPLoadDialog("Load Clipboard image", initialDir, initialFile);
             if (file != null) {
                 clipboardFile = file;
@@ -1739,7 +1733,7 @@ public class MainPaneController {
     public void saveClipboardImageClick() {
         try {
             String initialFile = (null == clipboardFile) ? "clipboard.bmp" : clipboardFile.getName();
-            String initialDir = (null == clipboardFile) ? null : clipboardFile.getParent();
+            String initialDir = (null == clipboardFile) ? opath.toString() : clipboardFile.getParent();
             File file = JavaFxUtils.showBMPSaveDialog("Save Clipboard image", initialDir, initialFile);
             if (file != null) {
                 BMPWriter.write8bit(clipboardBufferedImage, file);

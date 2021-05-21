@@ -11,7 +11,9 @@ import md.leonis.ystt.model.yodesk.Yodesk;
 import java.awt.image.IndexColorModel;
 import java.io.*;
 import java.lang.reflect.Type;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
@@ -132,7 +134,7 @@ public class Config {
             int r = gamePalette[i + 2];
             int g = gamePalette[i + 1];
             int b = gamePalette[i];
-            int a = ~gamePalette[i + 3];
+            //int a = ~gamePalette[i + 3];
             // palette[i / 4] = (a << 24) | (r << 16) | (g << 8) | b;
             palette[id] = Color.rgb(r, g, b);
 
@@ -170,6 +172,7 @@ public class Config {
         }
     }
 
+    @SuppressWarnings("all")
     public static void loadCRCs() {
 
         File file = new File(classLoader.getResource("crcs.json").getFile());
@@ -184,6 +187,7 @@ public class Config {
         }
     }
 
+    @SuppressWarnings("all")
     public static void loadCharsets() {
 
         File file = new File(classLoader.getResource("charsets.json").getFile());
@@ -214,4 +218,42 @@ public class Config {
     public static Encoding destinationCharset;
 
     public static Release release;
+
+    public static String lastVisitedDirectory = ".";
+
+    private static final Properties properties = new Properties();
+
+    static {
+        properties.setProperty("LastVisitedDirectory", lastVisitedDirectory);
+    }
+
+    public static void loadSettings() {
+
+        try {
+            Path path = Paths.get("settings.txt");
+            if (Files.exists(path)) {
+                Reader reader = Files.newBufferedReader(Paths.get("settings.txt"));
+                properties.load(reader);
+
+                if (properties.getProperty("LastVisitedDirectory") != null) {
+                    lastVisitedDirectory = properties.getProperty("LastVisitedDirectory");
+                }
+                reader.close();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void saveSettings() {
+
+        try {
+            Writer writer = Files.newBufferedWriter(Paths.get("settings.txt"));
+            properties.setProperty("LastVisitedDirectory", lastVisitedDirectory);
+            properties.store(writer, "Yoda Stories Translation Tool Properties");
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

@@ -20,8 +20,6 @@ An original version: https://github.com/LeonisX/YExplorer
 * HEX
 * Тяжёлые процессы дампинга лучше вынести в отдельный поток
 
-* Initial dir, save/load dir!!!!!
-
 * Сломан вывод таблицы Map (нужна ли?)
 
 * Dump structure (hi, mid, lo levels)
