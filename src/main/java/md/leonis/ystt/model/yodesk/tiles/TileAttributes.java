@@ -82,108 +82,108 @@ public class TileAttributes extends KaitaiStruct {
 
     private void _read() {
 
-        this.hasTransparency = this.io.readBitsIntLe(1) != 0;
-        this.isFloor = this.io.readBitsIntLe(1) != 0;
-        this.isObject = this.io.readBitsIntLe(1) != 0;
-        this.isDraggable = this.io.readBitsIntLe(1) != 0;
-        this.isRoof = this.io.readBitsIntLe(1) != 0;
-        this.isLocator = this.io.readBitsIntLe(1) != 0;
-        this.isWeapon = this.io.readBitsIntLe(1) != 0;
-        this.isItem = this.io.readBitsIntLe(1) != 0;
-        this.isCharacter = this.io.readBitsIntLe(1) != 0;
-        this.unused = this.io.readBitsIntLe(7);
+        hasTransparency = io.readBitsIntLe(1) != 0;
+        isFloor = io.readBitsIntLe(1) != 0;
+        this.isObject = io.readBitsIntLe(1) != 0;
+        isDraggable = io.readBitsIntLe(1) != 0;
+        isRoof = io.readBitsIntLe(1) != 0;
+        isLocator = io.readBitsIntLe(1) != 0;
+        isWeapon = io.readBitsIntLe(1) != 0;
+        isItem = io.readBitsIntLe(1) != 0;
+        isCharacter = io.readBitsIntLe(1) != 0;
+        unused = io.readBitsIntLe(7);
         if (isFloor()) {
-            this.isDoorway = this.io.readBitsIntLe(1) != 0;
+            isDoorway = io.readBitsIntLe(1) != 0;
         }
         if (isLocator()) {
-            this.unused1 = this.io.readBitsIntLe(1) != 0;
+            unused1 = io.readBitsIntLe(1) != 0;
         }
         if (isLocator()) {
-            this.isTown = this.io.readBitsIntLe(1) != 0;
+            isTown = io.readBitsIntLe(1) != 0;
         }
         if (isLocator()) {
-            this.isUnsolvedPuzzle = this.io.readBitsIntLe(1) != 0;
+            isUnsolvedPuzzle = io.readBitsIntLe(1) != 0;
         }
         if (isLocator()) {
-            this.isSolvedPuzzle = this.io.readBitsIntLe(1) != 0;
+            isSolvedPuzzle = io.readBitsIntLe(1) != 0;
         }
         if (isLocator()) {
-            this.isUnsolvedTravel = this.io.readBitsIntLe(1) != 0;
+            isUnsolvedTravel = io.readBitsIntLe(1) != 0;
         }
         if (isLocator()) {
-            this.isSolvedTravel = this.io.readBitsIntLe(1) != 0;
+            isSolvedTravel = io.readBitsIntLe(1) != 0;
         }
         if (isLocator()) {
-            this.isUnsolvedBlockadeNorth = this.io.readBitsIntLe(1) != 0;
+            isUnsolvedBlockadeNorth = io.readBitsIntLe(1) != 0;
         }
         if (isLocator()) {
-            this.isUnsolvedBlockadeSouth = this.io.readBitsIntLe(1) != 0;
+            isUnsolvedBlockadeSouth = io.readBitsIntLe(1) != 0;
         }
         if (isLocator()) {
-            this.isUnsolvedBlockadeWest = this.io.readBitsIntLe(1) != 0;
+            isUnsolvedBlockadeWest = io.readBitsIntLe(1) != 0;
         }
         if (isLocator()) {
-            this.isUnsolvedBlockadeEast = this.io.readBitsIntLe(1) != 0;
+            isUnsolvedBlockadeEast = io.readBitsIntLe(1) != 0;
         }
         if (isLocator()) {
-            this.isSolvedBlockadeNorth = this.io.readBitsIntLe(1) != 0;
+            isSolvedBlockadeNorth = io.readBitsIntLe(1) != 0;
         }
         if (isLocator()) {
-            this.isSolvedBlockadeSouth = this.io.readBitsIntLe(1) != 0;
+            isSolvedBlockadeSouth = io.readBitsIntLe(1) != 0;
         }
         if (isLocator()) {
-            this.isSolvedBlockadeWest = this.io.readBitsIntLe(1) != 0;
+            isSolvedBlockadeWest = io.readBitsIntLe(1) != 0;
         }
         if (isLocator()) {
-            this.isSolvedBlockadeEast = this.io.readBitsIntLe(1) != 0;
+            isSolvedBlockadeEast = io.readBitsIntLe(1) != 0;
         }
         if (isLocator()) {
-            this.isUnsolvedGoal = this.io.readBitsIntLe(1) != 0;
+            isUnsolvedGoal = io.readBitsIntLe(1) != 0;
         }
         if (isLocator()) {
-            this.isLocationIndicator = this.io.readBitsIntLe(1) != 0;
+            isLocationIndicator = io.readBitsIntLe(1) != 0;
         }
         if (isItem()) {
-            this.isKeycard = this.io.readBitsIntLe(1) != 0;
+            isKeycard = io.readBitsIntLe(1) != 0;
         }
         if (isItem()) {
-            this.isTool = this.io.readBitsIntLe(1) != 0;
+            isTool = io.readBitsIntLe(1) != 0;
         }
         if (isItem()) {
-            this.isPart = this.io.readBitsIntLe(1) != 0;
+            isPart = io.readBitsIntLe(1) != 0;
         }
         if (isItem()) {
-            this.isValuable = this.io.readBitsIntLe(1) != 0;
+            isValuable = io.readBitsIntLe(1) != 0;
         }
         if (isItem()) {
-            this.isMap = this.io.readBitsIntLe(1) != 0;
+            isMap = io.readBitsIntLe(1) != 0;
         }
         if (isItem()) {
-            this.unused2 = this.io.readBitsIntLe(1) != 0;
+            unused2 = io.readBitsIntLe(1) != 0;
         }
         if (isItem()) {
-            this.isEdible = this.io.readBitsIntLe(1) != 0;
+            isEdible = io.readBitsIntLe(1) != 0;
         }
         if (isWeapon()) {
-            this.isLowBlaster = this.io.readBitsIntLe(1) != 0;
+            this.isLowBlaster = io.readBitsIntLe(1) != 0;
         }
         if (isWeapon()) {
-            this.isHighBlaster = this.io.readBitsIntLe(1) != 0;
+            isHighBlaster = io.readBitsIntLe(1) != 0;
         }
         if (isWeapon()) {
-            this.isLightsaber = this.io.readBitsIntLe(1) != 0;
+            isLightsaber = io.readBitsIntLe(1) != 0;
         }
         if (isWeapon()) {
-            this.isTheForce = this.io.readBitsIntLe(1) != 0;
+            isTheForce = io.readBitsIntLe(1) != 0;
         }
         if (isCharacter()) {
-            this.isHero = this.io.readBitsIntLe(1) != 0;
+            isHero = io.readBitsIntLe(1) != 0;
         }
         if (isCharacter()) {
-            this.isEnemy = this.io.readBitsIntLe(1) != 0;
+            isEnemy = io.readBitsIntLe(1) != 0;
         }
         if (isCharacter()) {
-            this.isNpc = this.io.readBitsIntLe(1) != 0;
+            isNpc = io.readBitsIntLe(1) != 0;
         }
     }
 

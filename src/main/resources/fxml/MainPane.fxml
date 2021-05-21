@@ -376,87 +376,80 @@
                                     <contextMenu>
                                         <ContextMenu fx:id="tilesContextMenu">
                                             <items>
-                                                <Menu mnemonicParsing="false" text="Set flag">
+                                                <Menu mnemonicParsing="false" text="Set attributes">
 
-                                                    <RadioMenuItem text="Bottom layer" userData="2">
+                                                    <RadioMenuItem text="Floor" userData="00000000000000000000000000000010">
                                                         <toggleGroup>
                                                             <ToggleGroup fx:id="tilesToggleGroup"/>
                                                         </toggleGroup>
                                                     </RadioMenuItem>
-                                                    <RadioMenuItem text="Middle layer" toggleGroup="$tilesToggleGroup"
-                                                                   userData="4"/>
-                                                    <RadioMenuItem text="Middle layer (transparent)"
-                                                                   toggleGroup="$tilesToggleGroup" userData="5"/>
-                                                    <RadioMenuItem text="Movable item" toggleGroup="$tilesToggleGroup"
-                                                                   userData="13"/>
-                                                    <RadioMenuItem text="Top layer" toggleGroup="$tilesToggleGroup"
-                                                                   userData="16"/>
-                                                    <RadioMenuItem text="Top layer (transparent)"
-                                                                   toggleGroup="$tilesToggleGroup" userData="17"/>
+                                                    <RadioMenuItem text="Floor: Doorway" toggleGroup="$tilesToggleGroup" userData="00000000000000010000000000000010"/>
+                                                    <RadioMenuItem text="Object" toggleGroup="$tilesToggleGroup" userData="00000000000000000000000000000100"/>
+                                                    <RadioMenuItem text="Object (transparent)" toggleGroup="$tilesToggleGroup" userData="00000000000000000000000000000101"/>
+                                                    <RadioMenuItem text="Draggable Object (transparent)" toggleGroup="$tilesToggleGroup" userData="00000000000000000000000000001101"/>
+                                                    <RadioMenuItem text="Roof" toggleGroup="$tilesToggleGroup" userData="00000000000000000000000000010000"/>
+                                                    <RadioMenuItem text="Roof (transparent)" toggleGroup="$tilesToggleGroup" userData="00000000000000000000000000010001"/>
 
-                                                    <Menu mnemonicParsing="false" text="Weapons">
-                                                        <RadioMenuItem text="Light Blaster"
+                                                    <Menu mnemonicParsing="false" text="Mini Map">
+                                                        <RadioMenuItem text="Town" toggleGroup="$tilesToggleGroup" userData="00000000000000100000000000100000"/>
+                                                        <RadioMenuItem text="Puzzle" toggleGroup="$tilesToggleGroup" userData="00000000000001000000000000100000"/>
+                                                        <RadioMenuItem text="Puzzle (solved)" toggleGroup="$tilesToggleGroup" userData="00000000000010000000000000100000"/>
+                                                        <RadioMenuItem text="Travel" toggleGroup="$tilesToggleGroup" userData="00000000000100000000000000100000"/>
+                                                        <RadioMenuItem text="Travel (solved)" toggleGroup="$tilesToggleGroup" userData="00000000001000000000000000100000"/>
+                                                        <RadioMenuItem text="Blockade North" toggleGroup="$tilesToggleGroup"
+                                                                       userData="00000000010000000000000000100000"/>
+                                                        <RadioMenuItem text="Blockade South" toggleGroup="$tilesToggleGroup"
+                                                                       userData="00000000100000000000000000100000"/>
+                                                        <RadioMenuItem text="Blockade East" toggleGroup="$tilesToggleGroup"
+                                                                       userData="00000010000000000000000000100000"/>
+                                                        <RadioMenuItem text="Blockade West" toggleGroup="$tilesToggleGroup"
+                                                                       userData="00000001000000000000000000100000"/>
+                                                        <RadioMenuItem text="Blockade North (solved)" toggleGroup="$tilesToggleGroup" userData="00000100000000000000000000100000"/>
+                                                        <RadioMenuItem text="Blockade South (solved)" toggleGroup="$tilesToggleGroup" userData="00001000000000000000000000100000"/>
+                                                        <RadioMenuItem text="Blockade East (solved)" toggleGroup="$tilesToggleGroup" userData="00100000000000000000000000100000"/>
+                                                        <RadioMenuItem text="Blockade West (solved)" toggleGroup="$tilesToggleGroup" userData="00010000000000000000000000100000"/>
+                                                        <RadioMenuItem text="Goal" toggleGroup="$tilesToggleGroup" userData="01000000000000000000000000100000"/>
+                                                        <RadioMenuItem text="You Are Here" toggleGroup="$tilesToggleGroup" userData="10000000000000000000000000100000"/>
+                                                    </Menu>
+                                                    <Menu mnemonicParsing="false" text="Items">
+                                                        <RadioMenuItem text="Keycard (transparent)" toggleGroup="$tilesToggleGroup"
+                                                                       userData="00000000000000010000000010000001"/>
+                                                        <RadioMenuItem text="Tool (transparent)"
                                                                        toggleGroup="$tilesToggleGroup"
-                                                                       userData="65601"/>
-                                                        <RadioMenuItem text="Heavy Blaster, Thermal Detonator"
+                                                                       userData="00000000000000100000000010000001"/>
+                                                        <RadioMenuItem text="Part (transparent)"
                                                                        toggleGroup="$tilesToggleGroup"
-                                                                       userData="131137"/>
-                                                        <RadioMenuItem text="Lightsaber" toggleGroup="$tilesToggleGroup"
-                                                                       userData="262209"/>
-                                                        <RadioMenuItem text="The Force" toggleGroup="$tilesToggleGroup"
-                                                                       userData="524353"/>
+                                                                       userData="00000000000001000000000010000001"/>
+                                                        <RadioMenuItem text="Valuable (transparent)"
+                                                                       toggleGroup="$tilesToggleGroup"
+                                                                       userData="00000000000010000000000010000001"/>
+                                                        <RadioMenuItem text="Locator (transparent)" toggleGroup="$tilesToggleGroup"
+                                                                       userData="00000000000100000000000010000001"/>
+                                                        <RadioMenuItem text="Edible (transparent)"
+                                                                       toggleGroup="$tilesToggleGroup"
+                                                                       userData="00000000010000000000000010000001"/>
                                                     </Menu>
 
-                                                    <Menu mnemonicParsing="false" text="Items">
-                                                        <RadioMenuItem text="Keycard" toggleGroup="$tilesToggleGroup"
-                                                                       userData="65665"/>
-                                                        <RadioMenuItem text="Item (for use)"
+                                                    <Menu mnemonicParsing="false" text="Weapons">
+                                                        <RadioMenuItem text="Blaster Pistol (transparent) "
                                                                        toggleGroup="$tilesToggleGroup"
-                                                                       userData="131201"/>
-                                                        <RadioMenuItem text="Item (part)"
+                                                                       userData="00000000000000010000000001000001"/>
+                                                        <RadioMenuItem text="Blaster Rifle, Thermal Detonator (transparent)"
                                                                        toggleGroup="$tilesToggleGroup"
-                                                                       userData="262273"/>
-                                                        <RadioMenuItem text="Item (to trade)"
-                                                                       toggleGroup="$tilesToggleGroup"
-                                                                       userData="524417"/>
-                                                        <RadioMenuItem text="Locator" toggleGroup="$tilesToggleGroup"
-                                                                       userData="1048705"/>
-                                                        <RadioMenuItem text="Health pack"
-                                                                       toggleGroup="$tilesToggleGroup"
-                                                                       userData="4194433"/>
+                                                                       userData="00000000000000100000000001000001"/>
+                                                        <RadioMenuItem text="Lightsaber (transparent)" toggleGroup="$tilesToggleGroup"
+                                                                       userData="00000000000001000000000001000001"/>
+                                                        <RadioMenuItem text="The Force (transparent)" toggleGroup="$tilesToggleGroup"
+                                                                       userData="00000000000010000000000001000001"/>
                                                     </Menu>
 
                                                     <Menu mnemonicParsing="false" text="Characters">
-                                                        <RadioMenuItem text="Luke" toggleGroup="$tilesToggleGroup"
-                                                                       userData="65793"/>
-                                                        <RadioMenuItem text="Enemy" toggleGroup="$tilesToggleGroup"
-                                                                       userData="131329"/>
-                                                        <RadioMenuItem text="Friendly" toggleGroup="$tilesToggleGroup"
-                                                                       userData="262401"/>
-                                                    </Menu>
-
-                                                    <RadioMenuItem text="Door, passage, ladder" userData="65538"/>
-
-                                                    <Menu mnemonicParsing="false" text="Mini map">
-                                                        <RadioMenuItem text="Starting point" userData="131104"/>
-                                                        <RadioMenuItem text="Puzzle" userData="262176"/>
-                                                        <RadioMenuItem text="Puzzle (solved)" userData="524320"/>
-                                                        <RadioMenuItem text="Gateway" userData="1048608"/>
-                                                        <RadioMenuItem text="Gateway (solved)" userData="2097184"/>
-                                                        <RadioMenuItem text="Upper barrier (locked)"
-                                                                       userData="4194336"/>
-                                                        <RadioMenuItem text="Bottom barrier (locked)"
-                                                                       userData="8388640"/>
-                                                        <RadioMenuItem text="Left barrier (locked)"
-                                                                       userData="16777248"/>
-                                                        <RadioMenuItem text="Right barrier (locked)"
-                                                                       userData="33554464"/>
-                                                        <RadioMenuItem text="Upper barrier" userData="67108896"/>
-                                                        <RadioMenuItem text="Bottom barrier" userData="134217760"/>
-                                                        <RadioMenuItem text="Left barrier" userData="268435488"/>
-                                                        <RadioMenuItem text="Right barrier" userData="536870944"/>
-                                                        <RadioMenuItem text="Objective" userData="1073741856"/>
-                                                        <RadioMenuItem text="Current position" userData="2147483680"/>
+                                                        <RadioMenuItem text="Luke (transparent)" toggleGroup="$tilesToggleGroup"
+                                                                       userData="00000000000000010000000100000001"/>
+                                                        <RadioMenuItem text="Enemy (transparent)" toggleGroup="$tilesToggleGroup"
+                                                                       userData="00000000000000100000000100000001"/>
+                                                        <RadioMenuItem text="NPC (transparent)" toggleGroup="$tilesToggleGroup"
+                                                                       userData="00000000000001000000000100000001"/>
                                                     </Menu>
                                                 </Menu>
                                             </items>

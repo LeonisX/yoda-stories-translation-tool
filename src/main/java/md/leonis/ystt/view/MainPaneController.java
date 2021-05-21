@@ -54,7 +54,6 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -143,7 +142,7 @@ public class MainPaneController {
     public Button clearClipboardImage;
     public ContextMenu tilesContextMenu;
     public ToggleGroup tilesToggleGroup;
-    private final Map<String, RadioMenuItem> tileFlagsMap = new HashMap<>();
+    private final Map<String, RadioMenuItem> tileAttributesMap = new HashMap<>();
     public Button addNewTile;
     public Button deleteTile;
 
@@ -292,28 +291,13 @@ public class MainPaneController {
         opath = spath.resolve(OUTPUT + '-' + release.getId());
 
         try {
-            mapTileFlags(tilesContextMenu.getItems());
+            tilesToggleGroup.getToggles().forEach(t -> tileAttributesMap.put(t.getUserData().toString(), (RadioMenuItem) t));
             updateUI();
         } catch (Exception e) {
             JavaFxUtils.showAlert("UI update error", e);
         }
 
         //TODO Log.SaveToFile(opath, 'Structure');
-    }
-
-    private void mapTileFlags(ObservableList<MenuItem> items) {
-        items.forEach(m -> {
-            if (m instanceof Menu) {
-                mapTileFlags(((Menu) m).getItems());
-            } else {
-                String userData = (String) m.getUserData();
-                if (StringUtils.isNotBlank(userData)) {
-                    RadioMenuItem menuItem = (RadioMenuItem) m;
-                    //menuItem.setToggleGroup(tilesToggleGroup);
-                    tileFlagsMap.put(userData, menuItem);
-                }
-            }
-        });
     }
 
     private void updateUI() {
@@ -381,6 +365,7 @@ public class MainPaneController {
         drawTiles();
         updateTilesCount();
         tilesContextMenu.setOnShown(this::selectTileMenuItem);
+        tilesToggleGroup.selectedToggleProperty().addListener(tilesAttributesToggleGroupListener());
 
         // Maps
         mapsCountLabel.setText(String.valueOf(yodesk.getZones().getZones().size()));
@@ -500,11 +485,6 @@ public class MainPaneController {
         } catch (Exception e) {
             JavaFxUtils.showAlert("Title screen display error", e);
         }
-    }
-
-    private void selectTileMenuItem(WindowEvent event) {
-        String flag = getTileFlag(currentTile);
-        //TODO fix this tileFlagsMap.get(flag).setSelected(true);
     }
 
     private void drawPalette() {
@@ -724,6 +704,15 @@ public class MainPaneController {
         return image;
     }
 
+    private ChangeListener<Toggle> tilesAttributesToggleGroupListener() {
+        return (ov, oldToggle, newToggle) -> {
+            int tileId = ((Integer) (currentTile).getUserData());
+            if (newToggle != null) {
+                yodesk.getTiles().setAttributes(tileId, newToggle.getUserData().toString());
+            }
+        };
+    }
+
     public void clipboardCanvasDragDetected(MouseEvent event) {
 
         Dragboard db = clipboardCanvas.startDragAndDrop(TransferMode.ANY);
@@ -810,53 +799,28 @@ public class MainPaneController {
         public void handle(MouseEvent mouseEvent) {
 
             currentTile = (Node) mouseEvent.getSource();
-            int id = ((Integer) (currentTile).getUserData());
-            String flag = getTileFlag(currentTile);
-            SetFlagMenuItem(flag);
-            statusLabel.setText("Tile #" + id + ": " + GetFlagDescription(flag));
+            int tileId = ((Integer) (currentTile).getUserData());
+            String binaryTileName = yodesk.getTiles().getTiles().get(tileId).getAttributesBinaryString();
+            if (tileAttributesMap.get(binaryTileName) != null) {
+                statusLabel.setText("Tile #" + tileId + ": " + tileAttributesMap.get(binaryTileName).getText());
+            }
         }
     };
-
-    //TODO repair this
-    private String getTileFlag(Node tile) {
-        int id = ((Integer) (tile).getUserData());
-        //return section.GetTileFlagS(id);
-        return "TODO repair me";
-    }
 
     EventHandler<MouseEvent> mouseExitedHandler = new EventHandler<MouseEvent>() {
 
         @Override
         public void handle(MouseEvent mouseEvent) {
-            currentTile = null;
             statusLabel.setText("");
         }
     };
 
-    //TODO repair me
-    private String GetFlagDescription(String flag) {
-        //return tileFlagsMap.get(flag).getText();
-        return "TODO repair me";
+    private void selectTileMenuItem(WindowEvent event) {
+        int tileId = ((Integer) (currentTile).getUserData());
+        String binaryTileName = yodesk.getTiles().getTiles().get(tileId).getAttributesBinaryString();
+        tilesToggleGroup.getToggles().forEach(t -> t.setSelected(t.getUserData().toString().equals(binaryTileName)));
     }
 
-    //TODO select flag in context menu; may be not need
-    private void SetFlagMenuItem(String flag) {
-    /*
-    var i: Word;
-    m: TMenuItem;
-
-  for i := 0 to ComponentCount - 1 do
-            if Components[i] is TMenuItem then
-            begin
-    m := Components[i] as TMenuItem;
-      if m.GroupIndex = 7 then
-            begin
-    m.Checked := false;
-        if m.Tag = flag then m.Checked := true;
-        if (flag = 2147483680) and (m.Tag = 2000000000) then m.Checked := true;
-    end;
-    end;*/
-    }
 
     private void showMapInfo(int zoneId) {
 
@@ -1593,26 +1557,15 @@ public class MainPaneController {
             Path tilesPath = opath.resolve("Tiles");
             Path hexPath = opath.resolve("TilesHex");
             Path attrPath = opath.resolve("TilesByAttr");
+            Path attrNamesPath = opath.resolve("TilesByAttrName");
             //Log.clear();
-            if (decimalFilenamesCheckBox.isSelected()) {
-                IOUtils.createDirectories(tilesPath);
-            }
-            if (hexFilenamesCheckBox.isSelected()) {
-                IOUtils.createDirectories(hexPath);
-            }
-            if (groupByAttributesFilenamesCheckBox.isSelected()) {
-                IOUtils.createDirectories(attrPath);
-            }
+
+            Map<String, List<Integer>> byAttr = new HashMap<>();
 
             for (int i = 0; i < yodesk.getTiles().getTiles().size(); i++) {
-
-                byte[] attr = yodesk.getTiles().getTiles().get(i).get_raw_attributes(); // attributes
-                String attrHex = new BigInteger(attr).toString(2);
                 //ReadPicture(section, 0);
                 //CopyPicture(TileImage, 0, 0);
                 //TODO Application.ProcessMessages;
-
-                //  SaveBMP('output/Tiles/'+rightstr('000'+inttostr(i),4)+' - '+inttohex(k,6)+'.bmp',bmp);
 
                 if (decimalFilenamesCheckBox.isSelected()) {
                     Path path = tilesPath.resolve(StringUtils.leftPad(Integer.toString(i), 4, "0") + E_BMP);
@@ -1623,10 +1576,9 @@ public class MainPaneController {
                 }
 
                 if (groupByAttributesFilenamesCheckBox.isSelected()) {
-                    String binaryAttr = StringUtils.right(StringUtils.leftPad(attrHex, 32, '0'), 32);
-                    Path path = attrPath.resolve(binaryAttr + " (" + attrHex + ")");
-                    IOUtils.createDirectories(path);
-                    BMPWriter.write(getTile(i, icm), path.resolve(StringUtils.leftPad(Integer.toString(i), 4, "0") + E_BMP).toFile());
+                    String attrHex = yodesk.getTiles().getTiles().get(i).getAttributesBinaryString();
+                    List<Integer> value = byAttr.computeIfAbsent(attrHex, k -> new ArrayList<>());
+                    value.add(i);
                 }
 
                 if (hexFilenamesCheckBox.isSelected()) {
@@ -1636,10 +1588,88 @@ public class MainPaneController {
                 //TilesProgressLabel.Caption := Format('%.2f %%', [((i + 1) / DTA.tilesCount) * 100]);
                 //TODO Application.ProcessMessages;
             }
+
+            if (groupByAttributesFilenamesCheckBox.isSelected()) {
+                for (Map.Entry<String, List<Integer>> e : byAttr.entrySet()) {
+                    Path path = attrPath.resolve(e.getKey()+ " - " + getTileName(e.getKey()) + " (" + e.getValue().size() + ")");
+                    IOUtils.createDirectories(path);
+                    for (Integer i : e.getValue()) {
+                        BMPWriter.write(getTile(i, icm), path.resolve(StringUtils.leftPad(Integer.toString(i), 4, "0") + E_BMP).toFile());
+                    }
+                    path = attrNamesPath.resolve(getTileName(e.getKey()) + " (" + e.getValue().size() + ")");
+                    IOUtils.createDirectories(path);
+                    for (Integer i : e.getValue()) {
+                        BMPWriter.write(getTile(i, icm), path.resolve(StringUtils.leftPad(Integer.toString(i), 4, "0") + E_BMP).toFile());
+                    }
+                }
+            }
             Log.debug("OK");
-        } catch (Exception e) {
+        } catch (
+                Exception e) {
             JavaFxUtils.showAlert("Error saving tiles to separate files", e);
         }
+    }
+
+    private String getTileName(String byteString) {
+
+        StringBuilder title = new StringBuilder();
+        appendIfSet(title, byteString, 1, "Floor");
+        appendIfSetAndSet(title, byteString, 1, 16, "Doorway");
+        appendIfSet(title, byteString, 2, "Object");
+        appendIfSet(title, byteString, 3, "Draggable");
+        appendIfSet(title, byteString, 4, "Roof");
+        appendIfSet(title, byteString, 5, "Map");
+        appendIfSetAndSet(title, byteString, 5, 17, "Town");
+        appendIfSetAndSet(title, byteString, 5, 18, "PuzzleUnsolved");
+        appendIfSetAndSet(title, byteString, 5, 19, "PuzzleSolved");
+        appendIfSetAndSet(title, byteString, 5, 20, "TravelUnsolved");
+        appendIfSetAndSet(title, byteString, 5, 21, "TravelSolved");
+        appendIfSetAndSet(title, byteString, 5, 22, "BlockadeNorthUnsolved");
+        appendIfSetAndSet(title, byteString, 5, 23, "BlockadeSouthUnsolved");
+        appendIfSetAndSet(title, byteString, 5, 24, "BlockadeWestUnsolved");
+        appendIfSetAndSet(title, byteString, 5, 25, "BlockadeEastUnsolved");
+        appendIfSetAndSet(title, byteString, 5, 26, "BlockadeNorthSolved");
+        appendIfSetAndSet(title, byteString, 5, 27, "BlockadeSouthSolved");
+        appendIfSetAndSet(title, byteString, 5, 28, "BlockadeWestSolved");
+        appendIfSetAndSet(title, byteString, 5, 29, "BlockadeEastSolved");
+        appendIfSetAndSet(title, byteString, 5, 30, "GoalUnsolved");
+        appendIfSetAndSet(title, byteString, 5, 31, "YouAreHere");
+        appendIfSet(title, byteString, 6, "Weapon");
+        appendIfSetAndSet(title, byteString, 6, 16, "BlasterLow");
+        appendIfSetAndSet(title, byteString, 6, 17, "BlasterHigh");
+        appendIfSetAndSet(title, byteString, 6, 18, "Lightsaber");
+        appendIfSetAndSet(title, byteString, 6, 19, "TheForce");
+        appendIfSet(title, byteString, 7, "Item");
+        appendIfSetAndSet(title, byteString, 7, 16, "Keycard");
+        appendIfSetAndSet(title, byteString, 7, 17, "Tool");
+        appendIfSetAndSet(title, byteString, 7, 18, "Part");
+        appendIfSetAndSet(title, byteString, 7, 19, "Valuable");
+        appendIfSetAndSet(title, byteString, 7, 20, "Locator");
+        appendIfSetAndSet(title, byteString, 7, 22, "Edible");
+        appendIfSet(title, byteString, 8, "Character");
+        appendIfSetAndSet(title, byteString, 8, 16, "Hero");
+        appendIfSetAndSet(title, byteString, 8, 17, "Enemy");
+        appendIfSetAndSet(title, byteString, 8, 18, "NPC");
+
+        appendIfSet(title, byteString, 0, "Transparent");
+
+        return title.toString().trim();
+    }
+
+    private void appendIfSet(StringBuilder title, String byteString, int index, String name) {
+        if (isSet(byteString, index)) {
+            title.append(name).append(" ");
+        }
+    }
+
+    private void appendIfSetAndSet(StringBuilder title, String byteString, int index, int index2, String name) {
+        if (isSet(byteString, index) && isSet(byteString, index2)) {
+            title.append(name).append(" ");
+        }
+    }
+
+    private boolean isSet(String byteString, int index) {
+        return byteString.charAt(byteString.length() - index - 1) == '1';
     }
 
     public void saveTilesToOneFileClick() {

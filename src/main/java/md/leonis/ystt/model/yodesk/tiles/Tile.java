@@ -5,6 +5,7 @@ import io.kaitai.struct.KaitaiInputStream;
 import io.kaitai.struct.KaitaiOutputStream;
 import io.kaitai.struct.KaitaiStruct;
 import md.leonis.ystt.model.yodesk.Yodesk;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
 
@@ -15,13 +16,13 @@ public class Tile extends KaitaiStruct {
 
     private final Yodesk root;
     private final TilesEntries parent;
-    private byte[] _raw_attributes;
+    private byte[] rawAttributes;
 
     public Tile(TilesEntries parent, Yodesk root) {
         super(null);
         this.parent = parent;
         this.root = root;
-        this._raw_attributes = "\u0000\u0000\u0000\u0000".getBytes();
+        this.rawAttributes = "\u0000\u0000\u0000\u0000".getBytes();
         this.attributes = new TileAttributes(this, root);
         this.pixels = new byte[32 * 32];
     }
@@ -51,10 +52,14 @@ public class Tile extends KaitaiStruct {
     }
 
     private void _read() {
-        this._raw_attributes = this.io.readBytes(4);
-        KaitaiInputStream io_raw_attributes = new ByteBufferKaitaiInputStream(_raw_attributes);
-        this.attributes = new TileAttributes(io_raw_attributes, this, root);
-        this.pixels = this.io.readBytes(32 * 32);
+        rawAttributes = io.readBytes(4);
+        processRawAttributes();
+        pixels = io.readBytes(32 * 32);
+    }
+
+    public void processRawAttributes() {
+        KaitaiInputStream inputStream = new ByteBufferKaitaiInputStream(rawAttributes);
+        attributes = new TileAttributes(inputStream, this, root);
     }
 
     @Override
@@ -63,7 +68,7 @@ public class Tile extends KaitaiStruct {
     }
 
     public int byteSize() {
-        return _raw_attributes.length +     // _raw_attributes
+        return rawAttributes.length +     // _raw_attributes
                 pixels.length;              // pixels
     }
 
@@ -87,7 +92,18 @@ public class Tile extends KaitaiStruct {
         return parent;
     }
 
-    public byte[] get_raw_attributes() {
-        return _raw_attributes;
+    public byte[] getRawAttributes() {
+        return rawAttributes;
+    }
+
+    public String getAttributesBinaryString() {
+
+        StringBuilder sb = new StringBuilder();
+
+        for (byte b : rawAttributes) {
+            sb.insert(0, StringUtils.right(StringUtils.leftPad(Integer.toBinaryString((int) b & 0xFF), 8, '0'), 8));
+        }
+
+        return sb.toString();
     }
 }

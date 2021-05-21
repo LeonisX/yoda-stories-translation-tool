@@ -61,7 +61,7 @@ public class Tiles extends KaitaiStruct {
     }
 
     public int getTilePixelsPosition(int tileId) {
-        return tilePosition(tileId) + tiles.get(tileId).get_raw_attributes().length;
+        return tilePosition(tileId) + tiles.get(tileId).getRawAttributes().length;
     }
 
     public TilesEntries getTilesEntries() {
@@ -88,6 +88,7 @@ public class Tiles extends KaitaiStruct {
 
         rawTiles = Arrays.copyOf(rawTiles, rawTiles.length + tiles.get(0).byteSize());
         tilesEntries.getTiles().add(new Tile(tilesEntries, root));
+        setAttributes(tiles.size() - 1, "00000000000000000000000000000101"); // Object (transparent)
         parent.setSize(rawTiles.length);
     }
 
@@ -104,5 +105,18 @@ public class Tiles extends KaitaiStruct {
 
         int offset = getTilePixelsPosition(tileId);
         System.arraycopy(pixels, 0, rawTiles, offset, pixels.length);
+    }
+
+    public void setAttributes(int tileId, String binaryString) {
+
+        Tile tile = tiles.get(tileId);
+        byte[] rawAttributes = tile.getRawAttributes();
+
+        for (int i = 0; i < binaryString.length() / 8; i++) {
+            rawAttributes[rawAttributes.length - i - 1] = Integer.valueOf(binaryString.substring(i * 8, i * 8 + 8), 2).byteValue();
+        }
+        tile.processRawAttributes();
+
+        System.arraycopy(rawAttributes, 0, rawTiles, tileId * tile.byteSize(), tile.getRawAttributes().length);
     }
 }

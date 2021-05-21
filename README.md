@@ -20,15 +20,13 @@ An original version: https://github.com/LeonisX/YExplorer
 * HEX
 * Тяжёлые процессы дампинга лучше вынести в отдельный поток
 
+* Initial dir, save/load dir!!!!!
+
 * Сломан вывод таблицы Map (нужна ли?)
 
 * Dump structure (hi, mid, lo levels)
 
 * Show extra data in UI
-
-* TODO tests!!!!!!!!!!!!!!!
-
-* Fix flags: https://www.webfun.io/docs/gameplay/tiles.html
 
 * Compare all characters dumps
 * UnsignedInt, ... - изучить доступные решения. идея простая - возвращать number, но если минус, то тип на порядок больше.
@@ -38,14 +36,13 @@ An original version: https://github.com/LeonisX/YExplorer
 * Validate loaded BMP palette OR not
 * Prepare "SAFE" palette to dump: https://www.webfun.io/docs/gameplay/color-palette.html
 
-* Think how to drag-drop from UI to Windows Explorer
+* Think how to drag-drop from UI from Windows Explorer (Open file)
 * TODO 223.res in description, if need
 * Instruction to translate EXE (UI: TextFlow or WebView)
 * Full instruction: EXE, DTA: MarkDown
 * Resolve all TODO
 * remove all [CR2], [CR] code
 * Bug when show-hide zone layers (#0 map)
-* Bug? Dump tiles by attr - negative values
 
 * Identify Characters MovementTypes
 
