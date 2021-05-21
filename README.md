@@ -31,12 +31,9 @@ An original version: https://github.com/LeonisX/YExplorer
 * Article about unsigned (hex editor, port from delphi, mathematic, before java 8, current solutions, examples)
 
 * Paste from clipboard (good idea)
-* Validate loaded BMP palette OR not
-* Prepare "SAFE" palette to dump: https://www.webfun.io/docs/gameplay/color-palette.html
 
 * Think how to drag-drop from UI from Windows Explorer (Open file)
 * TODO 223.res in description, if need
-* Instruction to translate EXE (UI: TextFlow or WebView)
 * Full instruction: EXE, DTA: MarkDown
 * Resolve all TODO
 * remove all [CR2], [CR] code

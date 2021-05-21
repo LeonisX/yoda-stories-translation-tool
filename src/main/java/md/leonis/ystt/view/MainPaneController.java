@@ -1529,6 +1529,7 @@ public class MainPaneController {
     public void dumpPaletteButtonButtonClick() {
         try {
             PaletteUtils.saveToFile(gamePalette, opath.resolve("palette.pal"));
+            PaletteUtils.saveSafeToFile(gamePalette, opath.resolve("safe-palette.pal"));
             PaletteUtils.saveToFile(fuchsiaPalette, opath.resolve("palette-fuchsia.pal"));
         } catch (Exception e) {
             JavaFxUtils.showAlert("Palette saving error", e);

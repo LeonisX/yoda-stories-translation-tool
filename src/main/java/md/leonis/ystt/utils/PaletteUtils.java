@@ -40,10 +40,15 @@ public class PaletteUtils {
     For example, the color white would be '255 255 255' and black '0 0 0' (255 is the most bright, 0 the less bright)
     */
     public static void saveToFile(int[] palette, Path path) throws IOException {
-        saveToFile(palette, path.toFile());
+        saveToFile(palette, path.toFile(), false);
     }
 
-    public static void saveToFile(int[] palette, File file) throws IOException {
+    // Exlude colors, used for cycling animation: A0-A7, E0-F5
+    public static void saveSafeToFile(int[] palette, Path path) throws IOException {
+        saveToFile(palette, path.toFile(), true);
+    }
+
+    public static void saveToFile(int[] palette, File file, boolean safe) throws IOException {
 
         FileWriter fileWriter = new FileWriter(file);
         PrintWriter printWriter = new PrintWriter(fileWriter);
@@ -52,11 +57,34 @@ public class PaletteUtils {
         printWriter.println(palette.length / 4);
 
         for (int i = 0; i < palette.length; i += 4) {
-            int r = palette[i + 2];
-            int g = palette[i + 1];
-            int b = palette[i];
-            printWriter.printf("%s %s %s\n", r, g, b);
+            if (isSafeColor(i, safe)) {
+                int r = palette[i + 2];
+                int g = palette[i + 1];
+                int b = palette[i];
+                printWriter.printf("%s %s %s\n", r, g, b);
+            }
         }
         printWriter.close();
+    }
+
+    private static boolean isSafeColor(int i, boolean safe) {
+
+        if (!safe) {
+            return true;
+        }
+
+        if (i >= 10 * 4 && i <= 15 * 4) {
+            return false;
+        }
+
+        if (i >= 198 * 4 && i <= 207 * 4) {
+            return false;
+        }
+
+        if (i >= 224 * 4 && i <= 245 * 4) {
+            return false;
+        }
+
+        return true;
     }
 }
