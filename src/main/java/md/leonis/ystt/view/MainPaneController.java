@@ -1452,12 +1452,12 @@ public class MainPaneController {
         namesTableView.refresh();
     }
 
-    //TODO
     public void howToMenuItemClick() {
+        JavaFxUtils.showWindow("How to translate Yoda Stories...","HowTo.fxml");
     }
 
-    //TODO
     public void aboutMenuItemClick() {
+        JavaFxUtils.showWindow("About...","About.fxml");
     }
 
     public void dumpAllSectionsButtonClick() {

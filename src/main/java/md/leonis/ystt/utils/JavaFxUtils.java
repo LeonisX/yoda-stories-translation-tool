@@ -78,6 +78,21 @@ public class JavaFxUtils {
         }
     }
 
+    public static void showWindow(String title, String fxmlFile) {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader();
+            fxmlLoader.setLocation(MainApp.class.getResource(Config.resourcePath + fxmlFile));
+
+            Stage stage = new Stage();
+            stage.setScene(new Scene(fxmlLoader.load()));
+            stage.setTitle(title);
+            stage.setResizable(false);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void showActionsWindow(String title, String description, String text) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader();

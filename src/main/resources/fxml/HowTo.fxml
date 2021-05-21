@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="285.0" maxWidth="511.0" minHeight="240.0" minWidth="250.0" prefHeight="240.0" prefWidth="511.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="md.leonis.ystt.view.HowToController">
+   <Button fx:id="okButton" layoutX="224.0" layoutY="201.0" mnemonicParsing="false" onAction="#okButtonClick" prefHeight="25.0" prefWidth="63.0" text="OK" AnchorPane.bottomAnchor="14.0" />
+   <ImageView fitHeight="128.0" fitWidth="244.0" layoutX="6.0" layoutY="13.0" pickOnBounds="true" preserveRatio="true">
+      <Image url="@../baby-yoda.png" />
+   </ImageView>
+   <Label alignment="TOP_CENTER" layoutX="252.0" layoutY="47.0" prefHeight="140.0" prefWidth="253.0" text="A fully translated game has its own localized ones: loading screen, game start and end screens, actions, puzzles, tile names, as well as a fully translated executable and help files. The task is not easy, but very exciting. We have prepared documentation for you, where each operation is described in steps. Good luck! " textAlignment="CENTER" wrapText="true" />
+   <Label alignment="TOP_CENTER" layoutX="279.0" layoutY="171.0" onMouseClicked="#siteMouseClicked" prefHeight="17.0" prefWidth="197.0" text="Click Me!" textFill="#0d01ee" underline="true">
+      <cursor>
+         <Cursor fx:constant="HAND" />
+      </cursor>
+      <font>
+         <Font name="System Bold" size="12.0" />
+      </font></Label>
+</AnchorPane>
