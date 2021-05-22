@@ -1531,6 +1531,7 @@ public class MainPaneController {
             PaletteUtils.saveToFile(gamePalette, opath.resolve("palette.pal"));
             PaletteUtils.saveSafeToFile(gamePalette, opath.resolve("safe-palette.pal"));
             PaletteUtils.saveToFile(fuchsiaPalette, opath.resolve("palette-fuchsia.pal"));
+            PaletteUtils.saveSafeToFile(fuchsiaPalette, opath.resolve("safe-palette-fuchsia.pal"));
         } catch (Exception e) {
             JavaFxUtils.showAlert("Palette saving error", e);
         }

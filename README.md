@@ -10,11 +10,15 @@ Utility Yoda Stories Translation Tool
 
 [Read Yoda Stories Translation Guide](documents/translation-guide.md)
 
-[Read Guide About YODESK.EXE Modifying](documents/modify-exe.md)
+[Read Guide About YODESK.EXE Modifying](documents/exe-translation.md)
 
 An original version: https://github.com/LeonisX/YExplorer
 
 ## TODO
+
+* Translation instructions
+
+* Conditions/Instruction count equality
 
 * Log
 * HEX
@@ -25,6 +29,8 @@ An original version: https://github.com/LeonisX/YExplorer
 * Dump structure (hi, mid, lo levels)
 
 * Show extra data in UI
+
+* Rename dump files + documentation
 
 * Compare all characters dumps
 * UnsignedInt, ... - изучить доступные решения. идея простая - возвращать number, но если минус, то тип на порядок больше.

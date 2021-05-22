@@ -1,98 +1,79 @@
 Yoda Stories Translation Guide
 ==============================
 
-## Exe modifications
+![](images/baby-yoda.png)
 
-[Read Guide About YODESK.EXE Modifying](modify-exe.md)
-
-
-## Graphics translation
+A fully translated game has its own localized ones: 
 
 * Startup screen
-* Tiles
-* Zones: 0, 76, 77
+* Start, Win and Loose screens
+* Text in Actions
+* Text in Puzzles
+* Tile names
+* Fully translated executable file
+* Fully translated Help file
 
+The task is not easy, but very exciting. Самое важное, что переводить игру можно вдвоём, например, один графику, другой текст.
 
-Для простоты лучше взять обычный шрифт, и потом выполнить horizontal skew со значением: 19.5.
+We have prepared a documentation for you, where each operation is described in steps. Good luck!
 
+* [Graphics](graphics-translation-guide.md)
+* [Text](text-translation-guide.md)
+* [YODESK.EXE](exe-translation.md)
+* YODESK.HLP
 
-## Text translation
+## Какую версию переводить
 
-* Zone Actions
-* Puzzles
-* Tile Names
+В настоящее время известны следующие версии Yoda Stories:
 
+* Star Wars - Yoda Stories (14.02.1997) (Eng) (v1.0)
+* Star Wars - Yoda Stories (14.02.1997) (Eng) (v1.0) (Patch v6)
+* Star Wars - Yoda Stories (20.03.1997) (Eng) (v1.1)
+* **Star Wars - Yoda Stories (10.08.1998) (Eng) (v1.2) (Patch v6)**
+* Star Wars - Yoda Stories (18.02.1997) (Eng) (Demo)
+* Star Wars - Yoda Stories (22.05.1997) (Spa)
+* Star Wars - Yoda Stories (25.06.1997) (Ger)
+* Star Wars - Yoda Stories (13.12.2001) (T-Spa_Selva Translators)
+* Star Wars - Yoda Stories (12.11.2006) (T-Rus_PRO)
+* TODO My translation
 
-### Character encodings
+Они идентифицируются по контрольным суммам файлов yodesk.exe и yodesk.dta.
 
-Несмотря на то, что Юникод на момент создания игры уже существовал, операционные системы семейства Windows 9x поддерживают его весьма ограниченно.
-Зато активно использовались региональные кодировки, или кодовые страницы, это практика, известна ещё со времён DOS.
-Идея заключается в том, что в зависимости от языка системы, одни и те же символы расширенной кодировки ASCII имели разное начертание.
+Yoda Stories Translation Tool (далее по тексту YSTT) после загрузки игры выводит всю необходимую информацию
+о версии, а так же даёт необходимые рекомендации.
 
-Первые 127 символов кодировки ASCII оставались неизменными, но все последующие могли сильно различаться:
+![](images/gui-common.png)
 
-```
-windows-1252: € ‚ƒ„…†‡ˆ‰Š‹Œ Ž  ‘’“”•–—˜™š›œ žŸ ¡¢£¤¥¦§¨©ª«¬­®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ
-windows-1250: € ‚ „…†‡ ‰Š‹ŚŤŽŹ ‘’“”•–— ™š›śťžź ˇ˘Ł¤Ą¦§¨©Ş«¬­®Ż°±˛ł´µ¶·¸ąş»Ľ˝ľżŔÁÂĂÄĹĆÇČÉĘËĚÍÎĎĐŃŇÓÔŐÖ×ŘŮÚŰÜÝŢßŕáâăäĺćçčéęëěíîďđńňóôőö÷řůúűüýţ˙
-windows-1251: ЂЃ‚ѓ„…†‡€‰Љ‹ЊЌЋЏђ‘’“”•–— ™љ›њќћџ ЎўЈ¤Ґ¦§Ё©Є«¬­®Ї°±Ііґµ¶·ё№є»јЅѕїАБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдежзийклмнопрстуфхцчшщъыьэюя
-```
+**Если YSTT не смог идентифицировать вашу версию игры, то обязательно пришлите её нам для изучения.**
 
-Это приводило к определённым трудностям в то время, но и при переводе игры этому следует уделить внимание.
+Мы настоятельно рекомендуем брать в качестве основы ТОЛЬКО версию Star Wars - Yoda Stories (10.08.1998) (Eng) (v1.2) (Patch v6),
+поскольку в ней находятся самые последние исправления.
 
-Поскольку Java (язык, на котором написана утилита Yoda Stories Translation Tool) изначально использует Юникод, то 
-для правильного извлечения, и последующей замены текста необходимо верно подобрать кодировки, поскольку выполняются такие преобразования:
+Искать эту игру стоит в сборнике Star Wars - Yoda Stories & Behind The Magic - Vehicles Special Edition, который,
+в свою очередь, входил в сборник LucasArts Archives Vol. IV: Star Wars Collection II.
 
-Source character encoding (dumping) -> Unicode (internal representation) -> Destination character encoding (inserting)
+Все остальные версии продавались как сборник Star Wars - Yoda Stories & Making Magic.
 
-Для оригинала игры на английском языке, подойдёт любая кодировка, поскольку вполне хватает первых 127 символов (почти).
+В качестве альтернативы можно взять и русский перевод от Leonis, но надо понимать, что перевод перевода может
+оказаться ещё дальше от оригинала.
 
+## Алгоритм перевода DTA файла
 
-#### Variables
+1. Сдампить все ресурсы из yodesk.dta
+2. Перевести их и вставить обратно
 
-Исключение составляют два символа: ¥ (0xA5; Ґ cyrillic) и ¢ (0xA2; ў cyrillic), которые используются в Zone Actions для подстановки названий предметов.
-Своего рода переменные значения. 
+Среди сдампленных ресурсов для перевода потребуются следующие файлы:
 
-При переводе важно, чтобы эти специальные символы оставались неизменными. В коде реализована такая проверка.
+* stup.bmp
+* *.pal
+* clipboard.bmp
+* iact2.docx
+* puz2.docx
+* tilenames2.docx
 
-Поэтому оригинальная кодировка будет не ASCII, а windows-1252 (Latin-1). Эта кодировка автоматически подходит
-для таких западноевропейских вариантов как: испанский, итальянский и французский.
+Если операция вставки ресурсов выполняется не за один раз, то есть, допустим, что сначала была вставлена графика, и файл
+yodesk.dta был сохранён, то его CRC32 поменяется, и со вставкой текста при следующем запуске YSTT будут трудности. 
+Утилита будет искать ресурсы в каталоге output-unk.
+В таком случае перенесите все переведённые ресурсы в каталог output-unk.
 
-В настоящее время всё ещё не найдены французский и итальянский переводы игры. Напишите мне на tv-games@mail.ru, если у вас есть эти игры. 
-
-
-#### Word files
-
-Если вы обратите внимание на [crcs.json](/crcs.json), то в нём как раз и описаны исходные кодировки для каждого известного релиза игры.
-
-Она используется при дампинге текста из файла данных yodesk.dta.
-
-В DOCX файлах это значение указано в справочных целях как "Source character encoding", и его нет смысла менять на что-то другое.
-
-Зато есть смысл поменять значение "Destination character encoding", если игра переводится на язык, не принадлежащий кодировке windows-1252.
-
-
-#### Encodings (code pages)
-
-| Encoding | Name  |
-|:-:|---|
-| windows-1250 | Eastern European (Latin 2) |
-| windows-1251 | Cyrillic (Slavic) |
-| windows-1252 | Western European (Latin-1, ANSI) |
-| windows-1253 | Greek |
-| windows-1254 | Turkish (Latin 5) |
-| windows-1255 | Hebrew |
-| windows-1256 | Arabic |
-| windows-1257 | Baltic |
-| windows-1258 | Vietnamese |
-| x-windows-874 | Thai |
-| windows-31j | Japanese |
-| x-windows-iso2022jp | Japanese ISO-2022 |
-| x-mswin-936 | Chinese Simplified |
-| x-windows-950 | Chinese Traditional |
-| x-MS950-HKSCS | Chinese Traditional + Hong Kong |
-| x-windows-949 | Korean |
-| x-Johab | Korean (Johab) |
-
-Остальные названия кодировок можно посмотреть в [этом документе](https://docs.oracle.com/javase/8/docs/technotes/guides/intl/encoding.doc.html) (вторая колонка). 
-
-Если в программе не оказалось нужной вам кодировки, то добавьте её вручную в файл charsets.json.
+После перевода игры обязательно отправьте её нам, чтобы бы добавили в базу данных известных переводов Yoda Stories.
