@@ -147,10 +147,10 @@ public class MainPaneController {
 
     private Node currentTile;
 
-    public Label mapsCountLabel;
+    public Label zonesCountLabel;
     public Label phrasesCountLabel;
     public Tab dumpTab;
-    public Button saveMapsToFilesButton;
+    public Button saveZonesToFilesButton;
     public CheckBox normalSaveCheckBox;
     public CheckBox groupByFlagsCheckBox;
     public CheckBox groupByPlanetTypeCheckBox;
@@ -159,22 +159,22 @@ public class MainPaneController {
     public CheckBox saveUnusedTilesCheckBox;
     public Button showActionsButton;
     public Canvas zoneTypeCanvas;
-    public CheckBox showMapMonstersCheckBox;
-    public CheckBox showMapHotspotsCheckBox;
-    public Label mapSizeLabel;
-    public Label mapTypeLabel;
-    public Label mapPlanetLabel;
-    public Label mapActionsLabel;
-    public Label mapIzaxUnnamedLabel;
-    public Label mapZax4Unnamed2Label;
-    public FlowPane mapNpcsTilesFlowPane;
-    public FlowPane mapGoalTilesFlowPane;
-    public FlowPane mapProvidedItemsTilesFlowPane;
-    public FlowPane mapRequiredItemsTilesFlowPane;
+    public CheckBox showZoneMonstersCheckBox;
+    public CheckBox showZoneHotspotsCheckBox;
+    public Label zoneSizeLabel;
+    public Label zoneTypeLabel;
+    public Label zonePlanetLabel;
+    public Label zoneActionsLabel;
+    public Label zoneIzaxUnnamedLabel;
+    public Label zoneZax4Unnamed2Label;
+    public FlowPane zoneNpcsTilesFlowPane;
+    public FlowPane zoneGoalTilesFlowPane;
+    public FlowPane zoneProvidedItemsTilesFlowPane;
+    public FlowPane zoneRequiredItemsTilesFlowPane;
     public FlowPane lootTilesFlowPane;
 
     public Tab hexOffsetsTab;
-    public TableView<Zone> mapsTableView;
+    public TableView<Zone> zonesTableView;
 
     public RadioButton topRadioButton;
     public RadioButton middleRadioButton;
@@ -182,13 +182,13 @@ public class MainPaneController {
     public CheckBox topCheckBox;
     public CheckBox middleCheckBox;
     public CheckBox bottomCheckBox;
-    public ToggleGroup mapLayerToggleGroup;
-    public ListView<String> mapEditorListView;
-    public Canvas mapEditorCanvas;
-    public ScrollPane mapEditorTilesScrollPane;
-    public FlowPane mapEditorTilesFlowPane;
-    public Button undoMapEdit;
-    public ContextMenu mapEditorContextMenu;
+    public ToggleGroup zoneLayerToggleGroup;
+    public ListView<String> zoneEditorListView;
+    public Canvas zoneEditorCanvas;
+    public ScrollPane zoneEditorTilesScrollPane;
+    public FlowPane zoneEditorTilesFlowPane;
+    public Button undoZoneEdit;
+    public ContextMenu zoneEditorContextMenu;
     public TabPane zoneOptionsTabPane;
     public Label zoneSpotStatusLabel;
 
@@ -219,6 +219,7 @@ public class MainPaneController {
 
     public Label namesCountLabel;
     public TableView<TileName> namesTableView;
+    public Button saveNamesToFilesButton;
     public Button dumpNamesTextToDocx;
     public Button loadTranslatedNamesText;
     public Button replaceNamesText;
@@ -236,6 +237,7 @@ public class MainPaneController {
     private static final String E_BMP = ".bmp";
     private static final String E_DOCX = ".docx";
     private static final String E_XLSX = ".xlsx";
+    private static final String E_TXT = ".txt";
     private static final int TILE_SIZE = 32;
 
     Path spath, opath;
@@ -369,19 +371,19 @@ public class MainPaneController {
         tilesContextMenu.setOnShown(this::selectTileMenuItem);
         tilesToggleGroup.selectedToggleProperty().addListener(tilesAttributesToggleGroupListener());
 
-        // Maps
-        mapsCountLabel.setText(String.valueOf(yodesk.getZones().getZones().size()));
+        // Zones
+        zonesCountLabel.setText(String.valueOf(yodesk.getZones().getZones().size()));
         phrasesCountLabel.setText(
                 String.valueOf(yodesk.getZones().getZones().stream().mapToLong(z -> z.getActions().stream()
                         .mapToLong(a -> a.getInstructions().stream().map(Instruction::getText).filter(StringUtils::isNotBlank).count() +
                                 a.getConditions().stream().map(Condition::getText).filter(StringUtils::isNotBlank).count()).sum()).sum()
                 )
         );
-        mapsTableView.setItems(FXCollections.observableList(yodesk.getZones().getZones()));
-        mapEditorListView.setItems(FXCollections.observableList(yodesk.getZones().getZones().stream().map(m -> "Map #" + m.getIndex()).collect(Collectors.toList())));
-        mapEditorListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> drawEditZone());
-        mapEditorListView.getSelectionModel().select(0);
-        mapEditorCanvas.setOnContextMenuRequested(e -> mapEditorContextMenu.show((Node) e.getSource(), e.getScreenX(), e.getScreenY()));
+        zonesTableView.setItems(FXCollections.observableList(yodesk.getZones().getZones()));
+        zoneEditorListView.setItems(FXCollections.observableList(yodesk.getZones().getZones().stream().map(m -> "Zone #" + m.getIndex()).collect(Collectors.toList())));
+        zoneEditorListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> drawEditZone());
+        zoneEditorListView.getSelectionModel().select(0);
+        zoneEditorCanvas.setOnContextMenuRequested(e -> zoneEditorContextMenu.show((Node) e.getSource(), e.getScreenX(), e.getScreenY()));
         zoneOptionsTabPane.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> positionZoneOptionsTabPane());
         drawMapEditorTiles();
 
@@ -611,7 +613,7 @@ public class MainPaneController {
             yodesk.getTiles().addTile();
             int tileId = yodesk.getTiles().getTiles().size() - 1;
             tilesFlowPane.getChildren().add(tileId, newTile(tileId, true));
-            mapEditorTilesFlowPane.getChildren().add(tileId, newTile(tileId, false));
+            zoneEditorTilesFlowPane.getChildren().add(tileId, newTile(tileId, false));
             usedTiles.add(false);
             drawEditZone();
         } catch (Exception e) {
@@ -657,7 +659,7 @@ public class MainPaneController {
 
         yodesk.getTiles().deleteTile();
         tilesFlowPane.getChildren().remove(tileId);
-        mapEditorTilesFlowPane.getChildren().remove(tileId);
+        zoneEditorTilesFlowPane.getChildren().remove(tileId);
         yodesk.getZones().getZones().forEach(z -> z.replaceTile(tileId, newTileId));
         yodesk.getPuzzles().getPuzzles().forEach(p -> p.replaceTile(tileId, newTileId));
         yodesk.getCharacters().getCharacters().forEach(c -> c.replaceTile(tileId, newTileId));
@@ -709,7 +711,7 @@ public class MainPaneController {
                 int y = Integer.parseInt(chunks[1]);
                 WritableImage wi = ImageUtils.snapshot(clipboardCanvas, x, y, TILE_SIZE, TILE_SIZE);
                 image.setImage(wi);
-                ((ImageView) mapEditorTilesFlowPane.getChildren().get(tileId)).setImage(wi);
+                ((ImageView) zoneEditorTilesFlowPane.getChildren().get(tileId)).setImage(wi);
                 yodesk.getTiles().replaceTile(tileId, ImageUtils.getBytes(wi, transparentColor));
             }
             event.setDropCompleted(true);
@@ -801,7 +803,7 @@ public class MainPaneController {
                     event.consume();
                 });
 
-                mapEditorTilesFlowPane.getChildren().add(image);
+                zoneEditorTilesFlowPane.getChildren().add(image);
             }
         } catch (Exception e) {
             JavaFxUtils.showAlert("Tiles display error", e);
@@ -846,26 +848,26 @@ public class MainPaneController {
         boolean hasInActiveTeleporter = zone.getType().equals(ZoneType.EMPTY) &&
                 zone.getTileIds().stream().flatMap(l -> l.getColumn().stream()).anyMatch(t -> t.equals(536));
 
-        mapSizeLabel.setText(zone.getWidth() + "x" + zone.getHeight());
+        zoneSizeLabel.setText(zone.getWidth() + "x" + zone.getHeight());
 
 
         if (zone.getIzx2().getProvidedItems().size() == 1 && zone.getIzx2().getProvidedItems().get(0).equals(511)) {
-            mapTypeLabel.setText("Find Force");
+            zoneTypeLabel.setText("Find Force");
         } else if (zone.getIzx2().getProvidedItems().size() == 1 && zone.getIzx2().getProvidedItems().get(0).equals(421)) {
-            mapTypeLabel.setText("Find Locator");
+            zoneTypeLabel.setText("Find Locator");
         } else {
-            mapTypeLabel.setText(StringUtils.capitalize(zone.getType().name().toLowerCase().replace("_", " ")));
+            zoneTypeLabel.setText(StringUtils.capitalize(zone.getType().name().toLowerCase().replace("_", " ")));
         }
 
         if (hasActiveTeleporter || hasInActiveTeleporter) {
-            mapTypeLabel.setText(mapTypeLabel.getText() + " with Teleporter");
+            zoneTypeLabel.setText(zoneTypeLabel.getText() + " with Teleporter");
         }
 
-        mapPlanetLabel.setText(StringUtils.capitalize(zone.getPlanet().name().toLowerCase()));
-        mapActionsLabel.setText(String.valueOf(zone.getActions().size()));
+        zonePlanetLabel.setText(StringUtils.capitalize(zone.getPlanet().name().toLowerCase()));
+        zoneActionsLabel.setText(String.valueOf(zone.getActions().size()));
 
-        mapIzaxUnnamedLabel.setText(String.valueOf(zone.getIzax().get_unnamed2()));
-        mapZax4Unnamed2Label.setText(String.valueOf(zone.getIzx4().get_unnamed2()));
+        zoneIzaxUnnamedLabel.setText(String.valueOf(zone.getIzax().get_unnamed2()));
+        zoneZax4Unnamed2Label.setText(String.valueOf(zone.getIzx4().get_unnamed2()));
 
         if (hasActiveTeleporter) {
             drawTileOnCanvas(834, zoneTypeCanvas, 0, 0, transparentColor);
@@ -875,10 +877,10 @@ public class MainPaneController {
             drawTileOnCanvas(zone.getType().getTileId(), zoneTypeCanvas, 0, 0, transparentColor);
         }
 
-        drawTilesOnFlowPane(mapNpcsTilesFlowPane, zone.getIzx3().getNpcs());
-        drawTilesOnFlowPane(mapGoalTilesFlowPane, zone.getIzax().getGoalItems());
-        drawTilesOnFlowPane(mapProvidedItemsTilesFlowPane, zone.getIzx2().getProvidedItems());
-        drawTilesOnFlowPane(mapRequiredItemsTilesFlowPane, zone.getIzax().getRequiredItems());
+        drawTilesOnFlowPane(zoneNpcsTilesFlowPane, zone.getIzx3().getNpcs());
+        drawTilesOnFlowPane(zoneGoalTilesFlowPane, zone.getIzax().getGoalItems());
+        drawTilesOnFlowPane(zoneProvidedItemsTilesFlowPane, zone.getIzx2().getProvidedItems());
+        drawTilesOnFlowPane(zoneRequiredItemsTilesFlowPane, zone.getIzax().getRequiredItems());
 
         List<Integer> lootTiles = new ArrayList<>();
 
@@ -898,22 +900,22 @@ public class MainPaneController {
             drawEditorMap(zoneId);
             showMapInfo(zoneId);
             positionZoneOptionsTabPane();
-            undoMapEdit.setVisible(null != zoneHistoryMap.get(zoneId));
+            undoZoneEdit.setVisible(null != zoneHistoryMap.get(zoneId));
         }
     }
 
     private void positionZoneOptionsTabPane() {
 
         if (zoneOptionsTabPane.getSelectionModel().getSelectedIndex() == 1) {
-            zoneOptionsTabPane.setLayoutX(mapEditorCanvas.getLayoutX() + mapEditorCanvas.getWidth() + 8);
+            zoneOptionsTabPane.setLayoutX(zoneEditorCanvas.getLayoutX() + zoneEditorCanvas.getWidth() + 8);
         } else {
-            zoneOptionsTabPane.setLayoutX(mapEditorCanvas.getLayoutX() + 18 * 32 + 8);
+            zoneOptionsTabPane.setLayoutX(zoneEditorCanvas.getLayoutX() + 18 * 32 + 8);
         }
     }
 
     public void showActionsButtonClick() {
 
-        Zone zone = yodesk.getZones().getZones().get(mapEditorListView.getSelectionModel().getSelectedIndex());
+        Zone zone = yodesk.getZones().getZones().get(zoneEditorListView.getSelectionModel().getSelectedIndex());
         List<Action> actions = zone.getActions();
         StringBuilder sb = new StringBuilder();
 
@@ -954,15 +956,15 @@ public class MainPaneController {
     private void drawEditorMap(int zoneId) {
         try {
             //ReadIZON(id, false);
-            ReadMap(mapEditorCanvas, zoneId, true, normalSaveCheckBox.isSelected() || groupByFlagsCheckBox.isSelected() || groupByPlanetTypeCheckBox.isSelected());
+            ReadMap(zoneEditorCanvas, zoneId, true, false);
         } catch (Exception e) {
             JavaFxUtils.showAlert(String.format("Map %s display error", zoneId), e);
         }
     }
 
-    public void mapEditorCanvasDragDetected(MouseEvent event) {
+    public void zoneEditorCanvasDragDetected(MouseEvent event) {
 
-        Dragboard db = mapEditorCanvas.startDragAndDrop(TransferMode.ANY);
+        Dragboard db = zoneEditorCanvas.startDragAndDrop(TransferMode.ANY);
         ClipboardContent content = new ClipboardContent();
 
         int x = ((int) event.getX()) & 0xFFFFFFE0;
@@ -973,37 +975,37 @@ public class MainPaneController {
         event.consume();
     }
 
-    public void mapEditorCanvasDragOver(DragEvent event) {
+    public void zoneEditorCanvasDragOver(DragEvent event) {
 
-        if (event.getGestureSource() != mapEditorCanvas && event.getDragboard().hasString()) {
+        if (event.getGestureSource() != zoneEditorCanvas && event.getDragboard().hasString()) {
             event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
         }
         event.consume();
     }
 
-    public void mapEditorCanvasDragEntered(DragEvent event) {
+    public void zoneEditorCanvasDragEntered(DragEvent event) {
 
-        if (event.getGestureSource() != mapEditorCanvas && event.getDragboard().hasString()) {
+        if (event.getGestureSource() != zoneEditorCanvas && event.getDragboard().hasString()) {
             moveClipboardRectangle(event.getX(), event.getY());
             clipboardRectangle.setVisible(false);
         }
         event.consume();
     }
 
-    public void mapEditorCanvasDragExited(DragEvent event) {
+    public void zoneEditorCanvasDragExited(DragEvent event) {
 
         moveClipboardRectangle(event.getX(), event.getY());
         event.consume();
     }
 
-    public void mapEditorCanvasDragDropped(DragEvent event) {
+    public void zoneEditorCanvasDragDropped(DragEvent event) {
 
         Dragboard db = event.getDragboard();
         if (db.hasString()) {
             int tileId = Integer.parseInt(db.getString());
             int x = ((int) event.getX()) / TILE_SIZE;
             int y = ((int) event.getY()) / TILE_SIZE;
-            int layerId = Integer.parseInt((String) mapLayerToggleGroup.getSelectedToggle().getUserData());
+            int layerId = Integer.parseInt((String) zoneLayerToggleGroup.getSelectedToggle().getUserData());
 
             changeZoneSpot(x, y, layerId, tileId);
         }
@@ -1012,7 +1014,7 @@ public class MainPaneController {
         event.consume();
     }
 
-    public void mapEditorCanvasMouseMoved(MouseEvent event) {
+    public void zoneEditorCanvasMouseMoved(MouseEvent event) {
 
         mapX = (int) (event.getX() / TILE_SIZE);
         mapY = (int) (event.getY() / TILE_SIZE);
@@ -1069,7 +1071,7 @@ public class MainPaneController {
 
         zoneSpotStatusLabel.setText(String.join("\n", lines));
         zoneSpotStatusLabel.setLayoutX(event.getX() + zoneSpotStatusLabel.getWidth() - 20);
-        if (event.getY() + zoneSpotStatusLabel.getHeight() + 20 > mapEditorCanvas.getLayoutY() + 18 * TILE_SIZE) {
+        if (event.getY() + zoneSpotStatusLabel.getHeight() + 20 > zoneEditorCanvas.getLayoutY() + 18 * TILE_SIZE) {
             zoneSpotStatusLabel.setLayoutY(event.getY() - zoneSpotStatusLabel.getHeight() - 20);
         } else {
             zoneSpotStatusLabel.setLayoutY(event.getY() + 20);
@@ -1078,6 +1080,9 @@ public class MainPaneController {
         statusCanvas.setHeight(TILE_SIZE);
         statusCanvas.setWidth(TILE_SIZE * 3);
         statusCanvas.getGraphicsContext2D().clearRect(0, 0, statusCanvas.getWidth(), statusCanvas.getHeight());
+        drawBorderOnCanvas(statusCanvas, 0,0, Color.BLACK);
+        drawBorderOnCanvas(statusCanvas, TILE_SIZE,0, Color.BLACK);
+        drawBorderOnCanvas(statusCanvas, TILE_SIZE * 2,0, Color.BLACK);
         if (column.get(2) < yodesk.getTiles().getTiles().size()) {
             drawTileOnCanvas(column.get(2), statusCanvas, 0, 0, Color.rgb(0xF4, 0xF4, 0xF4));
         }
@@ -1092,7 +1097,7 @@ public class MainPaneController {
         statusCanvas.setVisible(true);
     }
 
-    public void mapEditorCanvasMouseExited() {
+    public void zoneEditorCanvasMouseExited() {
         showZoneStatus(getEditorZone());
         zoneSpotStatusLabel.setVisible(false);
         statusCanvas.setVisible(false);
@@ -1117,12 +1122,12 @@ public class MainPaneController {
 
         modifyZoneSpot(zone.getIndex(), x, y, layerId, tileId);
 
-        addToMapsHistory(zone.getIndex(), x, y, layerId, oldValue, tileId);
+        addToZonesHistory(zone.getIndex(), x, y, layerId, oldValue, tileId);
 
-        undoMapEdit.setVisible(true);
+        undoZoneEdit.setVisible(true);
     }
 
-    private void addToMapsHistory(int zoneId, int x, int y, int layerId, int oldValue, int newValue) {
+    private void addToZonesHistory(int zoneId, int x, int y, int layerId, int oldValue, int newValue) {
 
         ArrayDeque<ZoneHistory> histories = zoneHistoryMap.get(zoneId);
         if (null == histories) {
@@ -1133,7 +1138,7 @@ public class MainPaneController {
         zoneHistoryMap.put(zoneId, histories);
     }
 
-    public void undoMapEditClick() {
+    public void undoZoneEditClick() {
 
         ArrayDeque<ZoneHistory> histories = zoneHistoryMap.get(getEditorZoneId());
 
@@ -1145,7 +1150,7 @@ public class MainPaneController {
 
             if (histories.isEmpty()) {
                 zoneHistoryMap.remove(zoneId);
-                undoMapEdit.setVisible(false);
+                undoZoneEdit.setVisible(false);
             }
         }
     }
@@ -1156,10 +1161,10 @@ public class MainPaneController {
         List<Integer> column = zone.getTileIds().get(y * zone.getWidth() + x).getColumn();
         column.set(layerId, tileId);
 
-        drawZoneSpot(mapEditorCanvas, zone, x, y);
+        drawZoneSpot(zoneEditorCanvas, zone, x, y);
 
-        if (zone.getIndex() == mapEditorListView.getSelectionModel().getSelectedIndex()) {
-            drawZoneSpot(mapEditorCanvas, zone, x, y);
+        if (zone.getIndex() == zoneEditorListView.getSelectionModel().getSelectedIndex()) {
+            drawZoneSpot(zoneEditorCanvas, zone, x, y);
         }
     }
 
@@ -1170,7 +1175,7 @@ public class MainPaneController {
         Zone zone = yodesk.getZones().getZones().get(zoneId);
 
         //TODO offset if need
-        //Log.debug("Map #" + zoneId + " offset: " + "section.intToHex(section.GetPosition(), 8)");
+        //Log.debug("Zone #" + zoneId + " offset: " + "section.intToHex(section.GetPosition(), 8)");
         showZoneStatus(zone);
 
         if (show) {
@@ -1185,26 +1190,26 @@ public class MainPaneController {
         // TODO Application.ProcessMessages;
 
         if (normalSaveCheckBox.isSelected() && save) {
-            Path path = opath.resolve("Maps");
+            Path path = opath.resolve("Zones");
             IOUtils.createDirectories(path);
             BMPWriter.write8bit(canvas, path.resolve(StringUtils.leftPad(Integer.toString(zoneId), 3, '0') + E_BMP));
         }
 
         if (groupByFlagsCheckBox.isSelected() && save) {
-            Path path = opath.resolve("MapsByFlags").resolve(zone.getType().name());
+            Path path = opath.resolve("ZonesByType").resolve(zone.getType().name());
             IOUtils.createDirectories(path);
             BMPWriter.write8bit(canvas, path.resolve(StringUtils.leftPad(Integer.toString(zoneId), 3, '0') + E_BMP));
         }
 
         if (groupByPlanetTypeCheckBox.isSelected() && save) {
-            Path path = opath.resolve("MapsByPlanetType").resolve(zone.getPlanet().name());
+            Path path = opath.resolve("ZonesByPlanetType").resolve(zone.getPlanet().name());
             IOUtils.createDirectories(path);
             BMPWriter.write8bit(canvas, path.resolve(StringUtils.leftPad(Integer.toString(zoneId), 3, '0') + E_BMP));
         }
     }
 
     private void showZoneStatus(Zone zone) {
-        statusLabel.setText("Map: " + zone.getIndex() + " (" + zone.getPlanet().name() + ")");
+        statusLabel.setText("Zone: " + zone.getIndex() + " (" + zone.getPlanet().name() + ")");
     }
 
     private void drawZone(Canvas canvas, int zoneId) {
@@ -1221,7 +1226,7 @@ public class MainPaneController {
         if (middleCheckBox.isSelected()) {
             drawZoneLayer(canvas, zone, 1);
         }
-        if (showMapMonstersCheckBox.isSelected()) {
+        if (showZoneMonstersCheckBox.isSelected()) {
             zone.getIzax().getMonsters().forEach(m -> {
                 int tileId = yodesk.getCharacters().getCharacters().get(m.getCharacter()).getTileIds().get(0);
                 drawTileOnCanvas(tileId, canvas, m.getX() * TILE_SIZE, m.getY() * TILE_SIZE, null);
@@ -1231,7 +1236,7 @@ public class MainPaneController {
         if (topCheckBox.isSelected()) {
             drawZoneLayer(canvas, zone, 2);
         }
-        if (showMapHotspotsCheckBox.isSelected()) {
+        if (showZoneHotspotsCheckBox.isSelected()) {
             zone.getHotspots().forEach(h -> drawBorderOnCanvas(canvas, h.getX() * TILE_SIZE, h.getY() * TILE_SIZE, Color.FUCHSIA));
         }
     }
@@ -1255,7 +1260,7 @@ public class MainPaneController {
         if (middleCheckBox.isSelected()) {
             drawTileOnMap(canvas, zone, x, y, 1);
         }
-        if (showMapMonstersCheckBox.isSelected()) {
+        if (showZoneMonstersCheckBox.isSelected()) {
             zone.getIzax().getMonsters().forEach(m -> {
                 if (m.getX() == x && m.getY() == y) {
                     int tileId = yodesk.getCharacters().getCharacters().get(m.getCharacter()).getTileIds().get(0);
@@ -1267,7 +1272,7 @@ public class MainPaneController {
         if (topCheckBox.isSelected()) {
             drawTileOnMap(canvas, zone, x, y, 2);
         }
-        if (showMapHotspotsCheckBox.isSelected()) {
+        if (showZoneHotspotsCheckBox.isSelected()) {
             zone.getHotspots().forEach(h -> {
                 if (h.getX() == x && h.getY() == y) {
                     drawBorderOnCanvas(canvas, h.getX() * TILE_SIZE, h.getY() * TILE_SIZE, Color.rgb(255, 0, 255));
@@ -1286,7 +1291,7 @@ public class MainPaneController {
     }
 
     public void layerCheckBoxClick() {
-        drawZone(mapEditorCanvas, getEditorZone());
+        drawZone(zoneEditorCanvas, getEditorZone());
     }
 
     private Zone getEditorZone() {
@@ -1294,12 +1299,12 @@ public class MainPaneController {
     }
 
     private int getEditorZoneId() {
-        return mapEditorListView.getSelectionModel().getSelectedIndex();
+        return zoneEditorListView.getSelectionModel().getSelectedIndex();
     }
 
     private void ReadIZON(int zoneId, boolean save) throws IOException {
 
-        ReadMap(mapEditorCanvas, zoneId, normalSaveCheckBox.isSelected() || groupByFlagsCheckBox.isSelected() || groupByPlanetTypeCheckBox.isSelected(), save);
+        ReadMap(zoneEditorCanvas, zoneId, normalSaveCheckBox.isSelected() || groupByFlagsCheckBox.isSelected() || groupByPlanetTypeCheckBox.isSelected(), save);
 
         //TODO
         //MapProgressBar.Position :=id;
@@ -1457,7 +1462,7 @@ public class MainPaneController {
             ImageView imageView = (ImageView) children.get(i);
             imageView.setImage(drawTileOnImage(i));
         }
-        children = mapEditorTilesFlowPane.getChildren();
+        children = zoneEditorTilesFlowPane.getChildren();
         for (int i = 0; i < children.size() - 1; i++) {
             ImageView imageView = (ImageView) children.get(i);
             imageView.setImage(drawTileOnImage(i));
@@ -1465,16 +1470,16 @@ public class MainPaneController {
         drawTitleImage();
         clipboardBufferedImage = ImageUtils.replaceIcm(clipboardBufferedImage, icm);
         ImageUtils.drawOnCanvas(clipboardBufferedImage, clipboardCanvas, transparentColor);
-        drawZone(mapEditorCanvas, mapEditorListView.getSelectionModel().getSelectedIndex());
+        drawZone(zoneEditorCanvas, zoneEditorListView.getSelectionModel().getSelectedIndex());
         namesTableView.refresh();
     }
 
     public void howToMenuItemClick() {
-        JavaFxUtils.showWindow("How to translate Yoda Stories...","HowTo.fxml");
+        JavaFxUtils.showWindow("How to translate Yoda Stories...", "HowTo.fxml");
     }
 
     public void aboutMenuItemClick() {
-        JavaFxUtils.showWindow("About...","About.fxml");
+        JavaFxUtils.showWindow("About...", "About.fxml");
     }
 
     public void dumpAllSectionsButtonClick() {
@@ -1500,7 +1505,7 @@ public class MainPaneController {
         // TODO Log.Debug('Title screen saved')
 
         try {
-            Path path = opath.resolve("stup" + E_BMP);
+            Path path = opath.resolve("startup" + E_BMP);
             if (titleScreenImageView.getUserData() != null) {
                 BMPWriter.write((BMPImage) titleScreenImageView.getUserData(), path);
             } else {
@@ -1514,7 +1519,7 @@ public class MainPaneController {
     public void loadFromBitmapButtonClick() {
 
         try {
-            BMPImage titleImage = BMPReader.readExt(opath.resolve("stup" + E_BMP));
+            BMPImage titleImage = BMPReader.readExt(opath.resolve("startup" + E_BMP));
 
             // Update in memory
             for (int y = 0; y < titleImage.getHeight(); y++) {
@@ -1546,9 +1551,9 @@ public class MainPaneController {
     public void dumpPaletteButtonButtonClick() {
         try {
             PaletteUtils.saveToFile(gamePalette, opath.resolve("palette.pal"));
-            PaletteUtils.saveSafeToFile(gamePalette, opath.resolve("safe-palette.pal"));
+            PaletteUtils.saveSafeToFile(gamePalette, opath.resolve("palette-safe.pal"));
             PaletteUtils.saveToFile(fuchsiaPalette, opath.resolve("palette-fuchsia.pal"));
-            PaletteUtils.saveSafeToFile(fuchsiaPalette, opath.resolve("safe-palette-fuchsia.pal"));
+            PaletteUtils.saveSafeToFile(fuchsiaPalette, opath.resolve("palette-fuchsia-safe.pal"));
         } catch (Exception e) {
             JavaFxUtils.showAlert("Palette saving error", e);
         }
@@ -1556,7 +1561,7 @@ public class MainPaneController {
 
     public void saveSoundsListToFileButtonClick() {
         try {
-            IOUtils.saveTextFile(yodesk.getSounds().getSounds(), opath.resolve("snds.txt"));
+            IOUtils.saveTextFile(yodesk.getSounds().getSounds(), opath.resolve("sounds" + E_TXT));
         } catch (Exception e) {
             JavaFxUtils.showAlert("Sounds list saving error", e);
         }
@@ -1573,6 +1578,16 @@ public class MainPaneController {
             Path attrPath = opath.resolve("TilesByAttr");
             Path attrNamesPath = opath.resolve("TilesByAttrName");
             //Log.clear();
+
+            if (decimalFilenamesCheckBox.isSelected()) {
+                IOUtils.createDirectories(tilesPath);
+            }
+            if (hexFilenamesCheckBox.isSelected()) {
+                IOUtils.createDirectories(hexPath);
+            }
+            if (groupByAttributesFilenamesCheckBox.isSelected()) {
+                IOUtils.createDirectories(attrPath);
+            }
 
             Map<String, List<Integer>> byAttr = new HashMap<>();
 
@@ -1605,7 +1620,7 @@ public class MainPaneController {
 
             if (groupByAttributesFilenamesCheckBox.isSelected()) {
                 for (Map.Entry<String, List<Integer>> e : byAttr.entrySet()) {
-                    Path path = attrPath.resolve(e.getKey()+ " - " + getTileName(e.getKey()) + " (" + e.getValue().size() + ")");
+                    Path path = attrPath.resolve(e.getKey() + " - " + getTileName(e.getKey()) + " (" + e.getValue().size() + ")");
                     IOUtils.createDirectories(path);
                     for (Integer i : e.getValue()) {
                         BMPWriter.write(getTile(i, icm), path.resolve(StringUtils.leftPad(Integer.toString(i), 4, "0") + E_BMP).toFile());
@@ -1767,17 +1782,8 @@ public class MainPaneController {
         ImageUtils.fillCanvas(clipboardCanvas, transparentColor);
     }
 
-    public void saveMapsToFilesButtonClick() throws IOException {
+    public void saveZonesToFilesButtonClick() throws IOException {
 
-        if (normalSaveCheckBox.isSelected()) {
-            IOUtils.createDirectories(opath.resolve("Maps"));
-        }
-        if (groupByFlagsCheckBox.isSelected()) {
-            IOUtils.createDirectories(opath.resolve("MapsByFlags"));
-        }
-        if (groupByPlanetTypeCheckBox.isSelected()) {
-            IOUtils.createDirectories(opath.resolve("MapsByPlanetType"));
-        }
         if (dumpActionsCheckBox.isSelected()) {
             IOUtils.createDirectories(opath.resolve("IZAX"));
             IOUtils.createDirectories(opath.resolve("IZX2"));
@@ -1785,8 +1791,6 @@ public class MainPaneController {
             IOUtils.createDirectories(opath.resolve("IZX4"));
             IOUtils.createDirectories(opath.resolve("IACT"));
             IOUtils.createDirectories(opath.resolve("OIE"));
-            IOUtils.createDirectories(opath.resolve("Actions"));
-            IOUtils.createDirectories(opath.resolve("ActionsNoText"));
 
             dumpActionsScripts();
         }
@@ -1796,7 +1800,7 @@ public class MainPaneController {
         //MapProgressBar.Max := DTA.mapsCount;
 
         //Log.Clear;
-        Log.debug("Maps (zones):");
+        Log.debug("Zones:");
         Log.newLine();
         Log.debug("Total count: " + yodesk.getZones().getZones().size());
         Log.newLine();
@@ -1827,11 +1831,9 @@ public class MainPaneController {
     public void dumpActionsTextToDocxClick() {
 
         try {
-            IOUtils.saveTextFile(WordHelper.getAllPhrases(), opath.resolve("iact.txt"));
-
-            WordUtils.saveZones(dtaCrc32, opath.resolve("iact2" + E_DOCX));
+            WordUtils.saveZones(dtaCrc32, opath.resolve("actions" + E_DOCX));
         } catch (Exception e) {
-            JavaFxUtils.showAlert("Error saving Actions text to file", e);
+            JavaFxUtils.showAlert("Error saving Actions text to the DOCX file", e);
         }
     }
 
@@ -1859,14 +1861,17 @@ public class MainPaneController {
                 sb.append("Zone ").append(zoneId).append("\n").append("\n").append(ssb).append("\n");
                 sbn.append("Zone ").append(zoneId).append("\n").append("\n").append(ssbn).append("\n");
 
-                IOUtils.saveTextFile(ssb.toString(), opath.resolve("Actions").resolve(StringUtils.leftPad(Integer.toString(zoneId), 4, '0') + ".txt"));
-                IOUtils.saveTextFile(ssbn.toString(), opath.resolve("ActionsNoText").resolve(StringUtils.leftPad(Integer.toString(zoneId), 4, '0') + ".txt"));
+                IOUtils.saveTextFile(ssb.toString(), opath.resolve("ActionsScripts").resolve(StringUtils.leftPad(Integer.toString(zoneId), 4, '0') + E_TXT));
+                IOUtils.saveTextFile(ssbn.toString(), opath.resolve("ActionsScriptsNoText").resolve(StringUtils.leftPad(Integer.toString(zoneId), 4, '0') + E_TXT));
             }
 
-            IOUtils.saveTextFile(Collections.singletonList(sb.toString()), opath.resolve("actions.txt"));
-            IOUtils.saveTextFile(Collections.singletonList(sbn.toString()), opath.resolve("actionsNoText.txt"));
+            IOUtils.saveTextFile(Collections.singletonList(sb.toString()), opath.resolve("actionsScripts" + E_TXT));
+            IOUtils.saveTextFile(Collections.singletonList(sbn.toString()), opath.resolve("actionsScriptsNoText" + E_TXT));
+
+            IOUtils.saveTextFile(WordHelper.getAllPhrases(), opath.resolve("actions" + E_TXT));
+
         } catch (Exception e) {
-            JavaFxUtils.showAlert("Error saving Actions scripts to file", e);
+            JavaFxUtils.showAlert("Error saving Actions scripts to thee files", e);
         }
     }
 
@@ -1905,7 +1910,7 @@ public class MainPaneController {
     public void loadTranslatedActionsTextClick() {
 
         try {
-            WordRecord wordRecord = WordUtils.loadRecords(opath.resolve("iact2" + E_DOCX));
+            WordRecord wordRecord = WordUtils.loadRecords(opath.resolve("actions" + E_DOCX));
             validateProps(wordRecord.getProps());
             actionTexts = wordRecord.getStringRecords();
             actionsTextTableView.setItems(FXCollections.observableList(actionTexts));
@@ -2033,7 +2038,6 @@ public class MainPaneController {
 
     public void dumpPuzzlesTextToDocxClick() {
         try {
-            IOUtils.createDirectories(opath.resolve("PUZ2"));
             Log.clear();
             Log.debug("Puzzles (2):");
             Log.newLine();
@@ -2045,9 +2049,11 @@ public class MainPaneController {
                 position += yodesk.getPuzzles().getPuzzles().get(i).byteSize();
             }
             //TODO rewrite code after tests
-            List<String> phrases = yodesk.getPuzzles().getFilteredPuzzles().stream()
-                    .flatMap(p -> p.getStrings().stream().filter(s -> !s.isEmpty())).map(s -> s.replace("\r\n", "[CR]").replace("[CR][CR]", "[CR2]")).collect(Collectors.toList());
-            IOUtils.saveTextFile(phrases, opath.resolve("puz2.txt"));
+            if (!disableNonTranslationMenuItem.isSelected()) {
+                List<String> phrases = yodesk.getPuzzles().getFilteredPuzzles().stream()
+                        .flatMap(p -> p.getStrings().stream().filter(s -> !s.isEmpty())).map(s -> s.replace("\r\n", "[CR]").replace("[CR][CR]", "[CR2]")).collect(Collectors.toList());
+                IOUtils.saveTextFile(phrases, opath.resolve("puzzles" + E_TXT));
+            }
 
             Map<Long, List<String>> byType = yodesk.getPuzzles().getFilteredPuzzles().stream().filter(p -> p.getType() != null).collect(Collectors.groupingBy(Puzzle::getType, Collectors.mapping(p -> Long.toHexString(p.getIndex()), Collectors.toList())));
 
@@ -2076,7 +2082,7 @@ public class MainPaneController {
             System.out.println(puzzles1);
             System.out.println(puzzles2);
 
-            WordUtils.savePuzzles(dtaCrc32, opath.resolve("puz2" + E_DOCX));
+            WordUtils.savePuzzles(dtaCrc32, opath.resolve("puzzles" + E_DOCX));
 
         } catch (Exception e) {
             JavaFxUtils.showAlert("Error saving puzzles to the files", e);
@@ -2169,9 +2175,9 @@ public class MainPaneController {
                 position += yodesk.getCharacterAuxiliaries().getAuxiliaries().get(i).byteSize();
             }
 
-            WordUtils.saveCharacters("Characters", dtaCrc32, opath.resolve("chars" + E_DOCX));
+            WordUtils.saveCharacters("Characters", dtaCrc32, opath.resolve("characters" + E_DOCX));
 
-            IOUtils.saveTextFile(yodesk.getCharacters().getFilteredCharacters().stream().map(Character::getName).collect(Collectors.toList()), opath.resolve("chars.txt"));
+            IOUtils.saveTextFile(yodesk.getCharacters().getFilteredCharacters().stream().map(Character::getName).collect(Collectors.toList()), opath.resolve("characters" + E_TXT));
         } catch (Exception e) {
             JavaFxUtils.showAlert("Error saving characters to the files", e);
         }
@@ -2211,33 +2217,41 @@ public class MainPaneController {
         DumpData(opath.resolve("CAUX").resolve(StringUtils.leftPad(Integer.toString(c.getIndex()), 3, '0')), position, c.byteSize());
     }
 
-    public void dumpNamesTextToDocxCLick() {
+    public void saveNamesToFileButtonClick() {
 
         try {
             Log.clear();
-            Log.debug("Names:");
+            Log.debug("TileNames:");
             Log.newLine();
             Log.debug("Total count: " + yodesk.getTileNames().getNames().size());
             Log.newLine();
-            IOUtils.createDirectories(opath.resolve("Names"));
+
+            IOUtils.createDirectories(opath.resolve("TileNames"));
             for (TileName n : yodesk.getTileNames().getNames()) {
                 if (null != n.getName()) {
-                    BMPWriter.write(getTile(n.getTileId()), IOUtils.findUnusedFileName(opath.resolve("Names"), n.getName(), E_BMP));
+                    BMPWriter.write(getTile(n.getTileId()), IOUtils.findUnusedFileName(opath.resolve("TileNames"), n.getName(), E_BMP));
                 }
             }
             IOUtils.saveTextFile(yodesk.getTileNames().getFilteredNames().stream().map(TileName::getName).filter(Objects::nonNull)
-                    .collect(Collectors.toList()), opath.resolve("tilenames.txt"));
-
-            WordUtils.saveNames(dtaCrc32, opath.resolve("tilenames2" + E_DOCX));
+                    .collect(Collectors.toList()), opath.resolve("tilenames" + E_TXT));
         } catch (Exception e) {
-            JavaFxUtils.showAlert("Error saving names to a file", e);
+            JavaFxUtils.showAlert("Error saving TileNames to the files", e);
+        }
+    }
+
+    public void dumpNamesTextToDocxCLick() {
+
+        try {
+            WordUtils.saveNames(dtaCrc32, opath.resolve("tilenames" + E_DOCX));
+        } catch (Exception e) {
+            JavaFxUtils.showAlert("Error saving TileNames text to the DOCX file", e);
         }
     }
 
     public void loadTranslatedNamesTextClick() {
 
         try {
-            WordRecord wordRecord = WordUtils.loadNames(opath.resolve("tilenames2" + E_DOCX));
+            WordRecord wordRecord = WordUtils.loadNames(opath.resolve("tilenames" + E_DOCX));
             validateProps(wordRecord.getProps());
             namesTexts = wordRecord.getStringRecords().stream().map(s -> new StringImagesRecord(s.getId(), Collections.emptyList(), s.getOriginal(), s.getTranslation())).collect(Collectors.toList());
             namesTextTableView.setItems(FXCollections.observableList(namesTexts));
@@ -2257,7 +2271,7 @@ public class MainPaneController {
                 JavaFxUtils.showAlert("Too long tile name(s)", "Please consider increasing the window width by at least " + (int) Math.ceil(maxWidth - 141) + "px", Alert.AlertType.INFORMATION);
             }
         } catch (Exception e) {
-            JavaFxUtils.showAlert("Error loading Puzzles text from file", e);
+            JavaFxUtils.showAlert("Error loading TileNames text from file", e);
         }
     }
 

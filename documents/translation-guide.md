@@ -6,7 +6,7 @@ Yoda Stories Translation Guide
 A fully translated game has its own localized ones: 
 
 * Startup screen
-* Start, Win and Loose screens
+* Start, Win and Lose screens
 * Text in Actions
 * Text in Puzzles
 * Tile names
@@ -64,12 +64,12 @@ Yoda Stories Translation Tool (далее по тексту YSTT) после з�
 
 Среди сдампленных ресурсов для перевода потребуются следующие файлы:
 
-* stup.bmp
+* startup.bmp
 * *.pal
 * clipboard.bmp
-* iact2.docx
-* puz2.docx
-* tilenames2.docx
+* actions.docx
+* puzzles.docx
+* tilenames.docx
 
 YSTT предназначен не только для перевода игры, но и для её исследования. Чтобы не вводить вас в заблуждение, 
 все исследовательские функции по умолчанию деактивированы. Их можно включить в меню Settings.

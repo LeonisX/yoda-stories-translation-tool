@@ -26,10 +26,6 @@ An original version: https://github.com/LeonisX/YExplorer
 
 * Dump structure (hi, mid, lo levels)
 
-* Show extra data in UI
-
-* Rename dump files + documentation
-
 * Compare all characters dumps
 * UnsignedInt, ... - изучить доступные решения. идея простая - возвращать number, но если минус, то тип на порядок больше.
 * Article about unsigned (hex editor, port from delphi, mathematic, before java 8, current solutions, examples)
