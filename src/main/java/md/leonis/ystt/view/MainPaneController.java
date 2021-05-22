@@ -82,8 +82,7 @@ public class MainPaneController {
     public RadioMenuItem fuchsiaMenuItem;
     public RadioMenuItem blackMenuItem;
     public RadioMenuItem whiteMenuItem;
-
-    public MenuItem addTilesMenuItem;
+    public CheckMenuItem disableNonTranslationMenuItem;
 
     public MenuItem howToMenuItem;
     public MenuItem aboutMenuItem;
@@ -150,6 +149,7 @@ public class MainPaneController {
 
     public Label mapsCountLabel;
     public Label phrasesCountLabel;
+    public Tab dumpTab;
     public Button saveMapsToFilesButton;
     public CheckBox normalSaveCheckBox;
     public CheckBox groupByFlagsCheckBox;
@@ -173,6 +173,7 @@ public class MainPaneController {
     public FlowPane mapRequiredItemsTilesFlowPane;
     public FlowPane lootTilesFlowPane;
 
+    public Tab hexOffsetsTab;
     public TableView<Zone> mapsTableView;
 
     public RadioButton topRadioButton;
@@ -202,7 +203,6 @@ public class MainPaneController {
     public TableView<StringRecord> actionsTextTableView;
 
     public Label puzzlesCountLabel;
-    public Button savePuzzlesToFilesButton;
     public TableView<StringImagesRecord> puzzlesTableView;
     public Button dumpPuzzlesTextToDocx;
     public Button loadTranslatedPuzzlesText;
@@ -211,13 +211,13 @@ public class MainPaneController {
     public CheckBox strictPuzzlesReplacingRulesCheckBox;
     public TableView<StringImagesRecord> puzzlesTextTableView;
 
+    public Tab charactersTab;
     public Label charactersCountLabel;
     public Button saveCharactersToFilesButton;
     public Button generateCharactersReportButton;
     public TableView<Character> charactersTableView;
 
     public Label namesCountLabel;
-    public Button saveNamesToFilesButton;
     public TableView<TileName> namesTableView;
     public Button dumpNamesTextToDocx;
     public Button loadTranslatedNamesText;
@@ -298,6 +298,8 @@ public class MainPaneController {
         }
 
         //TODO Log.SaveToFile(opath, 'Structure');
+
+        disableNonTranslationFeatures(disableNonTranslationMenuItem.isSelected());
     }
 
     private void updateUI() {
@@ -467,6 +469,21 @@ public class MainPaneController {
 
         namesTexts = WordHelper.getNamesTexts();
         namesTextTableView.setItems(FXCollections.observableList(namesTexts));
+    }
+
+    private void disableNonTranslationFeatures(boolean status) {
+
+        dumpAllSectionsButton.setDisable(status);
+        saveSoundsListToFileButton.setDisable(status);
+        saveTilesToSeparateFiles.setDisable(status);
+        decimalFilenamesCheckBox.setDisable(status);
+        hexFilenamesCheckBox.setDisable(status);
+        groupByAttributesFilenamesCheckBox.setDisable(status);
+        saveTilesToOneFile.setDisable(status);
+        tilesInARowTextField.setDisable(status);
+        dumpTab.setDisable(status);
+        hexOffsetsTab.setDisable(status);
+        charactersTab.setDisable(status);
     }
 
     private void updateDestinationCharset() {
@@ -2008,8 +2025,13 @@ public class MainPaneController {
         }
     }
 
-    public void savePuzzlesToFilesButtonClick() {
+    private void ReadPUZ2(Puzzle puzzle, int position) throws IOException {
 
+        Log.debug("Puzzle #" + puzzle.getIndex() + "; Size: 0x" + longToHex(puzzle.byteSize(), 4));
+        DumpData(opath.resolve("PUZ2").resolve(StringUtils.leftPad(Integer.toString(puzzle.getIndex()), 4, '0')), position, puzzle.byteSize());
+    }
+
+    public void dumpPuzzlesTextToDocxClick() {
         try {
             IOUtils.createDirectories(opath.resolve("PUZ2"));
             Log.clear();
@@ -2059,16 +2081,6 @@ public class MainPaneController {
         } catch (Exception e) {
             JavaFxUtils.showAlert("Error saving puzzles to the files", e);
         }
-    }
-
-    private void ReadPUZ2(Puzzle puzzle, int position) throws IOException {
-
-        Log.debug("Puzzle #" + puzzle.getIndex() + "; Size: 0x" + longToHex(puzzle.byteSize(), 4));
-        DumpData(opath.resolve("PUZ2").resolve(StringUtils.leftPad(Integer.toString(puzzle.getIndex()), 4, '0')), position, puzzle.byteSize());
-    }
-
-    public void dumpPuzzlesTextToDocxClick() {
-        savePuzzlesToFilesButtonClick();
     }
 
     public void loadTranslatedPuzzlesTextClick() {
@@ -2199,7 +2211,7 @@ public class MainPaneController {
         DumpData(opath.resolve("CAUX").resolve(StringUtils.leftPad(Integer.toString(c.getIndex()), 3, '0')), position, c.byteSize());
     }
 
-    public void saveNamesToFileButtonClick() {
+    public void dumpNamesTextToDocxCLick() {
 
         try {
             Log.clear();
@@ -2220,10 +2232,6 @@ public class MainPaneController {
         } catch (Exception e) {
             JavaFxUtils.showAlert("Error saving names to a file", e);
         }
-    }
-
-    public void dumpNamesTextToDocxCLick() {
-        saveNamesToFileButtonClick();
     }
 
     public void loadTranslatedNamesTextClick() {
@@ -2330,7 +2338,7 @@ public class MainPaneController {
             release.setTitle("Unknown combination of files");
             release.setDtaCrc32("????????");
             release.setExeCrc32("????????");
-            release.setDescription("This is an unknown combination of DTA/EXE files. Congratulations, You've probably found a new release of the game. Be sure to send it to us so we can analyze it. E-mail: tv-games@mail.ru");
+            release.setDescription("This is an unknown combination of DTA/EXE files.\nPerhaps this is your new translation of the game, which has not yet been included in our database.\nOr maybe you found a new release of the game.\nBe sure to send it to us so we can analyze it and add to our database. E-mail: tv-games@mail.ru");
         }
 
         sourceCharset = getCharset(release.getCharset());
@@ -2481,6 +2489,10 @@ public class MainPaneController {
         } catch (Exception e) {
             JavaFxUtils.showAlert("Error of changing the destination charset", e);
         }
+    }
+
+    public void disableNonTranslationMenuItemClick() {
+        disableNonTranslationFeatures(disableNonTranslationMenuItem.isSelected());
     }
 
     //TODO

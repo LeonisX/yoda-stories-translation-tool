@@ -16,6 +16,10 @@ An original version: https://github.com/LeonisX/YExplorer
 
 ## TODO
 
+* Search resources in all releases, select the newest one
+
+
+
 * Translation instructions
 
 * Conditions/Instruction count equality

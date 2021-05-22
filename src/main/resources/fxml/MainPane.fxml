@@ -70,7 +70,8 @@
                                     </graphic>
                                 </RadioMenuItem>
                             </Menu>
-
+                            <CheckMenuItem fx:id="disableNonTranslationMenuItem" mnemonicParsing="false" onAction="#disableNonTranslationMenuItemClick"
+                                      text="Disable non-translation features" selected="true" />
                         </Menu>
                         <Menu mnemonicParsing="false" text="Help">
                             <MenuItem fx:id="howToMenuItem" mnemonicParsing="false" onAction="#howToMenuItemClick"
@@ -85,7 +86,7 @@
                              BorderPane.alignment="CENTER">
                         <Tab text="Common Information">
                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                                <Label fx:id="nameLabel" layoutX="14.0" layoutY="14.0">
+                                <Label fx:id="nameLabel" layoutX="14.0" layoutY="10.0">
                                     <font>
                                         <Font name="System Bold" size="14.0"/>
                                     </font>
@@ -641,7 +642,7 @@
                                                             </Label>
                                                         </AnchorPane>
                                                     </Tab>
-                                                    <Tab text="Dump">
+                                                    <Tab text="Dump" fx:id="dumpTab">
                                                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0"
                                                                     prefWidth="200.0">
                                                             <Label layoutX="14.0" layoutY="14.0" text="Maps count:"/>
@@ -737,7 +738,7 @@
                                                 </center>
                                             </BorderPane>
                                         </Tab>
-                                        <Tab text="HEX Offsets">
+                                        <Tab text="HEX Offsets" fx:id="hexOffsetsTab">
                                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0"
                                                         prefWidth="200.0">
                                                 <TableView fx:id="mapsTableView" layoutX="14.0" layoutY="14.0"
@@ -955,10 +956,6 @@
                                                         prefWidth="200.0">
                                                 <Label layoutX="14.0" layoutY="14.0" text="Puzzles count:"/>
                                                 <Label fx:id="puzzlesCountLabel" layoutX="98.0" layoutY="14.0"/>
-                                                <Button fx:id="savePuzzlesToFilesButton" layoutX="14.0" layoutY="40.0"
-                                                        mnemonicParsing="false"
-                                                        onAction="#savePuzzlesToFilesButtonClick"
-                                                        text="Save puzzles to files"/>
                                                 <TableView fx:id="puzzlesTableView" layoutX="146.0" layoutY="14.0"
                                                            prefHeight="429.0" prefWidth="1060.0">
                                                     <columns>
@@ -1049,7 +1046,7 @@
                                 </center>
                             </BorderPane>
                         </Tab>
-                        <Tab text="Characters">
+                        <Tab text="Characters" fx:id="charactersTab">
                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                 <Label layoutX="14.0" layoutY="14.0" text="Characters count:"/>
                                 <Label fx:id="charactersCountLabel" layoutX="115.0" layoutY="14.0"/>
@@ -1107,9 +1104,6 @@
                                                         prefWidth="200.0">
                                                 <Label layoutX="14.0" layoutY="14.0" text="Names count:"/>
                                                 <Label fx:id="namesCountLabel" layoutX="98.0" layoutY="14.0"/>
-                                                <Button fx:id="saveNamesToFilesButton" layoutX="14.0" layoutY="40.0"
-                                                        mnemonicParsing="false" onAction="#saveNamesToFileButtonClick"
-                                                        text="Save names to files"/>
                                                 <TableView fx:id="namesTableView" layoutX="150.0" layoutY="14.0"
                                                            prefHeight="427.0" prefWidth="210.0">
                                                     <columns>
