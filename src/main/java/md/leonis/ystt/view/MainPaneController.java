@@ -2338,7 +2338,11 @@ public class MainPaneController {
             release.setTitle("Unknown combination of files");
             release.setDtaCrc32("????????");
             release.setExeCrc32("????????");
-            release.setDescription("This is an unknown combination of DTA/EXE files.\nPerhaps this is your new translation of the game, which has not yet been included in our database.\nOr maybe you found a new release of the game.\nBe sure to send it to us so we can analyze it and add to our database. E-mail: tv-games@mail.ru");
+            release.setDescription("This is an unknown combination of DTA/EXE files.\n" +
+                    "Perhaps this is your new translation of the game, which has not yet been included in our database.\n" +
+                    "If so, then you should copy all translation resources to the directory output-unk.\n" +
+                    "Or maybe you found a new release of the game.\n" +
+                    "Be sure to send it to us so we can analyze it and add to our database. E-mail: tv-games@mail.ru");
         }
 
         sourceCharset = getCharset(release.getCharset());
