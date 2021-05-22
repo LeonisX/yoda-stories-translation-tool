@@ -19,7 +19,7 @@ We have prepared a documentation for you, where each operation is described in s
 
 * [Graphics](graphics-translation-guide.md)
 * [Text](text-translation-guide.md)
-* [YODESK.EXE](exe-translation.md)
+* [YODESK.EXE](exe-translation-guide.md)
 * YODESK.HLP
 
 ## Какую версию переводить
@@ -28,9 +28,9 @@ We have prepared a documentation for you, where each operation is described in s
 
 * Star Wars - Yoda Stories (14.02.1997) (Eng) (v1.0)
 * Star Wars - Yoda Stories (14.02.1997) (Eng) (v1.0) (Patch v6)
-* Star Wars - Yoda Stories (20.03.1997) (Eng) (v1.1)
-* **Star Wars - Yoda Stories (10.08.1998) (Eng) (v1.2) (Patch v6)**
+* Star Wars - Yoda Stories (18.02.1997) (Eng) (v1.1)
 * Star Wars - Yoda Stories (18.02.1997) (Eng) (Demo)
+* **Star Wars - Yoda Stories (10.08.1998) (Eng) (v1.2) (Patch v6)**
 * Star Wars - Yoda Stories (22.05.1997) (Spa)
 * Star Wars - Yoda Stories (25.06.1997) (Ger)
 * Star Wars - Yoda Stories (13.12.2001) (T-Spa_Selva Translators)

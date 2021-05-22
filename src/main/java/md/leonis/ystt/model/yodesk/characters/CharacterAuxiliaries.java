@@ -15,8 +15,8 @@ public class CharacterAuxiliaries extends KaitaiStruct {
 
     private List<CharacterAuxiliary> auxiliaries;
 
-    private final Yodesk root;
-    private final CatalogEntry parent;
+    private final transient Yodesk root;
+    private final transient CatalogEntry parent;
 
     public static CharacterAuxiliaries fromFile(String fileName) throws IOException {
         return new CharacterAuxiliaries(new ByteBufferKaitaiInputStream(fileName));

@@ -26,8 +26,8 @@ public class CatalogEntry extends KaitaiStruct {
     private byte[] bytes;
     private KaitaiStruct content;
 
-    private final Yodesk root;
-    private final Yodesk parent;
+    private final transient Yodesk root;
+    private final transient Yodesk parent;
 
     public static CatalogEntry fromFile(String fileName) throws IOException {
         return new CatalogEntry(new ByteBufferKaitaiInputStream(fileName));

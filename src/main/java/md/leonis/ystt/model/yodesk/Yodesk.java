@@ -40,7 +40,7 @@ import java.util.Map;
 public class Yodesk extends KaitaiStruct {
 
     private ArrayList<CatalogEntry> catalog;
-    private final Map<Section, CatalogEntry> sections = new LinkedHashMap<>();
+    private final transient Map<Section, CatalogEntry> sections = new LinkedHashMap<>();
 
     private Version version;
     private StartupImage startupImage;
@@ -56,8 +56,8 @@ public class Yodesk extends KaitaiStruct {
     private Endf endf;
     private UnknownCatalogEntry unknownCatalogEntry;
 
-    private final Yodesk root;
-    private final KaitaiStruct parent;
+    private final transient Yodesk root;
+    private final transient KaitaiStruct parent;
 
     private static String inputCharset = "windows-1252";
     private static String outputCharset = "windows-1252";

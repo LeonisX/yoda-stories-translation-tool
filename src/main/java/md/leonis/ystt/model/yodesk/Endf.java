@@ -9,8 +9,8 @@ import java.io.IOException;
 
 public class Endf extends KaitaiStruct {
 
-    private final Yodesk root;
-    private final CatalogEntry parent;
+    private final transient Yodesk root;
+    private final transient CatalogEntry parent;
 
     public static Endf fromFile(String fileName) throws IOException {
         return new Endf(new ByteBufferKaitaiInputStream(fileName));

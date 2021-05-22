@@ -17,8 +17,8 @@ public class Instruction extends KaitaiStruct implements TextContainer {
     private int lenText;
     private String text;
 
-    private final Yodesk root;
-    private final Action parent;
+    private final transient Yodesk root;
+    private final transient Action parent;
 
     public static Instruction fromFile(String fileName) throws IOException {
         return new Instruction(new ByteBufferKaitaiInputStream(fileName));

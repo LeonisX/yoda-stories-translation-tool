@@ -15,8 +15,8 @@ public class Tgen extends KaitaiStruct {
 
     private byte[] rawData;
 
-    private final Yodesk root;
-    private final CatalogEntry parent;
+    private final transient Yodesk root;
+    private final transient CatalogEntry parent;
 
     public static Tgen fromFile(String fileName) throws IOException {
         return new Tgen(new ByteBufferKaitaiInputStream(fileName));

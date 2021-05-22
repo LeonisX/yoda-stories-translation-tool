@@ -1,5 +1,8 @@
 package md.leonis.ystt.view;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
 import io.kaitai.struct.ByteBufferKaitaiOutputStream;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -35,9 +38,7 @@ import md.leonis.ystt.model.docx.WordRecord;
 import md.leonis.ystt.model.yodesk.CatalogEntry;
 import md.leonis.ystt.model.yodesk.Yodesk;
 import md.leonis.ystt.model.yodesk.characters.Character;
-import md.leonis.ystt.model.yodesk.characters.CharacterAuxiliary;
 import md.leonis.ystt.model.yodesk.characters.CharacterType;
-import md.leonis.ystt.model.yodesk.characters.CharacterWeapon;
 import md.leonis.ystt.model.yodesk.puzzles.PrefixedStr;
 import md.leonis.ystt.model.yodesk.puzzles.Puzzle;
 import md.leonis.ystt.model.yodesk.puzzles.PuzzleItemClass;
@@ -53,6 +54,7 @@ import org.apache.commons.lang3.StringUtils;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -152,10 +154,9 @@ public class MainPaneController {
     public Tab dumpTab;
     public Button saveZonesToFilesButton;
     public CheckBox normalSaveCheckBox;
-    public CheckBox groupByFlagsCheckBox;
+    public CheckBox groupByAttributesCheckBox;
     public CheckBox groupByPlanetTypeCheckBox;
     public CheckBox dumpActionsCheckBox;
-    public CheckBox dumpActionsTextCheckBox;
     public CheckBox saveUnusedTilesCheckBox;
     public Button showActionsButton;
     public Canvas zoneTypeCanvas;
@@ -954,9 +955,24 @@ public class MainPaneController {
 
 
     private void drawEditorMap(int zoneId) {
+
         try {
-            //ReadIZON(id, false);
-            ReadMap(zoneEditorCanvas, zoneId, true, false);
+            Zone zone = yodesk.getZones().getZones().get(zoneId);
+
+            //TODO offset if need
+            //Log.debug("Zone #" + zoneId + " offset: " + "section.intToHex(section.GetPosition(), 8)");
+            showZoneStatus(zone);
+
+            zoneEditorCanvas.setWidth(zone.getWidth() * TILE_SIZE);
+            zoneEditorCanvas.setHeight(zone.getHeight() * TILE_SIZE);
+
+            /*canvas.getGraphicsContext2D().setFill(transparentColor);
+            canvas.getGraphicsContext2D().fillRect(0, 0, canvas.getWidth(), canvas.getHeight());*/
+
+            drawZone(zoneEditorCanvas, zone);
+
+            // TODO Application.ProcessMessages;
+
         } catch (Exception e) {
             JavaFxUtils.showAlert(String.format("Map %s display error", zoneId), e);
         }
@@ -1080,9 +1096,9 @@ public class MainPaneController {
         statusCanvas.setHeight(TILE_SIZE);
         statusCanvas.setWidth(TILE_SIZE * 3);
         statusCanvas.getGraphicsContext2D().clearRect(0, 0, statusCanvas.getWidth(), statusCanvas.getHeight());
-        drawBorderOnCanvas(statusCanvas, 0,0, Color.BLACK);
-        drawBorderOnCanvas(statusCanvas, TILE_SIZE,0, Color.BLACK);
-        drawBorderOnCanvas(statusCanvas, TILE_SIZE * 2,0, Color.BLACK);
+        drawBorderOnCanvas(statusCanvas, 0, 0, Color.BLACK);
+        drawBorderOnCanvas(statusCanvas, TILE_SIZE, 0, Color.BLACK);
+        drawBorderOnCanvas(statusCanvas, TILE_SIZE * 2, 0, Color.BLACK);
         if (column.get(2) < yodesk.getTiles().getTiles().size()) {
             drawTileOnCanvas(column.get(2), statusCanvas, 0, 0, Color.rgb(0xF4, 0xF4, 0xF4));
         }
@@ -1168,45 +1184,6 @@ public class MainPaneController {
         }
     }
 
-
-    //TODO refactor this
-    private void ReadMap(Canvas canvas, int zoneId, boolean show, boolean save) throws IOException {
-
-        Zone zone = yodesk.getZones().getZones().get(zoneId);
-
-        //TODO offset if need
-        //Log.debug("Zone #" + zoneId + " offset: " + "section.intToHex(section.GetPosition(), 8)");
-        showZoneStatus(zone);
-
-        if (show) {
-            canvas.setWidth(zone.getWidth() * TILE_SIZE);
-            canvas.setHeight(zone.getHeight() * TILE_SIZE);
-
-            /*canvas.getGraphicsContext2D().setFill(transparentColor);
-            canvas.getGraphicsContext2D().fillRect(0, 0, canvas.getWidth(), canvas.getHeight());*/
-
-            drawZone(canvas, zone);
-        }
-        // TODO Application.ProcessMessages;
-
-        if (normalSaveCheckBox.isSelected() && save) {
-            Path path = opath.resolve("Zones");
-            IOUtils.createDirectories(path);
-            BMPWriter.write8bit(canvas, path.resolve(StringUtils.leftPad(Integer.toString(zoneId), 3, '0') + E_BMP));
-        }
-
-        if (groupByFlagsCheckBox.isSelected() && save) {
-            Path path = opath.resolve("ZonesByType").resolve(zone.getType().name());
-            IOUtils.createDirectories(path);
-            BMPWriter.write8bit(canvas, path.resolve(StringUtils.leftPad(Integer.toString(zoneId), 3, '0') + E_BMP));
-        }
-
-        if (groupByPlanetTypeCheckBox.isSelected() && save) {
-            Path path = opath.resolve("ZonesByPlanetType").resolve(zone.getPlanet().name());
-            IOUtils.createDirectories(path);
-            BMPWriter.write8bit(canvas, path.resolve(StringUtils.leftPad(Integer.toString(zoneId), 3, '0') + E_BMP));
-        }
-    }
 
     private void showZoneStatus(Zone zone) {
         statusLabel.setText("Zone: " + zone.getIndex() + " (" + zone.getPlanet().name() + ")");
@@ -1302,88 +1279,9 @@ public class MainPaneController {
         return zoneEditorListView.getSelectionModel().getSelectedIndex();
     }
 
-    private void ReadIZON(int zoneId, boolean save) throws IOException {
-
-        ReadMap(zoneEditorCanvas, zoneId, normalSaveCheckBox.isSelected() || groupByFlagsCheckBox.isSelected() || groupByPlanetTypeCheckBox.isSelected(), save);
-
-        //TODO
-        //MapProgressBar.Position :=id;
-        //MapProgressLabel.Caption :=Format('%.2f %%',[((id + 1) / section.mapsCount) * 100]);
-        //TODO Application.ProcessMessages;
-
-        //TODO not need, commented in Delphi
-        //k:=DTA.ReadWord;                             //2 bytes: object info entry count (X)
-        //DTA.MoveIndex(k * 12);                       //X*12 bytes: object info data
-
-        //TODO return after implement write() methods
-        /*if (dumpActionsCheckBox.isSelected() || dumpTextCheckBox.isSelected()) {
-            ReadIZAX(id);
-            ReadIZX2(id);
-            ReadIZX3(id);
-            ReadIZX4(id);
-            ReadIACT(id);
-            ReadOIE(id);
-        }*/
-    }
-
-    /*private void ReadIZAX(int id) throws IOException {
-        Path path = opath.resolve("IZAX").resolve(Integer.toString(id));
-        DumpData(path, section.maps.get(id).getIzax().getPosition(), section.maps.get(id).getIzax().getSize());
-    }
-
-    private void ReadIZX2(int id) throws IOException {
-        Path path = opath.resolve("IZX2").resolve(Integer.toString(id));
-        DumpData(path, section.maps.get(id).getIzx2().getPosition(), section.maps.get(id).getIzx2().getSize());
-    }
-
-    private void ReadIZX3(int id) throws IOException {
-        Path path = opath.resolve("IZX3").resolve(Integer.toString(id));
-        DumpData(path, section.maps.get(id).getIzx3().getPosition(), section.maps.get(id).getIzx3().getSize());
-    }
-
-    private void ReadIZX4(int id) throws IOException {
-        Path path = opath.resolve("IZX4").resolve(Integer.toString(id));
-        DumpData(path, section.maps.get(id).getIzx4().getPosition(), section.maps.get(id).getIzx4().getSize());
-    }*/
-
-    /*private void ReadIACT(int id) throws IOException {
-        int k = 0;
-        section.SetPosition(section.maps.get(id).getIactPosition());
-
-        while (section.ReadString(4).equals("IACT")) {
-//    HEX.SetSelStart(DTA.GetIndex);
-//    HEX.SetSelEnd(DTA.GetIndex + 3);
-//    HEX.CenterCursorPosition;
-//    Application.ProcessMessages;
-            int size = (int) section.ReadLongWord();  //4 bytes: length (X)
-            if (dumpActionsCheckBox.isSelected()) {
-                String fileName = StringUtils.leftPad("" + id, 3, "0") + '-' + StringUtils.leftPad("" + k, 3, "0");
-                Path path = opath.resolve("IACT").resolve(fileName);
-                DumpData(path, section.GetPosition(), size);
-            } else {
-                section.MovePosition(size);
-            }
-            k++;
-        }
-
-    }*/
-
-    /*private void ReadOIE(int id) throws IOException {
-        Path path = opath.resolve("OIE").resolve(Integer.toString(id));
-        DumpData(path, section.maps.get(id).getOie().getPosition(), section.maps.get(id).getOie().getSize());
-    }*/
-
     private void DumpData(Path path, CatalogEntry entry) throws IOException {
         IOUtils.saveBytes(path, entry.getBytes());
     }
-
-    //TODO repair me
-    private void DumpData(Path path, int offset, int size) throws IOException {
-        /*byte[] array = Arrays.copyOfRange(section.dump.getDump(), offset, offset + size);
-        IOUtils.saveBytes(path, array);
-        section.SetPosition(offset + size);*/
-    }
-
 
     public void openMenuItemClick() {
         //TODO notify if changed
@@ -1784,17 +1682,6 @@ public class MainPaneController {
 
     public void saveZonesToFilesButtonClick() throws IOException {
 
-        if (dumpActionsCheckBox.isSelected()) {
-            IOUtils.createDirectories(opath.resolve("IZAX"));
-            IOUtils.createDirectories(opath.resolve("IZX2"));
-            IOUtils.createDirectories(opath.resolve("IZX3"));
-            IOUtils.createDirectories(opath.resolve("IZX4"));
-            IOUtils.createDirectories(opath.resolve("IACT"));
-            IOUtils.createDirectories(opath.resolve("OIE"));
-
-            dumpActionsScripts();
-        }
-
         //TODO
         //MapProgressBar.Position := 0;
         //MapProgressBar.Max := DTA.mapsCount;
@@ -1804,16 +1691,45 @@ public class MainPaneController {
         Log.newLine();
         Log.debug("Total count: " + yodesk.getZones().getZones().size());
         Log.newLine();
-        //DTA.SetIndex(knownSections[5]);          // ZONE
+
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        JsonElement element = gson.toJsonTree(yodesk.getZones().getZones());
+        element.getAsJsonArray().forEach(zone -> zone.getAsJsonObject().remove("actions"));
+        FileWriter writer = new FileWriter(opath.resolve("zonesNoActions.json").toFile());
+        gson.toJson(element, writer);
+        writer.flush();
+
         for (int i = 0; i < yodesk.getZones().getZones().size(); i++) {
-            ReadIZON(i, true);
+            Zone zone = yodesk.getZones().getZones().get(i);
+
+            Canvas canvas = new Canvas(zone.getWidth() * TILE_SIZE, zone.getHeight() * TILE_SIZE);
+
+            drawZone(canvas, zone);
+
+            if (normalSaveCheckBox.isSelected()) {
+                Path path = opath.resolve("Zones");
+                IOUtils.createDirectories(path);
+                BMPWriter.write8bit(canvas, path.resolve(StringUtils.leftPad(Integer.toString(zone.getIndex()), 3, '0') + E_BMP));
+            }
+
+            if (groupByAttributesCheckBox.isSelected()) {
+                Path path = opath.resolve("ZonesByType").resolve(zone.getType().name());
+                IOUtils.createDirectories(path);
+                BMPWriter.write8bit(canvas, path.resolve(StringUtils.leftPad(Integer.toString(zone.getIndex()), 3, '0') + E_BMP));
+            }
+
+            if (groupByPlanetTypeCheckBox.isSelected()) {
+                Path path = opath.resolve("ZonesByPlanetType").resolve(zone.getPlanet().name());
+                IOUtils.createDirectories(path);
+                BMPWriter.write8bit(canvas, path.resolve(StringUtils.leftPad(Integer.toString(zone.getIndex()), 3, '0') + E_BMP));
+            }
         }
 
         if (saveUnusedTilesCheckBox.isSelected()) {
             Log.newLine();
             Log.debug("Unused tiles:");
             Log.newLine();
-            Path unusedTilesPath = opath.resolve("TilesUnused");
+            Path unusedTilesPath = opath.resolve("ZonesTilesUnused");
             IOUtils.createDirectories(unusedTilesPath);
             for (int i = 0; i < yodesk.getTiles().getTiles().size(); i++) {
                 if (!usedTiles.get(i)) {
@@ -1823,8 +1739,8 @@ public class MainPaneController {
             }
         }
 
-        if (dumpActionsTextCheckBox.isSelected()) {
-            dumpActionsTextToDocxClick();
+        if (dumpActionsCheckBox.isSelected()) {
+            dumpActionsScripts();
         }
     }
 
@@ -1860,9 +1776,6 @@ public class MainPaneController {
 
                 sb.append("Zone ").append(zoneId).append("\n").append("\n").append(ssb).append("\n");
                 sbn.append("Zone ").append(zoneId).append("\n").append("\n").append(ssbn).append("\n");
-
-                IOUtils.saveTextFile(ssb.toString(), opath.resolve("ActionsScripts").resolve(StringUtils.leftPad(Integer.toString(zoneId), 4, '0') + E_TXT));
-                IOUtils.saveTextFile(ssbn.toString(), opath.resolve("ActionsScriptsNoText").resolve(StringUtils.leftPad(Integer.toString(zoneId), 4, '0') + E_TXT));
             }
 
             IOUtils.saveTextFile(Collections.singletonList(sb.toString()), opath.resolve("actionsScripts" + E_TXT));
@@ -2030,12 +1943,6 @@ public class MainPaneController {
         }
     }
 
-    private void ReadPUZ2(Puzzle puzzle, int position) throws IOException {
-
-        Log.debug("Puzzle #" + puzzle.getIndex() + "; Size: 0x" + longToHex(puzzle.byteSize(), 4));
-        DumpData(opath.resolve("PUZ2").resolve(StringUtils.leftPad(Integer.toString(puzzle.getIndex()), 4, '0')), position, puzzle.byteSize());
-    }
-
     public void dumpPuzzlesTextToDocxClick() {
         try {
             Log.clear();
@@ -2043,11 +1950,6 @@ public class MainPaneController {
             Log.newLine();
             Log.debug("Total count: " + yodesk.getPuzzles().getPuzzles().size());
             Log.newLine();
-            int position = yodesk.getPuzzles().getParent().getPosition();
-            for (int i = 0; i < yodesk.getPuzzles().getPuzzles().size(); i++) {
-                ReadPUZ2(yodesk.getPuzzles().getPuzzles().get(i), position);
-                position += yodesk.getPuzzles().getPuzzles().get(i).byteSize();
-            }
             //TODO rewrite code after tests
             if (!disableNonTranslationMenuItem.isSelected()) {
                 List<String> phrases = yodesk.getPuzzles().getFilteredPuzzles().stream()
@@ -2076,6 +1978,7 @@ public class MainPaneController {
             List<Puzzle> puzzles2 = yodesk.getPuzzles().getFilteredPuzzles().stream().filter(i -> i.getItem2() > yodesk.getTiles().getTiles().size()).sorted(Comparator.comparing(Puzzle::getItem2)).collect(Collectors.toList());
 
 
+            //TODO ???
             System.out.println(items1);
             System.out.println(items2);
 
@@ -2157,22 +2060,13 @@ public class MainPaneController {
             Log.debug("Total count: " + yodesk.getCharacters().getCharacters().size());
             Log.newLine();
 
-            int position = yodesk.getCharacters().getParent().getDataPosition();
             for (int i = 0; i < yodesk.getCharacters().getCharacters().size(); i++) {
-                ReadCHAR(yodesk.getCharacters().getCharacters().get(i), position);
-                position += yodesk.getCharacters().getCharacters().get(i).byteSize();
-            }
-
-            position = yodesk.getCharacterWeapons().getParent().getDataPosition();
-            for (int i = 0; i < yodesk.getCharacterWeapons().getWeapons().size(); i++) {
-                ReadCHWP(yodesk.getCharacterWeapons().getWeapons().get(i), position);
-                position += yodesk.getCharacterWeapons().getWeapons().get(i).byteSize();
-            }
-
-            position = yodesk.getCharacterAuxiliaries().getParent().getDataPosition();
-            for (int i = 0; i < yodesk.getCharacterAuxiliaries().getAuxiliaries().size(); i++) {
-                ReadCAUX(yodesk.getCharacterAuxiliaries().getAuxiliaries().get(i), position);
-                position += yodesk.getCharacterAuxiliaries().getAuxiliaries().get(i).byteSize();
+                Character character = yodesk.getCharacters().getCharacters().get(i);
+                for (Integer integer : character.getTileIds()) {
+                    Path path = opath.resolve("Characters").resolve(character.getName());
+                    IOUtils.createDirectories(path);
+                    BMPWriter.write(getTile(integer), path.resolve(StringUtils.leftPad(Integer.toString(integer), 4, '0') + E_BMP));
+                }
             }
 
             WordUtils.saveCharacters("Characters", dtaCrc32, opath.resolve("characters" + E_DOCX));
@@ -2190,31 +2084,6 @@ public class MainPaneController {
         } catch (Exception e) {
             JavaFxUtils.showAlert("Error saving characters to the files", e);
         }
-    }
-
-    private void ReadCHAR(Character c, int position) throws IOException {
-
-        for (Integer integer : c.getTileIds()) {
-            Path path = opath.resolve("Characters").resolve(c.getName());
-            IOUtils.createDirectories(path);
-            BMPWriter.write(getTile(integer), path.resolve(StringUtils.leftPad(Integer.toString(integer), 4, '0') + E_BMP));
-        }
-
-        DumpData(opath.resolve("CHAR").resolve(StringUtils.leftPad(Integer.toString(c.getIndex()), 3, '0')), position, c.byteSize());
-    }
-
-    private void ReadCHWP(CharacterWeapon c, int position) throws IOException {
-
-        //  size := DTA.ReadLongWord;
-        //int ch = section.ReadWord();
-        DumpData(opath.resolve("CHWP").resolve(StringUtils.leftPad(Integer.toString(c.getIndex()), 3, '0')), position, c.byteSize());
-    }
-
-    private void ReadCAUX(CharacterAuxiliary c, int position) throws IOException {
-
-        //  size:=DTA.ReadLongWord;
-        //int ch = section.ReadWord();
-        DumpData(opath.resolve("CAUX").resolve(StringUtils.leftPad(Integer.toString(c.getIndex()), 3, '0')), position, c.byteSize());
     }
 
     public void saveNamesToFileButtonClick() {

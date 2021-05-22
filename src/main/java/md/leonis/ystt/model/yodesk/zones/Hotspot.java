@@ -23,8 +23,8 @@ public class Hotspot extends KaitaiStruct {
     private int enabled;
     private int argument;
 
-    private final Yodesk root;
-    private final Zone parent;
+    private final transient Yodesk root;
+    private final transient Zone parent;
 
     public static Hotspot fromFile(String fileName) throws IOException {
         return new Hotspot(new ByteBufferKaitaiInputStream(fileName));

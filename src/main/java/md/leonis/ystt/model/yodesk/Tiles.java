@@ -17,8 +17,8 @@ public class Tiles extends KaitaiStruct {
     private List<Tile> tiles;
     private byte[] rawTiles;
 
-    private final Yodesk root;
-    private final CatalogEntry parent;
+    private final transient Yodesk root;
+    private final transient CatalogEntry parent;
 
     public static Tiles fromFile(String fileName) throws IOException {
         return new Tiles(new ByteBufferKaitaiInputStream(fileName));

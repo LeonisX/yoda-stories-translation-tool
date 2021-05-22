@@ -13,8 +13,8 @@ public class PrefixedStr extends KaitaiStruct {
     private int lenContent;
     private String content;
 
-    private final Yodesk root;
-    private final Puzzle parent;
+    private final transient Yodesk root;
+    private final transient Puzzle parent;
 
     public static PrefixedStr fromFile(String fileName) throws IOException {
         return new PrefixedStr(new ByteBufferKaitaiInputStream(fileName));

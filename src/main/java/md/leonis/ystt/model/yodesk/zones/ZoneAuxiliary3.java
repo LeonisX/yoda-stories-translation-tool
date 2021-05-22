@@ -19,8 +19,8 @@ public class ZoneAuxiliary3 extends KaitaiStruct {
     private int numNpcs;
     private List<Integer> npcs;
 
-    private final Yodesk root;
-    private final Zone parent;
+    private final transient Yodesk root;
+    private final transient Zone parent;
 
     public static ZoneAuxiliary3 fromFile(String fileName) throws IOException {
         return new ZoneAuxiliary3(new ByteBufferKaitaiInputStream(fileName));

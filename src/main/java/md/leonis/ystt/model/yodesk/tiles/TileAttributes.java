@@ -52,8 +52,8 @@ public class TileAttributes extends KaitaiStruct {
     private Boolean isEnemy;
     private Boolean isNpc;
 
-    private final Yodesk root;
-    private final Tile parent;
+    private final transient Yodesk root;
+    private final transient Tile parent;
 
     public static TileAttributes fromFile(String fileName) throws IOException {
         return new TileAttributes(new ByteBufferKaitaiInputStream(fileName));

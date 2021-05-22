@@ -14,8 +14,8 @@ public class Puzzles extends KaitaiStruct {
 
     private List<Puzzle> puzzles;
 
-    private final Yodesk root;
-    private final CatalogEntry parent;
+    private final transient Yodesk root;
+    private final transient CatalogEntry parent;
 
     public static Puzzles fromFile(String fileName) throws IOException {
         return new Puzzles(new ByteBufferKaitaiInputStream(fileName));

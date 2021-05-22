@@ -18,8 +18,8 @@ public class ZoneSpot extends KaitaiStruct {
      */
     private List<Integer> column;
 
-    private final Yodesk root;
-    private final Zone parent;
+    private final transient Yodesk root;
+    private final transient Zone parent;
 
     public static ZoneSpot fromFile(String fileName) throws IOException {
         return new ZoneSpot(new ByteBufferKaitaiInputStream(fileName));

@@ -51,8 +51,8 @@ public class Zone extends KaitaiStruct {
     private int numActions;
     private List<Action> actions;
 
-    private final Yodesk root;
-    private final Zones parent;
+    private final transient Yodesk root;
+    private final transient Zones parent;
 
     public static Zone fromFile(String fileName) throws IOException {
         return new Zone(new ByteBufferKaitaiInputStream(fileName));

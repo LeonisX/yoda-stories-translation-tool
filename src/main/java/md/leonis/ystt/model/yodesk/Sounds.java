@@ -25,8 +25,8 @@ public class Sounds extends KaitaiStruct {
     private short count;
     private List<PrefixedStrz> prefixedSounds;
 
-    private final Yodesk root;
-    private final CatalogEntry parent;
+    private final transient Yodesk root;
+    private final transient CatalogEntry parent;
 
     public static Sounds fromFile(String fileName) throws IOException {
         return new Sounds(new ByteBufferKaitaiInputStream(fileName));

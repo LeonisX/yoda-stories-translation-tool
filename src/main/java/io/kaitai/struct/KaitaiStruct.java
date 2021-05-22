@@ -31,8 +31,8 @@ public abstract class KaitaiStruct {
     /**
      * Stream object that this KaitaiStruct-based structure was parsed from.
      */
-    protected KaitaiInputStream io;
-    protected KaitaiStruct parent;
+    protected transient KaitaiInputStream io;
+    protected transient KaitaiStruct parent;
 
     public KaitaiStruct(KaitaiInputStream io) {
         this.io = io;

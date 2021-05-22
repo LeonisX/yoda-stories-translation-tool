@@ -29,8 +29,8 @@ public class Character extends KaitaiStruct {
     private CharFrame frame2;
     private CharFrame frame3;
 
-    private final Yodesk root;
-    private final Characters parent;
+    private final transient Yodesk root;
+    private final transient Characters parent;
 
     public static Character fromFile(String fileName) throws IOException {
         return new Character(new ByteBufferKaitaiInputStream(fileName));

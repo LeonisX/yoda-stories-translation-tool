@@ -13,8 +13,8 @@ public class Waypoint extends KaitaiStruct {
     private long x;
     private long y;
 
-    private final Yodesk root;
-    private final Monster parent;
+    private final transient Yodesk root;
+    private final transient Monster parent;
 
     public static Waypoint fromFile(String fileName) throws IOException {
         return new Waypoint(new ByteBufferKaitaiInputStream(fileName));

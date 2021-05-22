@@ -925,20 +925,17 @@
                                                 <CheckBox fx:id="normalSaveCheckBox" layoutX="25.0"
                                                           layoutY="98.0" mnemonicParsing="false"
                                                           selected="true" text="Normal save"/>
-                                                <CheckBox fx:id="groupByFlagsCheckBox" layoutX="25.0"
+                                                <CheckBox fx:id="groupByAttributesCheckBox" layoutX="25.0"
                                                           layoutY="123.0" mnemonicParsing="false"
-                                                          text="Group by flags"/>
+                                                          text="Group by attributes"/>
                                                 <CheckBox fx:id="groupByPlanetTypeCheckBox" layoutX="25.0"
                                                           layoutY="148.0" mnemonicParsing="false"
                                                           text="Group by planet type"/>
                                                 <CheckBox fx:id="dumpActionsCheckBox" layoutX="25.0"
                                                           layoutY="174.0" mnemonicParsing="false"
                                                           selected="true" text="Dump actions"/>
-                                                <CheckBox fx:id="dumpActionsTextCheckBox" layoutX="25.0"
-                                                          layoutY="199.0" mnemonicParsing="false"
-                                                          selected="true" text="Dump text"/>
                                                 <CheckBox fx:id="saveUnusedTilesCheckBox" layoutX="25.0"
-                                                          layoutY="224.0" mnemonicParsing="false"
+                                                          layoutY="200.0" mnemonicParsing="false"
                                                           text="Save non-zones tiles"/>
                                             </AnchorPane>
                                         </Tab>

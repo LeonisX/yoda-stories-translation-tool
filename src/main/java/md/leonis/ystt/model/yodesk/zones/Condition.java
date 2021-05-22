@@ -18,8 +18,8 @@ public class Condition extends KaitaiStruct implements TextContainer {
     // The `text_attribute` is never used, but seems to be included to shared the type with instructions.
     private String text;
 
-    private final Yodesk root;
-    private final Action parent;
+    private final transient Yodesk root;
+    private final transient Action parent;
 
     public static Condition fromFile(String fileName) throws IOException {
         return new Condition(new ByteBufferKaitaiInputStream(fileName));

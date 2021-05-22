@@ -54,8 +54,8 @@ public class Action extends KaitaiStruct {
     private int numInstructions;
     private List<Instruction> instructions;
 
-    private final Yodesk root;
-    private final Zone parent;
+    private final transient Yodesk root;
+    private final transient Zone parent;
 
     public static Action fromFile(String fileName) throws IOException {
         return new Action(new ByteBufferKaitaiInputStream(fileName));

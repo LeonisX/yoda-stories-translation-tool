@@ -14,8 +14,8 @@ public class PrefixedStrz extends KaitaiStruct {
     private int lenContent;
     private String content;
 
-    private final Yodesk root;
-    private final Sounds parent;
+    private final transient Yodesk root;
+    private final transient Sounds parent;
 
     public static PrefixedStrz fromFile(String fileName) throws IOException {
         return new PrefixedStrz(new ByteBufferKaitaiInputStream(fileName));

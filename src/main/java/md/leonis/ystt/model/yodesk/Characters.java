@@ -14,8 +14,8 @@ public class Characters extends KaitaiStruct {
 
     private List<Character> characters;
 
-    private final Yodesk root;
-    private final CatalogEntry parent;
+    private final transient Yodesk root;
+    private final transient CatalogEntry parent;
 
     public static Characters fromFile(String fileName) throws IOException {
         return new Characters(new ByteBufferKaitaiInputStream(fileName));

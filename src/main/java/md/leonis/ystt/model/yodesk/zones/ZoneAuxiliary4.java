@@ -15,8 +15,8 @@ public class ZoneAuxiliary4 extends KaitaiStruct {
     private long size;
     private int _unnamed2; // 3 swamp maps, except start map: 0; all other maps: 1
 
-    private final Yodesk root;
-    private final Zone parent;
+    private final transient Yodesk root;
+    private final transient Zone parent;
 
     public static ZoneAuxiliary4 fromFile(String fileName) throws IOException {
         return new ZoneAuxiliary4(new ByteBufferKaitaiInputStream(fileName));

@@ -11,8 +11,8 @@ public class UnknownCatalogEntry extends KaitaiStruct {
 
     private byte[] rawData;
 
-    private final Yodesk root;
-    private final CatalogEntry parent;
+    private final transient Yodesk root;
+    private final transient CatalogEntry parent;
 
     public static UnknownCatalogEntry fromFile(String fileName) throws IOException {
         return new UnknownCatalogEntry(new ByteBufferKaitaiInputStream(fileName));

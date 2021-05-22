@@ -15,8 +15,8 @@ public class StartupImage extends KaitaiStruct {
 
     private byte[] pixels;
 
-    private final Yodesk root;
-    private final CatalogEntry parent;
+    private final transient Yodesk root;
+    private final transient CatalogEntry parent;
 
     public static StartupImage fromFile(String fileName) throws IOException {
         return new StartupImage(new ByteBufferKaitaiInputStream(fileName));

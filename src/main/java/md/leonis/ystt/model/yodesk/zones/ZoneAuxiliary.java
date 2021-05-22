@@ -25,8 +25,8 @@ public class ZoneAuxiliary extends KaitaiStruct {
     // Additional items that are needed to solve the zone. Only used if the zone type is `goal`.
     private List<Integer> goalItems;
 
-    private final Yodesk root;
-    private final Zone parent;
+    private final transient Yodesk root;
+    private final transient Zone parent;
 
     public static ZoneAuxiliary fromFile(String fileName) throws IOException {
         return new ZoneAuxiliary(new ByteBufferKaitaiInputStream(fileName));

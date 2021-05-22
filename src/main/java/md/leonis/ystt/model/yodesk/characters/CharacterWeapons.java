@@ -15,8 +15,8 @@ public class CharacterWeapons extends KaitaiStruct {
 
     private List<CharacterWeapon> weapons;
 
-    private final Yodesk root;
-    private final CatalogEntry parent;
+    private final transient Yodesk root;
+    private final transient CatalogEntry parent;
 
     public static CharacterWeapons fromFile(String fileName) throws IOException {
         return new CharacterWeapons(new ByteBufferKaitaiInputStream(fileName));

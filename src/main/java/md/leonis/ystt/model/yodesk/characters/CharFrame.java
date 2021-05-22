@@ -14,8 +14,8 @@ public class CharFrame extends KaitaiStruct {
 
     private List<Integer> tiles;
 
-    private final Yodesk root;
-    private final Character parent;
+    private final transient Yodesk root;
+    private final transient Character parent;
 
     public static CharFrame fromFile(String fileName) throws IOException {
         return new CharFrame(new ByteBufferKaitaiInputStream(fileName));

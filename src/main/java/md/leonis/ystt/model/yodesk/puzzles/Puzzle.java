@@ -47,8 +47,8 @@ public class Puzzle extends KaitaiStruct {
 319     1 00111111      86
 */
 
-    private final Yodesk root;
-    private final Puzzles parent;
+    private final transient Yodesk root;
+    private final transient Puzzles parent;
 
     public static Puzzle fromFile(String fileName) throws IOException {
         return new Puzzle(new ByteBufferKaitaiInputStream(fileName));

@@ -18,8 +18,8 @@ public class TileNames extends KaitaiStruct {
      */
     private List<TileName> names;
 
-    private final Yodesk root;
-    private final CatalogEntry parent;
+    private final transient Yodesk root;
+    private final transient CatalogEntry parent;
 
     public static TileNames fromFile(String fileName) throws IOException {
         return new TileNames(new ByteBufferKaitaiInputStream(fileName));

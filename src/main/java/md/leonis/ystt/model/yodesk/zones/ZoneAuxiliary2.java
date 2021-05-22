@@ -19,8 +19,8 @@ public class ZoneAuxiliary2 extends KaitaiStruct {
     // Items that can be gained when the zone is solved.
     private List<Integer> providedItems;
 
-    private final Yodesk root;
-    private final Zone parent;
+    private final transient Yodesk root;
+    private final transient Zone parent;
 
     public static ZoneAuxiliary2 fromFile(String fileName) throws IOException {
         return new ZoneAuxiliary2(new ByteBufferKaitaiInputStream(fileName));

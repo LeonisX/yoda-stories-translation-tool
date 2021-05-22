@@ -17,8 +17,8 @@ public class CharacterWeapon extends KaitaiStruct {
     private Integer reference;
     private Integer health;
 
-    private final Yodesk root;
-    private final CharacterWeapons parent;
+    private final transient Yodesk root;
+    private final transient CharacterWeapons parent;
 
     public static CharacterWeapon fromFile(String fileName) throws IOException {
         return new CharacterWeapon(new ByteBufferKaitaiInputStream(fileName));

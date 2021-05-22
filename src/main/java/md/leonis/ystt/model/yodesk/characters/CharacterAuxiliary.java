@@ -13,8 +13,8 @@ public class CharacterAuxiliary extends KaitaiStruct {
     private int index;
     private Short damage;
 
-    private final Yodesk root;
-    private final CharacterAuxiliaries parent;
+    private final transient Yodesk root;
+    private final transient CharacterAuxiliaries parent;
 
     public static CharacterAuxiliary fromFile(String fileName) throws IOException {
         return new CharacterAuxiliary(new ByteBufferKaitaiInputStream(fileName));

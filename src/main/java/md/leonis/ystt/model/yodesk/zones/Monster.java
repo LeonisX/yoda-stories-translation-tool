@@ -25,8 +25,8 @@ public class Monster extends KaitaiStruct {
     private long dropsLoot;
     private List<Waypoint> waypoints;
 
-    private final Yodesk root;
-    private final ZoneAuxiliary parent;
+    private final transient Yodesk root;
+    private final transient ZoneAuxiliary parent;
 
     public static Monster fromFile(String fileName) throws IOException {
         return new Monster(new ByteBufferKaitaiInputStream(fileName));

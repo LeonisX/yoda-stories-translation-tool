@@ -17,11 +17,19 @@
   },
   {
     "id": "eng-1.1",
-    "title": "Star Wars - Yoda Stories (20.03.1997) (Eng) (v1.1)",
+    "title": "Star Wars - Yoda Stories (18.02.1997) (Eng) (v1.1)",
     "exeCrc32": "B4E9D59F",
     "dtaCrc32": "B0FE9C2A",
     "charset": "windows-1252",
     "description": "The rarest version of the English-language game. Compared to the first version, it has some fixes.\nThe files were modified on 18.02.1997."
+  },
+  {
+    "id": "eng-1.1-demo",
+    "title": "Star Wars - Yoda Stories (18.02.1997) (Eng) (Demo)",
+    "exeCrc32": "E89D0EB1",
+    "dtaCrc32": "F9543F00",
+    "charset": "windows-1252",
+    "description": "Demo version of the v1.1 game released on 18.02.1997.\nThere is only one mission available on planet Neshtab."
   },
   {
     "id": "eng-1.2",
@@ -30,14 +38,6 @@
     "dtaCrc32": "6B79555B",
     "charset": "windows-1252",
     "description": "This is the best version of the game, however, it has received little distribution.\nIt contains all the fixes from Patch 6, but the EXE file is also improved.\nStar Wars - Yoda Stories & Behind The Magic - Vehicles Special Edition was recorded on 10.08.1998."
-  },
-  {
-    "id": "eng-1-demo",
-    "title": "Star Wars - Yoda Stories (18.02.1997) (Eng) (Demo)",
-    "exeCrc32": "E89D0EB1",
-    "dtaCrc32": "F9543F00",
-    "charset": "windows-1252",
-    "description": "Demo version of the game released on 18.02.1997.\nThere is only one mission available on planet Neshtab."
   },
   {
     "id": "spa-1",

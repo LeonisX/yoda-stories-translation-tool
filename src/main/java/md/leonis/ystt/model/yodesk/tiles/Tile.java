@@ -14,9 +14,9 @@ public class Tile extends KaitaiStruct {
     private TileAttributes attributes;
     private byte[] pixels;
 
-    private final Yodesk root;
-    private final TilesEntries parent;
-    private byte[] rawAttributes;
+    private final transient Yodesk root;
+    private final transient TilesEntries parent;
+    private transient byte[] rawAttributes;
 
     public Tile(TilesEntries parent, Yodesk root) {
         super(null);

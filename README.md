@@ -10,11 +10,19 @@ Utility Yoda Stories Translation Tool
 
 [Read Yoda Stories Translation Guide](documents/translation-guide.md)
 
-[Read Guide About YODESK.EXE Modifying](documents/exe-translation.md)
+[Read Guide About YODESK.EXE Modifying](documents/exe-translation-guide.md)
 
 An original version: https://github.com/LeonisX/YExplorer
 
 ## TODO
+
+* Zone report
+
+* Bug when show-hide zone layers (#0 map)
+
+* remove all [CR2], [CR] code
+
+* Resolve all TODO
 
 * Translation instructions - need english version
 
@@ -31,13 +39,7 @@ An original version: https://github.com/LeonisX/YExplorer
 * Article about unsigned (hex editor, port from delphi, mathematic, before java 8, current solutions, examples)
 
 * Paste from clipboard (good idea)
-
-* Think how to drag-drop from UI from Windows Explorer (Open file)
-* TODO 223.res in description, if need
-* Full instruction: EXE, DTA: MarkDown
-* Resolve all TODO
-* remove all [CR2], [CR] code
-* Bug when show-hide zone layers (#0 map)
+* Think how to drag-drop from UI from Windows Explorer (Open file)\
 
 * Identify Characters MovementTypes
 
