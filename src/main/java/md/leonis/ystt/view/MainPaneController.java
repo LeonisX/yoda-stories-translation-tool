@@ -9,6 +9,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingFXUtils;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
@@ -27,10 +28,7 @@ import javafx.stage.WindowEvent;
 import md.leonis.bin.ByteOrder;
 import md.leonis.bin.Dump;
 import md.leonis.config.Config;
-import md.leonis.ystt.model.Encoding;
-import md.leonis.ystt.model.Release;
-import md.leonis.ystt.model.Section;
-import md.leonis.ystt.model.ZoneHistory;
+import md.leonis.ystt.model.*;
 import md.leonis.ystt.model.docx.PropertyName;
 import md.leonis.ystt.model.docx.StringImagesRecord;
 import md.leonis.ystt.model.docx.StringRecord;
@@ -289,7 +287,7 @@ public class MainPaneController {
         blackMenuItem.setUserData(Color.BLACK);
         whiteMenuItem.setUserData(Color.WHITE);
 
-        //TODO log.Clear;
+        Log.setOutput(logsTextArea);
 
         opath = spath.resolve(OUTPUT + '-' + release.getId());
 
@@ -368,7 +366,7 @@ public class MainPaneController {
 
         // Tiles, sprites
         drawTiles();
-        updateTilesCount();
+        tilesCountLabel.setText(Integer.toString(yodesk.getTiles().getTiles().size()));
         tilesContextMenu.setOnShown(this::selectTileMenuItem);
         tilesToggleGroup.selectedToggleProperty().addListener(tilesAttributesToggleGroupListener());
 
@@ -380,6 +378,7 @@ public class MainPaneController {
                                 a.getConditions().stream().map(Condition::getText).filter(StringUtils::isNotBlank).count()).sum()).sum()
                 )
         );
+        zoneLayerToggleGroup.selectedToggleProperty().addListener(zoneLayerToggleGroupListener());
         zonesTableView.setItems(FXCollections.observableList(yodesk.getZones().getZones()));
         zoneEditorListView.setItems(FXCollections.observableList(yodesk.getZones().getZones().stream().map(m -> "Zone #" + m.getIndex()).collect(Collectors.toList())));
         zoneEditorListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> drawEditZone());
@@ -472,6 +471,17 @@ public class MainPaneController {
 
         namesTexts = WordHelper.getNamesTexts();
         namesTextTableView.setItems(FXCollections.observableList(namesTexts));
+
+        logsTextArea.textProperty().addListener((ChangeListener<Object>) (observable, oldValue, newValue) ->
+                logsTextArea.setScrollTop(Double.MIN_VALUE));
+    }
+
+    private ChangeListener<? super Toggle> zoneLayerToggleGroupListener() {
+        return (ov, oldToggle, newToggle) -> {
+            if (newToggle != null) {
+                Log.debug("Select zone layer: " + ZoneLayer.byId(newToggle.getUserData().toString()));
+            }
+        };
     }
 
     private void disableNonTranslationFeatures(boolean status) {
@@ -487,14 +497,11 @@ public class MainPaneController {
         dumpTab.setDisable(status);
         hexOffsetsTab.setDisable(status);
         charactersTab.setDisable(status);
+        Log.debug("Show translation features: " + (status ? "OFF" : "ON"));
     }
 
     private void updateDestinationCharset() {
         destinationCharsetLabel.setText(destinationCharset.getDescription());
-    }
-
-    private void updateTilesCount() {
-        tilesCountLabel.setText(Integer.toString(yodesk.getTiles().getTiles().size()));
     }
 
     private void drawTitleImage() {
@@ -616,58 +623,11 @@ public class MainPaneController {
             tilesFlowPane.getChildren().add(tileId, newTile(tileId, true));
             zoneEditorTilesFlowPane.getChildren().add(tileId, newTile(tileId, false));
             usedTiles.add(false);
+            Log.debug("Added new tile");
             drawEditZone();
         } catch (Exception e) {
             JavaFxUtils.showAlert("Error adding tile", e);
         }
-    }
-
-    public void deleteTileClick() {
-
-        try {
-            int tileId = yodesk.getTiles().getTiles().size() - 1;
-            List<Integer> zoneIds = yodesk.getZones().getZones().stream().filter(z -> z.getTileIds().stream()
-                    .flatMap(l -> l.getColumn().stream()).anyMatch(i -> i.equals(tileId))).map(Zone::getIndex).collect(Collectors.toList());
-            zoneIds.addAll(yodesk.getZones().getZones().stream().filter(z -> z.getIzax().getGoalItems().stream()
-                    .anyMatch(i -> i.equals(tileId))).map(Zone::getIndex).collect(Collectors.toList()));
-            zoneIds.addAll(yodesk.getZones().getZones().stream().filter(z -> z.getIzax().getRequiredItems().stream()
-                    .anyMatch(i -> i.equals(tileId))).map(Zone::getIndex).collect(Collectors.toList()));
-            zoneIds.addAll(yodesk.getZones().getZones().stream().filter(z -> z.getIzx2().getProvidedItems().stream()
-                    .anyMatch(i -> i.equals(tileId))).map(Zone::getIndex).collect(Collectors.toList()));
-            zoneIds = zoneIds.stream().distinct().sorted().collect(Collectors.toList());
-            List<Integer> puzzleIds = yodesk.getPuzzles().getPuzzles().stream()
-                    .filter(p -> (p.getItem2() != null && p.getItem2().equals(tileId)) || p.getItem1() != null && p.getItem1().equals(tileId))
-                    .map(Puzzle::getIndex).collect(Collectors.toList());
-            List<Integer> charactersIds = yodesk.getCharacters().getCharacters().stream().filter(c -> c.getTileIds().stream()
-                    .anyMatch(i -> i.equals(tileId))).map(Character::getIndex).collect(Collectors.toList());
-            List<String> tileNameIds = yodesk.getTileNames().getNames().stream().filter(t -> t.getTileId() == tileId).map(TileName::getName).collect(Collectors.toList());
-
-            boolean isSafe = (zoneIds.size() + puzzleIds.size() + charactersIds.size() + tileNameIds.size()) == 0;
-            if (isSafe) {
-                deleteTile(tileId, -1);
-            } else {
-                int newTileId = JavaFxUtils.showDeleteTileConfirmation(tileId, zoneIds, puzzleIds, charactersIds, tileNameIds);
-                if (newTileId > 0) {
-                    deleteTile(tileId, newTileId);
-                }
-            }
-        } catch (Exception e) {
-            JavaFxUtils.showAlert("Error deleting tile", e);
-        }
-    }
-
-    private void deleteTile(int tileId, int newTileId) {
-
-        yodesk.getTiles().deleteTile();
-        tilesFlowPane.getChildren().remove(tileId);
-        zoneEditorTilesFlowPane.getChildren().remove(tileId);
-        yodesk.getZones().getZones().forEach(z -> z.replaceTile(tileId, newTileId));
-        yodesk.getPuzzles().getPuzzles().forEach(p -> p.replaceTile(tileId, newTileId));
-        yodesk.getCharacters().getCharacters().forEach(c -> c.replaceTile(tileId, newTileId));
-        yodesk.getTileNames().getNames().forEach(t -> t.replaceTile(tileId, newTileId));
-
-        usedTiles.remove(usedTiles.size() - 1);
-        drawEditZone();
     }
 
     private ImageView newTile(int tileId, boolean contextMenu) {
@@ -722,11 +682,61 @@ public class MainPaneController {
         return image;
     }
 
+    public void deleteTileClick() {
+
+        try {
+            int tileId = yodesk.getTiles().getTiles().size() - 1;
+            List<Integer> zoneIds = yodesk.getZones().getZones().stream().filter(z -> z.getTileIds().stream()
+                    .flatMap(l -> l.getColumn().stream()).anyMatch(i -> i.equals(tileId))).map(Zone::getIndex).collect(Collectors.toList());
+            zoneIds.addAll(yodesk.getZones().getZones().stream().filter(z -> z.getIzax().getGoalItems().stream()
+                    .anyMatch(i -> i.equals(tileId))).map(Zone::getIndex).collect(Collectors.toList()));
+            zoneIds.addAll(yodesk.getZones().getZones().stream().filter(z -> z.getIzax().getRequiredItems().stream()
+                    .anyMatch(i -> i.equals(tileId))).map(Zone::getIndex).collect(Collectors.toList()));
+            zoneIds.addAll(yodesk.getZones().getZones().stream().filter(z -> z.getIzx2().getProvidedItems().stream()
+                    .anyMatch(i -> i.equals(tileId))).map(Zone::getIndex).collect(Collectors.toList()));
+            zoneIds = zoneIds.stream().distinct().sorted().collect(Collectors.toList());
+            List<Integer> puzzleIds = yodesk.getPuzzles().getPuzzles().stream()
+                    .filter(p -> (p.getItem2() != null && p.getItem2().equals(tileId)) || p.getItem1() != null && p.getItem1().equals(tileId))
+                    .map(Puzzle::getIndex).collect(Collectors.toList());
+            List<Integer> charactersIds = yodesk.getCharacters().getCharacters().stream().filter(c -> c.getTileIds().stream()
+                    .anyMatch(i -> i.equals(tileId))).map(Character::getIndex).collect(Collectors.toList());
+            List<String> tileNameIds = yodesk.getTileNames().getNames().stream().filter(t -> t.getTileId() == tileId).map(TileName::getName).collect(Collectors.toList());
+
+            boolean isSafe = (zoneIds.size() + puzzleIds.size() + charactersIds.size() + tileNameIds.size()) == 0;
+            if (isSafe) {
+                deleteTile(tileId, -1);
+            } else {
+                int newTileId = JavaFxUtils.showDeleteTileConfirmation(tileId, zoneIds, puzzleIds, charactersIds, tileNameIds);
+                if (newTileId > 0) {
+                    deleteTile(tileId, newTileId);
+                }
+            }
+            Log.debug("Deleted last tile");
+        } catch (Exception e) {
+            JavaFxUtils.showAlert("Error deleting tile", e);
+        }
+    }
+
+    private void deleteTile(int tileId, int newTileId) {
+
+        yodesk.getTiles().deleteTile();
+        tilesFlowPane.getChildren().remove(tileId);
+        zoneEditorTilesFlowPane.getChildren().remove(tileId);
+        yodesk.getZones().getZones().forEach(z -> z.replaceTile(tileId, newTileId));
+        yodesk.getPuzzles().getPuzzles().forEach(p -> p.replaceTile(tileId, newTileId));
+        yodesk.getCharacters().getCharacters().forEach(c -> c.replaceTile(tileId, newTileId));
+        yodesk.getTileNames().getNames().forEach(t -> t.replaceTile(tileId, newTileId));
+
+        usedTiles.remove(usedTiles.size() - 1);
+        drawEditZone();
+    }
+
     private ChangeListener<Toggle> tilesAttributesToggleGroupListener() {
         return (ov, oldToggle, newToggle) -> {
             int tileId = ((Integer) (currentTile).getUserData());
             if (newToggle != null) {
                 yodesk.getTiles().setAttributes(tileId, newToggle.getUserData().toString());
+                Log.debug(String.format("Set new attribute %s for tile #%s", newToggle.getUserData().toString(), tileId));
             }
         };
     }
@@ -792,7 +802,6 @@ public class MainPaneController {
                 image.setUserData(i);
                 image.setOnMouseEntered(mouseEnteredHandler);
                 image.setOnMouseExited(mouseExitedHandler);
-                //TODO need here????
                 image.setOnContextMenuRequested(e -> tilesContextMenu.show((Node) e.getSource(), e.getScreenX(), e.getScreenY()));
 
                 int finalI = i;
@@ -839,6 +848,16 @@ public class MainPaneController {
         tilesToggleGroup.getToggles().forEach(t -> t.setSelected(t.getUserData().toString().equals(binaryTileName)));
     }
 
+    @FXML
+    private void drawEditZone() {
+        if (getEditorZoneId() >= 0) {
+            int zoneId = getEditorZoneId();
+            drawEditorMap(zoneId);
+            showMapInfo(zoneId);
+            positionZoneOptionsTabPane();
+            undoZoneEdit.setVisible(null != zoneHistoryMap.get(zoneId));
+        }
+    }
 
     private void showMapInfo(int zoneId) {
 
@@ -850,7 +869,6 @@ public class MainPaneController {
                 zone.getTileIds().stream().flatMap(l -> l.getColumn().stream()).anyMatch(t -> t.equals(536));
 
         zoneSizeLabel.setText(zone.getWidth() + "x" + zone.getHeight());
-
 
         if (zone.getIzx2().getProvidedItems().size() == 1 && zone.getIzx2().getProvidedItems().get(0).equals(511)) {
             zoneTypeLabel.setText("Find Force");
@@ -871,11 +889,11 @@ public class MainPaneController {
         zoneZax4Unnamed2Label.setText(String.valueOf(zone.getIzx4().get_unnamed2()));
 
         if (hasActiveTeleporter) {
-            drawTileOnCanvas(834, zoneTypeCanvas, 0, 0, transparentColor);
+            drawTileOnCanvas(834, zoneTypeCanvas, 0, 0, Color.valueOf("#F4F4F4"));
         } else if (hasInActiveTeleporter) {
-            drawTileOnCanvas(833, zoneTypeCanvas, 0, 0, transparentColor);
+            drawTileOnCanvas(833, zoneTypeCanvas, 0, 0, Color.valueOf("#F4F4F4"));
         } else {
-            drawTileOnCanvas(zone.getType().getTileId(), zoneTypeCanvas, 0, 0, transparentColor);
+            drawTileOnCanvas(zone.getType().getTileId(), zoneTypeCanvas, 0, 0, Color.valueOf("#F4F4F4"));
         }
 
         drawTilesOnFlowPane(zoneNpcsTilesFlowPane, zone.getIzx3().getNpcs());
@@ -892,17 +910,6 @@ public class MainPaneController {
         });
 
         drawTilesOnFlowPane(lootTilesFlowPane, lootTiles);
-    }
-
-    @FXML
-    private void drawEditZone() {
-        if (getEditorZoneId() >= 0) {
-            int zoneId = getEditorZoneId();
-            drawEditorMap(zoneId);
-            showMapInfo(zoneId);
-            positionZoneOptionsTabPane();
-            undoZoneEdit.setVisible(null != zoneHistoryMap.get(zoneId));
-        }
     }
 
     private void positionZoneOptionsTabPane() {
@@ -953,21 +960,16 @@ public class MainPaneController {
         return sb.toString();
     }
 
-
     private void drawEditorMap(int zoneId) {
 
         try {
             Zone zone = yodesk.getZones().getZones().get(zoneId);
 
-            //TODO offset if need
-            //Log.debug("Zone #" + zoneId + " offset: " + "section.intToHex(section.GetPosition(), 8)");
+            Log.debug("Show zone #" + zoneId);
             showZoneStatus(zone);
 
             zoneEditorCanvas.setWidth(zone.getWidth() * TILE_SIZE);
             zoneEditorCanvas.setHeight(zone.getHeight() * TILE_SIZE);
-
-            /*canvas.getGraphicsContext2D().setFill(transparentColor);
-            canvas.getGraphicsContext2D().fillRect(0, 0, canvas.getWidth(), canvas.getHeight());*/
 
             drawZone(zoneEditorCanvas, zone);
 
@@ -1141,6 +1143,8 @@ public class MainPaneController {
         addToZonesHistory(zone.getIndex(), x, y, layerId, oldValue, tileId);
 
         undoZoneEdit.setVisible(true);
+
+        Log.debug(String.format("Changed tile [%s, %s] on layer #%s to %s", tileId, x, y, layerId));
     }
 
     private void addToZonesHistory(int zoneId, int x, int y, int layerId, int oldValue, int newValue) {
@@ -1168,6 +1172,8 @@ public class MainPaneController {
                 zoneHistoryMap.remove(zoneId);
                 undoZoneEdit.setVisible(false);
             }
+
+            Log.debug("Undo last zone change");
         }
     }
 
@@ -1267,7 +1273,15 @@ public class MainPaneController {
         }
     }
 
-    public void layerCheckBoxClick() {
+    public void layerCheckBoxClick(ActionEvent event) {
+
+        CheckBox checkBox = (CheckBox) event.getSource();
+        String layerName = ZoneLayer.byId(checkBox.getUserData().toString());
+        if (checkBox.isSelected()) {
+            Log.debug(String.format("Show layer: %s", layerName));
+        } else {
+            Log.debug(String.format("Hide layer: %s", layerName));
+        }
         drawZone(zoneEditorCanvas, getEditorZone());
     }
 
@@ -1277,10 +1291,6 @@ public class MainPaneController {
 
     private int getEditorZoneId() {
         return zoneEditorListView.getSelectionModel().getSelectedIndex();
-    }
-
-    private void DumpData(Path path, CatalogEntry entry) throws IOException {
-        IOUtils.saveBytes(path, entry.getBytes());
     }
 
     public void openMenuItemClick() {
@@ -1312,14 +1322,114 @@ public class MainPaneController {
         }
     }
 
+    public static void loadFileToArray(File file) throws IOException {
+
+        Log.clear();
+        Path exePath = file.toPath();
+        Path dtaPath = IOUtils.getDtaPath(exePath.getParent());
+
+        loadExeFile(exePath);
+        loadDtaFile(dtaPath);
+
+        release = Config.releases.stream().filter(r -> r.getExeCrc32().equals(exeCrc32) && r.getDtaCrc32().equals(dtaCrc32)).findFirst().orElse(null);
+
+        if (null == release) {
+            release = new Release();
+            release.setCharset("");
+            release.setId("unk");
+            release.setTitle("Unknown combination of files");
+            release.setDtaCrc32("????????");
+            release.setExeCrc32("????????");
+            release.setDescription("This is an unknown combination of DTA/EXE files.\n" +
+                    "Perhaps this is your new translation of the game, which has not yet been included in our database.\n" +
+                    "If so, then you should copy all translation resources to the directory output-unk.\n" +
+                    "Or maybe you found a new release of the game.\n" +
+                    "Be sure to send it to us so we can analyze it and add to our database. E-mail: tv-games@mail.ru");
+        }
+
+        sourceCharset = getCharset(release.getCharset());
+        destinationCharset = sourceCharset;
+        exeDump.setCharset(sourceCharset.getCode());
+
+        Log.debug("DTA revision: " + release.getTitle());
+        Log.appendOk();
+    }
+
+    private static void loadDtaFile(Path dtaPath) throws IOException {
+
+        Log.debug(String.format("Loading %s...", dtaPath));
+
+        dtaCrc32 = intToHex(BinaryUtils.crc32(dtaPath), 8);
+
+        dtaSize = Files.size(dtaFile);
+
+        Log.debug("Size: " + dtaSize);
+        Log.debug("CRC-32: " + dtaCrc32);
+    }
+
+    private static void loadExeFile(Path exePath) throws IOException {
+
+        Log.debug(String.format("Loading %s...", exePath));
+        exeDump = new Dump(exePath);
+        exeDump.setByteOrder(ByteOrder.LITTLE_ENDIAN);
+        exeDump.setIndex(0);
+
+        exeCrc32 = intToHex(BinaryUtils.crc32(exeDump.getDump()), 8);
+
+        getControlsBounds();
+
+        int paletteStartIndex = exeDump.findAddress(PaletteUtils.getBGRASample(gamePalette));
+
+        if (paletteStartIndex < 0) {
+            throw new RuntimeException("Palette isn't found in EXE file");
+        }
+
+        boolean otherPaletteLocation = (STANDARD_PALETTE_LOCATION != paletteStartIndex);
+
+        dumpPalette(paletteStartIndex);
+
+        Log.debug("Size: " + exeDump.size());
+        Log.debug("CRC-32: " + exeCrc32);
+        Log.debug("Palette address: " + intToHex(paletteStartIndex, 6));
+
+        if (otherPaletteLocation) {
+            Log.debug("Unknown palette location. Standard is: 0x550F0");
+        }
+    }
+
+    private static void getControlsBounds() {
+
+        windowMap = exeDump.findValueAddressByMask("8D3C45 ????0000 6A08FF"); // 525
+        window2Map = exeDump.findValueAddressByMask("C74708 ????0000 C7470C"); // 525
+        gridViewMap = exeDump.findValueAddressByMask("C7828C320000 ????0000 C78294"); // 489
+        scrollBarLeftMap = exeDump.findValueAddressByMask("C78294320000 ????0000 B8FC00"); // 496
+        scrollBarRightMap = exeDump.findValueAddressByMask("C7829C320000 ????0000 C782A4"); // 512
+
+        toolTipMap = exeDump.findValueAddressByMask("4F4433F6 ?????????? 8BCF8947"); // C2039B148D     833284150413
+    }
+
+    private static void dumpPalette(int paletteStartIndex) {
+
+        gamePalette = PaletteUtils.dumpBGRAPalette(exeDump.getDump(), paletteStartIndex);
+        Config.updatePalette();
+    }
+
     public void saveMenuItemClick() {
+
         try {
             String[] chunks = dtaFile.getFileName().toString().split("\\.");
-            IOUtils.copyFile(exeFile.toPath(), exeFile.toPath().getParent().resolve(chunks[0] + ".exe.bak"));
+            Path backupPath = exeFile.toPath().getParent().resolve(chunks[0] + ".exe.bak");
+            Log.debug("Create backup: " + backupPath);
+            IOUtils.copyFile(exeFile.toPath(), backupPath);
+            Log.debug("Save EXE file");
             exeDump.saveToFile(exeFile);
+            Log.appendOk();
 
             chunks = dtaFile.getFileName().toString().split("\\.");
-            IOUtils.copyFile(dtaFile, dtaFile.getParent().resolve(chunks[0] + ".dta.bak"));
+            backupPath = dtaFile.getParent().resolve(chunks[0] + ".dta.bak");
+            Log.debug("Create backup: " + backupPath);
+            IOUtils.copyFile(dtaFile, backupPath);
+            Log.debug("Save DTA file");
             yodesk.write(new ByteBufferKaitaiOutputStream(dtaFile));
             //TODO confirmation
         } catch (Exception e) {
@@ -1328,13 +1438,16 @@ public class MainPaneController {
     }
 
     public void saveAsMenuItemClick() {
+
         try {
             File file = JavaFxUtils.showDTASaveDialog("Save DTA File", lastVisitedDirectory, "yodesk.dta");
 
             if (file != null) {
+                Log.debug("Save DTA file: " + file.getName());
                 lastVisitedDirectory = file.toPath().getParent().toString();
                 yodesk.write(new ByteBufferKaitaiOutputStream(file));
                 //TODO confirmation
+                Log.appendOk();
             }
         } catch (Exception e) {
             JavaFxUtils.showAlert("DTA file saving error", e);
@@ -1355,6 +1468,7 @@ public class MainPaneController {
 
         Config.transparentColor = (Color) transparentColorToggleGroup.getSelectedToggle().getUserData();
         Config.updatePalette();
+        Log.debug("Selected new transparent color: " + transparentColor.toString());
         ObservableList<Node> children = tilesFlowPane.getChildren();
         for (int i = 0; i < children.size() - 2; i++) {
             ImageView imageView = (ImageView) children.get(i);
@@ -1387,10 +1501,10 @@ public class MainPaneController {
             IOUtils.createDirectories(path);
             for (CatalogEntry entry : yodesk.getCatalog()) {
                 Section name = entry.getSection();
-                DumpData(path.resolve(name + ".bin"), entry);
+                IOUtils.saveBytes(path.resolve(name + ".bin"), entry.getBytes());
                 Log.debug(name + " is saved");
             }
-            // TODO Showmessage('OK');
+            Log.debug("OK");
         } catch (Exception e) {
             JavaFxUtils.showAlert("Sections dumping error", e);
         }
@@ -1398,17 +1512,16 @@ public class MainPaneController {
 
     public void saveToBitmapButtonClick() {
 
-        // TODO Log.Clear;
-        // TODO IOUtils.createDirectories("");
-        // TODO Log.Debug('Title screen saved')
-
         try {
             Path path = opath.resolve("startup" + E_BMP);
+            Log.debug("Saving startup screen: " + path);
             if (titleScreenImageView.getUserData() != null) {
                 BMPWriter.write((BMPImage) titleScreenImageView.getUserData(), path);
             } else {
-                BMPWriter.write8bit(titleScreenImageView, path.toFile());
+                BMPWriter.write8bit(titleScreenImageView, path);
             }
+            Log.appendOk();
+
         } catch (Exception e) {
             JavaFxUtils.showAlert("Title screen saving error", e);
         }
@@ -1417,7 +1530,9 @@ public class MainPaneController {
     public void loadFromBitmapButtonClick() {
 
         try {
-            BMPImage titleImage = BMPReader.readExt(opath.resolve("startup" + E_BMP));
+            Path path = opath.resolve("startup" + E_BMP);
+            Log.debug("Loading startup screen: " + path);
+            BMPImage titleImage = BMPReader.readExt(path);
 
             // Update in memory
             for (int y = 0; y < titleImage.getHeight(); y++) {
@@ -1433,33 +1548,46 @@ public class MainPaneController {
             SwingFXUtils.toFXImage(titleImage.getImage(), image);
             titleScreenImageView.setImage(image);
             titleScreenImageView.setUserData(titleImage);
+            Log.appendOk();
+
         } catch (Exception e) {
             JavaFxUtils.showAlert("Title screen loading error", e);
         }
     }
 
     public void savePaletteButtonButtonClick() {
+
         try {
-            BMPWriter.write8bit(paletteCanvas, opath.resolve("palette" + E_BMP));
+            Path path = opath.resolve("palette" + E_BMP);
+            Log.debug("Saving palette image: " + path);
+            BMPWriter.write8bit(paletteCanvas, path);
+            Log.appendOk();
         } catch (Exception e) {
             JavaFxUtils.showAlert("Palette loading error", e);
         }
     }
 
     public void dumpPaletteButtonButtonClick() {
+
         try {
+            Log.debug("Saving palettes...");
             PaletteUtils.saveToFile(gamePalette, opath.resolve("palette.pal"));
             PaletteUtils.saveSafeToFile(gamePalette, opath.resolve("palette-safe.pal"));
             PaletteUtils.saveToFile(fuchsiaPalette, opath.resolve("palette-fuchsia.pal"));
             PaletteUtils.saveSafeToFile(fuchsiaPalette, opath.resolve("palette-fuchsia-safe.pal"));
+            Log.appendOk();
         } catch (Exception e) {
             JavaFxUtils.showAlert("Palette saving error", e);
         }
     }
 
     public void saveSoundsListToFileButtonClick() {
+
         try {
-            IOUtils.saveTextFile(yodesk.getSounds().getSounds(), opath.resolve("sounds" + E_TXT));
+            Path path = opath.resolve("sounds" + E_TXT);
+            Log.debug("Saving sounds to file: " + path);
+            IOUtils.saveTextFile(yodesk.getSounds().getSounds(), path);
+            Log.appendOk();
         } catch (Exception e) {
             JavaFxUtils.showAlert("Sounds list saving error", e);
         }
@@ -1469,6 +1597,7 @@ public class MainPaneController {
     public void saveTilesToSeparateFilesClick() {
 
         try {
+            Log.debug("Saving tiles...");
             //TilesProgressBar.Position := 0;
             //TilesProgressBar.Max := DTA.tilesCount;
             Path tilesPath = opath.resolve("Tiles");
@@ -1490,8 +1619,7 @@ public class MainPaneController {
             Map<String, List<Integer>> byAttr = new HashMap<>();
 
             for (int i = 0; i < yodesk.getTiles().getTiles().size(); i++) {
-                //ReadPicture(section, 0);
-                //CopyPicture(TileImage, 0, 0);
+
                 //TODO Application.ProcessMessages;
 
                 if (decimalFilenamesCheckBox.isSelected()) {
@@ -1604,6 +1732,8 @@ public class MainPaneController {
         try {
             int width = Integer.parseInt(tilesInARowTextField.getText());
             int height = (int) Math.ceil(yodesk.getTiles().getTiles().size() * 1.0 / width);
+            Path path = opath.resolve(String.format("tiles%sx%s%s", width, height, E_BMP));
+            Log.debug("Saving tiles to one file: " + path);
 
             Canvas canvas = new Canvas(width * TILE_SIZE, height * TILE_SIZE);
 
@@ -1617,7 +1747,6 @@ public class MainPaneController {
                 }
             }
 
-            Path path = opath.resolve(String.format("tiles%sx%s%s", width, height, E_BMP));
             BMPWriter.write8bit(canvas, path);
             Log.debug("OK");
         } catch (Exception e) {
@@ -1648,14 +1777,17 @@ public class MainPaneController {
     }
 
     public void loadClipboardImageClick() {
+
         try {
             String initialFile = (null == clipboardFile) ? "clipboard.bmp" : clipboardFile.getName();
             String initialDir = (null == clipboardFile) ? opath.toString() : clipboardFile.getParent();
             File file = JavaFxUtils.showBMPLoadDialog("Load Clipboard image", initialDir, initialFile);
             if (file != null) {
+                Log.debug("Loading clipboard file: " + file.getName());
                 clipboardFile = file;
                 clipboardBufferedImage = BMPReader.read(file);
                 ImageUtils.drawOnCanvas(clipboardBufferedImage, clipboardCanvas, transparentColor);
+                Log.appendOk();
             }
         } catch (Exception e) {
             JavaFxUtils.showAlert("Clipboard image loading error", e);
@@ -1663,12 +1795,15 @@ public class MainPaneController {
     }
 
     public void saveClipboardImageClick() {
+
         try {
             String initialFile = (null == clipboardFile) ? "clipboard.bmp" : clipboardFile.getName();
             String initialDir = (null == clipboardFile) ? opath.toString() : clipboardFile.getParent();
             File file = JavaFxUtils.showBMPSaveDialog("Save Clipboard image", initialDir, initialFile);
             if (file != null) {
+                Log.debug("Loading clipboard file: " + file.getName());
                 BMPWriter.write8bit(clipboardBufferedImage, file);
+                Log.appendOk();
             }
         } catch (Exception e) {
             JavaFxUtils.showAlert("Clipboard image saving error", e);
@@ -1678,6 +1813,7 @@ public class MainPaneController {
     public void clearClipboardImageClick() {
         clipboardBufferedImage = ImageUtils.clearBufferedImage(clipboardBufferedImage);
         ImageUtils.fillCanvas(clipboardCanvas, transparentColor);
+        Log.debug("Clean clipboard image");
     }
 
     public void saveZonesToFilesButtonClick() throws IOException {
@@ -1686,11 +1822,8 @@ public class MainPaneController {
         //MapProgressBar.Position := 0;
         //MapProgressBar.Max := DTA.mapsCount;
 
-        //Log.Clear;
-        Log.debug("Zones:");
-        Log.newLine();
+        Log.debug("Save zones...");
         Log.debug("Total count: " + yodesk.getZones().getZones().size());
-        Log.newLine();
 
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         JsonElement element = gson.toJsonTree(yodesk.getZones().getZones());
@@ -1726,9 +1859,7 @@ public class MainPaneController {
         }
 
         if (saveUnusedTilesCheckBox.isSelected()) {
-            Log.newLine();
-            Log.debug("Unused tiles:");
-            Log.newLine();
+            Log.debug("Save unused tiles:");
             Path unusedTilesPath = opath.resolve("ZonesTilesUnused");
             IOUtils.createDirectories(unusedTilesPath);
             for (int i = 0; i < yodesk.getTiles().getTiles().size(); i++) {
@@ -1742,15 +1873,7 @@ public class MainPaneController {
         if (dumpActionsCheckBox.isSelected()) {
             dumpActionsScripts();
         }
-    }
-
-    public void dumpActionsTextToDocxClick() {
-
-        try {
-            WordUtils.saveZones(dtaCrc32, opath.resolve("actions" + E_DOCX));
-        } catch (Exception e) {
-            JavaFxUtils.showAlert("Error saving Actions text to the DOCX file", e);
-        }
+        Log.appendOk();
     }
 
     private void dumpActionsScripts() {
@@ -1788,6 +1911,33 @@ public class MainPaneController {
         }
     }
 
+    public void dumpActionsTextToDocxClick() {
+
+        try {
+            Path path = opath.resolve("actions" + E_DOCX);
+            Log.debug("Save actions text to file: " + path);
+            WordUtils.saveZones(dtaCrc32, path);
+            Log.appendOk();
+        } catch (Exception e) {
+            JavaFxUtils.showAlert("Error saving Actions text to the DOCX file", e);
+        }
+    }
+
+    public void loadTranslatedActionsTextClick() {
+
+        try {
+            Path path = opath.resolve("actions" + E_DOCX);
+            Log.debug("Load actions text from file: " + path);
+            WordRecord wordRecord = WordUtils.loadRecords(path);
+            validateProps(wordRecord.getProps());
+            actionTexts = wordRecord.getStringRecords();
+            actionsTextTableView.setItems(FXCollections.observableList(actionTexts));
+            Log.appendOk();
+        } catch (Exception e) {
+            JavaFxUtils.showAlert("Error loading Actions text from file", e);
+        }
+    }
+
     private void validateProps(Map<PropertyName, String> props) {
 
         if (!dtaCrc32.equals(props.get(PropertyName.CRC32))) {
@@ -1820,23 +1970,12 @@ public class MainPaneController {
         return true;
     }
 
-    public void loadTranslatedActionsTextClick() {
-
-        try {
-            WordRecord wordRecord = WordUtils.loadRecords(opath.resolve("actions" + E_DOCX));
-            validateProps(wordRecord.getProps());
-            actionTexts = wordRecord.getStringRecords();
-            actionsTextTableView.setItems(FXCollections.observableList(actionTexts));
-        } catch (Exception e) {
-            JavaFxUtils.showAlert("Error loading Actions text from file", e);
-        }
-    }
-
     Pattern actionIdPattern = Pattern.compile("^[0-9]{1,4}\\.[0-9]{1,3}\\.[ic][0-9]{1,3}$");
 
     public void replaceActionTextClick() {
 
         try {
+            Log.debug("Replacing actions text...");
             actionTexts.forEach(a -> a.setTranslation(a.getTranslation()
                             .replace("\r\n", "\n")
                             .replace("\n", "\r\n")
@@ -1859,6 +1998,7 @@ public class MainPaneController {
 
             actionTexts.forEach(s -> getActionTextContainer(s.getId()).setText(s.getTranslation()));
 
+            Log.appendOk();
             JavaFxUtils.showAlert("The text has been successfully replaced", "No errors were found during the replacement ", Alert.AlertType.INFORMATION);
 
         } catch (Exception e) {
@@ -1944,16 +2084,16 @@ public class MainPaneController {
     }
 
     public void dumpPuzzlesTextToDocxClick() {
+
         try {
-            Log.clear();
-            Log.debug("Puzzles (2):");
-            Log.newLine();
+            Path path = opath.resolve("puzzles" + E_DOCX);
+            Log.debug("Save puzzles text to file: " + path);
             Log.debug("Total count: " + yodesk.getPuzzles().getPuzzles().size());
-            Log.newLine();
+
             //TODO rewrite code after tests
             if (!disableNonTranslationMenuItem.isSelected()) {
                 List<String> phrases = yodesk.getPuzzles().getFilteredPuzzles().stream()
-                        .flatMap(p -> p.getStrings().stream().filter(s -> !s.isEmpty())).map(s -> s.replace("\r\n", "[CR]").replace("[CR][CR]", "[CR2]")).collect(Collectors.toList());
+                        .flatMap(p -> p.getStrings().stream().filter(s -> !s.isEmpty())).map(s -> s.replace("\r\n", "\\r\\n")).collect(Collectors.toList());
                 IOUtils.saveTextFile(phrases, opath.resolve("puzzles" + E_TXT));
             }
 
@@ -1985,7 +2125,8 @@ public class MainPaneController {
             System.out.println(puzzles1);
             System.out.println(puzzles2);
 
-            WordUtils.savePuzzles(dtaCrc32, opath.resolve("puzzles" + E_DOCX));
+            WordUtils.savePuzzles(dtaCrc32, path);
+            Log.appendOk();
 
         } catch (Exception e) {
             JavaFxUtils.showAlert("Error saving puzzles to the files", e);
@@ -1995,10 +2136,13 @@ public class MainPaneController {
     public void loadTranslatedPuzzlesTextClick() {
 
         try {
-            WordRecord wordRecord = WordUtils.loadRecords(opath.resolve("puz2" + E_DOCX));
+            Path path = opath.resolve("puzzles" + E_DOCX);
+            Log.debug("Load puzzles text from file: " + path);
+            WordRecord wordRecord = WordUtils.loadRecords(path);
             validateProps(wordRecord.getProps());
             puzzlesTexts = wordRecord.getStringRecords().stream().map(s -> new StringImagesRecord(s.getId(), Collections.emptyList(), s.getOriginal(), s.getTranslation())).collect(Collectors.toList());
             puzzlesTextTableView.setItems(FXCollections.observableList(puzzlesTexts));
+            Log.appendOk();
         } catch (Exception e) {
             JavaFxUtils.showAlert("Error loading Puzzles text from file", e);
         }
@@ -2010,11 +2154,10 @@ public class MainPaneController {
     public void replacePuzzlesTextClick() {
 
         try {
+            Log.debug("Replacing puzzles text...");
             puzzlesTexts.forEach(t -> t.setTranslation(t.getTranslation()
                             .replace("\r\n", "\n")
                             .replace("\n", "\r\n")
-                            .replace("[CR2]", "[CR][CR]")
-                            .replace("[CR]", "\r\n")
                             .replace("¥", var2(Yodesk.getOutputCharset()))
                             .replace("¢", var1(Yodesk.getOutputCharset()))
                             .replace("…", "...")
@@ -2031,6 +2174,7 @@ public class MainPaneController {
 
             puzzlesTexts.forEach(s -> getPuzzlesPrefixedStr(s.getId()).setContent(s.getTranslation()));
 
+            Log.appendOk();
             JavaFxUtils.showAlert("The text has been successfully replaced", "No errors were found during the replacement ", Alert.AlertType.INFORMATION);
 
         } catch (Exception e) {
@@ -2054,11 +2198,8 @@ public class MainPaneController {
             IOUtils.createDirectories(opath.resolve("Characters"));
             IOUtils.createDirectories(opath.resolve("CAUX"));
             IOUtils.createDirectories(opath.resolve("CHWP"));
-            Log.clear();
-            Log.debug("Characters:");
-            Log.newLine();
+            Log.debug("Saving characters...");
             Log.debug("Total count: " + yodesk.getCharacters().getCharacters().size());
-            Log.newLine();
 
             for (int i = 0; i < yodesk.getCharacters().getCharacters().size(); i++) {
                 Character character = yodesk.getCharacters().getCharacters().get(i);
@@ -2069,9 +2210,13 @@ public class MainPaneController {
                 }
             }
 
-            WordUtils.saveCharacters("Characters", dtaCrc32, opath.resolve("characters" + E_DOCX));
+            Path path = opath.resolve("characters" + E_DOCX);
+            Log.debug("Saving characters text to file: "+ path);
+            WordUtils.saveCharacters("Characters", dtaCrc32, path);
 
             IOUtils.saveTextFile(yodesk.getCharacters().getFilteredCharacters().stream().map(Character::getName).collect(Collectors.toList()), opath.resolve("characters" + E_TXT));
+            Log.appendOk();
+
         } catch (Exception e) {
             JavaFxUtils.showAlert("Error saving characters to the files", e);
         }
@@ -2080,7 +2225,10 @@ public class MainPaneController {
     public void generateCharactersReportButton() {
 
         try {
-            ExcelUtils.saveCharacters(opath.resolve("characters" + E_XLSX));
+            Path path = opath.resolve("characters" + E_XLSX);
+            Log.debug("Generate characters report: " + path);
+            ExcelUtils.saveCharacters(path);
+            Log.appendOk();
         } catch (Exception e) {
             JavaFxUtils.showAlert("Error saving characters to the files", e);
         }
@@ -2089,11 +2237,8 @@ public class MainPaneController {
     public void saveNamesToFileButtonClick() {
 
         try {
-            Log.clear();
-            Log.debug("TileNames:");
-            Log.newLine();
+            Log.debug("Saving tile names...");
             Log.debug("Total count: " + yodesk.getTileNames().getNames().size());
-            Log.newLine();
 
             IOUtils.createDirectories(opath.resolve("TileNames"));
             for (TileName n : yodesk.getTileNames().getNames()) {
@@ -2103,6 +2248,7 @@ public class MainPaneController {
             }
             IOUtils.saveTextFile(yodesk.getTileNames().getFilteredNames().stream().map(TileName::getName).filter(Objects::nonNull)
                     .collect(Collectors.toList()), opath.resolve("tilenames" + E_TXT));
+            Log.appendOk();
         } catch (Exception e) {
             JavaFxUtils.showAlert("Error saving TileNames to the files", e);
         }
@@ -2111,7 +2257,10 @@ public class MainPaneController {
     public void dumpNamesTextToDocxCLick() {
 
         try {
-            WordUtils.saveNames(dtaCrc32, opath.resolve("tilenames" + E_DOCX));
+            Path path = opath.resolve("tilenames" + E_DOCX);
+            Log.debug("Saving tile names to file: " + path);
+            WordUtils.saveNames(dtaCrc32, path);
+            Log.appendOk();
         } catch (Exception e) {
             JavaFxUtils.showAlert("Error saving TileNames text to the DOCX file", e);
         }
@@ -2120,7 +2269,9 @@ public class MainPaneController {
     public void loadTranslatedNamesTextClick() {
 
         try {
-            WordRecord wordRecord = WordUtils.loadNames(opath.resolve("tilenames" + E_DOCX));
+            Path path = opath.resolve("tilenames" + E_DOCX);
+            Log.debug("Loading tile names from file: " + path);
+            WordRecord wordRecord = WordUtils.loadNames(path);
             validateProps(wordRecord.getProps());
             namesTexts = wordRecord.getStringRecords().stream().map(s -> new StringImagesRecord(s.getId(), Collections.emptyList(), s.getOriginal(), s.getTranslation())).collect(Collectors.toList());
             namesTextTableView.setItems(FXCollections.observableList(namesTexts));
@@ -2135,7 +2286,7 @@ public class MainPaneController {
             }
 
             //maxWidth = maxWidth * 179 / 130;
-
+            Log.appendOk();
             if (maxWidth > 141) {
                 JavaFxUtils.showAlert("Too long tile name(s)", "Please consider increasing the window width by at least " + (int) Math.ceil(maxWidth - 141) + "px", Alert.AlertType.INFORMATION);
             }
@@ -2149,6 +2300,7 @@ public class MainPaneController {
     public void replaceNamesTextClick() {
 
         try {
+            Log.debug("Replacing tile names text...");
             if (trimNamesSpacesCheckBox.isSelected()) {
                 namesTexts.forEach(a -> a.setTranslation(a.getTranslation().trim()));
             }
@@ -2161,6 +2313,7 @@ public class MainPaneController {
 
             namesTexts.forEach(n -> filteredNames.get(Integer.parseInt(n.getId())).setName(n.getTranslation()));
 
+            Log.appendOk();
             JavaFxUtils.showAlert("The text has been successfully replaced", "No errors were found during the replacement ", Alert.AlertType.INFORMATION);
 
         } catch (Exception e) {
@@ -2198,91 +2351,6 @@ public class MainPaneController {
         ImageUtils.fillCanvas(canvas, xOffset, yOffset, color);
     }
 
-
-    public static void loadFileToArray(File file) throws IOException {
-
-        Log.debug("DTA file internal structure");
-        Log.debug("===========================");
-        Log.newLine();
-
-        Path exePath = file.toPath();
-        Path dtaPath = IOUtils.getDtaPath(exePath.getParent());
-
-        //TODO get dump crc32
-        exeCrc32 = intToHex(BinaryUtils.crc32(exePath), 8);
-        dtaCrc32 = intToHex(BinaryUtils.crc32(dtaPath), 8);
-
-        release = Config.releases.stream().filter(r -> r.getExeCrc32().equals(exeCrc32) && r.getDtaCrc32().equals(dtaCrc32)).findFirst().orElse(null);
-
-        if (null == release) {
-            release = new Release();
-            release.setCharset("");
-            release.setId("unk");
-            release.setTitle("Unknown combination of files");
-            release.setDtaCrc32("????????");
-            release.setExeCrc32("????????");
-            release.setDescription("This is an unknown combination of DTA/EXE files.\n" +
-                    "Perhaps this is your new translation of the game, which has not yet been included in our database.\n" +
-                    "If so, then you should copy all translation resources to the directory output-unk.\n" +
-                    "Or maybe you found a new release of the game.\n" +
-                    "Be sure to send it to us so we can analyze it and add to our database. E-mail: tv-games@mail.ru");
-        }
-
-        sourceCharset = getCharset(release.getCharset());
-        destinationCharset = sourceCharset;
-
-        exeDump = new Dump(exePath);
-        exeDump.setCharset(sourceCharset.getCode());
-        exeDump.setByteOrder(ByteOrder.LITTLE_ENDIAN);
-        exeDump.setIndex(0);
-
-        getControlsBounds();
-
-        int paletteStartIndex = exeDump.findAddress(PaletteUtils.getBGRASample(gamePalette));
-
-        if (paletteStartIndex < 0) {
-            throw new RuntimeException("Palette isn't found in EXE file");
-        }
-
-        boolean otherPaletteLocation = (STANDARD_PALETTE_LOCATION != paletteStartIndex);
-
-        Log.newLine();
-        Log.debug("EXE:");
-        Log.debug("---------");
-        Log.newLine();
-        Log.debug("Size: " + exeDump.size());
-        Log.debug("CRC-32: " + exeCrc32);
-        Log.debug("DTA revision: " + release.getTitle());
-        Log.debug("Palette address: " + intToHex(paletteStartIndex, 6));
-
-        if (otherPaletteLocation) {
-            Log.debug("Unknown palette location. Standard is: 0x550F0");
-        }
-
-        dumpPalette(paletteStartIndex);
-
-        dtaSize = Files.size(dtaFile);
-
-        Log.newLine();
-        Log.debug("Sections:");
-        Log.debug("---------");
-        Log.newLine();
-        Log.debug("Size: " + dtaSize);
-        Log.debug("CRC-32: " + dtaCrc32);
-        Log.debug("DTA revision: " + release.getTitle());
-    }
-
-    private static void getControlsBounds() {
-
-        windowMap = exeDump.findValueAddressByMask("8D3C45 ????0000 6A08FF"); // 525
-        window2Map = exeDump.findValueAddressByMask("C74708 ????0000 C7470C"); // 525
-        gridViewMap = exeDump.findValueAddressByMask("C7828C320000 ????0000 C78294"); // 489
-        scrollBarLeftMap = exeDump.findValueAddressByMask("C78294320000 ????0000 B8FC00"); // 496
-        scrollBarRightMap = exeDump.findValueAddressByMask("C7829C320000 ????0000 C782A4"); // 512
-
-        toolTipMap = exeDump.findValueAddressByMask("4F4433F6 ?????????? 8BCF8947"); // C2039B148D     833284150413
-    }
-
     private static int getIndex(Map<Integer, Long> map) {
 
         Map.Entry<Integer, Long> entry = map.entrySet().iterator().next();
@@ -2293,12 +2361,6 @@ public class MainPaneController {
 
         Map.Entry<Integer, Long> entry = map.entrySet().iterator().next();
         return entry.getValue();
-    }
-
-    private static void dumpPalette(int paletteStartIndex) {
-
-        gamePalette = PaletteUtils.dumpBGRAPalette(exeDump.getDump(), paletteStartIndex);
-        Config.updatePalette();
     }
 
     public static String intToHex(int value, int size) {
@@ -2352,6 +2414,7 @@ public class MainPaneController {
             Optional<Encoding> result = dialog.showAndWait();
             if (result.isPresent()) {
                 sourceCharset = result.get();
+                Log.debug("Change source charset to: " + sourceCharset.getDescription());
                 yodesk = Yodesk.fromFile(dtaFile.toString(), sourceCharset.getCode());
                 updateUI();
             }
@@ -2370,6 +2433,7 @@ public class MainPaneController {
 
             dialog.showAndWait().ifPresent(e -> {
                 destinationCharset = e;
+                Log.debug("Change destination charset to: " + destinationCharset.getDescription());
                 Yodesk.setOutputCharset(e.getCode());
                 updateDestinationCharset();
             });
@@ -2382,31 +2446,54 @@ public class MainPaneController {
         disableNonTranslationFeatures(disableNonTranslationMenuItem.isSelected());
     }
 
-    //TODO
     public static class Log {
 
+        private static final List<String> lines = new ArrayList<>();
+        private static TextArea textArea;
+
+        public static void setOutput(TextArea textArea) {
+            Log.textArea = textArea;
+            textArea.setText(String.join("\n", lines));
+            textArea.appendText("");
+            lines.clear();
+        }
+
         public static void error(String message) {
-            System.out.println("ERROR: " + message);
+            appendText("ERROR: " + message);
         }
 
         public static void debug(String message) {
-            System.out.println("DEBUG: " + message);
+            appendText("DEBUG: " + message);
         }
 
         public static void debug(int integer) {
             debug(Integer.toString(integer));
         }
 
-        public static void newLine() {
-            System.out.println("");
-        }
-
         public static void message(String message) {
-            System.out.println("MESSAGE: " + message);
+            appendText("MESSAGE: " + message);
         }
 
-        //TODO
+        public static void appendOk() {
+            appendText("OK");
+        }
+
+        private static void appendText(String text) {
+
+            if (textArea == null) {
+                lines.add(text);
+            } else {
+                textArea.appendText(text + "\n");
+            }
+        }
+
         public static void clear() {
+
+            if (textArea == null) {
+                lines.clear();
+            } else {
+                textArea.clear();
+            }
         }
     }
 }

@@ -16,15 +16,15 @@ An original version: https://github.com/LeonisX/YExplorer
 
 ## TODO
 
-* Zone report
+* Show window if long task
 
-* Bug when show-hide zone layers (#0 map)
-
-* remove all [CR2], [CR] code
+* Remember data changes
 
 * Resolve all TODO
 
 * Translation instructions - need english version
+
+* Zone report. May be table in UI / or delete Map table
 
 * Log
 * HEX
@@ -66,6 +66,24 @@ An original version: https://github.com/LeonisX/YExplorer
 * https://github.com/cyco/deskfun-preview
 
 * https://github.com/kirbysayshi/yoda-stories-docker
+
+### Yoddish
+
+* http://vexer.ru/jokez/joda.php
+* https://lingualeo.com/ru/blog/2017/12/13/poryadok-slov-v-angliyskom/
+* https://zen.yandex.ru/media/sonorusso/iazyki-v-kotoryh-govoriat-kak-magistr-ioda-ih-vsego-4-v-mire-5d012464639f3200b11522a2
+
+* https://b-mag.ru/39-znamenityh-citat-jody-ih-mozhno-s-uspehom-primenjat-v-svoej-zhizni/
+* http://www.vothouse.ru/films/yoda-citaty-zvezdnie-voiny.html
+* http://www.vothouse.ru/films/yoda-smeshnie-citaty-zvezdnie-voiny.html
+* https://citaty.info/character/magistr-ioda
+* http://aphorism-citation.ru/index/0-983
+
+* https://lingojam.com/EnglishtoYoda
+* http://www.yodaspeak.co.uk/index.php
+* https://funtranslations.com/yoda
+* https://play.google.com/store/apps/details?id=com.funtranslations.yoddish&hl=ru&gl=US
+
 
 ### Unsigned:
 
