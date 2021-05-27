@@ -16,8 +16,6 @@ An original version: https://github.com/LeonisX/YExplorer
 
 ## TODO
 
-* Remember data changes
-
 * Resolve all TODO
 
 * Translation instructions - need english version
@@ -26,14 +24,14 @@ An original version: https://github.com/LeonisX/YExplorer
 
 * Log
 * HEX
-* Тяжёлые процессы дампинга лучше вынести в отдельный поток
 
 * Сломан вывод таблицы Map (нужна ли?)
 
 * Dump structure (hi, mid, lo levels)
 
+* Dump app releases and verify them
+
 * Compare all characters dumps
-* UnsignedInt, ... - изучить доступные решения. идея простая - возвращать number, но если минус, то тип на порядок больше.
 * Article about unsigned (hex editor, port from delphi, mathematic, before java 8, current solutions, examples)
 
 * Paste from clipboard (good idea)

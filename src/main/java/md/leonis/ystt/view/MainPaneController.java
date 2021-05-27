@@ -267,6 +267,9 @@ public class MainPaneController {
 
     boolean firstRun = true;
 
+    private int changesCount;
+    private int tilesCount;
+
     double dialogButtonOffset;
     double dialogRectangleOffset;
     double dialogRectangleWidth;
@@ -281,6 +284,8 @@ public class MainPaneController {
     @FXML
     void initialize() {
 
+        changesCount = 0;
+        tilesCount = yodesk.getTiles().getTiles().size();
         usedTiles = new ArrayList<>(Collections.nCopies(yodesk.getTiles().getTiles().size(), false));
 
         noColorMenuItem.setUserData(transparentColor);
@@ -298,8 +303,6 @@ public class MainPaneController {
         } catch (Exception e) {
             JavaFxUtils.showAlert("UI update error", e);
         }
-
-        //TODO Log.SaveToFile(opath, 'Structure');
 
         disableNonTranslationFeatures(disableNonTranslationMenuItem.isSelected());
     }
@@ -547,6 +550,7 @@ public class MainPaneController {
     }
 
     private ChangeListener<String> windowSizeChangeListener() {
+
         return (observable, oldValue, newValue) -> {
             int value = 0;
             inventoryErrorLabel.setVisible(true);
@@ -561,6 +565,7 @@ public class MainPaneController {
                     exeDump.writeHexDump(getIndex(scrollBarRightMap), intToHex(512 + value, 4));
 
                     inventoryErrorLabel.setVisible(false);
+                    changesCount++;
                 } else {
                     value = 0;
                 }
@@ -584,9 +589,11 @@ public class MainPaneController {
                 value = Integer.parseInt(toolTipSizeTextField.getText());
                 if (value == 0) {
                     exeDump.writeHexDump(getIndex(toolTipMap), "C2039B148D");
+                    changesCount++;
                     dialogErrorLabel.setVisible(false);
                 } else if (value >= -78 && value <= 125) {
                     exeDump.writeHexDump(getIndex(toolTipMap), "000000" + intToHex(130 + value, 2) + "B8"); // 000000a2b8
+                    changesCount++;
                     dialogErrorLabel.setVisible(false);
                 } else {
                     value = 0;
@@ -626,6 +633,7 @@ public class MainPaneController {
             usedTiles.add(false);
             Log.debug("Added new tile");
             drawEditZone();
+            changesCount++;
         } catch (Exception e) {
             JavaFxUtils.showAlert("Error adding tile", e);
         }
@@ -675,6 +683,7 @@ public class MainPaneController {
                 image.setImage(wi);
                 ((ImageView) zoneEditorTilesFlowPane.getChildren().get(tileId)).setImage(wi);
                 yodesk.getTiles().replaceTile(tileId, ImageUtils.getBytes(wi, transparentColor));
+                changesCount++;
             }
             event.setDropCompleted(true);
 
@@ -712,6 +721,11 @@ public class MainPaneController {
                     deleteTile(tileId, newTileId);
                 }
             }
+            if (yodesk.getTiles().getTiles().size() >= tilesCount) {
+                changesCount--;
+            } else {
+                changesCount++;
+            }
             Log.debug("Deleted last tile");
         } catch (Exception e) {
             JavaFxUtils.showAlert("Error deleting tile", e);
@@ -738,6 +752,7 @@ public class MainPaneController {
             if (newToggle != null) {
                 yodesk.getTiles().setAttributes(tileId, newToggle.getUserData().toString());
                 Log.debug(String.format("Set new attribute %s for tile #%s", newToggle.getUserData().toString(), tileId));
+                changesCount++;
             }
         };
     }
@@ -1145,6 +1160,7 @@ public class MainPaneController {
         addToZonesHistory(zone.getIndex(), x, y, layerId, oldValue, tileId);
 
         undoZoneEdit.setVisible(true);
+        changesCount++;
 
         Log.debug(String.format("Changed tile [%s, %s] on layer #%s to %s", tileId, x, y, layerId));
     }
@@ -1169,6 +1185,7 @@ public class MainPaneController {
 
         if (history != null) {
             modifyZoneSpot(zoneId, history.getX(), history.getY(), history.getLayerId(), history.getOldValue());
+            changesCount--;
 
             if (histories.isEmpty()) {
                 zoneHistoryMap.remove(zoneId);
@@ -1297,9 +1314,11 @@ public class MainPaneController {
     }
 
     public void openMenuItemClick() {
-        //TODO notify if changed
-        //TODO clear if need
-        openFile();
+
+        if (changesCount == 0 || JavaFxUtils.showModifiedConfirmation()) {
+            changesCount = 0;
+            openFile();
+        }
     }
 
     public static void openFile() {
@@ -1316,9 +1335,6 @@ public class MainPaneController {
 
                 usedTiles.clear();
                 JavaFxUtils.showMainPanel();
-            } else {
-                exeFile = null;
-                dtaFile = null;
             }
         } catch (Exception e) {
             JavaFxUtils.showAlert("Executable file loading error", e);
@@ -1419,56 +1435,66 @@ public class MainPaneController {
 
     public void saveMenuItemClick() {
 
-        Platform.runLater(() -> {
-            try {
-                String[] chunks = dtaFile.getFileName().toString().split("\\.");
-                Path backupPath = exeFile.toPath().getParent().resolve(chunks[0] + ".exe.bak");
-                Log.debug("Create backup: " + backupPath);
-                IOUtils.copyFile(exeFile.toPath(), backupPath);
-                Log.debug("Save EXE file");
-                exeDump.saveToFile(exeFile);
-                Log.appendOk();
+        if (changesCount == 0 || JavaFxUtils.showModifiedConfirmation()) {
+            Platform.runLater(() -> {
+                try {
+                    String[] chunks = dtaFile.getFileName().toString().split("\\.");
+                    Path backupPath = exeFile.toPath().getParent().resolve(chunks[0] + ".exe.bak");
+                    Log.debug("Create backup: " + backupPath);
+                    IOUtils.copyFile(exeFile.toPath(), backupPath);
+                    Log.debug("Save EXE file");
+                    exeDump.saveToFile(exeFile);
+                    Log.appendOk();
 
-                chunks = dtaFile.getFileName().toString().split("\\.");
-                backupPath = dtaFile.getParent().resolve(chunks[0] + ".dta.bak");
-                Log.debug("Create backup: " + backupPath);
-                IOUtils.copyFile(dtaFile, backupPath);
-                Log.debug("Save DTA file");
-                yodesk.write(new ByteBufferKaitaiOutputStream(dtaFile));
-                //TODO confirmation
-            } catch (Exception e) {
-                JavaFxUtils.showAlert("DTA file saving error", e);
-            }
-        });
+                    chunks = dtaFile.getFileName().toString().split("\\.");
+                    backupPath = dtaFile.getParent().resolve(chunks[0] + ".dta.bak");
+                    Log.debug("Create backup: " + backupPath);
+                    IOUtils.copyFile(dtaFile, backupPath);
+                    Log.debug("Save DTA file");
+                    yodesk.write(new ByteBufferKaitaiOutputStream(dtaFile));
+
+                    changesCount = 0;
+
+                } catch (Exception e) {
+                    JavaFxUtils.showAlert("DTA file saving error", e);
+                }
+            });
+        }
     }
 
     public void saveAsMenuItemClick() {
 
-        Platform.runLater(() -> {
-            try {
-                File file = JavaFxUtils.showDTASaveDialog("Save DTA File", lastVisitedDirectory, "yodesk.dta");
+        if (changesCount == 0 || JavaFxUtils.showModifiedConfirmation()) {
+            Platform.runLater(() -> {
+                try {
+                    File file = JavaFxUtils.showDTASaveDialog("Save DTA File", lastVisitedDirectory, "yodesk.dta");
 
-                if (file != null) {
-                    Log.debug("Save DTA file: " + file.getName());
-                    lastVisitedDirectory = file.toPath().getParent().toString();
-                    yodesk.write(new ByteBufferKaitaiOutputStream(file));
-                    //TODO confirmation
-                    Log.appendOk();
+                    if (file != null) {
+                        Log.debug("Save DTA file: " + file.getName());
+                        lastVisitedDirectory = file.toPath().getParent().toString();
+                        yodesk.write(new ByteBufferKaitaiOutputStream(file));
+
+                        changesCount = 0; // if ok
+
+                        Log.appendOk();
+                    }
+                } catch (Exception e) {
+                    JavaFxUtils.showAlert("DTA file saving error", e);
                 }
-            } catch (Exception e) {
-                JavaFxUtils.showAlert("DTA file saving error", e);
-            }
-        });
+            });
+        }
     }
 
     public void closeMenuItemClick() {
+        changesCount = 0;
         JavaFxUtils.showPrimaryPanel();
     }
 
     public void exitMenuItemClick() {
 
-        //TODO warning if modified
-        Platform.exit();
+        if (changesCount == 0 || JavaFxUtils.showModifiedConfirmation()) {
+            Platform.exit();
+        }
     }
 
     public void transparentColorMenuItemClick() {
@@ -1556,6 +1582,8 @@ public class MainPaneController {
                         yodesk.getStartupImage().getPixels()[y * titleImage.getWidth() + x] = new Integer(sample).byteValue();
                     }
                 }
+
+                changesCount = 0;
 
                 //TODO notify if not indexed
                 WritableImage image = new WritableImage(titleImage.getWidth(), titleImage.getHeight());
@@ -2047,6 +2075,8 @@ public class MainPaneController {
 
                 actionTexts.forEach(s -> getActionTextContainer(s.getId()).setText(s.getTranslation()));
 
+                changesCount++;
+
                 Log.appendOk();
                 JavaFxUtils.showAlert("The text has been successfully replaced", "No errors were found during the replacement ", Alert.AlertType.INFORMATION);
 
@@ -2229,6 +2259,8 @@ public class MainPaneController {
 
                 puzzlesTexts.forEach(s -> getPuzzlesPrefixedStr(s.getId()).setContent(s.getTranslation()));
 
+                changesCount++;
+
                 Log.appendOk();
                 JavaFxUtils.showAlert("The text has been successfully replaced", "No errors were found during the replacement ", Alert.AlertType.INFORMATION);
 
@@ -2379,6 +2411,8 @@ public class MainPaneController {
                 List<TileName> filteredNames = yodesk.getTileNames().getFilteredNames();
 
                 namesTexts.forEach(n -> filteredNames.get(Integer.parseInt(n.getId())).setName(n.getTranslation()));
+
+                changesCount++;
 
                 Log.appendOk();
                 JavaFxUtils.showAlert("The text has been successfully replaced", "No errors were found during the replacement ", Alert.AlertType.INFORMATION);

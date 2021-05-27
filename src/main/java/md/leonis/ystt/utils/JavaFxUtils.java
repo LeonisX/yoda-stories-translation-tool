@@ -180,6 +180,16 @@ public class JavaFxUtils {
         }
     }
 
+    public static boolean showModifiedConfirmation() {
+
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("You have unsaved changes!");
+        alert.setHeaderText("Click Cancel if you don't want to lose them.");
+
+        Optional<ButtonType> result = alert.showAndWait();
+        return result.get() == ButtonType.OK;
+    }
+
     public static void showAlert(String title, Exception exception) {
         showAlert(title, exception.getClass().getName() + ": " + exception.getMessage(), Alert.AlertType.ERROR);
         exception.printStackTrace();
