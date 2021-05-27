@@ -116,10 +116,14 @@ public class BMPWriter {
 
     // 8 bit only
     public static void write8bit(Canvas canvas, File file) throws IOException {
+        write8bit(canvasToImage(canvas), file);
+    }
+
+    public static Image canvasToImage(Canvas canvas) {
 
         WritableImage wi = new WritableImage((int) canvas.getWidth(), (int) canvas.getHeight());
         canvas.snapshot(null, wi);
-        write8bit(wi, file);
+        return wi;
     }
 
     // 8 bit only

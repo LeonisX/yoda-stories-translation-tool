@@ -61,12 +61,14 @@ public class ImageUtils {
         return image;
     }
 
-    public static void drawOnBufferedImage(byte[] bytes, int position, BufferedImage bi, int xOffset, int yOffset) {
+    public static void drawOnBufferedImage(byte[] bytes, int position, BufferedImage bi, int xOffset, int yOffset, boolean transparent) {
 
         for (int y = 0; y < 32; y++) {
             for (int x = 0; x < 32; x++) {
                 int b = bytes[position] & 0xFF;
-                bi.getRaster().setSample(xOffset + x, yOffset + y, 0, b);
+                if (!(transparent && b == 0)) {
+                    bi.getRaster().setSample(xOffset + x, yOffset + y, 0, b);
+                }
                 position++;
             }
         }

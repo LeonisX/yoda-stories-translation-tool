@@ -16,8 +16,6 @@ An original version: https://github.com/LeonisX/YExplorer
 
 ## TODO
 
-* Show window if long task
-
 * Remember data changes
 
 * Resolve all TODO

@@ -159,7 +159,6 @@ public class Config {
 
         icm = new IndexColorModel(8, 256, ra, ga, ba);
         icm0 = new IndexColorModel(8, 256, ra0, ga0, ba0);
-
     }
 
     //TODO input

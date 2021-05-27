@@ -1,6 +1,7 @@
 package md.leonis.ystt.utils;
 
 import javafx.application.Application;
+import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -223,6 +224,28 @@ public class JavaFxUtils {
         fileChooser.setTitle(title);
 
         return fileChooser;
+    }
+
+    public static void runInBackground(Runnable runnable) {
+
+        Thread thread = new Thread(runnable);
+        thread.setDaemon(true);
+        thread.start();
+    }
+
+    public static void runInBackground(Runnable runnable, Runnable guiRunnable) {
+
+        Task<Void> task = new Task<Void>() {
+            @Override
+            protected Void call() {
+                runnable.run();
+                return null;
+            }
+        };
+
+        task.setOnSucceeded(workerStateEvent -> guiRunnable.run());
+
+        new Thread(task).start();
     }
 
     public static Stage getStage() {
