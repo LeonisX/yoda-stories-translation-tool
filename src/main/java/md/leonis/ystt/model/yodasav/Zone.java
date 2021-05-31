@@ -6,11 +6,28 @@ import io.kaitai.struct.KaitaiOutputStream;
 import io.kaitai.struct.KaitaiStruct;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Zone extends KaitaiStruct {
 
-    private int unknown1;
-    private int unknown2;
+    private int counter;
+    private int random;
+
+    private int x;
+    private int y;
+
+    private short sectorCounter;
+    private short planet;
+
+    private List<Short> tileIds;
+
+    private List<Hotspot> hotspots;
+    private List<Monster> monsters;
+    private List<Action> actions;
+
+    private short zoneId;
+    private boolean visited;
 
     private final Yodasav root;
     private final KaitaiStruct parent;
@@ -34,9 +51,59 @@ public class Zone extends KaitaiStruct {
         _read();
     }
 
+    public Zone(KaitaiInputStream io, KaitaiStruct parent, Yodasav root, short zoneId, boolean visited) {
+        super(io);
+        this.zoneId = zoneId;
+        this.visited = visited;
+        this.parent = parent;
+        this.root = root;
+        _read();
+    }
+
     private void _read() {
-        unknown1 = io.readS4le();
-        unknown2 = io.readS4le();
+
+        if (visited) {
+            counter = io.readS4le();
+            random = io.readS4le();
+
+            x = io.readS4le();
+            y = io.readS4le();
+
+            sectorCounter = io.readS2le();
+            planet = io.readS2le();
+
+            md.leonis.ystt.model.yodesk.zones.Zone zone = Yodasav.getYodesk().getZones().getZones().get(zoneId);
+
+			int tileCount = zone.getWidth() * zone.getHeight() * 3;
+            tileIds = new ArrayList<>();
+			for (int i = 0; i < tileCount; i++) {
+                tileIds.add(io.readS2le());
+            }
+        }
+
+        visited = io.readBool4le() || visited;
+        int hotSpotsCount = io.readS4le();
+        hotspots = new ArrayList<>();
+        for (int i = 0; i < hotSpotsCount; i++) {
+            hotspots.add(new Hotspot(io, this, root));
+        }
+
+        if (visited) {
+            int monstersCount = io.readS4le();
+            monsters = new ArrayList<>();
+            for (int i = 0; i < monstersCount; i++) {
+                monsters.add(new Monster(io, this, root));
+            }
+            int actionsCount = io.readS4le();
+            assert actionsCount > 0;
+            actions = new ArrayList<>();
+            for (int i = 0; i < actionsCount; i++) {
+                actions.add(new Action(io, this, root));
+            }
+            for (int i = 0; i < actionsCount; i++) {
+                io.readS4le(); //TODO
+            }
+        }
     }
 
     @Override
@@ -44,12 +111,52 @@ public class Zone extends KaitaiStruct {
         throw new UnsupportedOperationException();
     }
 
-    public int getUnknown1() {
-        return unknown1;
+    public int getCounter() {
+        return counter;
     }
 
-    public int getUnknown2() {
-        return unknown2;
+    public int getRandom() {
+        return random;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public short getSectorCounter() {
+        return sectorCounter;
+    }
+
+    public short getPlanet() {
+        return planet;
+    }
+
+    public List<Short> getTileIds() {
+        return tileIds;
+    }
+
+    public List<Hotspot> getHotspots() {
+        return hotspots;
+    }
+
+    public List<Monster> getMonsters() {
+        return monsters;
+    }
+
+    public List<Action> getActions() {
+        return actions;
+    }
+
+    public short getZoneId() {
+        return zoneId;
+    }
+
+    public boolean isVisited() {
+        return visited;
     }
 
     public Yodasav getRoot() {
@@ -60,4 +167,6 @@ public class Zone extends KaitaiStruct {
     public KaitaiStruct getParent() {
         return parent;
     }
+
+
 }

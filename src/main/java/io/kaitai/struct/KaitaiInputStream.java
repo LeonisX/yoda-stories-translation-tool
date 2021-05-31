@@ -122,6 +122,10 @@ public abstract class KaitaiInputStream implements Closeable {
 
     abstract public long readS8be();
 
+    public boolean readBool4be() {
+        return readS4be() != 0;
+    }
+
     //endregion
 
     //region Little-endian
@@ -131,6 +135,10 @@ public abstract class KaitaiInputStream implements Closeable {
     abstract public int readS4le();
 
     abstract public long readS8le();
+
+    public boolean readBool4le() {
+        return readS4le() != 0;
+    }
 
     //endregion
 

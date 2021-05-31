@@ -11,7 +11,7 @@ import java.util.List;
 
 public class World extends KaitaiStruct {
 
-    private List<WorldThing> worldThings;
+    private List<Sector> sectors;
     private List<Zone> zones;
 
     private final Yodasav root;
@@ -37,16 +37,16 @@ public class World extends KaitaiStruct {
     }
 
     private void _read() {
-        worldThings = new ArrayList<>(100);
+        sectors = new ArrayList<>(100);
         for (int i = 0; i < 100; i++) {
-            worldThings.add(new WorldThing(io, this, root));
+            sectors.add(new Sector(io, this, root));
         }
         zones = new ArrayList<>();
         Zone _it;
         do {
             _it = new Zone(io, this, root);
             zones.add(_it);
-        } while (_it.getUnknown1() != -1);
+        } while (_it.getCounter() != -1);
     }
 
     @Override
@@ -54,8 +54,8 @@ public class World extends KaitaiStruct {
         throw new UnsupportedOperationException();
     }
 
-    public List<WorldThing> getWorldThings() {
-        return worldThings;
+    public List<Sector> getWorldThings() {
+        return sectors;
     }
 
     public List<Zone> getZones() {

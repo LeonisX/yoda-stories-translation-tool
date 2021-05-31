@@ -11,8 +11,8 @@ import java.util.List;
 
 public class Dagobah extends KaitaiStruct {
 
-    private List<WorldThing> worldThings;
-    private List<Zone> zones;
+    private List<Sector> sectors;
+    private List<WorldDetails> worldDetailsList;
 
     private final Yodasav root;
     private final Yodasav parent;
@@ -37,17 +37,20 @@ public class Dagobah extends KaitaiStruct {
     }
 
     private void _read() {
-        worldThings = new ArrayList<>(4);
+        sectors = new ArrayList<>(4);
         for (int i = 0; i < 4; i++) {
-            worldThings.add(new WorldThing(io, this, root));
+            sectors.add(new Sector(io, this, root));
         }
-        zones = new ArrayList<>();
 
-        Zone _it;
+        worldDetailsList = new ArrayList<>();
         do {
-            _it = new Zone(this.io, this, root);
-            zones.add(_it);
-        } while (_it.getUnknown1() != -1);
+            WorldDetails worldDetails = new WorldDetails(io, this, root);
+            worldDetailsList.add(worldDetails);
+
+            if (worldDetails.getX() == -1 || worldDetails.getY() == -1) {
+                break;
+            }
+        } while (true);
     }
 
     @Override
@@ -55,12 +58,12 @@ public class Dagobah extends KaitaiStruct {
         throw new UnsupportedOperationException();
     }
 
-    public List<WorldThing> getWorldThings() {
-        return worldThings;
+    public List<Sector> getSectors() {
+        return sectors;
     }
 
-    public List<Zone> getZones() {
-        return zones;
+    public List<WorldDetails> getWorldDetailsList() {
+        return worldDetailsList;
     }
 
     public Yodasav getRoot() {

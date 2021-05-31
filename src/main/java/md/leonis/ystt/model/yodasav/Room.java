@@ -9,10 +9,11 @@ import java.io.IOException;
 
 public class Room extends KaitaiStruct {
 
-    private int unknown1;
-    private int unknown2;
-    private Short zoneId;
-    private Long unknown3;
+    private Zone zone;
+    private Rooms rooms;
+
+    private short zoneId;
+    private boolean visited;
 
     private final Yodasav root;
     private final KaitaiStruct parent;
@@ -36,13 +37,19 @@ public class Room extends KaitaiStruct {
         _read();
     }
 
+    public Room(KaitaiInputStream io, KaitaiStruct parent, Yodasav root, short zoneId, boolean visited) {
+        super(io);
+        this.parent = parent;
+        this.root = root;
+        this.zoneId = zoneId;
+        this.visited = visited;
+        _read();
+    }
+
     private void _read() {
-        unknown1 = io.readS4le();
-        unknown2 = io.readS4le();
-        if (unknown1 == -1) {
-            zoneId = io.readS2le();
-            unknown3 = io.readU4le();
-        }
+
+        zone = new Zone(io, this, root, zoneId, visited);
+        rooms = new Rooms(io, this, root, zoneId, 0);
     }
 
     @Override
@@ -50,20 +57,12 @@ public class Room extends KaitaiStruct {
         throw new UnsupportedOperationException();
     }
 
-    public int getUnknown1() {
-        return unknown1;
+    public Zone getZone() {
+        return zone;
     }
 
-    public int getUnknown2() {
-        return unknown2;
-    }
-
-    public Short getZoneId() {
-        return zoneId;
-    }
-
-    public Long getUnknown3() {
-        return unknown3;
+    public Rooms getRooms() {
+        return rooms;
     }
 
     public Yodasav getRoot() {

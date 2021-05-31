@@ -1,10 +1,10 @@
-package md.leonis.ystt.model.yodesk.zones;
+package md.leonis.ystt.model.yodasav;
 
 import io.kaitai.struct.ByteBufferKaitaiInputStream;
 import io.kaitai.struct.KaitaiInputStream;
 import io.kaitai.struct.KaitaiOutputStream;
 import io.kaitai.struct.KaitaiStruct;
-import md.leonis.ystt.model.yodesk.Yodesk;
+import md.leonis.ystt.model.yodesk.zones.HotspotType;
 
 import java.io.IOException;
 
@@ -20,10 +20,10 @@ public class Hotspot extends KaitaiStruct {
     private int x;
     private int y;
     // If disabled, hotspots can not be triggered. See instruction opcodes  called `enable_hotspot` and `disable_hotspot`.
-    private int enabled;
+    private boolean enabled;
     private int argument;
 
-    private final transient Yodesk root;
+    private final transient Yodasav root;
     private final transient Zone parent;
 
     public static Hotspot fromFile(String fileName) throws IOException {
@@ -38,7 +38,7 @@ public class Hotspot extends KaitaiStruct {
         this(io, parent, null);
     }
 
-    public Hotspot(KaitaiInputStream io, Zone parent, Yodesk root) {
+    public Hotspot(KaitaiInputStream io, Zone parent, Yodasav root) {
         super(io);
         this.parent = parent;
         this.root = root;
@@ -46,20 +46,22 @@ public class Hotspot extends KaitaiStruct {
     }
 
     private void _read() {
-        type = HotspotType.byId(io.readU4le());
-        x = io.readU2le();
-        y = io.readU2le();
-        enabled = io.readU2le();
-        argument = io.readU2le();
+
+        enabled = io.readU2le() != 0;
+		argument = io.readS2le();
+		type = HotspotType.byId(io.readU4le());
+		x = io.readS2le();
+		y = io.readS2le();
     }
 
     @Override
     public void write(KaitaiOutputStream os) {
-        os.writeU4le(type.getId());
+        throw new UnsupportedOperationException();
+        /*os.writeU4le(type.getId());
         os.writeU2le(x);
         os.writeU2le(y);
         os.writeU2le(enabled);
-        os.writeU2le(argument);
+        os.writeU2le(argument);*/
     }
 
     public HotspotType getType() {
@@ -74,7 +76,7 @@ public class Hotspot extends KaitaiStruct {
         return y;
     }
 
-    public int getEnabled() {
+    public boolean isEnabled() {
         return enabled;
     }
 
@@ -82,7 +84,7 @@ public class Hotspot extends KaitaiStruct {
         return argument;
     }
 
-    public Yodesk getRoot() {
+    public Yodasav getRoot() {
         return root;
     }
 

@@ -4,26 +4,27 @@ import io.kaitai.struct.ByteBufferKaitaiInputStream;
 import io.kaitai.struct.KaitaiInputStream;
 import io.kaitai.struct.KaitaiOutputStream;
 import io.kaitai.struct.KaitaiStruct;
+import md.leonis.ystt.model.yodesk.Yodesk;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-// https://github.com/cyco/WebFun/blob/master/docs/src/appendix/yodasav.ksy
+// https://github.com/cyco/WebFun/tree/master/src/engine/save-game
 public class Yodasav extends KaitaiStruct {
 
     private byte[] magic;
     private long seed;
     private long planet;
-    private long onDagobah;
+    private long onDagobah; // 0 == false
     private IdArray puzzles1;
     private IdArray puzzles2;
     private Dagobah dagobah;
     private World world;
     private long inventoryCount;
     private List<Integer> inventory;
-    private int currentZone;
+    private int currentZoneId;
     private long worldX;
     private long worldY;
     private short currentWeapon;
@@ -31,22 +32,25 @@ public class Yodasav extends KaitaiStruct {
     private short forceAmmo;
     private short blasterAmmo;
     private short blasterRifleAmmo;
-    private long zoneX;
-    private long zoneY;
-    private long damageTaken;
-    private long livesLeft;
+    private long zoneX; // x * 32
+    private long zoneY; // y * 32
+    private int damageTaken;
+    private int livesLost; //TODO investigate
     private long difficulty;
     private long timeElapsed;
     private int worldSize;
-    private int unknownArrayCount;
-    private int unknownArraySum;
-    private long endPuzzle;
-    private long endPuzzleAgain;
+    private short unknownCount;
+    private short unknownSum;
+    private long goalPuzzle;
+    private long goalPuzzleAgain;
+
+    private static Yodesk yodesk;
 
     private final Yodasav root;
     private final KaitaiStruct parent;
 
-    public static Yodasav fromFile(String fileName) throws IOException {
+    public static Yodasav fromFile(String fileName, Yodesk yodesk) throws IOException {
+        Yodasav.yodesk = yodesk;
         return new Yodasav(new ByteBufferKaitaiInputStream(fileName));
     }
 
@@ -70,7 +74,7 @@ public class Yodasav extends KaitaiStruct {
         if (!Arrays.equals(magic, new byte[]{89, 79, 68, 65, 83, 65, 86, 52, 52})) {
             throw new KaitaiInputStream.ValidationNotEqualError(new byte[]{89, 79, 68, 65, 83, 65, 86, 52, 52}, magic, io, "/seq/0");
         }
-        seed = io.readU4le();
+        seed = io.readU4le(); //TODO  & 0xFFFF  need to investigate
         planet = io.readU4le();
         onDagobah = io.readU4le();
         puzzles1 = new IdArray(io, this, root);
@@ -82,11 +86,11 @@ public class Yodasav extends KaitaiStruct {
         for (int i = 0; i < inventoryCount; i++) {
             inventory.add(io.readU2le());
         }
-        currentZone = io.readU2le();
+        currentZoneId = io.readU2le();
         worldX = io.readU4le();
         worldY = io.readU4le();
         currentWeapon = io.readS2le();
-        if (currentWeapon != -1) {
+        if (currentWeapon > 0) {
             currentAmmo = io.readS2le();
         }
         forceAmmo = io.readS2le();
@@ -94,15 +98,18 @@ public class Yodasav extends KaitaiStruct {
         blasterRifleAmmo = io.readS2le();
         zoneX = io.readU4le();
         zoneY = io.readU4le();
-        damageTaken = io.readU4le();
-        livesLeft = io.readU4le();
+        damageTaken = io.readS4le();
+        livesLost = io.readS4le();
         difficulty = io.readU4le();
         timeElapsed = io.readU4le();
         worldSize = io.readU2le();
-        unknownArrayCount = io.readU2le();
-        unknownArraySum = io.readU2le();
-        endPuzzle = io.readU4le();
-        endPuzzleAgain = io.readU4le();
+        unknownCount = io.readS2le();
+        unknownSum = io.readS2le();
+        goalPuzzle = io.readU4le();
+        goalPuzzleAgain = io.readU4le();
+
+        assert goalPuzzle == goalPuzzleAgain;
+        assert io.isEof();
     }
 
     @Override
@@ -150,8 +157,8 @@ public class Yodasav extends KaitaiStruct {
         return inventory;
     }
 
-    public int getCurrentZone() {
-        return currentZone;
+    public int getCurrentZoneId() {
+        return currentZoneId;
     }
 
     public long getWorldX() {
@@ -194,8 +201,8 @@ public class Yodasav extends KaitaiStruct {
         return damageTaken;
     }
 
-    public long getLivesLeft() {
-        return livesLeft;
+    public long getLivesLost() {
+        return livesLost;
     }
 
     public long getDifficulty() {
@@ -210,24 +217,28 @@ public class Yodasav extends KaitaiStruct {
         return worldSize;
     }
 
-    public int getUnknownArrayCount() {
-        return unknownArrayCount;
+    public int getUnknownCount() {
+        return unknownCount;
     }
 
-    public int getUnknownArraySum() {
-        return unknownArraySum;
+    public int getUnknownSum() {
+        return unknownSum;
     }
 
-    public long getEndPuzzle() {
-        return endPuzzle;
+    public long getGoalPuzzle() {
+        return goalPuzzle;
     }
 
-    public long getEndPuzzleAgain() {
-        return endPuzzleAgain;
+    public long getGoalPuzzleAgain() {
+        return goalPuzzleAgain;
     }
 
     public Yodasav getRoot() {
         return root;
+    }
+
+    public static Yodesk getYodesk() {
+        return yodesk;
     }
 
     @Override
