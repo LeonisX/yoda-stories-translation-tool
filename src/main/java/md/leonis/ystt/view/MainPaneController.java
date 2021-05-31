@@ -55,6 +55,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -66,6 +67,7 @@ import static md.leonis.config.Config.*;
 import static md.leonis.ystt.utils.ImageUtils.getTile;
 import static md.leonis.ystt.utils.ImageUtils.readWPicture;
 import static md.leonis.ystt.utils.JavaFxUtils.runInBackground;
+import static md.leonis.ystt.utils.JavaFxUtils.showAlert;
 import static md.leonis.ystt.utils.WordHelper.getActionsTexts;
 
 public class MainPaneController {
@@ -1332,6 +1334,7 @@ public class MainPaneController {
                 dtaFile = IOUtils.getDtaPath(file.toPath().getParent());
                 loadFileToArray(file);
                 yodesk = Yodesk.fromFile(dtaFile.toString(), sourceCharset.getCode());
+                //Yodasav yodasav = Yodasav.fromFile("C:\\Users\\user\\Documents\\savegame.wld", yodesk);
 
                 usedTiles.clear();
                 JavaFxUtils.showMainPanel();
@@ -1435,7 +1438,9 @@ public class MainPaneController {
 
     public void saveMenuItemClick() {
 
-        if (changesCount == 0 || JavaFxUtils.showModifiedConfirmation()) {
+        if (changesCount == 0) {
+            showAlert("Files have not been changed!", "There is nothing to save.", Alert.AlertType.INFORMATION);
+        } else if (JavaFxUtils.showOverwriteConfirmation()) {
             Platform.runLater(() -> {
                 try {
                     String[] chunks = dtaFile.getFileName().toString().split("\\.");
@@ -1464,7 +1469,9 @@ public class MainPaneController {
 
     public void saveAsMenuItemClick() {
 
-        if (changesCount == 0 || JavaFxUtils.showModifiedConfirmation()) {
+        if (changesCount == 0) {
+            showAlert("Files have not been changed!", "There is nothing to save.", Alert.AlertType.INFORMATION);
+        } else if (JavaFxUtils.showOverwriteConfirmation()) {
             Platform.runLater(() -> {
                 try {
                     File file = JavaFxUtils.showDTASaveDialog("Save DTA File", lastVisitedDirectory, "yodesk.dta");
@@ -1653,6 +1660,7 @@ public class MainPaneController {
                 Path hexPath = opath.resolve("TilesHex");
                 Path attrPath = opath.resolve("TilesByAttr");
                 Path attrNamesPath = opath.resolve("TilesByAttrName");
+                Path genPath = opath.resolve("TilesByGen");
 
                 if (decimalFilenamesCheckBox.isSelected()) {
                     IOUtils.createDirectories(tilesPath);
@@ -1663,6 +1671,7 @@ public class MainPaneController {
                 if (groupByAttributesFilenamesCheckBox.isSelected()) {
                     IOUtils.createDirectories(attrPath);
                 }
+                IOUtils.createDirectories(genPath);
 
                 Map<String, List<Integer>> byAttr = new HashMap<>();
 
@@ -1685,6 +1694,14 @@ public class MainPaneController {
                     if (hexFilenamesCheckBox.isSelected()) {
                         BMPWriter.write(getTile(i, icm), hexPath.resolve(intToHex(i, 4) + E_BMP));
                     }
+
+                    //TGEN
+                    int ii = i;
+                    String hex = String.format("%02X%02X", Byte.toUnsignedInt(yodesk.getTgen().getRawData()[i * 2]), Byte.toUnsignedInt(yodesk.getTgen().getRawData()[i * 2 + 1]));
+                    String name = yodesk.getTileNames().getFilteredNames().stream().filter(n -> n.getTileId() == ii).map(TileName::getName).findFirst().orElse("");
+                    name = name.isEmpty() ? name : " " + name;
+                    IOUtils.createDirectories(genPath.resolve(hex));
+                    BMPWriter.write(getTile(i, icm), genPath.resolve(hex).resolve(StringUtils.leftPad(Integer.toString(i), 4, "0") + name + E_BMP));
                 }
 
                 if (groupByAttributesFilenamesCheckBox.isSelected()) {
@@ -1705,6 +1722,17 @@ public class MainPaneController {
                 Log.error("Error saving tiles to separate files: " + e.getMessage());
             }
         }, Log::appendOk);
+    }
+
+    private static final byte[] HEX_ARRAY = "0123456789ABCDEF".getBytes(StandardCharsets.US_ASCII);
+    public static String bytesToHex(byte[] bytes) {
+        byte[] hexChars = new byte[bytes.length * 2];
+        for (int j = 0; j < bytes.length; j++) {
+            int v = bytes[j] & 0xFF;
+            hexChars[j * 2] = HEX_ARRAY[v >>> 4];
+            hexChars[j * 2 + 1] = HEX_ARRAY[v & 0x0F];
+        }
+        return new String(hexChars, StandardCharsets.UTF_8);
     }
 
     private String getTileName(String byteString) {
@@ -2336,7 +2364,7 @@ public class MainPaneController {
                 IOUtils.createDirectories(opath.resolve("TileNames"));
                 for (TileName n : yodesk.getTileNames().getNames()) {
                     if (null != n.getName()) {
-                        BMPWriter.write(getTile(n.getTileId()), IOUtils.findUnusedFileName(opath.resolve("TileNames"), n.getName(), E_BMP));
+                        BMPWriter.write(getTile(n.getTileId(), icm), IOUtils.findUnusedFileName(opath.resolve("TileNames"), n.getName(), E_BMP));
                     }
                 }
                 IOUtils.saveTextFile(yodesk.getTileNames().getFilteredNames().stream().map(TileName::getName).filter(Objects::nonNull)

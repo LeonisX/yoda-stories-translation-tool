@@ -37,8 +37,8 @@ public class Dagobah extends KaitaiStruct {
     }
 
     private void _read() {
-        sectors = new ArrayList<>(4);
-        for (int i = 0; i < 4; i++) {
+        sectors = new ArrayList<>(2 * 2);
+        for (int i = 0; i < 2 * 2; i++) {
             sectors.add(new Sector(io, this, root));
         }
 

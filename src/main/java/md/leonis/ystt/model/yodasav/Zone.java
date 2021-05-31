@@ -62,6 +62,8 @@ public class Zone extends KaitaiStruct {
 
     private void _read() {
 
+        md.leonis.ystt.model.yodesk.zones.Zone zone = Yodasav.getYodesk().getZones().getZones().get(zoneId);
+
         if (visited) {
             counter = io.readS4le();
             random = io.readS4le();
@@ -72,7 +74,9 @@ public class Zone extends KaitaiStruct {
             sectorCounter = io.readS2le();
             planet = io.readS2le();
 
-            md.leonis.ystt.model.yodesk.zones.Zone zone = Yodasav.getYodesk().getZones().getZones().get(zoneId);
+            if (zoneId > 658) {
+                System.out.println("sssss");
+            }
 
 			int tileCount = zone.getWidth() * zone.getHeight() * 3;
             tileIds = new ArrayList<>();
@@ -100,8 +104,9 @@ public class Zone extends KaitaiStruct {
             for (int i = 0; i < actionsCount; i++) {
                 actions.add(new Action(io, this, root));
             }
-            for (int i = 0; i < actionsCount; i++) {
-                io.readS4le(); //TODO
+            for (int i = 0; i < zone.getActions().size(); i++) {
+                int n = io.readS4le(); //TODO
+                System.out.println(n);
             }
         }
     }

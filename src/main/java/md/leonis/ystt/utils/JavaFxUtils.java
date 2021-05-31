@@ -190,6 +190,16 @@ public class JavaFxUtils {
         return result.get() == ButtonType.OK;
     }
 
+    public static boolean showOverwriteConfirmation() {
+
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("The data on the disc will be overwritten!");
+        alert.setHeaderText("Are you sure you want to continue?");
+
+        Optional<ButtonType> result = alert.showAndWait();
+        return result.get() == ButtonType.OK;
+    }
+
     public static void showAlert(String title, Exception exception) {
         showAlert(title, exception.getClass().getName() + ": " + exception.getMessage(), Alert.AlertType.ERROR);
         exception.printStackTrace();

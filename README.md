@@ -16,13 +16,20 @@ An original version: https://github.com/LeonisX/YExplorer
 
 ## TODO
 
+* Gender enum: male female neuter unused
+
+* TGEN: List of Gender
+
+* When add tile - append TGEN (if != null), and vice versa. YS reads TGEN, uses tiles count, not size!
+
+* Show tile gender
+
 * Resolve all TODO
 
 * Translation instructions - need english version
 
 * Zone report. May be table in UI / or delete Map table
 
-* Log
 * HEX
 
 * Сломан вывод таблицы Map (нужна ли?)
