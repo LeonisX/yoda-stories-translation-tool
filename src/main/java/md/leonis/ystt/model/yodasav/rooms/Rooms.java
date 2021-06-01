@@ -1,13 +1,13 @@
-package md.leonis.ystt.model.yodasav;
+package md.leonis.ystt.model.yodasav.rooms;
 
 import io.kaitai.struct.ByteBufferKaitaiInputStream;
 import io.kaitai.struct.KaitaiInputStream;
 import io.kaitai.struct.KaitaiOutputStream;
 import io.kaitai.struct.KaitaiStruct;
+import md.leonis.ystt.model.yodasav.Yodasav;
 import md.leonis.ystt.model.yodesk.zones.HotspotType;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class Rooms extends KaitaiStruct {

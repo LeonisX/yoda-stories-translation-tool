@@ -1,9 +1,10 @@
-package md.leonis.ystt.model.yodasav;
+package md.leonis.ystt.model.yodasav.rooms.zones;
 
 import io.kaitai.struct.ByteBufferKaitaiInputStream;
 import io.kaitai.struct.KaitaiInputStream;
 import io.kaitai.struct.KaitaiOutputStream;
 import io.kaitai.struct.KaitaiStruct;
+import md.leonis.ystt.model.yodasav.Yodasav;
 import md.leonis.ystt.model.yodesk.zones.HotspotType;
 
 import java.io.IOException;
@@ -14,7 +15,7 @@ import java.io.IOException;
  * places an item at the location. Additionally, hotspots are used during
  * world generation to mark places where NPCs can spawn.
  */
-public class Hotspot extends KaitaiStruct {
+public class SaveHotspot extends KaitaiStruct {
 
     private HotspotType type;
     private int x;
@@ -24,21 +25,21 @@ public class Hotspot extends KaitaiStruct {
     private int argument;
 
     private final transient Yodasav root;
-    private final transient Zone parent;
+    private final transient SaveZone parent;
 
-    public static Hotspot fromFile(String fileName) throws IOException {
-        return new Hotspot(new ByteBufferKaitaiInputStream(fileName));
+    public static SaveHotspot fromFile(String fileName) throws IOException {
+        return new SaveHotspot(new ByteBufferKaitaiInputStream(fileName));
     }
 
-    public Hotspot(KaitaiInputStream io) {
+    public SaveHotspot(KaitaiInputStream io) {
         this(io, null, null);
     }
 
-    public Hotspot(KaitaiInputStream io, Zone parent) {
+    public SaveHotspot(KaitaiInputStream io, SaveZone parent) {
         this(io, parent, null);
     }
 
-    public Hotspot(KaitaiInputStream io, Zone parent, Yodasav root) {
+    public SaveHotspot(KaitaiInputStream io, SaveZone parent, Yodasav root) {
         super(io);
         this.parent = parent;
         this.root = root;
@@ -88,7 +89,7 @@ public class Hotspot extends KaitaiStruct {
         return root;
     }
 
-    public Zone getParent() {
+    public SaveZone getParent() {
         return parent;
     }
 }

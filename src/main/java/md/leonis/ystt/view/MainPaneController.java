@@ -41,6 +41,7 @@ import md.leonis.ystt.model.yodesk.puzzles.PrefixedStr;
 import md.leonis.ystt.model.yodesk.puzzles.Puzzle;
 import md.leonis.ystt.model.yodesk.puzzles.PuzzleItemClass;
 import md.leonis.ystt.model.yodesk.puzzles.StringMeaning;
+import md.leonis.ystt.model.yodesk.tiles.TileGender;
 import md.leonis.ystt.model.yodesk.tiles.TileName;
 import md.leonis.ystt.model.yodesk.zones.*;
 import md.leonis.ystt.utils.*;
@@ -55,7 +56,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -68,6 +68,8 @@ import static md.leonis.ystt.utils.ImageUtils.getTile;
 import static md.leonis.ystt.utils.ImageUtils.readWPicture;
 import static md.leonis.ystt.utils.JavaFxUtils.runInBackground;
 import static md.leonis.ystt.utils.JavaFxUtils.showAlert;
+import static md.leonis.ystt.utils.StringUtils.leftPad;
+import static md.leonis.ystt.utils.StringUtils.splitCamelCase;
 import static md.leonis.ystt.utils.WordHelper.getActionsTexts;
 
 public class MainPaneController {
@@ -144,6 +146,8 @@ public class MainPaneController {
     public Button clearClipboardImage;
     public ContextMenu tilesContextMenu;
     public ToggleGroup tilesToggleGroup;
+    public Menu setGenderMenu;
+    public ToggleGroup tilesGenderToggleGroup;
     private final Map<String, RadioMenuItem> tileAttributesMap = new HashMap<>();
     public Button addNewTile;
     public Button deleteTile;
@@ -312,6 +316,7 @@ public class MainPaneController {
     private void updateUI() {
 
         if (firstRun) {
+            setGenderMenu.setDisable(null == yodesk.getTgen());
             dialogButtonOffset = dialogButtonImageView.getLayoutX();
             dialogRectangleOffset = dialogRectangle.getLayoutX();
             dialogRectangleWidth = dialogRectangle.getWidth();
@@ -375,6 +380,7 @@ public class MainPaneController {
         tilesCountLabel.setText(Integer.toString(yodesk.getTiles().getTiles().size()));
         tilesContextMenu.setOnShown(this::selectTileMenuItem);
         tilesToggleGroup.selectedToggleProperty().addListener(tilesAttributesToggleGroupListener());
+        tilesGenderToggleGroup.selectedToggleProperty().addListener(tilesGenderToggleGroupListener());
 
         // Zones
         zonesCountLabel.setText(String.valueOf(yodesk.getZones().getZones().size()));
@@ -629,6 +635,9 @@ public class MainPaneController {
 
         try {
             yodesk.getTiles().addTile();
+            if (null != yodesk.getTgen()) {
+                yodesk.getTgen().addTileGender();
+            }
             int tileId = yodesk.getTiles().getTiles().size() - 1;
             tilesFlowPane.getChildren().add(tileId, newTile(tileId, true));
             zoneEditorTilesFlowPane.getChildren().add(tileId, newTile(tileId, false));
@@ -737,6 +746,9 @@ public class MainPaneController {
     private void deleteTile(int tileId, int newTileId) {
 
         yodesk.getTiles().deleteTile();
+        if (null != yodesk.getTgen()) {
+            yodesk.getTgen().deleteTileGender();
+        }
         tilesFlowPane.getChildren().remove(tileId);
         zoneEditorTilesFlowPane.getChildren().remove(tileId);
         yodesk.getZones().getZones().forEach(z -> z.replaceTile(tileId, newTileId));
@@ -752,12 +764,32 @@ public class MainPaneController {
         return (ov, oldToggle, newToggle) -> {
             int tileId = ((Integer) (currentTile).getUserData());
             if (newToggle != null) {
-                yodesk.getTiles().setAttributes(tileId, newToggle.getUserData().toString());
-                Log.debug(String.format("Set new attribute %s for tile #%s", newToggle.getUserData().toString(), tileId));
-                changesCount++;
+                String binaryTileName = yodesk.getTiles().getTiles().get(tileId).getAttributesBinaryString();
+                String newBinaryTileName = newToggle.getUserData().toString();
+                if (!binaryTileName.equals(newBinaryTileName)) {
+                    yodesk.getTiles().setAttributes(tileId, newBinaryTileName);
+                    Log.debug(String.format("Set new attribute %s for tile #%s", newBinaryTileName, tileId));
+                    changesCount++;
+                }
             }
         };
     }
+
+    private ChangeListener<? super Toggle> tilesGenderToggleGroupListener() {
+        return (ov, oldToggle, newToggle) -> {
+            int tileId = ((Integer) (currentTile).getUserData());
+            if (newToggle != null) {
+                String gender = yodesk.getTiles().getTiles().get(tileId).getAttributesBinaryString();
+                String newGender = newToggle.getUserData().toString();
+                if (!gender.equals(newGender)) {
+                    yodesk.getTgen().getGenders().set(tileId, TileGender.byId(Integer.parseInt(newGender)));
+                    Log.debug(String.format("Set new gender %s for tile #%s", newGender, tileId));
+                    changesCount++;
+                }
+            }
+        };
+    }
+
 
     public void clipboardCanvasDragDetected(MouseEvent event) {
 
@@ -846,8 +878,12 @@ public class MainPaneController {
             currentTile = (Node) mouseEvent.getSource();
             int tileId = ((Integer) (currentTile).getUserData());
             String binaryTileName = yodesk.getTiles().getTiles().get(tileId).getAttributesBinaryString();
+            String gender = "";
+            if (null != yodesk.getTgen()) {
+                gender = "; Gender: " + yodesk.getTgen().getGenders().get(tileId).name().toLowerCase();
+            }
             if (tileAttributesMap.get(binaryTileName) != null) {
-                statusLabel.setText("Tile #" + tileId + ": " + tileAttributesMap.get(binaryTileName).getText());
+                statusLabel.setText("Tile #" + tileId + ": " + tileAttributesMap.get(binaryTileName).getText() + gender);
             }
         }
     };
@@ -864,6 +900,10 @@ public class MainPaneController {
         int tileId = ((Integer) (currentTile).getUserData());
         String binaryTileName = yodesk.getTiles().getTiles().get(tileId).getAttributesBinaryString();
         tilesToggleGroup.getToggles().forEach(t -> t.setSelected(t.getUserData().toString().equals(binaryTileName)));
+        if (null != yodesk.getTgen()) {
+            String gender = String.valueOf(yodesk.getTgen().getGenders().get(tileId).getId());
+            tilesGenderToggleGroup.getToggles().forEach(t -> t.setSelected(t.getUserData().toString().equals(gender)));
+        }
     }
 
     @FXML
@@ -1421,12 +1461,13 @@ public class MainPaneController {
 
     private static void getControlsBounds() {
 
-        windowMap = exeDump.findValueAddressByMask("8D3C45 ????0000 6A08FF"); // 525
+        windowMap = exeDump.findValueAddressByMask("????0000 6A08FF"); // 525
         window2Map = exeDump.findValueAddressByMask("C74708 ????0000 C7470C"); // 525
         gridViewMap = exeDump.findValueAddressByMask("C7828C320000 ????0000 C78294"); // 489
         scrollBarLeftMap = exeDump.findValueAddressByMask("C78294320000 ????0000 B8FC00"); // 496
         scrollBarRightMap = exeDump.findValueAddressByMask("C7829C320000 ????0000 C782A4"); // 512
 
+        //TODO Spa, may be and Ger - no such code. Investigate function with 1036
         toolTipMap = exeDump.findValueAddressByMask("4F4433F6 ?????????? 8BCF8947"); // C2039B148D     833284150413
     }
 
@@ -1662,6 +1703,7 @@ public class MainPaneController {
                 Path attrNamesPath = opath.resolve("TilesByAttrName");
                 Path genPath = opath.resolve("TilesByGen");
 
+                IOUtils.createDirectories(opath);
                 if (decimalFilenamesCheckBox.isSelected()) {
                     IOUtils.createDirectories(tilesPath);
                 }
@@ -1678,11 +1720,11 @@ public class MainPaneController {
                 for (int i = 0; i < yodesk.getTiles().getTiles().size(); i++) {
 
                     if (decimalFilenamesCheckBox.isSelected()) {
-                        Path path = tilesPath.resolve(StringUtils.leftPad(Integer.toString(i), 4, "0") + E_BMP);
+                        Path path = tilesPath.resolve(String.format("%04d", i) + E_BMP);
                         BMPWriter.write(getTile(i, icm), path);
 
                         //TODO may be use PNG. Sample code
-                        ImageIO.write(getTile(i, icm), "PNG", tilesPath.resolve(StringUtils.leftPad(Integer.toString(i), 4, "0") + ".png").toFile());
+                        ImageIO.write(getTile(i, icm), "PNG", tilesPath.resolve(String.format("%04d", i) + ".png").toFile());
                     }
 
                     if (groupByAttributesFilenamesCheckBox.isSelected()) {
@@ -1692,16 +1734,16 @@ public class MainPaneController {
                     }
 
                     if (hexFilenamesCheckBox.isSelected()) {
-                        BMPWriter.write(getTile(i, icm), hexPath.resolve(intToHex(i, 4) + E_BMP));
+                        BMPWriter.write(getTile(i, icm), hexPath.resolve(String.format("%04X", i) + E_BMP));
                     }
 
                     //TGEN
                     int ii = i;
-                    String hex = String.format("%02X%02X", Byte.toUnsignedInt(yodesk.getTgen().getRawData()[i * 2]), Byte.toUnsignedInt(yodesk.getTgen().getRawData()[i * 2 + 1]));
+                    String hex = String.format("%04X", yodesk.getTgen().getGenders().get(i).getId());
                     String name = yodesk.getTileNames().getFilteredNames().stream().filter(n -> n.getTileId() == ii).map(TileName::getName).findFirst().orElse("");
                     name = name.isEmpty() ? name : " " + name;
                     IOUtils.createDirectories(genPath.resolve(hex));
-                    BMPWriter.write(getTile(i, icm), genPath.resolve(hex).resolve(StringUtils.leftPad(Integer.toString(i), 4, "0") + name + E_BMP));
+                    BMPWriter.write(getTile(i, icm), genPath.resolve(hex).resolve(String.format("%04d", i) + name + E_BMP));
                 }
 
                 if (groupByAttributesFilenamesCheckBox.isSelected()) {
@@ -1709,12 +1751,12 @@ public class MainPaneController {
                         Path path = attrPath.resolve(e.getKey() + " - " + getTileName(e.getKey()) + " (" + e.getValue().size() + ")");
                         IOUtils.createDirectories(path);
                         for (Integer i : e.getValue()) {
-                            BMPWriter.write(getTile(i, icm), path.resolve(StringUtils.leftPad(Integer.toString(i), 4, "0") + E_BMP));
+                            BMPWriter.write(getTile(i, icm), path.resolve(String.format("%04d", i) + E_BMP));
                         }
                         path = attrNamesPath.resolve(getTileName(e.getKey()) + " (" + e.getValue().size() + ")");
                         IOUtils.createDirectories(path);
                         for (Integer i : e.getValue()) {
-                            BMPWriter.write(getTile(i, icm), path.resolve(StringUtils.leftPad(Integer.toString(i), 4, "0") + E_BMP));
+                            BMPWriter.write(getTile(i, icm), path.resolve(String.format("%04d", i) + E_BMP));
                         }
                     }
                 }
@@ -1722,17 +1764,6 @@ public class MainPaneController {
                 Log.error("Error saving tiles to separate files: " + e.getMessage());
             }
         }, Log::appendOk);
-    }
-
-    private static final byte[] HEX_ARRAY = "0123456789ABCDEF".getBytes(StandardCharsets.US_ASCII);
-    public static String bytesToHex(byte[] bytes) {
-        byte[] hexChars = new byte[bytes.length * 2];
-        for (int j = 0; j < bytes.length; j++) {
-            int v = bytes[j] & 0xFF;
-            hexChars[j * 2] = HEX_ARRAY[v >>> 4];
-            hexChars[j * 2 + 1] = HEX_ARRAY[v & 0x0F];
-        }
-        return new String(hexChars, StandardCharsets.UTF_8);
     }
 
     private String getTileName(String byteString) {
@@ -1783,13 +1814,13 @@ public class MainPaneController {
 
     private void appendIfSet(StringBuilder title, String byteString, int index, String name) {
         if (isSet(byteString, index)) {
-            title.append(name).append(" ");
+            title.append(splitCamelCase(name)).append(" ");
         }
     }
 
     private void appendIfSetAndSet(StringBuilder title, String byteString, int index, int index2, String name) {
         if (isSet(byteString, index) && isSet(byteString, index2)) {
-            title.append(name).append(" ");
+            title.append(splitCamelCase(name)).append(" ");
         }
     }
 
@@ -1817,6 +1848,7 @@ public class MainPaneController {
                         }
                     }
                 }
+                IOUtils.createDirectories(opath);
                 BMPWriter.write(canvas, path);
 
             } catch (Exception e) {
@@ -1917,19 +1949,19 @@ public class MainPaneController {
                         if (normalSaveCheckBox.isSelected()) {
                             path = opath.resolve("Zones");
                             IOUtils.createDirectories(path);
-                            BMPWriter.write(canvas, path.resolve(StringUtils.leftPad(Integer.toString(zone.getIndex()), 3, '0') + E_BMP));
+                            BMPWriter.write(canvas, path.resolve(String.format("%03d", zone.getIndex()) + E_BMP));
                         }
 
                         if (groupByAttributesCheckBox.isSelected()) {
                             path = opath.resolve("ZonesByType").resolve(zone.getType().name());
                             IOUtils.createDirectories(path);
-                            BMPWriter.write(canvas, path.resolve(StringUtils.leftPad(Integer.toString(zone.getIndex()), 3, '0') + E_BMP));
+                            BMPWriter.write(canvas, path.resolve(String.format("%03d", zone.getIndex()) + E_BMP));
                         }
 
                         if (groupByPlanetTypeCheckBox.isSelected()) {
                             path = opath.resolve("ZonesByPlanetType").resolve(zone.getPlanet().name());
                             IOUtils.createDirectories(path);
-                            BMPWriter.write(canvas, path.resolve(StringUtils.leftPad(Integer.toString(zone.getIndex()), 3, '0') + E_BMP));
+                            BMPWriter.write(canvas, path.resolve(String.format("%03d", zone.getIndex()) + E_BMP));
                         }
                     }
                 }
@@ -1939,7 +1971,7 @@ public class MainPaneController {
                     IOUtils.createDirectories(unusedTilesPath);
                     for (int i = 0; i < yodesk.getTiles().getTiles().size(); i++) {
                         if (!usedTiles.get(i)) {
-                            BMPWriter.write(getTile(i, icm), unusedTilesPath.resolve(StringUtils.leftPad(Integer.toString(i), 4, '0') + E_BMP));
+                            BMPWriter.write(getTile(i, icm), unusedTilesPath.resolve(String.format("%04d", i) + E_BMP));
                         }
                     }
                 }
@@ -2323,7 +2355,7 @@ public class MainPaneController {
                     for (Integer integer : character.getTileIds()) {
                         Path path = opath.resolve("Characters").resolve(character.getName());
                         IOUtils.createDirectories(path);
-                        BMPWriter.write(getTile(integer), path.resolve(StringUtils.leftPad(Integer.toString(integer), 4, '0') + E_BMP));
+                        BMPWriter.write(getTile(integer), path.resolve(String.format("%04d", integer) + E_BMP));
                     }
                 }
 
@@ -2493,16 +2525,16 @@ public class MainPaneController {
         return entry.getValue();
     }
 
-    public static String intToHex(int value, int size) {
+    public static String intToHex(int value, int size) { //TODO delete
 
         String result = Integer.toHexString(value).toUpperCase();
-        return StringUtils.leftPad(result, size, '0');
+        return leftPad(result, size, "0");
     }
 
-    public String longToHex(long value, int size) {
+    public String longToHex(long value, int size) { //TODO delete
 
         String result = Long.toHexString(value).toUpperCase();
-        return StringUtils.leftPad(result, size, '0');
+        return leftPad(result, size, "0");
     }
 
     public void peExplorerHyperlinkClick() {

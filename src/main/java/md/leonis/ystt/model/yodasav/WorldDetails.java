@@ -4,6 +4,7 @@ import io.kaitai.struct.ByteBufferKaitaiInputStream;
 import io.kaitai.struct.KaitaiInputStream;
 import io.kaitai.struct.KaitaiOutputStream;
 import io.kaitai.struct.KaitaiStruct;
+import md.leonis.ystt.model.yodasav.rooms.Room;
 
 import java.io.IOException;
 

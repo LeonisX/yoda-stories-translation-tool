@@ -40,6 +40,7 @@ public class Tiles extends KaitaiStruct {
     }
 
     private void _read() {
+
         rawTiles = io.readBytes(getParent().getSize());
         KaitaiInputStream kis = new ByteBufferKaitaiInputStream(rawTiles);
         tilesEntries = new TilesEntries(kis, this, root);

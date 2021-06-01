@@ -96,7 +96,7 @@ public class CatalogEntry extends KaitaiStruct {
 
                     size = zones.getZones().stream().map(Zone::getSize).reduce(0L, Long::sum)
                             + 2                                 // numZones
-                            + zones.getZones().size() * (2 + 4);   // planet + size of every zone
+                            + (long) zones.getZones().size() * (2 + 4);   // planet + size of every zone
 
                     io.seek(position);
                     bytes = io.readBytes(size);
@@ -127,9 +127,9 @@ public class CatalogEntry extends KaitaiStruct {
                     parent.setTileNames(tileNames);
                     break;
                 case TGEN:
-                    Tgen tgen = new Tgen(stream, this, root);
-                    content = tgen;
-                    parent.setTgen(tgen);
+                    TileGenders tileGenders = new TileGenders(stream, this, root);
+                    content = tileGenders;
+                    parent.setTileGenders(tileGenders);
                     break;
                 case ENDF:
                     Endf endf = new Endf(stream, this, root);

@@ -16,13 +16,8 @@ An original version: https://github.com/LeonisX/YExplorer
 
 ## TODO
 
-* Gender enum: male female neuter unused
-
-* TGEN: List of Gender
-
-* When add tile - append TGEN (if != null), and vice versa. YS reads TGEN, uses tiles count, not size!
-
-* Show tile gender
+toolTipMap - can't find in EXE.
+Spa, may be and Ger - no such code. Investigate function with 1036
 
 * Resolve all TODO
 
@@ -40,6 +35,8 @@ An original version: https://github.com/LeonisX/YExplorer
 
 * Compare all characters dumps
 * Article about unsigned (hex editor, port from delphi, mathematic, before java 8, current solutions, examples)
+
+* When add/delete/replace tiles, gender - CatalogEntry bytes[] don't change. Dump only unchanged data.
 
 * Paste from clipboard (good idea)
 * Think how to drag-drop from UI from Windows Explorer (Open file)\

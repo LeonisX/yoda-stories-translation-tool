@@ -52,7 +52,7 @@ public class Yodesk extends KaitaiStruct {
     private CharacterAuxiliaries characterAuxiliaries;
     private CharacterWeapons characterWeapons;
     private TileNames tileNames;
-    private Tgen tgen;
+    private TileGenders tileGenders;
     private Endf endf;
     private UnknownCatalogEntry unknownCatalogEntry;
 
@@ -199,12 +199,12 @@ public class Yodesk extends KaitaiStruct {
         this.tileNames = tileNames;
     }
 
-    public Tgen getTgen() {
-        return tgen;
+    public TileGenders getTgen() {
+        return tileGenders;
     }
 
-    public void setTgen(Tgen tgen) {
-        this.tgen = tgen;
+    public void setTileGenders(TileGenders tileGenders) {
+        this.tileGenders = tileGenders;
     }
 
     public Endf getEndf() {

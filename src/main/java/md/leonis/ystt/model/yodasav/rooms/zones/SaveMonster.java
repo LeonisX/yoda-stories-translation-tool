@@ -1,15 +1,16 @@
-package md.leonis.ystt.model.yodasav;
+package md.leonis.ystt.model.yodasav.rooms.zones;
 
 import io.kaitai.struct.ByteBufferKaitaiInputStream;
 import io.kaitai.struct.KaitaiInputStream;
 import io.kaitai.struct.KaitaiOutputStream;
 import io.kaitai.struct.KaitaiStruct;
+import md.leonis.ystt.model.yodasav.Yodasav;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Monster extends KaitaiStruct {
+public class SaveMonster extends KaitaiStruct {
 
     private short characterId;
     private short x;
@@ -37,24 +38,24 @@ public class Monster extends KaitaiStruct {
     private short cooldown;
     private short preferred;
 
-    private List<Waypoint> waypoints;
+    private List<SaveWaypoint> waypoints;
 
     private final Yodasav root;
     private final KaitaiStruct parent;
 
-    public static Monster fromFile(String fileName) throws IOException {
-        return new Monster(new ByteBufferKaitaiInputStream(fileName));
+    public static SaveMonster fromFile(String fileName) throws IOException {
+        return new SaveMonster(new ByteBufferKaitaiInputStream(fileName));
     }
 
-    public Monster(KaitaiInputStream io) {
+    public SaveMonster(KaitaiInputStream io) {
         this(io, null, null);
     }
 
-    public Monster(KaitaiInputStream io, KaitaiStruct parent) {
+    public SaveMonster(KaitaiInputStream io, KaitaiStruct parent) {
         this(io, parent, null);
     }
 
-    public Monster(KaitaiInputStream io, KaitaiStruct parent, Yodasav root) {
+    public SaveMonster(KaitaiInputStream io, KaitaiStruct parent, Yodasav root) {
         super(io);
         this.parent = parent;
         this.root = root;
@@ -91,7 +92,7 @@ public class Monster extends KaitaiStruct {
 
         waypoints = new ArrayList<>(4);
         for (int i = 0; i < 4; i++) {
-            waypoints.add(new Waypoint(io, this, root));
+            waypoints.add(new SaveWaypoint(io, this, root));
         }
     }
 
@@ -192,7 +193,7 @@ public class Monster extends KaitaiStruct {
         return preferred;
     }
 
-    public List<Waypoint> getWaypoints() {
+    public List<SaveWaypoint> getWaypoints() {
         return waypoints;
     }
 

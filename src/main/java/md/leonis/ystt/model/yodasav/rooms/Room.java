@@ -1,15 +1,17 @@
-package md.leonis.ystt.model.yodasav;
+package md.leonis.ystt.model.yodasav.rooms;
 
 import io.kaitai.struct.ByteBufferKaitaiInputStream;
 import io.kaitai.struct.KaitaiInputStream;
 import io.kaitai.struct.KaitaiOutputStream;
 import io.kaitai.struct.KaitaiStruct;
+import md.leonis.ystt.model.yodasav.Yodasav;
+import md.leonis.ystt.model.yodasav.rooms.zones.SaveZone;
 
 import java.io.IOException;
 
 public class Room extends KaitaiStruct {
 
-    private Zone zone;
+    private SaveZone zone;
     private Rooms rooms;
 
     private short zoneId;
@@ -48,7 +50,7 @@ public class Room extends KaitaiStruct {
 
     private void _read() {
 
-        zone = new Zone(io, this, root, zoneId, visited);
+        zone = new SaveZone(io, this, root, zoneId, visited);
         rooms = new Rooms(io, this, root, zoneId, 0);
     }
 
@@ -57,7 +59,7 @@ public class Room extends KaitaiStruct {
         throw new UnsupportedOperationException();
     }
 
-    public Zone getZone() {
+    public SaveZone getZone() {
         return zone;
     }
 

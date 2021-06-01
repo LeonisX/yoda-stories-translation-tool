@@ -449,6 +449,17 @@
                                                                        userData="00000000000001000000000100000001"/>
                                                     </Menu>
                                                 </Menu>
+                                                <Menu fx:id="setGenderMenu" mnemonicParsing="false" text="Set gender">
+
+                                                    <RadioMenuItem text="Male" userData="0">
+                                                        <toggleGroup>
+                                                            <ToggleGroup fx:id="tilesGenderToggleGroup"/>
+                                                        </toggleGroup>
+                                                    </RadioMenuItem>
+                                                    <RadioMenuItem text="Female" toggleGroup="$tilesGenderToggleGroup" userData="1"/>
+                                                    <RadioMenuItem text="Neuter" toggleGroup="$tilesGenderToggleGroup" userData="2"/>
+                                                    <RadioMenuItem text="Unused" toggleGroup="$tilesGenderToggleGroup" userData="5764"/>
+                                                </Menu>
                                             </items>
                                         </ContextMenu>
                                     </contextMenu>
