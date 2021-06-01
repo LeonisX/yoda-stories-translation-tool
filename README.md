@@ -38,6 +38,8 @@ Spa, may be and Ger - no such code. Investigate function with 1036
 
 * When add/delete/replace tiles, gender - CatalogEntry bytes[] don't change. Dump only unchanged data.
 
+* Too big Alert dialogs, need a smallest solutions
+
 * Paste from clipboard (good idea)
 * Think how to drag-drop from UI from Windows Explorer (Open file)\
 

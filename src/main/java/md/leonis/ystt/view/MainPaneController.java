@@ -301,6 +301,15 @@ public class MainPaneController {
 
         Log.setOutput(logsTextArea);
 
+        if (windowMap.isEmpty() || window2Map.isEmpty() || gridViewMap.isEmpty() ||
+                scrollBarLeftMap.isEmpty() || scrollBarRightMap.isEmpty() || toolTipMap.isEmpty()) {
+            JavaFxUtils.showAlert("Error reading YODESK.EXE file!",
+                    "Could not find all addresses in the executable file.",
+                    "Perhaps this is some kind of exclusive version of the game.\n" +
+                            "Please send it to us so that we can analyze it and fix our code.", Alert.AlertType.WARNING);
+
+        }
+
         opath = spath.resolve(OUTPUT + '-' + release.getId());
 
         try {
