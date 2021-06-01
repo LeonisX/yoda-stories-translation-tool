@@ -1,7 +1,5 @@
 # Yoda Stories Translation Tool
 
-Utility Yoda Stories Translation Tool
-
 **Current status: read/modify, dump, translate DTA, hack EXE file**
 
 **Current stage: polishing, testing**
@@ -10,9 +8,10 @@ Utility Yoda Stories Translation Tool
 
 [Read Yoda Stories Translation Guide](documents/translation-guide.md)
 
-[Read Guide About YODESK.EXE Modifying](documents/exe-translation-guide.md)
+[Руководство по переводу Yoda Stories](documents/ru/translation-guide.md)
 
 An original version: https://github.com/LeonisX/YExplorer
+
 
 ## TODO
 
@@ -20,8 +19,6 @@ toolTipMap - can't find in EXE.
 Spa, may be and Ger - no such code. Investigate function with 1036
 
 * Resolve all TODO
-
-* Translation instructions - need english version
 
 * Zone report. May be table in UI / or delete Map table
 
@@ -47,6 +44,7 @@ Spa, may be and Ger - no such code. Investigate function with 1036
 
 * About Actions scripts: https://www.webfun.io/docs/scripting/index.html
 
+* graphics-translation-guide: TODO ссылку на мой перевод
 
 ### Other YS / DA solutions
 

@@ -1,7 +1,7 @@
 Yoda Stories Graphics Translation Guide
 ==============================
 
-[Содержание](translation-guide.md)
+[TOC](translation-guide.md)
 
 A fully translated game has its own localized ones: 
 
@@ -12,206 +12,208 @@ A fully translated game has its own localized ones:
 
 ![](images/startup.png)
 
-Этот экран можно увидеть при загрузке игры. На самом деле, он идентичен тому, что можно увидеть в Зоне #0,
-и это немного упростит нашу работу.
+This screen can be seen when loading the game. In fact, it is identical to what can be seen in Zone #0.
+And this will simplify our work a little.
 
-_Скажем сразу - не все поддерживают идею перевода названия игры.
-В интернете достаточно рассуждений на эту тему, и приводятся достаточно веские аргументы
-в пользу того, что следует оставлять оригинальное название._
+_Let's say right away - not everyone supports the idea of translating the name of the game.
+There is enough reasoning on this topic on the Internet, and there are enough weighty arguments
+in favor of keeping the original name._
 
-_Мы дадим такой совет. Если носители вашего языка произносят название игры как "Yoda Stories",
-то этот экран лучше не трогать. В русском языке обычно встречается перевод, поэтому
-при переводе игры на русский язык мы всё-таки изменили название._
+_We will give this advice. If native speakers of your language pronounce the name of the game as "Yoda Stories",
+then it is better not to touch this screen. In Russian, translation is usually found, therefore
+when translating the game into Russian, we still changed the name._
 
-Здесь необходимо решить две задачи:
+There are two tasks to solve here:
 
-* Нарисовать отсутствующие буквы
-* Правильно сократить количество цветов до палитры Yoda Stories
+* Draw missing letters.
+* Correctly reduce the number of colors to the Yoda Stories palette.
 
 
-### Перерисовка шрифта
+### Redrawing the font
 
-Чтобы соответствовать существующему стилю, мы советуем максимально заимствовать уже существующие решения
-и составлять отсутствующие буквы на основе уже имеющихся.
+To match the existing style, we advise you to borrow as much as possible from existing solutions
+and compose the missing letters based on the existing ones.
 
-YSTT позволяет сохранить как загрузочный экран, так и палитру:
+YSTT allows to save both the startup screen and the palette:
 
 ![](images/gui-startup-palette.png)
 
-Ищите сгенерированные файлы в каталоге output-eng-1.2.
+Look for the generated files in the output-eng-1.2 directory.
 
-Выбор графических редакторов огромен, но вполне хватает уровня бесплатных Paint или Paint.Net.
+The choice of graphic editors is huge, but the level of free Paint or Paint.Net and Irfan View is quite enough.
 
-В них реализованы операции копирования-вставки, а так же рисования карандашом.
+They implement copy-paste operations, as well as drawing with a pencil.
 
-Как вы уже успели заметить, шрифт нарисован всего двумя цветами - белым и бледно-жёлтым.
-То есть, для любых прямых линий, а их будет большинство, достаточно провести две параллельные
-полосы этих цветов и потом поворачивать их на нужный угол.
+As you have already noticed, the font is drawn with only two colors - white and pale yellow.
+That is, for any straight lines, and there will be most of them, it is enough to draw two parallel
+stripes of these colors and then rotate them to the desired angle.
 
-Закруглённых участков в оригинале вполне хватает, чтобы не придумывать что-то от себя. Используйте в качестве основы буквы: "O", "S", "R".
+The rounded sections in the original are quite enough so as not to come up with something from yourself. Use letters as a base: "O", "S", "R".
 
-Буквы в каждом языке могут иметь свою ширину, поэтому постарайтесь выдерживать пропорции, чтобы текст выглядел органично.
+The width of letters in each language may be different, so try to keep the proportions so that the text looks organic.
 
-Все работы следует выполнять на чёрном фоне. После того, как шрифт готов, сохраните файл в BMP формате.
+All work should be done on a black background. After the font is ready, save the file in BMP format.
 
-Далее открывайте эту картинку в Irfan View.
+Then open this picture in Irfan View. It is necessary to replace the palette with 256 colors. It was generated earlier.
 
 Image -> Palette -> Import Palette.
 
-Затем сохраните файл, важно, чтобы его формат оставался BMP.
+Then save the file, it is important that its format remains BMP.
 
-Осталась последняя часть - вставить переведённый текст в startup.bmp. Впрочем, чтобы не потерять время зря,
-мы советуем вам зайти с другой стороны. Дело в том, что загрузочный экран визуально идентичен Zone #0,
-а все Зоны состоят из Тайлов. Можно:
+The last part is to paste the translated text into startup.bmp. However, in order not to waste time in vain,
+we advise you to go from the other side. The fact is that the loading screen is visually identical to Zone #0,
+and all Zones are made up of Tiles. Therefore, it is necessary to:
 
-1. Перерисовать тайлы
-2. Загрузить startup.bmp в Clipboard image
-3. Перенести тайлы букв в Clipboard image
-4. Сохранить изображение
-5. Переименовать clipboard.bmp в startup.bmp
+1. Redraw tiles
+2. Load startup.bmp into Clipboard image
+3. Transfer the letter tiles to the Clipboard image
+4. Save the image
+5. Rename clipboard.bmp to startup.bmp
 
-Подробности раоты с тайлами описаны ниже.
+The details of working with tiles are described below.
 
 
-### Палитра
+### Palette
 
 ![](images/palette.png)
 
-Вся графика в игре нарисована палитрой из 256 цветов. Хотя, фактически, уникальных цветов ещё меньше.
+All graphics in the game are drawn with a palette of 256 colors. Although, in fact, there are even fewer unique colors.
 
-НИКОГДА не используйте при рисовании цвет с индексом 0. Irfan View позволяет увидеть индекс цвета пикселя,
-если кликнуть на него.
+NEVER use a color with index 0 when painting.
 
-Цвет с индексом 0 - это прозрачный цвет, то есть, независимо от того, какой цвет на этом месте,
-в игре он выводиться не будет. Это цвет, которым следует заливать прозрачные области вокруг букв.
+The color with index 0 is a transparent color, that is, no matter what color is in that place,
+it will not be displayed in the game. This is the color to fill the transparent areas around the letters.
 
-Так же есть неиспользуемые цвета, их тоже лучше не использовать: 3, 4, 5, 6, 7, 8, 196, 197, 198, 199, 206, 246, 247, 248, 249, 250, 251, 252, 253, 254
+Irfan View allows you to see the color index of a pixel, if you click on it.
 
-И самое главное. В игре не так много анимации, но часть её реализована за счёт изменения цветов в палитре:
+There are also unused colors, it is also better not to use them: 3, 4, 5, 6, 7, 8, 196, 197, 198, 199, 206, 246, 247, 248, 249, 250, 251, 252, 253, 254
+
+And the most important thing. There is not much animation in the game, but some of it is implemented by changing the colors in the palette:
 
 ![](palette-anim-indy.gif)
 
-Если вы будете использовать красно-оранжевые цвета из диапазона изменяющихся цветов, то при повторном прохождении
-игры это может испортить графику. Чтобы такого не происходило, мы генерируем так же "safe" палитры, в которых
-проблемные цвета попросту удалены.
+If you use red-orange colors from the range of changing colors, then if you play the game again,
+this can spoil the graphics. To prevent this from happening, we also generate "safe" palettes, in which
+problem colors are simply removed.
 
 
-#### Прозрачный цвет
+#### Transparent color
 
-Мы рекомендуем после всех преобразований заливать фон цветом Fuchsia, поскольку, он яркий и выделяющийся.
+We recommend filling the background with Fuchsia color after all transformations, as it is bright and eye-catching.
 
-Соответственно, лучше использовать палитру, у которой нулевой цвет тоже Fuchsia: palette-fuchsia.pal или palette-fuchsia-safe.pal.
+Accordingly, it is better to use a palette that also has a zero color of Fuchsia: palette-fuchsia.pal or palette-fuchsia-safe.pal.
 
-В YSTT прозрачный цвет выбирается в верхнем меню: Settings -> Transparent Color.
+In YSTT, the transparent color is selected in the upper menu: Settings -> Transparent Color.
 
-Необходимо выбрать один цвет в начале работы и использовать его для сохранения ресурсов. Установите его как Fuchsia.
+You need to pick one color at the start and use that color to save and replace resources. Set it as Fuchsia.
 
 
 ## Start, Win and Lose screens
 
-На самом деле, эти экраны реализованы так же, как и все игровые Зоны в игре. Их номера: 0, 76, 77.
+In fact, these screens are implemented in the same way as all play Zones in the game. Their numbers: 0, 76, 77.
 
 ![](images/000.png) ![](images/076.png) ![](images/077.png)
 
-Обратите внимание, что Зона #0 очень напоминает стартовый экран. Она отображается в начале каждой игры,
-и на ней можно видеть полёт X-Wing.
+Note that Zone #0 is very similar to the startup screen. It is displayed at the beginning of every game,
+and on it, you can see the flight of the X-Wing.
 
-Все Зоны состоят из тайлов. На практике, обычно накладывается по 3 тайла на одну область, они составляют Zone Spot.
+All Zones are made up of tiles. In practice, usually 3 tiles are superimposed on one area, they make up the Zone Spot.
 
-Zone Spot имеет 3 уровня, наша цель - промежуточный уровень, именно на нём отображаются буквы.
+Zone Spot has 3 levels, our goal is an intermediate level, it is on this level that the letters are displayed.
 
-Зоны имеют размер: либо 8x8, либо 16x16 тайлов.
+Zones are either 8x8 or 16x16 tiles in size.
 
-YSTT позволяет редактировать графику любой Зоны в игре.
+YSTT allows you to edit the graphics of any Zone in the game.
 
 ![](images/gui-zone.png)
 
-Последовательность действий такая:
+The sequence of actions is as follows:
 
-1. Выбрать требуемый слой (варианты top, middle, bottom). Нам нужен middle
-2. Последовательно перетащить тайлы в нужные места Зоны
+1. Select the required layer (options: top, middle, bottom). We need middle.
+2. Consecutively drag the tiles to the desired places in the Zone.
 
-При редактировании Зон часто возможны ошибки, состояние можно вернуть кнопкой Undo.
+Errors are often possible when editing Zones, the state can be returned with the Undo button.
 
-Чтобы ваша работа не пропала зря, её необходимо сохранить: File -> Save.
+So that your work is not wasted, it must be saved: File -> Save.
 
 ### Tiles
 
-Последовательность работы с тайлами такая:
+The sequence of working with tiles is as follows:
 
-1. Экспортировать тайлы
-2. Перерисовать их
-3. Импортировать обратно, заменив существующие, и при необходимости добавляя новые
+1. Export tiles
+2. Redraw them
+3. Import back, replacing the existing ones, and, if necessary, adding new ones
 
 ![](images/gui-tiles.png)
 
-#### Экспорт тайлов
+#### Exporting tiles
 
-В начале этой операции лучше замените прозрачный цвет на чёрный: Settings -> Transparent Color. Это упростит вашу работу.
+At the beginning of this operation, it is better to replace the transparent color with black: Settings -> Transparent Color. 
+This will make your job easier.
 
-Перетащите мышкой нужные тайлы в Clipboard image, затем сохраните его (файл clipboard.bmp в каталоге output-eng-1.2).
+Drag and drop the required tiles into the Clipboard image, then save it (clipboard.bmp file in the output-eng-1.2 directory).
 
-Нас интересуют фразы:
+We are interested in phrases:
 
 * YODA STORIES
 * YOU WIN!
 * TRY AGAIN...
 * FORCE FACTOR
 
-Последние 3 фразы используют другой шрифт.
+The last 3 phrases use a different font.
 
-#### Перерисовка тайлов
+#### Redrawing tiles
 
-О том, как перерисовать шрифт для Зоны #0 мы уже рассказывали выше.
+We have already described how to redraw the font for Zone #0 above.
 
-Инструменты не меняются, это по-прежнему Paint и Irfan View. Однако, чтобы работа получилась качественной,
-очень советуем воспользоваться редактором векторной графики: Inkscape или Corel Draw. Идея такая:
+The tools don't change, it's still Paint and Irfan View. However, for the work to be of high quality,
+we highly recommend using a vector graphics editor: Inkscape or Corel Draw. The idea is this:
 
-1. Сделать наклонный шрифт вертикальным. Необходимо выполнить Horizontal Skew со значением 19.5.
-2. Увеличить шрифт в несколько раз, например в 5 или 10
-3. Подобрать похожий системный шрифт без засечек
-4. В Inkscape написать текст поверх графики
-5. Отредактировать вектора под стилистику шрифта из игры
-6. Залить буквы градиентом
-7. Наклонить буквы: Horizontal Skew со значением 19.5 в другую сторону
-8. Уменьшить буквы до требуемой высоты
-9. Отцентрировать текст
-10. Импортировать SAFE палитру
-11. Сгладить переходы между цветами градиента
-12. Буквы внутри залить чёрным цветом, снаружи - прозрачным
-13. Сохранить изображение в BMP формате
+1. Make italic font vertical. You need to perform a Horizontal Skew with a value of 19.5
+2. Increase the font several times, for example, 5 or 10
+3. Find a similar sans-serif system font
+4. In Inkscape, write text over graphics
+5. Edit the vectors to match the style of the font from the game
+6. Fill the letters with a gradient
+7. Skew letters: Horizontal Skew with a value of 19.5 in the opposite direction
+8. Decrease the letters to the required height
+9. Center the text
+10. Import SAFE palette
+11. Smooth transitions between gradient colors by pencil (F12 in Irfan View, or use Paint)
+12. Fill the letters inside with black, outside with transparent
+13. Save image in BMP format
 
-Некоторые советы:
+Some tips:
 
-Не стесняйтесь выбрать шрифт покрупнее: 
+Feel free to choose a larger font:
 
-* 11-12 px для force factor
-* 31-32 px для остального шрифта
+* 11-12 px for force factor
+* 31-32 px for the rest of the font
 
-Главное правило - уложиться в 288 пикселей игрового экрана. YSTT позволяет добавлять новые тайлы в игру.
+The main rule is to keep within 288 pixels of the game screen. YSTT allows you to add new tiles to the game.
 
-В качестве источника вдохновения можно воспользоваться образцами букв из любых доступных переводов игры.
+You can use sample letters from any available translations of the game as a source of inspiration.
 
-TODO ссылку на мой перевод
+TODO link to my translation
 
-Обратите внимание - чтобы буквы "O" или "C" смотрелись органично, они должны быть немного больше остальных букв.
-В русском переводе обычные буквы фразы YOU WIN имеют высоту 32 пикселя. Буква "О" на 1 пиксель выступает вниз.
-Она рисуется на тайлах FORCE FACTOR. Естественно, слова совсем другие: ПОБЕДА, ФАКТОР СИЛЫ.
+Please note - for the letters "O" or "C" to look organic, they must be slightly higher than the rest of the letters.
+In Russian translation, the usual letters of the phrase YOU WIN are 32 pixels high. The letter "O" protrudes 1 pixel down.
+It is drawn on FORCE FACTOR tiles.
 
-#### Импорт тайлов
+#### Importing tiles
 
-* Загрузить изменённый clipboard.bmp
-* Перетащить тайлы
-* Добавить пустые тайлы, если закончились свободные
+* Load modified clipboard.bmp
+* Drag and drop tiles
+* Add empty tiles if you run out of free ones
 
-Каждый добавляемый тайл автоматически получает атрибут Object (transparent).
-Менять его следует только в том случае, если вы хотите сделать глубокий хак игры (контекстное меню тайла, правый клик мышкой). 
-Но для перевода это не нужно.
+Each added tile automatically gets an Object (transparent) attribute.
+It should be changed only if you want to make a deep hack of the game (context menu of the tile, right click with the mouse).
+But you don't need it for translation.
 
 ### Zones
 
-После импортирования тайлов ещё раз откройте Зоны. Если буквы чётко соответствуют оригиналу, то все Зоны
-будут отображаться корректно, и достаточно сохранить результат вашей работы.
+After importing the tiles, open the Zones again. If the letters strictly correspond to the original, then all Zones
+will be displayed correctly, and it is enough to save the result of your work.
 
-Иначе же, перетаскиванием тайлов с буквами на middle уровень Зоны добейтесь того, чтобы слова выглядели
-и читались так, как вы это запланировали. 
+Otherwise, by dragging the tiles with letters to the middle level of the Zone, make the words look like
+and read the way you planned it. 

@@ -1,7 +1,7 @@
 Yoda Stories EXE Translation Guide
 ==================================
 
-[Содержание](translation-guide.md)
+[TOC](translation-guide.md)
 
 A fully translated YS executable file has its own localized/modified ones: 
 
@@ -27,34 +27,34 @@ so that you choose the one that will allow you to perform the translation with c
 * Restorator (72$)
 * XN Resource Editor (Free)
 
-YSTT сообщает эту же информацию, но дополнительно может открыть сайт выбранной утилиты.
+YSTT reports the same information, but can optionally open the website of the selected utility.
 
 ![](images/gui-exe.png)
 
 
 ## Text translation
 
-В рамках этого руководства мы не в состоянии описать принцип работы каждого редактора PE ресурсов.
-Ограничимся лишь несколькими советами.
+For the purposes of this tutorial, we are not able to describe how each PE resource editor works.
+We will limit ourselves to just a few tips.
 
-Характеристики хорошего редактора:
+Characteristics of a good editor:
 
-* Изменение меню, диалогов и строковых ресурсов
-* Возможность менять строки пакетом, а не по одной
-* Визуальный редактор диалогов
-* Создание резервных копий исполняемого файла
+* Change menus, dialogs and string resources
+* Ability to change lines in batch, not one by one
+* Visual dialog editor
+* Create backup copies of the executable file
 
-При переводе строк следует учитывать некоторые особенности. В частности, одни строковые ресурсы используются в самой игре, 
-обычно это фразы R2-D2. Другие можно увидеть при появлении каких-то предупреждений и ошибок.
+When translating strings, you should take into account some features. In particular, some string resources are used in the game itself,
+usually phrases R2-D2. Others can be seen when some warnings and errors appear.
 
-Диалоги R2-D2 форматируются автоматически, однако, некоторые фразы отформатированы с помощью принудительных переносов строк: "\r\n".
-Их желательно оставить.
+The R2-D2 dialogs are formatted automatically, however, some phrases are formatted with forced line breaks: "\r\n".
+It is desirable to leave them.
 
-О переносе строк предупреждений следует позаботиться самостоятельно: "\n". 
-Практика показала, что строки можно делать длиннее чем в оригинальной игре, диалоговое окно автоматически растягивается.
+You should take care of the wrapping of the warning lines yourself: "\n".
+Practice has shown that lines can be made longer than in the original game, the dialog box is automatically stretched.
 
 
-## Ширина окна и диалогов
+## Main window and dialogs width
 
 The main goal of these changes is to expand the window controls to accommodate longer text strings.
 

@@ -1,7 +1,7 @@
 Yoda Stories Graphics Translation Guide
 ==============================
 
-[Содержание](translation-guide.md)
+[TOC](translation-guide.md)
 
 A fully translated game has its own localized ones: 
 
@@ -9,68 +9,68 @@ A fully translated game has its own localized ones:
 * Puzzles
 * Tile names
 
-Yoda Stories Translation Tool (YSTT) полностью автоматизирует процесс извлечения и вставки текста.
+The Yoda Stories Translation Tool (YSTT) fully automates the process of extracting and pasting text.
 
 ![](images/gui-actions.png)
 
-Для всех групп текста используется один универсальный алгоритм:
+One universal algorithm is used for all groups of text:
 
-1. Выгрузить оригинальный текст в текстовый документ
-2. Перевести текст
-3. Загрузить текст обратно в YSTT
-4. Заменить текст в DTA файле
+1. Save the original text into a text document
+2. Translate text
+3. Load the text back into YSTT
+4. Replace text in DTA file
 
-## Текстовый файл
+## Text file
 
-Файлы с оригинальным текстом имеют расширение DOCX. Их можно открыть в Open Office или Microsoft Word.
-Этот формат был выбран для того, чтобы в качестве образца сразу же видеть оригинал.
-К тому же, такой формат облегчает проверку перевода и замену фраз в игре.
+Files with original text have the DOCX extension. They can be opened in Open Office or Microsoft Word.
+This format was chosen so that the original can be seen immediately as a reference.
+In addition, this format makes it easier to check the translation and replace phrases in the game.
 
-Кроме самого текста в документе есть служебные данные:
+In addition to the text itself, the document contains service data:
 
-* Идентификаторы строк
+* String identifiers
 * CRC32
 * Source character encoding
 * Destination character encoding
 
-Идентификаторы строк необходимы для корректной замены текста в игре.
+String IDs are required to correctly replace text in the game.
 
-CRC32 это контрольная сумма файла YODESK.DTA. Изменять её не нужно. Если перевод выполнялся для другой версии игры, то будет выведено предупреждение.
+CRC32 is the checksum of the YODESK.DTA file. You don't need to change it. If the translation was performed for another version of the game, a warning will be displayed.
 
-Source character encoding это кодировка оригинальной игры. Изменять её не нужно. 
+Source character encoding is the original game encoding. You don't need to change it.
 
-Destination character encoding - это кодировка того языка, на который будет переводиться игра.
-Если здесь обозначена не ваша кодировка, то замените на свою, это важно.
+Destination character encoding is the encoding of the language into which the game will be translated.
+If your encoding is not indicated here, then replace it with your own, this is important.
 
-Несколько советов:
+A few tips:
 
-1. Не трогайте идентификаторы строк. Они необходимы для корректной замены текста в игре.
-2. Обязательно оставляйте специальные символы: ¥ и ¢
-3. Для проверки орфографии, выделите свой текст и выберите в текстовом редакторе язык для него.
-4. Если после загрузки текста в YSTT перевод имеет неверную кодировку, то поменяйте её в настройках утилиты.
-5. После загрузки любого текстового документа Destination character encoding меняется на значение, указанное в нём.
+1. Don't touch strings identifiers. They are necessary for the correct replacement of the text in the game.
+2. Be sure to leave special characters untouched: ¥ and ¢
+3. To check spelling, select your text and select the language for it in the text editor.
+4. If, after loading the text into YSTT, the translation has an incorrect encoding, then change it in the utility settings.
+5. After loading any text document, destination character encoding is changed to the value specified in it.
 
 
 ## Zone Actions
 
-Вся игровая логика каждой Зоны реализована в Actions. В игре встречаются абсолютно не интерактивные Зоны,
-но есть и такие, у которых может быть до 15 Действий, и даже больше.
+All the game logic of each Zone is implemented in Actions. There are absolutely non-interactive Zones in the game,
+but there are those that can have up to 15 Actions, and even more.
 
-Каждой Действие состоит из Условий и Инструкций. Если все Условия удовлетворены, то выполняются все Инструкции.
+Each Action consists of Conditions and Instructions. If all the Conditions are satisfied, then all Instructions are executed.
 
-Инструкции могут сопровождаться текстом. Таким образом реализованы все диалоги между Люком, NPC и врагами.
+Instructions may be accompanied by text. Thus, all dialogues between Luke, NPCs and enemies are implemented.
 
-При переводе текста обращайте внимание на ID Зоны. 
-Если вы не понимаете, о чём идёт речь в тексте, а такие места встречаются, то в YSTT можно посмотреть Зону и освежить свою память.
+When translating text, pay attention to the Zone ID.
+If you don't understand what the text is about, but such places exists, then in YSTT you can look at the Zone and refresh your memory.
 
-Файл: actions.docx
+File: actions.docx
 
 
 ## Puzzles
 
-Puzzles это другой способ взаимодействия с NPC.
+Puzzles are another way to interact with NPCs.
 
-Каждый паззл может содержать до 5 фраз следующего содержания:
+Each puzzle can contain up to 5 phrases with the following content:
 
 * REQUEST
 * THANK
@@ -78,13 +78,13 @@ Puzzles это другой способ взаимодействия с NPC.
 * MISSION
 * UNUSED
 
-Например:
+For example:
 
 * REQUEST: My hyperdrive needs a new ALLUVIAL DAMPER! Do you think you could find one for me?
 * THANK: My hyperdrive is as good as new!
 * OFFER: In return, I can let you have this ALLUVIAL DAMPER... it's just the thing for your hyperdrive.
 
-Миссии уполномочен рассказывать только Йода, например:
+Mission is authorized to tell only Yoda, for example:
 
 Luke! Great danger there is!
 
@@ -92,28 +92,28 @@ The Imperial Fleet has learned of the HIDDEN REBEL BASE on icy planet Thaldo. At
 
 Only this can I give you...
 
-Зная, как устроены Паззлы, вы с меньшей вероятностью выполните ошибку при переводе.
+Knowing how Puzzles work, you are less likely to make a translation mistake.
 
-Файл: puzzles.docx
+File: puzzles.docx
 
 
 ## Tile Names
 
-Это самая простая, и в то же время самая кропотливая часть перевода. Пожалуй, лучше начинать именно с неё,
-потому что названия предметов в изобилии встречаются и в тексте игры, а разночтений быть не должно.
+This is the simplest and at the same time the most painstaking part of the translation. Perhaps it is better to start with it,
+because these names are found in abundance in the text of the game, and there should be no discrepancies.
 
-В игре используется 245 уникальных предметов и существ!
+The game uses 245 unique items and creatures!
 
-Файл: tilenames.docx
+File: tilenames.docx
 
 
 ### Character encodings
 
-Несмотря на то, что Юникод на момент создания игры уже существовал, операционные системы семейства Windows 9x поддерживают его весьма ограниченно.
-Зато активно использовались региональные кодировки, или кодовые страницы, это практика, известна ещё со времён DOS.
-Идея заключается в том, что в зависимости от языка системы, одни и те же символы расширенной кодировки ASCII имели разное начертание.
+Despite the fact that Unicode already existed at the time of the creation of the game, the operating systems of the Windows 9x family have very limited support for it.
+Regional encodings, or code pages, were actively used, this is a practice that has been known since the days of DOS.
+The idea is that depending on the language of the system, the same extended ASCII characters have different typeface.
 
-Первые 127 символов кодировки ASCII оставались неизменными, но все последующие могли сильно различаться:
+The first 127 ASCII characters remained unchanged, but all subsequent ones could be very different:
 
 ```
 windows-1252: € ‚ƒ„…†‡ˆ‰Š‹Œ Ž  ‘’“”•–—˜™š›œ žŸ ¡¢£¤¥¦§¨©ª«¬­®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ
@@ -121,38 +121,64 @@ windows-1250: € ‚ „…†‡ ‰Š‹ŚŤŽŹ ‘’“”•–— ™š�
 windows-1251: ЂЃ‚ѓ„…†‡€‰Љ‹ЊЌЋЏђ‘’“”•–— ™љ›њќћџ ЎўЈ¤Ґ¦§Ё©Є«¬­®Ї°±Ііґµ¶·ё№є»јЅѕїАБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдежзийклмнопрстуфхцчшщъыьэюя
 ```
 
-Это приводило к определённым трудностям в то время, но и при переводе игры этому следует уделить внимание.
+This led to certain difficulties at the time, but even when translating the game, this should be paid attention to.
 
-Поскольку Java (язык, на котором написана утилита Yoda Stories Translation Tool) изначально использует Юникод, то 
-для правильного извлечения, и последующей замены текста необходимо верно подобрать кодировки, поскольку выполняются такие преобразования:
+Since Java (the language in which the Yoda Stories Translation Tool is written) natively uses Unicode, then
+for correct extraction and subsequent replacement of the text, it is necessary to choose the correct encodings, since the following transformations are performed:
 
 Source character encoding (dumping) -> Unicode (internal representation) -> Destination character encoding (inserting)
 
-Для оригинала игры на английском языке, подойдёт любая кодировка, поскольку вполне хватает первых 127 символов (почти).
+For the original game in English, any encoding is suitable, since the first 127 characters (almost) are enough.
 
 
 #### Variables
 
-Исключение составляют два символа: ¥ (0xA5; Ґ cyrillic) и ¢ (0xA2; ў cyrillic), которые используются в Zone Actions для подстановки названий предметов.
-Своего рода переменные значения. 
+The exception is two characters: ¥ (0xA5; Ґ cyrillic) and ¢ (0xA2; ў cyrillic), which are used in Zone Actions to substitute item names.
+A kind of variable values.
 
-При переводе важно, чтобы эти специальные символы оставались неизменными. В коде реализована такая проверка.
+When translating, it is important that these special characters remain unchanged. The code implements such a check.
 
-Поэтому оригинальная кодировка будет не ASCII, а windows-1252 (Latin-1). Эта кодировка автоматически подходит
-для таких западноевропейских вариантов как: испанский, итальянский и французский.
+Therefore, the original encoding will not be ASCII, but windows-1252 (Latin-1). This encoding is automatically matched
+for Western European variants such as Spanish, Italian and French.
 
-В настоящее время всё ещё не найдены французский и итальянский переводы игры. Напишите мне на tv-games@mail.ru, если у вас есть эти игры. 
+Currently, no French and Italian translations of the game have been found. Email me at tv-games@mail.ru if you have these games.
+
+
+#### Genders
+
+There are no problems with genders in English. Masculine, feminine and neuter words are spelled the same.
+
+But at least in the German and Spanish versions of the game, the change of the genders of objects is implemented. For example, in the Germanic version
+the article "der" before the variable will be replaced with "der"/"das" if the tile of this item has the corresponding TGEN value:
+
+0. Masculine: der
+1. Feminine: der
+2. Neutral: das
+
+[Details here](http://tv-games.ru/forum/blog.php?b=2685)
+
+In Spanish, there are only masculine and feminine gender, and the change of the article will be as follows:
+
+el -> la
+un -> una
+
+If the language into which the game is being translated follows the same rules, then you should take the German or Spanish version as a basis.
+
+The gender of a tile can be changed on the tile editing screen (right click).
+
+Currently, no French and Italian translations of the game have been found. Email me at tv-games@mail.ru if you have these games.
 
 
 #### Word files
 
-Если вы обратите внимание на файл [crcs.json](/crcs.json), то в нём как раз и описаны исходные кодировки для каждого известного релиза игры.
+If you pay attention to the file [crcs.json](https://github.com/LeonisX/yoda-stories-translation-tool/blob/main/src/main/resources/crcs.json), 
+then it just describes the source encodings for every known release of the game.
 
-Она используется при дампинге текста из файла данных yodesk.dta.
+It is used when dumping text from the yodesk.dta data file.
 
-В DOCX файлах это значение указано в справочных целях как "Source character encoding", и его нет смысла менять на что-то другое.
+In DOCX files, this value is indicated for reference purposes as "Source character encoding", and it makes no sense to change it to something else.
 
-Зато есть смысл поменять значение "Destination character encoding", если игра переводится на язык, не принадлежащий кодировке windows-1252.
+But it makes sense to change the value of "Destination character encoding" if the game is translated into a language that does not belong to the windows-1252 encoding.
 
 
 #### Encodings (code pages)
@@ -177,6 +203,6 @@ Source character encoding (dumping) -> Unicode (internal representation) -> Dest
 | x-windows-949 | Korean |
 | x-Johab | Korean (Johab) |
 
-Остальные названия кодировок можно посмотреть в [этом документе](https://docs.oracle.com/javase/8/docs/technotes/guides/intl/encoding.doc.html) (вторая колонка). 
+The rest of the encoding names can be found in [this document](https://docs.oracle.com/javase/8/docs/technotes/guides/intl/encoding.doc.html) (second column).
 
-Если в программе не оказалось нужной вам кодировки, то добавьте её вручную в файл charsets.json.
+If the program does not have the encoding you need, then add it manually to the [charsets.json](https://github.com/LeonisX/yoda-stories-translation-tool/blob/main/src/main/resources/charsets.json) file. 
