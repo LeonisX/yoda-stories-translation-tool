@@ -44,7 +44,8 @@ public class World extends KaitaiStruct {
 
     @Override
     public void write(KaitaiOutputStream os) {
-        throw new UnsupportedOperationException();
+        sectors.forEach(s -> s.write(os));
+        worldDetailsList.forEach(w -> w.write(os));
     }
 
     public List<Sector> getSectors() {

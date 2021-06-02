@@ -15,6 +15,8 @@ public class Rooms extends KaitaiStruct {
     private List<Room> rooms;
     private Rooms roomz;
 
+    private List<Rec> zoneIds;
+
     private final transient short zoneId;
     private final transient int start;
 
@@ -36,7 +38,7 @@ public class Rooms extends KaitaiStruct {
 
     private void readRooms(KaitaiInputStream io, short zoneId, int start) {
 
-        List<Rec> zoneIds = new ArrayList<>();
+        zoneIds = new ArrayList<>();
 
         md.leonis.ystt.model.yodesk.zones.Zone zone = Yodasav.getYodesk().getZones().getZones().get(zoneId);
 
@@ -55,13 +57,12 @@ public class Rooms extends KaitaiStruct {
                 door = (short) hotspot.getArgument();
             } else continue;
 
-            int zoneId2 = io.readS2le();
-            boolean visited2 = io.readBool4le();
+            Rec rec = new Rec(io);
 
-            if (zoneId2 != door) {
-                System.out.printf("Expected door to lead to zone %s instead of %s%n", zoneId2, door);
+            if (rec.zoneId != door) {
+                System.out.printf("Expected door to lead to zone %s instead of %s%n", rec.zoneId, door);
             }
-            zoneIds.add(new Rec(door, visited2));
+            zoneIds.add(rec);
             break;
         }
 
@@ -76,22 +77,32 @@ public class Rooms extends KaitaiStruct {
         }
     }
 
-    static class Rec {
+    static class Rec extends KaitaiStruct {
 
         private final short zoneId;
         private final boolean visited;
 
-        public Rec(short zoneId, boolean visited) {
-            this.zoneId = zoneId;
-            this.visited = visited;
+        public Rec(KaitaiInputStream io) {
+            super(io);
+            zoneId = io.readS2le();
+            visited = io.readBool4le();
+        }
+
+        public void write(KaitaiOutputStream os) {
+            os.writeS2le(zoneId);
+            os.writeBool4le(visited);
         }
     }
 
-
-
     @Override
     public void write(KaitaiOutputStream os) {
-        throw new UnsupportedOperationException();
+
+        zoneIds.forEach(z -> z.write(os));
+        rooms.forEach(r -> r.write(os));
+
+        if (roomz != null) {
+            roomz.write(os);
+        }
     }
 
     public List<Room> getRooms() {

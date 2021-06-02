@@ -27,6 +27,8 @@ public class SaveZone extends KaitaiStruct {
     private List<SaveMonster> monsters;
     private List<SaveAction> actions;
 
+    private List<Integer> extraActions;
+
     private final transient md.leonis.ystt.model.yodesk.zones.Zone zone;
     private final transient boolean visitedArg;
 
@@ -103,18 +105,56 @@ public class SaveZone extends KaitaiStruct {
         for (int i = 0; i < actionsCount; i++) {
             actions.add(new SaveAction(io, this, root));
         }
+        extraActions = new ArrayList<>();
         for (int i = zone.getActions().size(); i < actionsCount; i++) {
             if (i == zone.getActions().size()) {
                 System.out.printf("Zone #%s has additional actions%n", zone.getIndex());
             }
             int extraAction = io.readS4le();
+            extraActions.add(extraAction);
             System.out.println("extraAction: " + extraAction);
         }
     }
 
     @Override
     public void write(KaitaiOutputStream os) {
-        throw new UnsupportedOperationException();
+
+        if (visitedArg) {
+            os.writeS4le(counter);
+            os.writeS4le(random);
+
+            os.writeS4le(x);
+            os.writeS4le(y);
+
+            os.writeS2le(sectorCounter);
+            os.writeS2le(planet);
+
+            tileIds.forEach(os::writeS2le);
+        }
+
+        os.writeBool4le(visited);
+        writeHotspots(os);
+
+        if (visited || visitedArg) {
+            writeMonsters(os);
+            writeActions(os);
+        }
+    }
+
+    private void writeHotspots(KaitaiOutputStream os) {
+        os.writeS4le(hotspots.size());
+        hotspots.forEach(h -> h.write(os));
+    }
+
+    private void writeMonsters(KaitaiOutputStream os) {
+        os.writeS4le(monsters.size());
+        monsters.forEach(m -> m.write(os));
+    }
+
+    private void writeActions(KaitaiOutputStream os) {
+        os.writeS4le(actions.size());
+        actions.forEach(a -> a.write(os));
+        extraActions.forEach(os::writeS4le);
     }
 
     public int getCounter() {

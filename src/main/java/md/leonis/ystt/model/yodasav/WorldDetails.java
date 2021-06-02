@@ -38,7 +38,15 @@ public class WorldDetails extends KaitaiStruct {
 
     @Override
     public void write(KaitaiOutputStream os) {
-        throw new UnsupportedOperationException();
+
+        os.writeS4le(x);
+        os.writeS4le(y);
+
+        if (x != -1 && y != -1) {
+            os.writeS2le(zoneId);
+            os.writeBool4le(visited);
+            room.write(os);
+        }
     }
 
     public int getX() {

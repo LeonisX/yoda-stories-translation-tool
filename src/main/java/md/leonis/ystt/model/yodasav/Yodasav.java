@@ -114,7 +114,44 @@ public class Yodasav extends KaitaiStruct {
 
     @Override
     public void write(KaitaiOutputStream os) {
-        throw new UnsupportedOperationException();
+
+        try {
+            os.writeBytesFull(magic);
+            os.writeU4le(seed);
+            os.writeU4le(planet);
+            os.writeU4le(onDagobah);
+            puzzles1.write(os);
+            puzzles2.write(os);
+            dagobah.write(os);
+            world.write(os);
+            os.writeU4le(inventoryCount);
+            inventory.forEach(os::writeU2le);
+            os.writeU2le(currentZoneId);
+            os.writeU4le(worldX);
+            os.writeU4le(worldY);
+            os.writeS2le(currentWeapon);
+            if (currentWeapon > 0) {
+                os.writeS2le(currentAmmo);
+            }
+            os.writeS2le(forceAmmo);
+            os.writeS2le(blasterAmmo);
+            os.writeS2le(blasterRifleAmmo);
+            os.writeU4le(zoneX);
+            os.writeU4le(zoneY);
+            os.writeS4le(damageTaken);
+            os.writeS4le(livesLost);
+            os.writeU4le(difficulty);
+            os.writeU4le(timeElapsed);
+            os.writeU2le(worldSize);
+            os.writeS2le(unknownCount);
+            os.writeS2le(unknownSum);
+            os.writeU4le(goalPuzzle);
+            os.writeU4le(goalPuzzleAgain);
+            os.writeS2le((short) 0);
+            os.saveAndClose();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public byte[] getMagic() {

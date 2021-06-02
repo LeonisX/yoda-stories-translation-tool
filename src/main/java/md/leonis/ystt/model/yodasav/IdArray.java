@@ -32,7 +32,8 @@ public class IdArray extends KaitaiStruct {
 
     @Override
     public void write(KaitaiOutputStream os) {
-        throw new UnsupportedOperationException();
+        os.writeU2le(count);
+        content.forEach(os::writeU2le);
     }
 
     public int getCount() {

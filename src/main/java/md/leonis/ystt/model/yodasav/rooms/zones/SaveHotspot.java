@@ -15,12 +15,13 @@ import md.leonis.ystt.model.yodesk.zones.HotspotType;
 public class SaveHotspot extends KaitaiStruct {
 
     private HotspotType type;
-    private int x;
-    private int y;
+    private short x;
+    private short y;
     // If disabled, hotspots can not be triggered. See instruction opcodes  called `enable_hotspot` and `disable_hotspot`.
     private boolean enabled;
-    private int argument;
+    private short argument;
 
+    private int enabledInt;
     private final transient Yodasav root;
     private final transient SaveZone parent;
 
@@ -33,7 +34,8 @@ public class SaveHotspot extends KaitaiStruct {
 
     private void _read() {
 
-        enabled = io.readU2le() != 0;
+        enabledInt = io.readU2le();
+        enabled = enabledInt != 0;
 		argument = io.readS2le();
 		type = HotspotType.byId(io.readU4le());
 		x = io.readS2le();
@@ -42,12 +44,11 @@ public class SaveHotspot extends KaitaiStruct {
 
     @Override
     public void write(KaitaiOutputStream os) {
-        throw new UnsupportedOperationException();
-        /*os.writeU4le(type.getId());
-        os.writeU2le(x);
-        os.writeU2le(y);
-        os.writeU2le(enabled);
-        os.writeU2le(argument);*/
+        os.writeU2le(enabledInt);
+        os.writeS2le(argument);
+        os.writeU4le(type.getId());
+        os.writeS2le(x);
+        os.writeS2le(y);
     }
 
     public HotspotType getType() {

@@ -100,6 +100,15 @@ public abstract class KaitaiOutputStream implements Closeable {
 
     abstract public void writeS8be(long value);
 
+    public void writeBool4be(boolean value) {
+
+        if (value) {
+            writeS4be(1);
+        } else {
+            writeS4be(0);
+        }
+    }
+
     //endregion
 
     //region Little-endian
@@ -110,6 +119,14 @@ public abstract class KaitaiOutputStream implements Closeable {
 
     abstract public void writeS8le(long value);
 
+    public void writeBool4le(boolean value) {
+
+        if (value) {
+            writeS4le(1);
+        } else {
+            writeS4le(0);
+        }
+    }
     //endregion
 
     //endregion

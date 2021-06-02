@@ -33,14 +33,14 @@ public class Room extends KaitaiStruct {
     private void readRoom(KaitaiInputStream io, short zoneId, boolean visited) {
 
         md.leonis.ystt.model.yodesk.zones.Zone gameZone = Yodasav.getYodesk().getZones().getZones().get(zoneId);
-
         zone = new SaveZone(io, this, root, gameZone, visited);
         rooms = new Rooms(io, this, root, zoneId, 0);
     }
 
     @Override
     public void write(KaitaiOutputStream os) {
-        throw new UnsupportedOperationException();
+        zone.write(os);
+        rooms.write(os);
     }
 
     public SaveZone getZone() {

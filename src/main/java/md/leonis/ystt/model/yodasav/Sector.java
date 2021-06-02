@@ -24,6 +24,7 @@ public class Sector extends KaitaiStruct {
     private int unknown;
     private boolean usedAlternateStrain;
 
+    private short alternateStrain;
     private final int x;
     private final int y;
 
@@ -40,6 +41,7 @@ public class Sector extends KaitaiStruct {
     }
 
     private void _read() {
+
         visited = io.readBool4le();
         solved1 = io.readBool4le();
         solved2 = io.readBool4le();
@@ -54,13 +56,28 @@ public class Sector extends KaitaiStruct {
         additionalGainItem = io.readS2le();
         npcId = io.readS2le();
         unknown = io.readS4le();
-        short alternateStrain = io.readS2le();
+        alternateStrain = io.readS2le();
         usedAlternateStrain = alternateStrain == 1; // alternateStrain == -1 ? null : alternateStrain == 1;
     }
 
     @Override
     public void write(KaitaiOutputStream os) {
-        throw new UnsupportedOperationException();
+
+        os.writeBool4le(visited);
+        os.writeBool4le(solved1);
+        os.writeBool4le(solved2);
+        os.writeBool4le(solved3);
+        os.writeBool4le(solved4);
+        os.writeS2le(zoneId);
+        os.writeS2le(puzzleIndex);
+        os.writeS2le(requiredItemId);
+        os.writeS2le(findItemId);
+        os.writeS2le(isGoal);
+        os.writeS2le(additionalRequiredItem);
+        os.writeS2le(additionalGainItem);
+        os.writeS2le(npcId);
+        os.writeS4le(unknown);
+        os.writeS2le(alternateStrain);
     }
 
     public boolean isVisited() {

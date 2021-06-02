@@ -7,7 +7,7 @@ import md.leonis.ystt.model.yodasav.Yodasav;
 
 public class SaveAction extends KaitaiStruct {
 
-    private boolean enabled;
+    private boolean disabled;
 
     private final transient Yodasav root;
     private final transient KaitaiStruct parent;
@@ -20,12 +20,12 @@ public class SaveAction extends KaitaiStruct {
     }
 
     private void _read() {
-        enabled = !io.readBool4le();
+        disabled = io.readBool4le();
     }
 
     @Override
     public void write(KaitaiOutputStream os) {
-        throw new UnsupportedOperationException();
+        os.writeBool4le(disabled);
     }
 
     public Yodasav getRoot() {
@@ -37,7 +37,7 @@ public class SaveAction extends KaitaiStruct {
         return parent;
     }
 
-    public boolean isEnabled() {
-        return enabled;
+    public boolean isDisabled() {
+        return disabled;
     }
 }

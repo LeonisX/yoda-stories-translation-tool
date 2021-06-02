@@ -88,7 +88,34 @@ public class SaveMonster extends KaitaiStruct {
 
     @Override
     public void write(KaitaiOutputStream os) {
-        throw new UnsupportedOperationException();
+
+        os.writeS2le(characterId);
+        os.writeS2le(x);
+        os.writeS2le(y);
+        os.writeS2le(damageTaken);
+        os.writeU4le(enabled ? 1 : 0);
+        os.writeS2le(field10);
+
+        os.writeS2le(bulletX);
+        os.writeS2le(bulletY);
+        os.writeS2le(currentFrame);
+        os.writeU4le(flag18 ? 1 : 0);
+        os.writeU4le(flag1c ? 1 : 0);
+        os.writeU4le(flag20 ? 1 : 0);
+        os.writeS2le(directionX);
+        os.writeS2le(directionY);
+
+        os.writeS2le(bulletOffset);
+        os.writeS2le(facingDirection);
+        os.writeS2le(field60);
+        os.writeS2le(loot);
+        os.writeU4le(flag2c ? 1 : 0);
+        os.writeU4le(flag34 ? 1 : 0);
+        os.writeU4le(hasItem ? 1 : 0);
+        os.writeS2le(coolDown);
+        os.writeS2le(preferred);
+
+        waypoints.forEach(w -> w.write(os));
     }
 
     public short getCharacterId() {

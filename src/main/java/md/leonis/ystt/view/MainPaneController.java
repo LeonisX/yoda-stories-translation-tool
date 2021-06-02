@@ -1388,6 +1388,8 @@ public class MainPaneController {
 
                 assert yodasav.getInventory().get(0)== 18;
 
+                yodasav.write(new ByteBufferKaitaiOutputStream("C:\\Users\\user\\Documents\\savegame2.wld"));
+
                 System.out.println(new Gson().toJson(yodasav));
 
                 usedTiles.clear();
