@@ -1,45 +1,25 @@
 package md.leonis.ystt.model.yodasav.rooms;
 
-import io.kaitai.struct.ByteBufferKaitaiInputStream;
 import io.kaitai.struct.KaitaiInputStream;
 import io.kaitai.struct.KaitaiOutputStream;
 import io.kaitai.struct.KaitaiStruct;
 import md.leonis.ystt.model.yodasav.Yodasav;
+import md.leonis.ystt.model.yodesk.zones.Hotspot;
 import md.leonis.ystt.model.yodesk.zones.HotspotType;
 
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Rooms extends KaitaiStruct {
 
-    private short zoneId;
-    private boolean visited;
-    private Room room;
-    private Rooms rooms;
+    private List<Room> rooms;
+    private Rooms roomz;
 
-    private int start;
+    private final transient short zoneId;
+    private final transient int start;
 
-    private final Yodasav root;
-    private final KaitaiStruct parent;
-
-    public static Rooms fromFile(String fileName) throws IOException {
-        return new Rooms(new ByteBufferKaitaiInputStream(fileName));
-    }
-
-    public Rooms(KaitaiInputStream io) {
-        this(io, null, null);
-    }
-
-    public Rooms(KaitaiInputStream io, KaitaiStruct parent) {
-        this(io, parent, null);
-    }
-
-    public Rooms(KaitaiInputStream io, KaitaiStruct parent, Yodasav root) {
-        super(io);
-        this.parent = parent;
-        this.root = root;
-        _read();
-    }
+    private final transient Yodasav root;
+    private final transient KaitaiStruct parent;
 
     public Rooms(KaitaiInputStream io, KaitaiStruct parent, Yodasav root, short zoneId, int start) {
         super(io);
@@ -51,58 +31,75 @@ public class Rooms extends KaitaiStruct {
     }
 
     private void _read() {
+        readRooms(io, zoneId, start);
+    }
+
+    private void readRooms(KaitaiInputStream io, short zoneId, int start) {
+
+        List<Rec> zoneIds = new ArrayList<>();
 
         md.leonis.ystt.model.yodesk.zones.Zone zone = Yodasav.getYodesk().getZones().getZones().get(zoneId);
-		List<md.leonis.ystt.model.yodesk.zones.Hotspot> hotspots = zone.getHotspots();
-		int hotspotsCount = hotspots.size(); // TODO
 
-        for (int i = start; i < hotspotsCount; i++) {
+        List<Hotspot> hotspots = zone.getHotspots();
+        int count = hotspots.size();
+
+        for (int i = start; i < count; i++) {
             start = i;
-            int door;
-            md.leonis.ystt.model.yodesk.zones.Hotspot hotspot = hotspots.get(i);
-            if (hotspot.getType().equals(HotspotType.DOOR_IN)) {
+            short door;
+            Hotspot hotspot = hotspots.get(i);
+            if (HotspotType.DOOR_IN.equals(hotspot.getType())) {
                 if (hotspot.getArgument() == -1) {
                     continue;
                 }
 
-                door = hotspot.getArgument();
+                door = (short) hotspot.getArgument();
             } else continue;
 
-			zoneId = io.readS2le();
-			visited = io.readBool4le();
+            int zoneId2 = io.readS2le();
+            boolean visited2 = io.readBool4le();
 
-            /*assert(
-                    !zoneId || zoneID === door,
-            "Expected door to lead to zone {} instead of {}",
-                    zoneID,
-                    door
-			);*/
-
-            room = new Room(io, this, root, zoneId, visited);
+            if (zoneId2 != door) {
+                System.out.printf("Expected door to lead to zone %s instead of %s%n", zoneId2, door);
+            }
+            zoneIds.add(new Rec(door, visited2));
             break;
         }
 
-        if (start + 1 < hotspotsCount) {
-            rooms = new Rooms(io, this, root, zoneId, start + 1);
+        rooms = new ArrayList<>();
+
+        for (Rec rec : zoneIds) {
+            rooms.add(new Room(io, this, root, rec.zoneId, rec.visited));
         }
 
+        if (start + 1 < count) {
+            roomz = new Rooms(io, this, root, zoneId, start + 1);
+        }
     }
+
+    static class Rec {
+
+        private final short zoneId;
+        private final boolean visited;
+
+        public Rec(short zoneId, boolean visited) {
+            this.zoneId = zoneId;
+            this.visited = visited;
+        }
+    }
+
+
 
     @Override
     public void write(KaitaiOutputStream os) {
         throw new UnsupportedOperationException();
     }
 
-    public short getZoneId() {
-        return zoneId;
-    }
-
-    public Room getRoom() {
-        return room;
-    }
-
-    public Rooms getRooms() {
+    public List<Room> getRooms() {
         return rooms;
+    }
+
+    public Rooms getRoomz() {
+        return roomz;
     }
 
     public int getStart() {

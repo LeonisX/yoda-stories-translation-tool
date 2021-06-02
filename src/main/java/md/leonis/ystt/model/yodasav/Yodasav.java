@@ -44,10 +44,10 @@ public class Yodasav extends KaitaiStruct {
     private long goalPuzzle;
     private long goalPuzzleAgain;
 
-    private static Yodesk yodesk;
+    private transient static Yodesk yodesk;
 
-    private final Yodasav root;
-    private final KaitaiStruct parent;
+    private final transient Yodasav root;
+    private final transient KaitaiStruct parent;
 
     public static Yodasav fromFile(String fileName, Yodesk yodesk) throws IOException {
         Yodasav.yodesk = yodesk;

@@ -1,13 +1,10 @@
 package md.leonis.ystt.model.yodasav.rooms.zones;
 
-import io.kaitai.struct.ByteBufferKaitaiInputStream;
 import io.kaitai.struct.KaitaiInputStream;
 import io.kaitai.struct.KaitaiOutputStream;
 import io.kaitai.struct.KaitaiStruct;
 import md.leonis.ystt.model.yodasav.Yodasav;
 import md.leonis.ystt.model.yodesk.zones.HotspotType;
-
-import java.io.IOException;
 
 /**
  * In addition to actions some puzzles and events are triggered by
@@ -26,18 +23,6 @@ public class SaveHotspot extends KaitaiStruct {
 
     private final transient Yodasav root;
     private final transient SaveZone parent;
-
-    public static SaveHotspot fromFile(String fileName) throws IOException {
-        return new SaveHotspot(new ByteBufferKaitaiInputStream(fileName));
-    }
-
-    public SaveHotspot(KaitaiInputStream io) {
-        this(io, null, null);
-    }
-
-    public SaveHotspot(KaitaiInputStream io, SaveZone parent) {
-        this(io, parent, null);
-    }
 
     public SaveHotspot(KaitaiInputStream io, SaveZone parent, Yodasav root) {
         super(io);

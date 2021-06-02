@@ -1,12 +1,9 @@
 package md.leonis.ystt.model.yodasav.rooms.zones;
 
-import io.kaitai.struct.ByteBufferKaitaiInputStream;
 import io.kaitai.struct.KaitaiInputStream;
 import io.kaitai.struct.KaitaiOutputStream;
 import io.kaitai.struct.KaitaiStruct;
 import md.leonis.ystt.model.yodasav.Yodasav;
-
-import java.io.IOException;
 
 public class SaveWaypoint extends KaitaiStruct {
 
@@ -15,18 +12,6 @@ public class SaveWaypoint extends KaitaiStruct {
 
     private final transient Yodasav root;
     private final transient SaveMonster parent;
-
-    public static SaveWaypoint fromFile(String fileName) throws IOException {
-        return new SaveWaypoint(new ByteBufferKaitaiInputStream(fileName));
-    }
-
-    public SaveWaypoint(KaitaiInputStream io) {
-        this(io, null, null);
-    }
-
-    public SaveWaypoint(KaitaiInputStream io, SaveMonster parent) {
-        this(io, parent, null);
-    }
 
     public SaveWaypoint(KaitaiInputStream io, SaveMonster parent, Yodasav root) {
         super(io);

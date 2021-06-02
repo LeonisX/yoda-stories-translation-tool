@@ -1,12 +1,10 @@
 package md.leonis.ystt.model.yodasav.rooms.zones;
 
-import io.kaitai.struct.ByteBufferKaitaiInputStream;
 import io.kaitai.struct.KaitaiInputStream;
 import io.kaitai.struct.KaitaiOutputStream;
 import io.kaitai.struct.KaitaiStruct;
 import md.leonis.ystt.model.yodasav.Yodasav;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,25 +33,15 @@ public class SaveMonster extends KaitaiStruct {
     private boolean flag2c;
     private boolean flag34;
     private boolean hasItem;
-    private short cooldown;
+    private short coolDown;
     private short preferred;
 
     private List<SaveWaypoint> waypoints;
 
-    private final Yodasav root;
-    private final KaitaiStruct parent;
+    private int id;
 
-    public static SaveMonster fromFile(String fileName) throws IOException {
-        return new SaveMonster(new ByteBufferKaitaiInputStream(fileName));
-    }
-
-    public SaveMonster(KaitaiInputStream io) {
-        this(io, null, null);
-    }
-
-    public SaveMonster(KaitaiInputStream io, KaitaiStruct parent) {
-        this(io, parent, null);
-    }
+    private final transient Yodasav root;
+    private final transient KaitaiStruct parent;
 
     public SaveMonster(KaitaiInputStream io, KaitaiStruct parent, Yodasav root) {
         super(io);
@@ -87,13 +75,15 @@ public class SaveMonster extends KaitaiStruct {
         flag2c = io.readU4le() != 0;
         flag34 = io.readU4le() != 0;
         hasItem = io.readU4le() != 0;
-        cooldown = io.readS2le();
+        coolDown = io.readS2le();
         preferred = io.readS2le();
 
         waypoints = new ArrayList<>(4);
         for (int i = 0; i < 4; i++) {
             waypoints.add(new SaveWaypoint(io, this, root));
         }
+
+        // monster.face = this._assets.get(Char, characterId, NullIfMissing);
     }
 
     @Override
@@ -185,8 +175,8 @@ public class SaveMonster extends KaitaiStruct {
         return hasItem;
     }
 
-    public short getCooldown() {
-        return cooldown;
+    public short getCoolDown() {
+        return coolDown;
     }
 
     public short getPreferred() {
@@ -204,5 +194,14 @@ public class SaveMonster extends KaitaiStruct {
     @Override
     public KaitaiStruct getParent() {
         return parent;
+    }
+
+    //DO we need it???
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getId() {
+        return id;
     }
 }

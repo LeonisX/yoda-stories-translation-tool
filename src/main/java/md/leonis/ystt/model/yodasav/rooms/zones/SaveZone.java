@@ -1,12 +1,10 @@
 package md.leonis.ystt.model.yodasav.rooms.zones;
 
-import io.kaitai.struct.ByteBufferKaitaiInputStream;
 import io.kaitai.struct.KaitaiInputStream;
 import io.kaitai.struct.KaitaiOutputStream;
 import io.kaitai.struct.KaitaiStruct;
 import md.leonis.ystt.model.yodasav.Yodasav;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,41 +19,24 @@ public class SaveZone extends KaitaiStruct {
     private short sectorCounter;
     private short planet;
 
+    private boolean visited;
+
     private List<Short> tileIds;
 
     private List<SaveHotspot> hotspots;
     private List<SaveMonster> monsters;
     private List<SaveAction> actions;
 
-    private short zoneId;
-    private boolean visited;
+    private final transient md.leonis.ystt.model.yodesk.zones.Zone zone;
+    private final transient boolean visitedArg;
 
-    private final Yodasav root;
-    private final KaitaiStruct parent;
+    private final transient Yodasav root;
+    private final transient KaitaiStruct parent;
 
-    public static SaveZone fromFile(String fileName) throws IOException {
-        return new SaveZone(new ByteBufferKaitaiInputStream(fileName));
-    }
-
-    public SaveZone(KaitaiInputStream io) {
-        this(io, null, null);
-    }
-
-    public SaveZone(KaitaiInputStream io, KaitaiStruct parent) {
-        this(io, parent, null);
-    }
-
-    public SaveZone(KaitaiInputStream io, KaitaiStruct parent, Yodasav root) {
+    public SaveZone(KaitaiInputStream io, KaitaiStruct parent, Yodasav root, md.leonis.ystt.model.yodesk.zones.Zone zone, boolean visited) {
         super(io);
-        this.parent = parent;
-        this.root = root;
-        _read();
-    }
-
-    public SaveZone(KaitaiInputStream io, KaitaiStruct parent, Yodasav root, short zoneId, boolean visited) {
-        super(io);
-        this.zoneId = zoneId;
-        this.visited = visited;
+        this.zone = zone;
+        this.visitedArg = visited;
         this.parent = parent;
         this.root = root;
         _read();
@@ -63,9 +44,7 @@ public class SaveZone extends KaitaiStruct {
 
     private void _read() {
 
-        md.leonis.ystt.model.yodesk.zones.Zone zone = Yodasav.getYodesk().getZones().getZones().get(zoneId);
-
-        if (visited) {
+        if (visitedArg) {
             counter = io.readS4le();
             random = io.readS4le();
 
@@ -74,10 +53,7 @@ public class SaveZone extends KaitaiStruct {
 
             sectorCounter = io.readS2le();
             planet = io.readS2le();
-
-            if (zoneId > 658) {
-                System.out.println("sssss");
-            }
+            // console.assert(planet === zone.planet.rawValue);
 
 			int tileCount = zone.getWidth() * zone.getHeight() * 3;
             tileIds = new ArrayList<>();
@@ -86,29 +62,53 @@ public class SaveZone extends KaitaiStruct {
             }
         }
 
-        visited = io.readBool4le() || visited;
+        visited = io.readBool4le();
+        readHotspots();
+
+        if (visited || visitedArg) {
+            readMonsters();
+            readActions();
+        }
+    }
+
+    private void readHotspots() {
+
         int hotSpotsCount = io.readS4le();
+        assert hotSpotsCount >= 0;
+
+        /*if (count !== zone.hotspots.length) {
+            zone.hotspots = Array.Repeat(new Hotspot(), count);
+        }*/
         hotspots = new ArrayList<>();
         for (int i = 0; i < hotSpotsCount; i++) {
             hotspots.add(new SaveHotspot(io, this, root));
         }
+    }
 
-        if (visited) {
-            int monstersCount = io.readS4le();
-            monsters = new ArrayList<>();
-            for (int i = 0; i < monstersCount; i++) {
-                monsters.add(new SaveMonster(io, this, root));
+    private void readMonsters() {
+        int monstersCount = io.readS4le();
+        assert monstersCount >= 0;
+        monsters = new ArrayList<>();
+        for (int i = 0; i < monstersCount; i++) {
+            SaveMonster monster = new SaveMonster(io, this, root);
+            monster.setId(i);
+            monsters.add(monster);
+        }
+    }
+
+    private void readActions() {
+        int actionsCount = io.readS4le();
+        assert actionsCount > 0;
+        actions = new ArrayList<>();
+        for (int i = 0; i < actionsCount; i++) {
+            actions.add(new SaveAction(io, this, root));
+        }
+        for (int i = zone.getActions().size(); i < actionsCount; i++) {
+            if (i == zone.getActions().size()) {
+                System.out.printf("Zone #%s has additional actions%n", zone.getIndex());
             }
-            int actionsCount = io.readS4le();
-            assert actionsCount > 0;
-            actions = new ArrayList<>();
-            for (int i = 0; i < actionsCount; i++) {
-                actions.add(new SaveAction(io, this, root));
-            }
-            for (int i = 0; i < zone.getActions().size(); i++) {
-                int n = io.readS4le(); //TODO
-                System.out.println(n);
-            }
+            int extraAction = io.readS4le();
+            System.out.println("extraAction: " + extraAction);
         }
     }
 
@@ -157,10 +157,6 @@ public class SaveZone extends KaitaiStruct {
         return actions;
     }
 
-    public short getZoneId() {
-        return zoneId;
-    }
-
     public boolean isVisited() {
         return visited;
     }
@@ -173,6 +169,4 @@ public class SaveZone extends KaitaiStruct {
     public KaitaiStruct getParent() {
         return parent;
     }
-
-
 }

@@ -33,6 +33,7 @@ import md.leonis.ystt.model.docx.PropertyName;
 import md.leonis.ystt.model.docx.StringImagesRecord;
 import md.leonis.ystt.model.docx.StringRecord;
 import md.leonis.ystt.model.docx.WordRecord;
+import md.leonis.ystt.model.yodasav.Yodasav;
 import md.leonis.ystt.model.yodesk.CatalogEntry;
 import md.leonis.ystt.model.yodesk.Yodesk;
 import md.leonis.ystt.model.yodesk.characters.Character;
@@ -1383,7 +1384,11 @@ public class MainPaneController {
                 dtaFile = IOUtils.getDtaPath(file.toPath().getParent());
                 loadFileToArray(file);
                 yodesk = Yodesk.fromFile(dtaFile.toString(), sourceCharset.getCode());
-                //Yodasav yodasav = Yodasav.fromFile("C:\\Users\\user\\Documents\\savegame.wld", yodesk);
+                Yodasav yodasav = Yodasav.fromFile("C:\\Users\\user\\Documents\\savegame.wld", yodesk);
+
+                assert yodasav.getInventory().get(0)== 18;
+
+                System.out.println(new Gson().toJson(yodasav));
 
                 usedTiles.clear();
                 JavaFxUtils.showMainPanel();
@@ -1722,7 +1727,9 @@ public class MainPaneController {
                 if (groupByAttributesFilenamesCheckBox.isSelected()) {
                     IOUtils.createDirectories(attrPath);
                 }
-                IOUtils.createDirectories(genPath);
+                if (null != yodesk.getTgen()) {
+                    IOUtils.createDirectories(genPath);
+                }
 
                 Map<String, List<Integer>> byAttr = new HashMap<>();
 
@@ -1747,12 +1754,14 @@ public class MainPaneController {
                     }
 
                     //TGEN
-                    int ii = i;
-                    String hex = String.format("%04X", yodesk.getTgen().getGenders().get(i).getId());
-                    String name = yodesk.getTileNames().getFilteredNames().stream().filter(n -> n.getTileId() == ii).map(TileName::getName).findFirst().orElse("");
-                    name = name.isEmpty() ? name : " " + name;
-                    IOUtils.createDirectories(genPath.resolve(hex));
-                    BMPWriter.write(getTile(i, icm), genPath.resolve(hex).resolve(String.format("%04d", i) + name + E_BMP));
+                    if (null != yodesk.getTgen()) {
+                        int ii = i;
+                        String hex = String.format("%04X", yodesk.getTgen().getGenders().get(i).getId());
+                        String name = yodesk.getTileNames().getFilteredNames().stream().filter(n -> n.getTileId() == ii).map(TileName::getName).findFirst().orElse("");
+                        name = name.isEmpty() ? name : " " + name;
+                        IOUtils.createDirectories(genPath.resolve(hex));
+                        BMPWriter.write(getTile(i, icm), genPath.resolve(hex).resolve(String.format("%04d", i) + name + E_BMP));
+                    }
                 }
 
                 if (groupByAttributesFilenamesCheckBox.isSelected()) {

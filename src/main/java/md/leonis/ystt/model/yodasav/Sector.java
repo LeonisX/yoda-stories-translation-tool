@@ -1,11 +1,8 @@
 package md.leonis.ystt.model.yodasav;
 
-import io.kaitai.struct.ByteBufferKaitaiInputStream;
 import io.kaitai.struct.KaitaiInputStream;
 import io.kaitai.struct.KaitaiOutputStream;
 import io.kaitai.struct.KaitaiStruct;
-
-import java.io.IOException;
 
 public class Sector extends KaitaiStruct {
 
@@ -27,25 +24,18 @@ public class Sector extends KaitaiStruct {
     private int unknown;
     private boolean usedAlternateStrain;
 
-    private final Yodasav root;
-    private final KaitaiStruct parent;
+    private final int x;
+    private final int y;
 
-    public static Sector fromFile(String fileName) throws IOException {
-        return new Sector(new ByteBufferKaitaiInputStream(fileName));
-    }
+    private final transient Yodasav root;
+    private final transient KaitaiStruct parent;
 
-    public Sector(KaitaiInputStream io) {
-        this(io, null, null);
-    }
-
-    public Sector(KaitaiInputStream io, KaitaiStruct parent) {
-        this(io, parent, null);
-    }
-
-    public Sector(KaitaiInputStream io, KaitaiStruct parent, Yodasav root) {
+    public Sector(KaitaiInputStream io, KaitaiStruct parent, Yodasav root, int x, int y) {
         super(io);
         this.parent = parent;
         this.root = root;
+        this.x = x;
+        this.y = y;
         _read();
     }
 
@@ -131,6 +121,14 @@ public class Sector extends KaitaiStruct {
 
     public boolean isUsedAlternateStrain() {
         return usedAlternateStrain;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
     }
 
     public Yodasav getRoot() {

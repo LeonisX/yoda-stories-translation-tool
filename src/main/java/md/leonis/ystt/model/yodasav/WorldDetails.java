@@ -1,12 +1,9 @@
 package md.leonis.ystt.model.yodasav;
 
-import io.kaitai.struct.ByteBufferKaitaiInputStream;
 import io.kaitai.struct.KaitaiInputStream;
 import io.kaitai.struct.KaitaiOutputStream;
 import io.kaitai.struct.KaitaiStruct;
 import md.leonis.ystt.model.yodasav.rooms.Room;
-
-import java.io.IOException;
 
 public class WorldDetails extends KaitaiStruct {
 
@@ -16,20 +13,8 @@ public class WorldDetails extends KaitaiStruct {
     private boolean visited;
     private Room room;
 
-    private final Yodasav root;
-    private final KaitaiStruct parent;
-
-    public static WorldDetails fromFile(String fileName) throws IOException {
-        return new WorldDetails(new ByteBufferKaitaiInputStream(fileName));
-    }
-
-    public WorldDetails(KaitaiInputStream io) {
-        this(io, null, null);
-    }
-
-    public WorldDetails(KaitaiInputStream io, KaitaiStruct parent) {
-        this(io, parent, null);
-    }
+    private final transient Yodasav root;
+    private final transient KaitaiStruct parent;
 
     public WorldDetails(KaitaiInputStream io, KaitaiStruct parent, Yodasav root) {
         super(io);
@@ -74,6 +59,26 @@ public class WorldDetails extends KaitaiStruct {
 
     public Room getRoom() {
         return room;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public void setY(int y) {
+        this.y = y;
+    }
+
+    public void setZoneId(short zoneId) {
+        this.zoneId = zoneId;
+    }
+
+    public void setVisited(boolean visited) {
+        this.visited = visited;
+    }
+
+    public void setRoom(Room room) {
+        this.room = room;
     }
 
     public Yodasav getRoot() {
