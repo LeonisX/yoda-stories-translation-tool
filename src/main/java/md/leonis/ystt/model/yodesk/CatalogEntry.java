@@ -143,7 +143,6 @@ public class CatalogEntry extends KaitaiStruct {
             bytes = io.readBytes(fullSize);
 
         } catch (IllegalArgumentException e) {
-            //TODO showMessage("Unknown section: 0x" + intToHex(GetPosition(), 4) + ": \"" + s + '"');
             section = Section.UNKN;
             size = io.readU4le();
             bytes = io.readBytes(fullSize);

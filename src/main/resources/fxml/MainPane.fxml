@@ -343,11 +343,13 @@
                                           mnemonicParsing="false" selected="true" text="HEX filenames"/>
                                 <CheckBox fx:id="groupByAttributesFilenamesCheckBox" layoutX="26.0" layoutY="122.0"
                                           mnemonicParsing="false" selected="true" text="Group by attributes"/>
-                                <Button fx:id="saveTilesToOneFile" layoutX="10.0" layoutY="161.0"
+                                <CheckBox fx:id="groupByGenderCheckBox" layoutX="26.0" layoutY="146.0"
+                                          mnemonicParsing="false" selected="true" text="Group by gender"/>
+                                <Button fx:id="saveTilesToOneFile" layoutX="10.0" layoutY="185.0"
                                         mnemonicParsing="false" onAction="#saveTilesToOneFileClick"
                                         text="Save tiles to one file"/>
-                                <Label layoutX="12.0" layoutY="195.0" text="Tiles in a row:"/>
-                                <TextField fx:id="tilesInARowTextField" layoutX="96.0" layoutY="191.0" prefHeight="25.0"
+                                <Label layoutX="12.0" layoutY="219.0" text="Tiles in a row:"/>
+                                <TextField fx:id="tilesInARowTextField" layoutX="96.0" layoutY="215.0" prefHeight="25.0"
                                            prefWidth="39.0" text="16"/>
                                 <Rectangle fill="TRANSPARENT" height="288.0" layoutX="720.0" layoutY="14.0"
                                            smooth="false" stroke="BLACK" strokeType="OUTSIDE" width="288.0"/>

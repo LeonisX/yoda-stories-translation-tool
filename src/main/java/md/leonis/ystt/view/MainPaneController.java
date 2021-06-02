@@ -33,14 +33,12 @@ import md.leonis.ystt.model.docx.PropertyName;
 import md.leonis.ystt.model.docx.StringImagesRecord;
 import md.leonis.ystt.model.docx.StringRecord;
 import md.leonis.ystt.model.docx.WordRecord;
-import md.leonis.ystt.model.yodasav.Yodasav;
 import md.leonis.ystt.model.yodesk.CatalogEntry;
 import md.leonis.ystt.model.yodesk.Yodesk;
 import md.leonis.ystt.model.yodesk.characters.Character;
 import md.leonis.ystt.model.yodesk.characters.CharacterType;
 import md.leonis.ystt.model.yodesk.puzzles.PrefixedStr;
 import md.leonis.ystt.model.yodesk.puzzles.Puzzle;
-import md.leonis.ystt.model.yodesk.puzzles.PuzzleItemClass;
 import md.leonis.ystt.model.yodesk.puzzles.StringMeaning;
 import md.leonis.ystt.model.yodesk.tiles.TileGender;
 import md.leonis.ystt.model.yodesk.tiles.TileName;
@@ -137,6 +135,7 @@ public class MainPaneController {
     public CheckBox decimalFilenamesCheckBox;
     public CheckBox hexFilenamesCheckBox;
     public CheckBox groupByAttributesFilenamesCheckBox;
+    public CheckBox groupByGenderCheckBox;
     public Button saveTilesToOneFile;
     public FlowPane tilesFlowPane;
     public TextField tilesInARowTextField;
@@ -1384,13 +1383,6 @@ public class MainPaneController {
                 dtaFile = IOUtils.getDtaPath(file.toPath().getParent());
                 loadFileToArray(file);
                 yodesk = Yodesk.fromFile(dtaFile.toString(), sourceCharset.getCode());
-                Yodasav yodasav = Yodasav.fromFile("C:\\Users\\user\\Documents\\savegame.wld", yodesk);
-
-                assert yodasav.getInventory().get(0)== 18;
-
-                yodasav.write(new ByteBufferKaitaiOutputStream("C:\\Users\\user\\Documents\\savegame2.wld"));
-
-                System.out.println(new Gson().toJson(yodasav));
 
                 usedTiles.clear();
                 JavaFxUtils.showMainPanel();
@@ -1483,7 +1475,7 @@ public class MainPaneController {
         scrollBarLeftMap = exeDump.findValueAddressByMask("C78294320000 ????0000 B8FC00"); // 496
         scrollBarRightMap = exeDump.findValueAddressByMask("C7829C320000 ????0000 C782A4"); // 512
 
-        //TODO Spa, may be and Ger - no such code. Investigate function with 1036
+        //TODO Spa and Ger - no such code. Investigate function with 1036
         toolTipMap = exeDump.findValueAddressByMask("4F4433F6 ?????????? 8BCF8947"); // C2039B148D     833284150413
     }
 
@@ -1649,7 +1641,6 @@ public class MainPaneController {
 
                 changesCount = 0;
 
-                //TODO notify if not indexed
                 WritableImage image = new WritableImage(titleImage.getWidth(), titleImage.getHeight());
                 SwingFXUtils.toFXImage(titleImage.getImage(), image);
                 titleScreenImageView.setImage(image);
@@ -1706,84 +1697,99 @@ public class MainPaneController {
         });
     }
 
-    //TODO need refactor
     public void saveTilesToSeparateFilesClick() {
-
-        Log.debug("Saving tiles...");
 
         runInBackground(() -> {
             try {
-                Path tilesPath = opath.resolve("Tiles");
-                Path hexPath = opath.resolve("TilesHex");
-                Path attrPath = opath.resolve("TilesByAttr");
-                Path attrNamesPath = opath.resolve("TilesByAttrName");
-                Path genPath = opath.resolve("TilesByGen");
-
+                Log.debug("Saving tiles...");
                 IOUtils.createDirectories(opath);
+
                 if (decimalFilenamesCheckBox.isSelected()) {
-                    IOUtils.createDirectories(tilesPath);
+                    saveTiles();
                 }
                 if (hexFilenamesCheckBox.isSelected()) {
-                    IOUtils.createDirectories(hexPath);
+                    saveTilesHex();
                 }
                 if (groupByAttributesFilenamesCheckBox.isSelected()) {
-                    IOUtils.createDirectories(attrPath);
+                    saveTilesByAttr();
                 }
-                if (null != yodesk.getTgen()) {
-                    IOUtils.createDirectories(genPath);
-                }
-
-                Map<String, List<Integer>> byAttr = new HashMap<>();
-
-                for (int i = 0; i < yodesk.getTiles().getTiles().size(); i++) {
-
-                    if (decimalFilenamesCheckBox.isSelected()) {
-                        Path path = tilesPath.resolve(String.format("%04d", i) + E_BMP);
-                        BMPWriter.write(getTile(i, icm), path);
-
-                        //TODO may be use PNG. Sample code
-                        ImageIO.write(getTile(i, icm), "PNG", tilesPath.resolve(String.format("%04d", i) + ".png").toFile());
-                    }
-
-                    if (groupByAttributesFilenamesCheckBox.isSelected()) {
-                        String attrHex = yodesk.getTiles().getTiles().get(i).getAttributesBinaryString();
-                        List<Integer> value = byAttr.computeIfAbsent(attrHex, k -> new ArrayList<>());
-                        value.add(i);
-                    }
-
-                    if (hexFilenamesCheckBox.isSelected()) {
-                        BMPWriter.write(getTile(i, icm), hexPath.resolve(String.format("%04X", i) + E_BMP));
-                    }
-
-                    //TGEN
-                    if (null != yodesk.getTgen()) {
-                        int ii = i;
-                        String hex = String.format("%04X", yodesk.getTgen().getGenders().get(i).getId());
-                        String name = yodesk.getTileNames().getFilteredNames().stream().filter(n -> n.getTileId() == ii).map(TileName::getName).findFirst().orElse("");
-                        name = name.isEmpty() ? name : " " + name;
-                        IOUtils.createDirectories(genPath.resolve(hex));
-                        BMPWriter.write(getTile(i, icm), genPath.resolve(hex).resolve(String.format("%04d", i) + name + E_BMP));
-                    }
-                }
-
-                if (groupByAttributesFilenamesCheckBox.isSelected()) {
-                    for (Map.Entry<String, List<Integer>> e : byAttr.entrySet()) {
-                        Path path = attrPath.resolve(e.getKey() + " - " + getTileName(e.getKey()) + " (" + e.getValue().size() + ")");
-                        IOUtils.createDirectories(path);
-                        for (Integer i : e.getValue()) {
-                            BMPWriter.write(getTile(i, icm), path.resolve(String.format("%04d", i) + E_BMP));
-                        }
-                        path = attrNamesPath.resolve(getTileName(e.getKey()) + " (" + e.getValue().size() + ")");
-                        IOUtils.createDirectories(path);
-                        for (Integer i : e.getValue()) {
-                            BMPWriter.write(getTile(i, icm), path.resolve(String.format("%04d", i) + E_BMP));
-                        }
-                    }
+                if (groupByGenderCheckBox.isSelected()) {
+                    saveTilesByGender();
                 }
             } catch (Exception e) {
                 Log.error("Error saving tiles to separate files: " + e.getMessage());
             }
         }, Log::appendOk);
+    }
+
+    private void saveTiles() throws IOException {
+
+        Path tilesPath = opath.resolve("Tiles");
+        IOUtils.createDirectories(tilesPath);
+        for (int i = 0; i < yodesk.getTiles().getTiles().size(); i++) {
+            Path path = tilesPath.resolve(String.format("%04d", i) + E_BMP);
+            BMPWriter.write(getTile(i, icm), path);
+
+            //TODO may be use PNG. Sample code
+            ImageIO.write(getTile(i, icm), "PNG", tilesPath.resolve(String.format("%04d", i) + ".png").toFile());
+        }
+    }
+
+    private void saveTilesHex() throws IOException {
+
+        Path hexPath = opath.resolve("TilesHex");
+        IOUtils.createDirectories(hexPath);
+        for (int i = 0; i < yodesk.getTiles().getTiles().size(); i++) {
+            BMPWriter.write(getTile(i, icm), hexPath.resolve(String.format("%04X", i) + E_BMP));
+        }
+    }
+
+    private void saveTilesByAttr() throws IOException {
+
+        Path attrPath = opath.resolve("TilesByAttr");
+        Path attrNamesPath = opath.resolve("TilesByAttrName");
+        IOUtils.createDirectories(attrPath);
+        IOUtils.createDirectories(attrNamesPath);
+        Map<String, List<Integer>> byAttr = new HashMap<>();
+        for (int i = 0; i < yodesk.getTiles().getTiles().size(); i++) {
+            String attrHex = yodesk.getTiles().getTiles().get(i).getAttributesBinaryString();
+            List<Integer> value = byAttr.computeIfAbsent(attrHex, k -> new ArrayList<>());
+            value.add(i);
+        }
+        for (Map.Entry<String, List<Integer>> e : byAttr.entrySet()) {
+            Path path = attrPath.resolve(e.getKey() + " - " + getTileName(e.getKey()) + " (" + e.getValue().size() + ")");
+            IOUtils.createDirectories(path);
+            for (Integer i : e.getValue()) {
+                BMPWriter.write(getTile(i, icm), path.resolve(String.format("%04d", i) + E_BMP));
+            }
+            path = attrNamesPath.resolve(getTileName(e.getKey()) + " (" + e.getValue().size() + ")");
+            IOUtils.createDirectories(path);
+            for (Integer i : e.getValue()) {
+                BMPWriter.write(getTile(i, icm), path.resolve(String.format("%04d", i) + E_BMP));
+            }
+        }
+    }
+
+    private void saveTilesByGender() throws IOException {
+
+        Path genPath = opath.resolve("TilesByGen");
+
+        if (null != yodesk.getTgen()) {
+            IOUtils.createDirectories(genPath);
+        }
+
+        for (int i = 0; i < yodesk.getTiles().getTiles().size(); i++) {
+
+            //TGEN
+            if (null != yodesk.getTgen()) {
+                int ii = i;
+                String hex = String.format("%04X", yodesk.getTgen().getGenders().get(i).getId());
+                String name = yodesk.getTileNames().getFilteredNames().stream().filter(n -> n.getTileId() == ii).map(TileName::getName).findFirst().orElse("");
+                name = name.isEmpty() ? name : " " + name;
+                IOUtils.createDirectories(genPath.resolve(hex));
+                BMPWriter.write(getTile(i, icm), genPath.resolve(hex).resolve(String.format("%04d", i) + name + E_BMP));
+            }
+        }
     }
 
     private String getTileName(String byteString) {
@@ -2251,40 +2257,11 @@ public class MainPaneController {
                 Log.debug("Save puzzles text to file: " + path);
                 Log.debug("Total count: " + yodesk.getPuzzles().getPuzzles().size());
 
-                //TODO rewrite code after tests
                 if (!disableNonTranslationMenuItem.isSelected()) {
                     List<String> phrases = yodesk.getPuzzles().getFilteredPuzzles().stream()
                             .flatMap(p -> p.getStrings().stream().filter(s -> !s.isEmpty())).map(s -> s.replace("\r\n", "\\r\\n")).collect(Collectors.toList());
                     IOUtils.saveTextFile(phrases, opath.resolve("puzzles" + E_TXT));
                 }
-
-                Map<Long, List<String>> byType = yodesk.getPuzzles().getFilteredPuzzles().stream().filter(p -> p.getType() != null).collect(Collectors.groupingBy(Puzzle::getType, Collectors.mapping(p -> Long.toHexString(p.getIndex()), Collectors.toList())));
-
-                Map<PuzzleItemClass, List<String>> byItemClass1 = yodesk.getPuzzles().getFilteredPuzzles().stream().filter(p -> p.getItem1Class() != null).collect(Collectors.groupingBy(Puzzle::getItem1Class, Collectors.mapping(p -> Long.toHexString(p.getIndex()), Collectors.toList())));
-
-                Map<PuzzleItemClass, List<String>> byItemClass2 = yodesk.getPuzzles().getFilteredPuzzles().stream().filter(p -> p.getItem2Class() != null && p.getItem2() != 0).collect(Collectors.groupingBy(Puzzle::getItem2Class, Collectors.mapping(p -> Long.toHexString(p.getIndex()), Collectors.toList())));
-
-                Map<Integer, List<String>> byUnnamed6 = yodesk.getPuzzles().getFilteredPuzzles().stream().filter(p -> p.get_unnamed6() != null).collect(Collectors.groupingBy(Puzzle::get_unnamed6, Collectors.mapping(p -> Integer.toHexString(p.getIndex()), Collectors.toList())));
-
-                //TODO dump groups
-                System.out.println(byType);
-                System.out.println(byItemClass1); // Item1 type
-                System.out.println(byItemClass2); // Item2 type
-                System.out.println(byUnnamed6); // Flag??
-
-                List<Integer> items1 = yodesk.getPuzzles().getFilteredPuzzles().stream().map(Puzzle::getItem1).distinct().filter(i -> i <= yodesk.getTiles().getTiles().size()).sorted().collect(Collectors.toList());
-                List<Integer> items2 = yodesk.getPuzzles().getFilteredPuzzles().stream().map(Puzzle::getItem2).distinct().filter(i -> i <= yodesk.getTiles().getTiles().size()).sorted().collect(Collectors.toList());
-
-                List<Puzzle> puzzles1 = yodesk.getPuzzles().getFilteredPuzzles().stream().filter(i -> i.getItem1() > yodesk.getTiles().getTiles().size()).sorted(Comparator.comparing(Puzzle::getItem1)).collect(Collectors.toList());
-                List<Puzzle> puzzles2 = yodesk.getPuzzles().getFilteredPuzzles().stream().filter(i -> i.getItem2() > yodesk.getTiles().getTiles().size()).sorted(Comparator.comparing(Puzzle::getItem2)).collect(Collectors.toList());
-
-
-                //TODO ???
-                System.out.println(items1);
-                System.out.println(items2);
-
-                System.out.println(puzzles1);
-                System.out.println(puzzles2);
 
                 WordUtils.savePuzzles(dtaCrc32, path);
                 Log.appendOk();
@@ -2545,13 +2522,13 @@ public class MainPaneController {
         return entry.getValue();
     }
 
-    public static String intToHex(int value, int size) { //TODO delete
+    public static String intToHex(int value, int size) {
 
         String result = Integer.toHexString(value).toUpperCase();
         return leftPad(result, size, "0");
     }
 
-    public String longToHex(long value, int size) { //TODO delete
+    public String longToHex(long value, int size) {
 
         String result = Long.toHexString(value).toUpperCase();
         return leftPad(result, size, "0");

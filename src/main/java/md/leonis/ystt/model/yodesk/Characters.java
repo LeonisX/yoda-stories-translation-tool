@@ -44,7 +44,7 @@ public class Characters extends KaitaiStruct {
         do {
             _it = new Character(this.io, this, root);
             this.characters.add(_it);
-        } while (_it.getIndex() != 65535);//TODO 65535
+        } while (_it.getIndex() != 65535);
     }
 
     @Override

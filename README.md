@@ -15,6 +15,14 @@ An original version: https://github.com/LeonisX/YExplorer
 
 ## TODO
 
+
+                //TODO remove
+                Yodasav yodasav = Yodasav.fromFile("C:\\Users\\user\\Documents\\savegame.wld", yodesk);
+                assert yodasav.getInventory().get(0)== 18;
+                yodasav.write(new ByteBufferKaitaiOutputStream("C:\\Users\\user\\Documents\\savegame2.wld"));
+                System.out.println(new Gson().toJson(yodasav));
+
+
 toolTipMap - can't find in EXE.
 Spa, may be and Ger - no such code. Investigate function with 1036
 

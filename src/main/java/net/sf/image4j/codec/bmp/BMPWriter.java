@@ -45,16 +45,10 @@ public class BMPWriter {
 
     // 8 bit only
     public static void write8bit(InfoHeader ih, IndexColorModel icm, byte[] raster, File file) throws IOException {
-        FileOutputStream fout = new FileOutputStream(file);
-        try {
+        try (FileOutputStream fout = new FileOutputStream(file)) {
             BufferedOutputStream out = new BufferedOutputStream(fout);
             write8bit(ih, icm, raster, out);
             out.flush();
-        } finally {
-            try {
-                fout.close();
-            } catch (IOException ex) {
-            }
         }
     }
 
@@ -96,16 +90,10 @@ public class BMPWriter {
         //ih.iColorsUsed = colorsUsed.size();
         ih.iImageSize = 0;
 
-        FileOutputStream fout = new FileOutputStream(file);
-        try {
+        try (FileOutputStream fout = new FileOutputStream(file)) {
             BufferedOutputStream out = new BufferedOutputStream(fout);
             write8bit(ih, icm0, raster, out);
             out.flush();
-        } finally {
-            try {
-                fout.close();
-            } catch (IOException ex) {
-            }
         }
     }
 
@@ -177,16 +165,10 @@ public class BMPWriter {
         //ih.iColorsUsed = colorsUsed.size();
         ih.iImageSize = 0;
 
-        FileOutputStream fout = new FileOutputStream(file);
-        try {
+        try (FileOutputStream fout = new FileOutputStream(file)) {
             BufferedOutputStream out = new BufferedOutputStream(fout);
             write8bit(ih, icm0, raster, out);
             out.flush();
-        } finally {
-            try {
-                fout.close();
-            } catch (IOException ex) {
-            }
         }
     }
 
@@ -236,16 +218,10 @@ public class BMPWriter {
     }
 
     public static void write(BMPImage bmpImage, File file) throws IOException {
-        FileOutputStream fout = new FileOutputStream(file);
-        try {
+        try (FileOutputStream fout = new FileOutputStream(file)) {
             BufferedOutputStream out = new BufferedOutputStream(fout);
             write(bmpImage, out);
             out.flush();
-        } finally {
-            try {
-                fout.close();
-            } catch (IOException ex) {
-            }
         }
     }
 
@@ -348,16 +324,10 @@ public class BMPWriter {
      * @throws java.io.IOException if an error occurs
      */
     public static void write(BufferedImage img, File file) throws IOException {
-        FileOutputStream fout = new FileOutputStream(file);
-        try {
+        try (FileOutputStream fout = new FileOutputStream(file)) {
             BufferedOutputStream out = new BufferedOutputStream(fout);
             write(img, out);
             out.flush();
-        } finally {
-            try {
-                fout.close();
-            } catch (IOException ex) {
-            }
         }
     }
 
