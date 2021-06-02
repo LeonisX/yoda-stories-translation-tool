@@ -23,8 +23,23 @@ An original version: https://github.com/LeonisX/YExplorer
                 System.out.println(new Gson().toJson(yodasav));
 
 
-toolTipMap - can't find in EXE.
-Spa, may be and Ger - no such code. Investigate function with 1036
+
+change dialog font size
+шрифт надо менять в двух местах: там где создаётся едит и там где формируется диалог с текстом.
+
+createEdit
+
+                     vv
+5656689001005656566A F8 FF15
+
+setupDialogToolTip
+text width
+
+                     vv
+0100006A006A006A006A F8 FF15
+
+
+
 
 * Resolve all TODO
 

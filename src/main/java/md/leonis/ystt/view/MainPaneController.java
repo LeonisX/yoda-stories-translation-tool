@@ -301,8 +301,11 @@ public class MainPaneController {
 
         Log.setOutput(logsTextArea);
 
-        if (windowMap.isEmpty() || window2Map.isEmpty() || gridViewMap.isEmpty() ||
-                scrollBarLeftMap.isEmpty() || scrollBarRightMap.isEmpty() || toolTipMap.isEmpty()) {
+        toolTipSizeTextField.setDisable(toolTipMap.isEmpty());
+        windowSizeTextField.setDisable(windowMap.isEmpty() || window2Map.isEmpty() || gridViewMap.isEmpty() ||
+                scrollBarLeftMap.isEmpty() || scrollBarRightMap.isEmpty());
+
+        if (toolTipSizeTextField.isDisabled() || windowSizeTextField.isDisabled()) {
             JavaFxUtils.showAlert("Error reading YODESK.EXE file!",
                     "Could not find all addresses in the executable file.",
                     "Perhaps this is some kind of exclusive version of the game.\n" +
@@ -1475,8 +1478,12 @@ public class MainPaneController {
         scrollBarLeftMap = exeDump.findValueAddressByMask("C78294320000 ????0000 B8FC00"); // 496
         scrollBarRightMap = exeDump.findValueAddressByMask("C7829C320000 ????0000 C782A4"); // 512
 
-        //TODO Spa and Ger - no such code. Investigate function with 1036
         toolTipMap = exeDump.findValueAddressByMask("4F4433F6 ?????????? 8BCF8947"); // C2039B148D     833284150413
+
+        if (toolTipMap.isEmpty()) { // Spanish, German versions
+            toolTipMap = exeDump.findValueAddressByMask("4E4433FF ?????????? 8BCE89"); //   vvvvvv vvvv
+                                                                                     // 4e4433ff 8D149B 03C2 8BCE89
+        }
     }
 
     private static void dumpPalette(int paletteStartIndex) {
