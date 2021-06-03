@@ -189,6 +189,40 @@ replace with:
 b8a2000000          
 ```
 
+## Dialogs font in the game
+   
+This Windows 10 bug was discovered completely by accident.
+
+![](../images/windows-10-font.png)
+
+It happens if you enable "Beta: Use Unicode UTF-8 for worldwide language support" in the system region settings.
+
+Attention! Do not under any circumstances enable this setting. In my case, I had to fix it in the registry,
+because even after the reboot it was not possible to remove this damn checkbox!
+
+If you ALREADY have it, then try to remove it here: 
+
+Control Panel -> Region -> Administrative -> Change system locale...
+
+![](../images/windows-utf8.png)
+
+If not, then you will have to change the values in the registry, and this is dangerous, so I won't even tell you where to look.
+
+YSTT offers the ability to change the font size of the dialog box if you already have this checkbox checked.
+Or if you like big letters. It is enough to increase the font height by 3 or 4 for the text to be perfectly readable.
+
+If you change in the HEX editor, you will need to change in two places, finding the following data: 
+
+```
+5668900100005656566A F8 FF15
+
+0100006A006A006A006A F8 FF15
+```
+
+One value is to specify the font height for EDIT control, the second is used to calculate the dimensions of the dialog box.
+
+The F8 value is actually -8, don't be alarmed, you can also specify the font height. 
+
 
 ## Text scrolling timers
 
