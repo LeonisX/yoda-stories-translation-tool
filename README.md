@@ -22,25 +22,6 @@ An original version: https://github.com/LeonisX/YExplorer
                 yodasav.write(new ByteBufferKaitaiOutputStream("C:\\Users\\user\\Documents\\savegame2.wld"));
                 System.out.println(new Gson().toJson(yodasav));
 
-
-
-change dialog font size
-шрифт надо менять в двух местах: там где создаётся едит и там где формируется диалог с текстом.
-
-createEdit
-
-                     vv
-5656689001005656566A F8 FF15
-
-setupDialogToolTip
-text width
-
-                     vv
-0100006A006A006A006A F8 FF15
-
-
-
-
 * Resolve all TODO
 
 * Zone report. May be table in UI / or delete Map table

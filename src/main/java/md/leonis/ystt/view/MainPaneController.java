@@ -110,8 +110,10 @@ public class MainPaneController {
 
     public TextField toolTipSizeTextField;
     public TextField dialogTextField;
+    public TextField toolTipSizeTextFont;
     public Label dialogErrorLabel;
     public Label dialogLabel;
+    public Label dialogFontErrorLabel;
 
     public ImageView gameImageView;
     public ImageView dialogButtonImageView;
@@ -264,22 +266,27 @@ public class MainPaneController {
 
     private final Map<Integer, ArrayDeque<ZoneHistory>> zoneHistoryMap = new HashMap<>();
 
+    // Offsets for EXE hacking
     private static Map<Integer, Long> windowMap; // 525
     private static Map<Integer, Long> window2Map; // 525
     private static Map<Integer, Long> toolTipMap; // C2039B148D     833284150413
     private static Map<Integer, Long> gridViewMap; // 489
     private static Map<Integer, Long> scrollBarLeftMap; // 496
     private static Map<Integer, Long> scrollBarRightMap; // 512
+    private static Map<Integer, Long> toolTipFontMap; // -8
+    private static Map<Integer, Long> toolTipFont2Map; // -8
 
     boolean firstRun = true;
 
     private int changesCount;
     private int tilesCount;
 
-    double dialogButtonOffset;
-    double dialogRectangleOffset;
+    double dialogButtonLayoutX;
+    double dialogRectangleLayoutX;
+    double dialogRectangleLayoutY;
     double dialogRectangleWidth;
-    double dialogLabelOffset;
+    double dialogLabelLayoutX;
+    double dialogLabelLayoutY;
 
     double inventoryImageViewOffset;
 
@@ -302,10 +309,11 @@ public class MainPaneController {
         Log.setOutput(logsTextArea);
 
         toolTipSizeTextField.setDisable(toolTipMap.isEmpty());
+        toolTipSizeTextFont.setDisable(toolTipFontMap.isEmpty() && toolTipFont2Map.isEmpty());
         windowSizeTextField.setDisable(windowMap.isEmpty() || window2Map.isEmpty() || gridViewMap.isEmpty() ||
                 scrollBarLeftMap.isEmpty() || scrollBarRightMap.isEmpty());
 
-        if (toolTipSizeTextField.isDisabled() || windowSizeTextField.isDisabled()) {
+        if (toolTipSizeTextField.isDisabled() || windowSizeTextField.isDisabled() || toolTipSizeTextFont.isDisabled()) {
             JavaFxUtils.showAlert("Error reading YODESK.EXE file!",
                     "Could not find all addresses in the executable file.",
                     "Perhaps this is some kind of exclusive version of the game.\n" +
@@ -329,10 +337,12 @@ public class MainPaneController {
 
         if (firstRun) {
             setGenderMenu.setDisable(null == yodesk.getTgen());
-            dialogButtonOffset = dialogButtonImageView.getLayoutX();
-            dialogRectangleOffset = dialogRectangle.getLayoutX();
+            dialogButtonLayoutX = dialogButtonImageView.getLayoutX();
+            dialogRectangleLayoutX = dialogRectangle.getLayoutX();
+            dialogRectangleLayoutY = dialogRectangle.getLayoutY();
             dialogRectangleWidth = dialogRectangle.getWidth();
-            dialogLabelOffset = dialogLabel.getLayoutX();
+            dialogLabelLayoutX = dialogLabel.getLayoutX();
+            dialogLabelLayoutY = dialogLabel.getLayoutY();
 
             inventoryImageViewOffset = inventoryImageView.getLayoutX();
             firstRun = false;
@@ -372,11 +382,17 @@ public class MainPaneController {
                 resizeToolTip(value);
             }
         }
+        if (toolTipMap.size() == 1) {
+            int value = (int) getValue(toolTipFontMap) + 8 - 256;
+            toolTipSizeTextFont.setText(String.valueOf(value));
+            resizeToolTipFont(value);
+        }
 
         windowSizeTextField.textProperty().addListener(windowSizeChangeListener());
         inventoryTextField.textProperty().addListener((observable, oldValue, newValue) -> inventoryLabel.setText(newValue));
 
         toolTipSizeTextField.textProperty().addListener(toolTipSizeChangeListener());
+        toolTipSizeTextFont.textProperty().addListener(toolTipFontSizeChangeListener());
         dialogTextField.textProperty().addListener((observable, oldValue, newValue) -> dialogLabel.setText(newValue));
 
         // Title image, palette
@@ -636,11 +652,47 @@ public class MainPaneController {
             moveLeft = 55;
         }
 
-        dialogButtonImageView.setLayoutX(dialogButtonOffset + right);
+        dialogButtonImageView.setLayoutX(dialogButtonLayoutX + right);
         dialogRectangle.setWidth(dialogRectangleWidth + value);
 
-        dialogRectangle.setLayoutX(dialogRectangleOffset - moveLeft);
-        dialogLabel.setLayoutX(dialogLabelOffset - moveLeft);
+        dialogRectangle.setLayoutX(dialogRectangleLayoutX - moveLeft);
+        dialogLabel.setLayoutX(dialogLabelLayoutX - moveLeft);
+    }
+
+    private ChangeListener<? super String> toolTipFontSizeChangeListener() {
+        return (observable, oldValue, newValue) -> {
+            int value = 0;
+            dialogFontErrorLabel.setVisible(true);
+            try {
+                value = Byte.parseByte(toolTipSizeTextFont.getText());
+                if (value >= 0 && value <= 20) {
+                    exeDump.setByte(getIndex(toolTipFontMap), -value - 8);
+                    exeDump.setByte(getIndex(toolTipFont2Map), -value - 8);
+                    changesCount++;
+                    dialogFontErrorLabel.setVisible(false);
+                } else {
+                    value = 0;
+                }
+            } catch (Exception ignored) {
+                //
+            }
+
+            resizeToolTipFont(value);
+        };
+    }
+
+    private void resizeToolTipFont(int value) {
+
+        // 10.8
+        Font of = dialogLabel.getFont();
+        Font font = new Font(of.getName(), 10.8 + value);
+        dialogLabel.setFont(font);
+
+        double moveTop = Math.abs(10.8 - dialogLabel.getFont().getSize());
+
+        dialogRectangle.setHeight(24 + moveTop);
+        dialogRectangle.setLayoutY(dialogRectangleLayoutY - moveTop);
+        dialogLabel.setLayoutY(dialogLabelLayoutY - moveTop);
     }
 
     public void addNewTileClick() {
@@ -1480,9 +1532,11 @@ public class MainPaneController {
 
         toolTipMap = exeDump.findValueAddressByMask("4F4433F6 ?????????? 8BCF8947"); // C2039B148D     833284150413
 
-        if (toolTipMap.isEmpty()) { // Spanish, German versions
-            toolTipMap = exeDump.findValueAddressByMask("4E4433FF ?????????? 8BCE89"); //   vvvvvv vvvv
-                                                                                     // 4e4433ff 8D149B 03C2 8BCE89
+        toolTipFontMap = exeDump.findValueAddressByMask("5668900100005656566A ?? FF15"); // -8 FFFFFFF8
+        toolTipFont2Map = exeDump.findValueAddressByMask("0100006A006A006A006A ?? FF15"); // -8 FFFFFFF8
+
+        if (toolTipMap.isEmpty()) { // Spanish, German versions                                         vvvvvv vvvv
+            toolTipMap = exeDump.findValueAddressByMask("4E4433FF ?????????? 8BCE89"); // 4e4433ff 8D149B 03C2 8BCE89
         }
     }
 
