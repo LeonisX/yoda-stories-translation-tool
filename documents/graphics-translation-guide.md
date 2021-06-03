@@ -28,6 +28,7 @@ There are two tasks to solve here:
 * Draw missing letters.
 * Correctly reduce the number of colors to the Yoda Stories palette.
 
+I will post the source code of my work to make it easier for you: [font-resources.zip](../font-resources.zip)
 
 ### Redrawing the font
 

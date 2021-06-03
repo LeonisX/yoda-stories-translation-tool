@@ -12,7 +12,7 @@ import java.util.List;
 
 /**
  * The TGEN section is only present in non-english versions of the game.
- * It's purpose or internal structure is unknown.
+ * These are genders of tile names, they are used to form Action dialogs.
  */
 public class TileGenders extends KaitaiStruct {
 
