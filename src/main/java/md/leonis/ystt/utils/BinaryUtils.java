@@ -1,6 +1,5 @@
 package md.leonis.ystt.utils;
 
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.security.MessageDigest;
@@ -8,9 +7,31 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.zip.CRC32;
 
+import static md.leonis.ystt.utils.StringUtils.leftPad;
+
 public class BinaryUtils {
 
     private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
+
+    public static String intToHex(int value, int size) {
+
+        String result = String.format("%08x", value).toUpperCase();
+        return leftPad(result, size, "0");
+    }
+
+    public static String longToHex(long value, int size) {
+
+        String result = String.format("%016x", value).toUpperCase();
+        return leftPad(result, size, "0");
+    }
+
+    public static String bytesToBinary(byte[] bytes) {
+
+        StringBuilder sb = new StringBuilder(bytes.length * Byte.SIZE);
+        for( int i = 0; i < Byte.SIZE * bytes.length; i++ )
+            sb.append((bytes[i / Byte.SIZE] << i % Byte.SIZE & 0x80) == 0 ? '0' : '1');
+        return sb.toString();
+    }
 
     public static String bytesToHex(byte[] bytes) {
 
@@ -22,6 +43,10 @@ public class BinaryUtils {
         }
 
         return new String(hexChars);
+    }
+
+    public static String crc32hex(byte[] bytes) {
+        return intToHex(crc32(bytes), 8);
     }
 
     public static int crc32(byte[] bytes) {

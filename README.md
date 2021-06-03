@@ -15,6 +15,13 @@ An original version: https://github.com/LeonisX/YExplorer
 
 ## TODO
 
+Group all resources to:
+
+* dumps
+* resources
+* translate
+* other
+
 
                 //TODO remove
                 Yodasav yodasav = Yodasav.fromFile("C:\\Users\\user\\Documents\\savegame.wld", yodesk);
@@ -30,9 +37,9 @@ An original version: https://github.com/LeonisX/YExplorer
 
 * Сломан вывод таблицы Map (нужна ли?)
 
-* Dump structure (hi, mid, lo levels)
-
 * Dump app releases and verify them
+
+https://www.diffchecker.com/image-diff/
 
 * Compare all characters dumps
 * Article about unsigned (hex editor, port from delphi, mathematic, before java 8, current solutions, examples)

@@ -150,6 +150,7 @@
                                     </columns>
                                 </TableView>
                                 <Button fx:id="dumpAllSectionsButton" layoutX="14.0" layoutY="438.0" mnemonicParsing="false" onAction="#dumpAllSectionsButtonClick" text="Dump All Sections" />
+                                <Button fx:id="saveHighMidStructureButton" layoutX="140.0" layoutY="438.0" mnemonicParsing="false" onAction="#saveHighMidStructureButtonClick" text="Save High/Mid level structure" />
                                 <Label fx:id="descriptionLabel" alignment="TOP_LEFT" layoutX="320.0" layoutY="95.0" prefHeight="334" prefWidth="700" />
                             </AnchorPane>
                         </Tab>

@@ -33,8 +33,7 @@ import md.leonis.ystt.model.docx.PropertyName;
 import md.leonis.ystt.model.docx.StringImagesRecord;
 import md.leonis.ystt.model.docx.StringRecord;
 import md.leonis.ystt.model.docx.WordRecord;
-import md.leonis.ystt.model.yodesk.CatalogEntry;
-import md.leonis.ystt.model.yodesk.Yodesk;
+import md.leonis.ystt.model.yodesk.*;
 import md.leonis.ystt.model.yodesk.characters.Character;
 import md.leonis.ystt.model.yodesk.characters.CharacterType;
 import md.leonis.ystt.model.yodesk.puzzles.PrefixedStr;
@@ -63,11 +62,12 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static md.leonis.config.Config.*;
+import static md.leonis.ystt.utils.BinaryUtils.intToHex;
+import static md.leonis.ystt.utils.BinaryUtils.longToHex;
 import static md.leonis.ystt.utils.ImageUtils.getTile;
 import static md.leonis.ystt.utils.ImageUtils.readWPicture;
 import static md.leonis.ystt.utils.JavaFxUtils.runInBackground;
 import static md.leonis.ystt.utils.JavaFxUtils.showAlert;
-import static md.leonis.ystt.utils.StringUtils.leftPad;
 import static md.leonis.ystt.utils.StringUtils.splitCamelCase;
 import static md.leonis.ystt.utils.WordHelper.getActionsTexts;
 
@@ -97,6 +97,7 @@ public class MainPaneController {
     public Label nameLabel;
     public TableView<CatalogEntry> commonInformationTableView;
     public Button dumpAllSectionsButton;
+    public Button saveHighMidStructureButton;
     public Label sourceCharsetLabel;
     public Button changeSourceCharsetButton;
     public Label destinationCharsetLabel;
@@ -336,7 +337,7 @@ public class MainPaneController {
     private void updateUI() {
 
         if (firstRun) {
-            setGenderMenu.setDisable(null == yodesk.getTgen());
+            setGenderMenu.setDisable(null == yodesk.getTileGenders());
             dialogButtonLayoutX = dialogButtonImageView.getLayoutX();
             dialogRectangleLayoutX = dialogRectangle.getLayoutX();
             dialogRectangleLayoutY = dialogRectangle.getLayoutY();
@@ -527,6 +528,7 @@ public class MainPaneController {
     private void disableNonTranslationFeatures(boolean status) {
 
         dumpAllSectionsButton.setDisable(status);
+        saveHighMidStructureButton.setDisable(status);
         saveSoundsListToFileButton.setDisable(status);
         saveTilesToSeparateFiles.setDisable(status);
         decimalFilenamesCheckBox.setDisable(status);
@@ -699,8 +701,8 @@ public class MainPaneController {
 
         try {
             yodesk.getTiles().addTile();
-            if (null != yodesk.getTgen()) {
-                yodesk.getTgen().addTileGender();
+            if (null != yodesk.getTileGenders()) {
+                yodesk.getTileGenders().addTileGender();
             }
             int tileId = yodesk.getTiles().getTiles().size() - 1;
             tilesFlowPane.getChildren().add(tileId, newTile(tileId, true));
@@ -810,8 +812,8 @@ public class MainPaneController {
     private void deleteTile(int tileId, int newTileId) {
 
         yodesk.getTiles().deleteTile();
-        if (null != yodesk.getTgen()) {
-            yodesk.getTgen().deleteTileGender();
+        if (null != yodesk.getTileGenders()) {
+            yodesk.getTileGenders().deleteTileGender();
         }
         tilesFlowPane.getChildren().remove(tileId);
         zoneEditorTilesFlowPane.getChildren().remove(tileId);
@@ -846,7 +848,7 @@ public class MainPaneController {
                 String gender = yodesk.getTiles().getTiles().get(tileId).getAttributesBinaryString();
                 String newGender = newToggle.getUserData().toString();
                 if (!gender.equals(newGender)) {
-                    yodesk.getTgen().getGenders().set(tileId, TileGender.byId(Integer.parseInt(newGender)));
+                    yodesk.getTileGenders().getGenders().set(tileId, TileGender.byId(Integer.parseInt(newGender)));
                     Log.debug(String.format("Set new gender %s for tile #%s", newGender, tileId));
                     changesCount++;
                 }
@@ -943,8 +945,8 @@ public class MainPaneController {
             int tileId = ((Integer) (currentTile).getUserData());
             String binaryTileName = yodesk.getTiles().getTiles().get(tileId).getAttributesBinaryString();
             String gender = "";
-            if (null != yodesk.getTgen()) {
-                gender = "; Gender: " + yodesk.getTgen().getGenders().get(tileId).name().toLowerCase();
+            if (null != yodesk.getTileGenders()) {
+                gender = "; Gender: " + yodesk.getTileGenders().getGenders().get(tileId).name().toLowerCase();
             }
             if (tileAttributesMap.get(binaryTileName) != null) {
                 statusLabel.setText("Tile #" + tileId + ": " + tileAttributesMap.get(binaryTileName).getText() + gender);
@@ -964,8 +966,8 @@ public class MainPaneController {
         int tileId = ((Integer) (currentTile).getUserData());
         String binaryTileName = yodesk.getTiles().getTiles().get(tileId).getAttributesBinaryString();
         tilesToggleGroup.getToggles().forEach(t -> t.setSelected(t.getUserData().toString().equals(binaryTileName)));
-        if (null != yodesk.getTgen()) {
-            String gender = String.valueOf(yodesk.getTgen().getGenders().get(tileId).getId());
+        if (null != yodesk.getTileGenders()) {
+            String gender = String.valueOf(yodesk.getTileGenders().getGenders().get(tileId).getId());
             tilesGenderToggleGroup.getToggles().forEach(t -> t.setSelected(t.getUserData().toString().equals(gender)));
         }
     }
@@ -1499,7 +1501,7 @@ public class MainPaneController {
         exeDump.setByteOrder(ByteOrder.LITTLE_ENDIAN);
         exeDump.setIndex(0);
 
-        exeCrc32 = intToHex(BinaryUtils.crc32(exeDump.getDump()), 8);
+        exeCrc32 = BinaryUtils.crc32hex(exeDump.getDump());
 
         getControlsBounds();
 
@@ -1660,6 +1662,19 @@ public class MainPaneController {
                 Log.debug("OK");
             } catch (Exception e) {
                 JavaFxUtils.showAlert("Sections dumping error", e);
+            }
+        });
+    }
+
+    public void saveHighMidStructureButtonClick() {
+
+        Platform.runLater(() -> {
+            try {
+                String name = "structure.md";
+                IOUtils.saveTextFile(new StructureDump(yodesk).dumpStructure(), opath.resolve(name));
+                Log.debug(name + " is saved");
+            } catch (Exception e) {
+                JavaFxUtils.showAlert("Data file structure dumping error", e);
             }
         });
     }
@@ -1835,16 +1850,16 @@ public class MainPaneController {
 
         Path genPath = opath.resolve("TilesByGen");
 
-        if (null != yodesk.getTgen()) {
+        if (null != yodesk.getTileGenders()) {
             IOUtils.createDirectories(genPath);
         }
 
         for (int i = 0; i < yodesk.getTiles().getTiles().size(); i++) {
 
             //TGEN
-            if (null != yodesk.getTgen()) {
+            if (null != yodesk.getTileGenders()) {
                 int ii = i;
-                String hex = String.format("%04X", yodesk.getTgen().getGenders().get(i).getId());
+                String hex = String.format("%04X", yodesk.getTileGenders().getGenders().get(i).getId());
                 String name = yodesk.getTileNames().getFilteredNames().stream().filter(n -> n.getTileId() == ii).map(TileName::getName).findFirst().orElse("");
                 name = name.isEmpty() ? name : " " + name;
                 IOUtils.createDirectories(genPath.resolve(hex));
@@ -2024,6 +2039,8 @@ public class MainPaneController {
                 FileWriter writer = new FileWriter(path.toFile());
                 gson.toJson(element, writer);
                 writer.flush();
+
+                IOUtils.saveTextFile(new StructureDump(yodesk).dumpZoneTilesStructure(), opath.resolve("zoneTiles.md"));
 
                 if (normalSaveCheckBox.isSelected() || groupByAttributesCheckBox.isSelected() || groupByPlanetTypeCheckBox.isSelected()) {
 
@@ -2581,18 +2598,6 @@ public class MainPaneController {
 
         Map.Entry<Integer, Long> entry = map.entrySet().iterator().next();
         return entry.getValue();
-    }
-
-    public static String intToHex(int value, int size) {
-
-        String result = Integer.toHexString(value).toUpperCase();
-        return leftPad(result, size, "0");
-    }
-
-    public String longToHex(long value, int size) {
-
-        String result = Long.toHexString(value).toUpperCase();
-        return leftPad(result, size, "0");
     }
 
     public void peExplorerHyperlinkClick() {

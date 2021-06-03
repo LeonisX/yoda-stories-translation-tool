@@ -9,10 +9,11 @@ import md.leonis.ystt.model.yodesk.Yodesk;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class TilesEntries extends KaitaiStruct {
 
-    private ArrayList<Tile> tiles;
+    private List<Tile> tiles;
 
     private final transient Yodesk root;
     private final transient Tiles parent;
@@ -49,7 +50,7 @@ public class TilesEntries extends KaitaiStruct {
         // unneeded, we write raw bytes in Tiles class
     }
 
-    public ArrayList<Tile> getTiles() {
+    public List<Tile> getTiles() {
         return tiles;
     }
 

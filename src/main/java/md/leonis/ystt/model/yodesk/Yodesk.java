@@ -199,7 +199,7 @@ public class Yodesk extends KaitaiStruct {
         this.tileNames = tileNames;
     }
 
-    public TileGenders getTgen() {
+    public TileGenders getTileGenders() {
         return tileGenders;
     }
 
