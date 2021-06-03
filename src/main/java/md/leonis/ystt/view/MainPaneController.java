@@ -383,7 +383,7 @@ public class MainPaneController {
             }
         }
         if (toolTipMap.size() == 1) {
-            int value = (int) getValue(toolTipFontMap) + 8 - 256;
+            int value = Math.abs((int) getValue(toolTipFontMap) + 8 - 256);
             toolTipSizeTextFont.setText(String.valueOf(value));
             resizeToolTipFont(value);
         }

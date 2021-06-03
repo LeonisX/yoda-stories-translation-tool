@@ -216,7 +216,7 @@
                                         <Label layoutX="124.0" layoutY="239.0" text="-8" />
                                         <Label layoutX="167.0" layoutY="238.0" text="Expanded by:" />
                                         <TextField fx:id="toolTipSizeTextFont" layoutX="246.0" layoutY="234.0" prefHeight="25.0" prefWidth="64.0" text="0" />
-                                        <Label layoutX="20.0" layoutY="257.0" prefHeight="41.0" prefWidth="253.0" text="This setting is for Windows 10 if you are using Beta Unicode UTF-8 for worldwide language support" wrapText="true">
+                                        <Label layoutX="20.0" layoutY="257.0" prefHeight="41.0" prefWidth="330.0" text="This setting is for Windows 10 buggy feature: 'Beta Unicode UTF-8 for worldwide language support'. 3 or 4 will be enough." wrapText="true">
                                             <font>
                                                 <Font size="11.0" />
                                             </font>
