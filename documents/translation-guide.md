@@ -71,6 +71,8 @@ Among the dumped resources for translation, you will need the following files:
 * puzzles.docx
 * tilenames.docx
 
+They are all grouped in the `translation` directory.
+
 YSTT is intended not only for translating the game, but also for researching it. In order not to mislead you,
 all research functions are disabled by default. They can be enabled in the Settings menu.
 

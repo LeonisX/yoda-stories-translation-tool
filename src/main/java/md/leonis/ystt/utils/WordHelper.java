@@ -23,17 +23,6 @@ import static md.leonis.ystt.utils.ImageUtils.getTile;
 
 public class WordHelper {
 
-    //TODO remove
-    public static List<String> getAllPhrases() {
-
-        return yodesk.getZones().getZones().stream().flatMap(z -> {
-            List<String> conditions = z.getActions().stream().flatMap(a -> a.getConditions().stream().map(Condition::getText)).collect(Collectors.toList());
-            List<String> instructions = z.getActions().stream().flatMap(a -> a.getInstructions().stream().map(Instruction::getText)).collect(Collectors.toList());
-            conditions.addAll(instructions);
-            return conditions.stream().filter(StringUtils::isNotBlank).map(s -> s.replace("\r\n", "[CR]").replace("[CR][CR]", "[CR2]"));
-        }).collect(Collectors.toList());
-    }
-
     public static List<StringRecord> getActionsTexts() {
 
         List<StringRecord> zoneRecords = new ArrayList<>();

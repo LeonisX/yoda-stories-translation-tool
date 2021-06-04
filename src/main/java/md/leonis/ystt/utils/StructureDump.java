@@ -5,9 +5,12 @@ import md.leonis.ystt.model.yodesk.characters.Character;
 import md.leonis.ystt.model.yodesk.characters.CharacterAuxiliary;
 import md.leonis.ystt.model.yodesk.characters.CharacterWeapon;
 import md.leonis.ystt.model.yodesk.puzzles.Puzzle;
+import md.leonis.ystt.model.yodesk.puzzles.StringMeaning;
 import md.leonis.ystt.model.yodesk.tiles.Tile;
 import md.leonis.ystt.model.yodesk.tiles.TileGender;
 import md.leonis.ystt.model.yodesk.zones.Action;
+import md.leonis.ystt.model.yodesk.zones.Condition;
+import md.leonis.ystt.model.yodesk.zones.Instruction;
 import md.leonis.ystt.model.yodesk.zones.Zone;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.util.HexDump;
@@ -42,12 +45,71 @@ public class StructureDump extends ArrayList<String> {
         return this;
     }
 
+    public List<String> dumpActionsPhrases() {
+
+        addH1("Zone actions phrases");
+
+        List<Zone> zones = yodesk.getZones().getZones();
+
+        for (int i = 0; i < zones.size(); i++) {
+            addH4("Zone " + i);
+            Zone zone = zones.get(i);
+
+            for (int a = 0; a < zone.getActions().size(); a++) {
+
+                Action action = zone.getActions().get(a);
+                List<String> conditions = action.getConditions().stream().map(Condition::getText).filter(StringUtils::isNotBlank).collect(Collectors.toList());
+                List<String> instructions = action.getInstructions().stream().map(Instruction::getText).filter(StringUtils::isNotBlank).collect(Collectors.toList());
+
+                if (!conditions.isEmpty() || !instructions.isEmpty()) {
+                    addBr();
+                    addH5("Action " + a);
+                    addBr();
+                }
+
+                if (!conditions.isEmpty()) {
+                    for (int x = 0; x < conditions.size(); x++) {
+                        add(String.format("* Condition %s: %s", x, conditions.get(x)));
+                    }
+                }
+                if (!instructions.isEmpty()) {
+                    for (int x = 0; x < instructions.size(); x++) {
+                        add(String.format("* Instruction %s: %s", x, instructions.get(x)));
+                    }
+                }
+            }
+            addBr();
+        }
+        return this;
+    }
+
+    public List<String> dumpPuzzlesPhrases() {
+
+        addH1("Puzzle phrases");
+
+        List<Puzzle> puzzles = yodesk.getPuzzles().getFilteredPuzzles();
+
+        for (int i = 0; i < puzzles.size(); i++) {
+            addH4("Puzzle " + i);
+            addBr();
+            Puzzle puzzle = puzzles.get(i);
+
+            for (int j = 0; j < StringMeaning.values().length; j++) {
+                if (StringUtils.isNotBlank(puzzle.getPrefixesStrings().get(j).getContent())) {
+                    add(String.format("* %-8s %s", StringMeaning.byId(j) + ":", puzzle.getPrefixesStrings().get(j).getContent()));
+                }
+            }
+            addBr();
+        }
+        return this;
+    }
+
     public List<String> dumpZoneTilesStructure() {
 
         addH1("Zone tiles");
         List<Zone> zones = yodesk.getZones().getZones();
         for (int i = 0; i < zones.size(); i++) {
-            addH5("Zone #" + i);
+            addH5("Zone " + i);
             Zone zone = zones.get(i);
             for (int y = 0; y < zone.getHeight(); y++) {
                 for (int x = 0; x < zone.getWidth(); x++) {
@@ -80,7 +142,7 @@ public class StructureDump extends ArrayList<String> {
         List<Tile> tiles = yodesk.getTiles().getTiles();
         for (int i = 0; i < tiles.size(); i++) {
             Tile tile = tiles.get(i);
-            add("* Tile #" + i + ": CRC32: " + crc32hex(tile.getPixels()) + "; Attribyte: " + bytesToBinary(tile.getRawAttributes()));
+            add("* Tile " + i + ": CRC32: " + crc32hex(tile.getPixels()) + "; Attribyte: " + bytesToBinary(tile.getRawAttributes()));
         }
         addBr();
 
@@ -88,7 +150,7 @@ public class StructureDump extends ArrayList<String> {
         List<Zone> zones = yodesk.getZones().getZones();
         add("* Count: " + zones.size());
         for (int i = 0; i < zones.size(); i++) {
-            addH5("Zone #" + i);
+            addH5("Zone " + i);
             Zone zone = zones.get(i);
             add("* planet: " + zone.getPlanet().name());
             add("* width: " + zone.getWidth());
@@ -121,7 +183,7 @@ public class StructureDump extends ArrayList<String> {
             List<Action> actions = zone.getActions();
             for (int i1 = 0; i1 < actions.size(); i1++) {
                 Action a = actions.get(i1);
-                add(String.format("    * Action #%s conditions: %s; instructions: %s", i1, a.getConditions().size(), a.getInstructions().size()));
+                add(String.format("    * Action %s conditions: %s; instructions: %s", i1, a.getConditions().size(), a.getInstructions().size()));
             }
         }
         addBr();
@@ -130,7 +192,7 @@ public class StructureDump extends ArrayList<String> {
         List<Puzzle> puzzles = yodesk.getPuzzles().getPuzzles();
         add("* Count: " + puzzles.size());
         for (int i = 0; i < puzzles.size(); i++) {
-            addH5("Puzzle #" + i);
+            addH5("Puzzle " + i);
             Puzzle puzzle = puzzles.get(i);
             add("* item1Class: " + puzzle.getItem1Class());
             add("* item2Class: " + puzzle.getItem2Class());
@@ -144,7 +206,7 @@ public class StructureDump extends ArrayList<String> {
         List<Character> characters = yodesk.getCharacters().getCharacters();
         add("* Count: " + characters.size());
         for (int i = 0; i < characters.size(); i++) {
-            addH5("Character #" + i);
+            addH5("Character " + i);
             Character character = characters.get(i);
             add("* size: " + character.getSize());
             add("* name: " + character.getName());
@@ -162,7 +224,7 @@ public class StructureDump extends ArrayList<String> {
         List<CharacterWeapon> weapons = yodesk.getCharacterWeapons().getWeapons();
         add("* Count: " + weapons.size());
         for (int i = 0; i < weapons.size(); i++) {
-            addH5("Character Weapon #" + i);
+            addH5("Character Weapon " + i);
             CharacterWeapon weapon = weapons.get(i);
             add("* reference: " + weapon.getReference());
             add("* health: " + weapon.getHealth());
@@ -173,7 +235,7 @@ public class StructureDump extends ArrayList<String> {
         List<CharacterAuxiliary> auxiliaries = yodesk.getCharacterAuxiliaries().getAuxiliaries();
         add("* Count: " + auxiliaries.size());
         for (int i = 0; i < auxiliaries.size(); i++) {
-            addH5("Character Auxiliaries #" + i);
+            addH5("Character Auxiliaries " + i);
             CharacterAuxiliary auxiliary = auxiliaries.get(i);
             add("* damage: " + auxiliary.getDamage());
         }
@@ -190,7 +252,7 @@ public class StructureDump extends ArrayList<String> {
             List<TileGender> genders = yodesk.getTileGenders().getGenders();
             for (int i = 0; i < genders.size(); i++) {
                 TileGender gender = genders.get(i);
-                add("* Tile Gender #" + i + ": " + gender.name());
+                add("* Tile Gender " + i + ": " + gender.name());
             }
             addBr();
         }

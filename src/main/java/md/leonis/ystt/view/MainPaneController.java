@@ -247,9 +247,10 @@ public class MainPaneController {
     private static final String E_DOCX = ".docx";
     private static final String E_XLSX = ".xlsx";
     private static final String E_TXT = ".txt";
+    private static final String E_MD = ".md";
     private static final int TILE_SIZE = 32;
 
-    Path spath, opath;
+    Path rootPath, releasePath, resourcesPath, translatePath, dumpsPath;
 
     public static List<Boolean> usedTiles = new ArrayList<>();
 
@@ -292,7 +293,7 @@ public class MainPaneController {
     double inventoryImageViewOffset;
 
     public MainPaneController() {
-        spath = Paths.get(".");
+        rootPath = Paths.get(".");
     }
 
     @FXML
@@ -322,7 +323,10 @@ public class MainPaneController {
 
         }
 
-        opath = spath.resolve(OUTPUT + '-' + release.getId());
+        releasePath = rootPath.resolve(OUTPUT + '-' + release.getId());
+        resourcesPath = releasePath.resolve("resources"); // all images
+        translatePath = releasePath.resolve("translate"); // all translation images & docs
+        dumpsPath = releasePath.resolve("dumps");
 
         try {
             tilesToggleGroup.getToggles().forEach(t -> tileAttributesMap.put(t.getUserData().toString(), (RadioMenuItem) t));
@@ -1652,7 +1656,7 @@ public class MainPaneController {
 
         Platform.runLater(() -> {
             try {
-                Path path = opath.resolve("Dumps");
+                Path path = dumpsPath.resolve("raw");
                 IOUtils.createDirectories(path);
                 for (CatalogEntry entry : yodesk.getCatalog()) {
                     Section name = entry.getSection();
@@ -1670,8 +1674,9 @@ public class MainPaneController {
 
         Platform.runLater(() -> {
             try {
-                String name = "structure.md";
-                IOUtils.saveTextFile(new StructureDump(yodesk).dumpStructure(), opath.resolve(name));
+                String name = "structure" + E_MD;
+                IOUtils.createDirectories(dumpsPath);
+                IOUtils.saveTextFile(new StructureDump(yodesk).dumpStructure(), dumpsPath.resolve(name));
                 Log.debug(name + " is saved");
             } catch (Exception e) {
                 JavaFxUtils.showAlert("Data file structure dumping error", e);
@@ -1683,12 +1688,17 @@ public class MainPaneController {
 
         Platform.runLater(() -> {
             try {
-                Path path = opath.resolve("startup" + E_BMP);
+                Path path = translatePath.resolve("startup" + E_BMP);
+                Path path2 = resourcesPath.resolve("startup" + E_BMP);
                 Log.debug("Saving startup screen: " + path);
+                IOUtils.createDirectories(translatePath);
+                IOUtils.createDirectories(resourcesPath);
                 if (titleScreenImageView.getUserData() != null) {
                     BMPWriter.write((BMPImage) titleScreenImageView.getUserData(), path);
+                    BMPWriter.write((BMPImage) titleScreenImageView.getUserData(), path2);
                 } else {
                     BMPWriter.write8bit(titleScreenImageView, path);
+                    BMPWriter.write8bit(titleScreenImageView, path2);
                 }
                 Log.appendOk();
 
@@ -1702,7 +1712,7 @@ public class MainPaneController {
 
         Platform.runLater(() -> {
             try {
-                Path path = opath.resolve("startup" + E_BMP);
+                Path path = translatePath.resolve("startup" + E_BMP);
                 Log.debug("Loading startup screen: " + path);
                 BMPImage titleImage = BMPReader.readExt(path);
 
@@ -1733,7 +1743,8 @@ public class MainPaneController {
 
         Platform.runLater(() -> {
             try {
-                Path path = opath.resolve("palette" + E_BMP);
+                IOUtils.createDirectories(resourcesPath);
+                Path path = resourcesPath.resolve("palette" + E_BMP);
                 Log.debug("Saving palette image: " + path);
                 BMPWriter.write8bit(paletteCanvas, path);
                 Log.appendOk();
@@ -1748,10 +1759,10 @@ public class MainPaneController {
         Platform.runLater(() -> {
             try {
                 Log.debug("Saving palettes...");
-                PaletteUtils.saveToFile(gamePalette, opath.resolve("palette.pal"));
-                PaletteUtils.saveSafeToFile(gamePalette, opath.resolve("palette-safe.pal"));
-                PaletteUtils.saveToFile(fuchsiaPalette, opath.resolve("palette-fuchsia.pal"));
-                PaletteUtils.saveSafeToFile(fuchsiaPalette, opath.resolve("palette-fuchsia-safe.pal"));
+                PaletteUtils.saveToFile(gamePalette, translatePath.resolve("palette.pal"));
+                PaletteUtils.saveSafeToFile(gamePalette, translatePath.resolve("palette-safe.pal"));
+                PaletteUtils.saveToFile(fuchsiaPalette, translatePath.resolve("palette-fuchsia.pal"));
+                PaletteUtils.saveSafeToFile(fuchsiaPalette, translatePath.resolve("palette-fuchsia-safe.pal"));
                 Log.appendOk();
             } catch (Exception e) {
                 JavaFxUtils.showAlert("Palette saving error", e);
@@ -1763,7 +1774,7 @@ public class MainPaneController {
 
         Platform.runLater(() -> {
             try {
-                Path path = opath.resolve("sounds" + E_TXT);
+                Path path = dumpsPath.resolve("sounds" + E_TXT);
                 Log.debug("Saving sounds to file: " + path);
                 IOUtils.saveTextFile(yodesk.getSounds().getSounds(), path);
                 Log.appendOk();
@@ -1778,7 +1789,7 @@ public class MainPaneController {
         runInBackground(() -> {
             try {
                 Log.debug("Saving tiles...");
-                IOUtils.createDirectories(opath);
+                IOUtils.createDirectories(resourcesPath);
 
                 if (decimalFilenamesCheckBox.isSelected()) {
                     saveTiles();
@@ -1800,7 +1811,7 @@ public class MainPaneController {
 
     private void saveTiles() throws IOException {
 
-        Path tilesPath = opath.resolve("Tiles");
+        Path tilesPath = resourcesPath.resolve("Tiles");
         IOUtils.createDirectories(tilesPath);
         for (int i = 0; i < yodesk.getTiles().getTiles().size(); i++) {
             Path path = tilesPath.resolve(String.format("%04d", i) + E_BMP);
@@ -1813,7 +1824,7 @@ public class MainPaneController {
 
     private void saveTilesHex() throws IOException {
 
-        Path hexPath = opath.resolve("TilesHex");
+        Path hexPath = resourcesPath.resolve("TilesHex");
         IOUtils.createDirectories(hexPath);
         for (int i = 0; i < yodesk.getTiles().getTiles().size(); i++) {
             BMPWriter.write(getTile(i, icm), hexPath.resolve(String.format("%04X", i) + E_BMP));
@@ -1822,8 +1833,8 @@ public class MainPaneController {
 
     private void saveTilesByAttr() throws IOException {
 
-        Path attrPath = opath.resolve("TilesByAttr");
-        Path attrNamesPath = opath.resolve("TilesByAttrName");
+        Path attrPath = resourcesPath.resolve("TilesByAttr");
+        Path attrNamesPath = resourcesPath.resolve("TilesByAttrName");
         IOUtils.createDirectories(attrPath);
         IOUtils.createDirectories(attrNamesPath);
         Map<String, List<Integer>> byAttr = new HashMap<>();
@@ -1848,7 +1859,7 @@ public class MainPaneController {
 
     private void saveTilesByGender() throws IOException {
 
-        Path genPath = opath.resolve("TilesByGen");
+        Path genPath = resourcesPath.resolve("TilesByGen");
 
         if (null != yodesk.getTileGenders()) {
             IOUtils.createDirectories(genPath);
@@ -1934,9 +1945,10 @@ public class MainPaneController {
 
         runInBackground(() -> {
             try {
+                IOUtils.createDirectories(resourcesPath);
                 int width = Integer.parseInt(tilesInARowTextField.getText());
                 int height = (int) Math.ceil(yodesk.getTiles().getTiles().size() * 1.0 / width);
-                Path path = opath.resolve(String.format("tiles%sx%s%s", width, height, E_BMP));
+                Path path = resourcesPath.resolve(String.format("tiles%sx%s%s", width, height, E_BMP));
                 Log.debug("Saving tiles to one file: " + path);
 
                 BufferedImage canvas = new BufferedImage(width * TILE_SIZE, height * TILE_SIZE, BufferedImage.TYPE_BYTE_INDEXED, icm);
@@ -1950,7 +1962,6 @@ public class MainPaneController {
                         }
                     }
                 }
-                IOUtils.createDirectories(opath);
                 BMPWriter.write(canvas, path);
 
             } catch (Exception e) {
@@ -1985,8 +1996,9 @@ public class MainPaneController {
 
         Platform.runLater(() -> {
             try {
+
                 String initialFile = (null == clipboardFile) ? "clipboard.bmp" : clipboardFile.getName();
-                String initialDir = (null == clipboardFile) ? opath.toString() : clipboardFile.getParent();
+                String initialDir = (null == clipboardFile) ? translatePath.toString() : clipboardFile.getParent();
                 File file = JavaFxUtils.showBMPLoadDialog("Load Clipboard image", initialDir, initialFile);
                 if (file != null) {
                     Log.debug("Loading clipboard file: " + file.getName());
@@ -2006,7 +2018,7 @@ public class MainPaneController {
         Platform.runLater(() -> {
             try {
                 String initialFile = (null == clipboardFile) ? "clipboard.bmp" : clipboardFile.getName();
-                String initialDir = (null == clipboardFile) ? opath.toString() : clipboardFile.getParent();
+                String initialDir = (null == clipboardFile) ? translatePath.toString() : clipboardFile.getParent();
                 File file = JavaFxUtils.showBMPSaveDialog("Save Clipboard image", initialDir, initialFile);
                 if (file != null) {
                     Log.debug("Loading clipboard file: " + file.getName());
@@ -2032,15 +2044,18 @@ public class MainPaneController {
 
         runInBackground(() -> {
             try {
-                Gson gson = new GsonBuilder().setPrettyPrinting().create();
+                IOUtils.createDirectories(resourcesPath);
+                IOUtils.createDirectories(dumpsPath);
+
+                /*Gson gson = new GsonBuilder().setPrettyPrinting().create();
                 JsonElement element = gson.toJsonTree(yodesk.getZones().getZones());
                 element.getAsJsonArray().forEach(zone -> zone.getAsJsonObject().remove("actions"));
-                Path path = opath.resolve("zonesNoActions.json");
+                Path path = dumpsPath.resolve("zonesNoActions" + E_JSON);
                 FileWriter writer = new FileWriter(path.toFile());
                 gson.toJson(element, writer);
-                writer.flush();
+                writer.flush();*/
 
-                IOUtils.saveTextFile(new StructureDump(yodesk).dumpZoneTilesStructure(), opath.resolve("zoneTiles.md"));
+                IOUtils.saveTextFile(new StructureDump(yodesk).dumpZoneTilesStructure(), dumpsPath.resolve("zoneTiles" + E_MD));
 
                 if (normalSaveCheckBox.isSelected() || groupByAttributesCheckBox.isSelected() || groupByPlanetTypeCheckBox.isSelected()) {
 
@@ -2051,19 +2066,19 @@ public class MainPaneController {
                         drawBIZone(canvas, zone);
 
                         if (normalSaveCheckBox.isSelected()) {
-                            path = opath.resolve("Zones");
+                            Path path = resourcesPath.resolve("Zones");
                             IOUtils.createDirectories(path);
                             BMPWriter.write(canvas, path.resolve(String.format("%03d", zone.getIndex()) + E_BMP));
                         }
 
                         if (groupByAttributesCheckBox.isSelected()) {
-                            path = opath.resolve("ZonesByType").resolve(zone.getType().name());
+                            Path path = resourcesPath.resolve("ZonesByType").resolve(zone.getType().name());
                             IOUtils.createDirectories(path);
                             BMPWriter.write(canvas, path.resolve(String.format("%03d", zone.getIndex()) + E_BMP));
                         }
 
                         if (groupByPlanetTypeCheckBox.isSelected()) {
-                            path = opath.resolve("ZonesByPlanetType").resolve(zone.getPlanet().name());
+                            Path path = resourcesPath.resolve("ZonesByPlanetType").resolve(zone.getPlanet().name());
                             IOUtils.createDirectories(path);
                             BMPWriter.write(canvas, path.resolve(String.format("%03d", zone.getIndex()) + E_BMP));
                         }
@@ -2071,7 +2086,7 @@ public class MainPaneController {
                 }
 
                 if (saveUnusedTilesCheckBox.isSelected()) {
-                    Path unusedTilesPath = opath.resolve("ZonesTilesUnused");
+                    Path unusedTilesPath = resourcesPath.resolve("ZonesTilesUnused");
                     IOUtils.createDirectories(unusedTilesPath);
                     for (int i = 0; i < yodesk.getTiles().getTiles().size(); i++) {
                         if (!usedTiles.get(i)) {
@@ -2141,17 +2156,17 @@ public class MainPaneController {
             sbn.append("Zone ").append(zoneId).append("\n").append("\n").append(ssbn).append("\n");
         }
 
-        IOUtils.saveTextFile(Collections.singletonList(sb.toString()), opath.resolve("actionsScripts" + E_TXT));
-        IOUtils.saveTextFile(Collections.singletonList(sbn.toString()), opath.resolve("actionsScriptsNoText" + E_TXT));
+        IOUtils.saveTextFile(Collections.singletonList(sb.toString()), dumpsPath.resolve("actionsScripts" + E_TXT));
+        IOUtils.saveTextFile(Collections.singletonList(sbn.toString()), dumpsPath.resolve("actionsScriptsNoText" + E_TXT));
 
-        IOUtils.saveTextFile(WordHelper.getAllPhrases(), opath.resolve("actions" + E_TXT));
+        IOUtils.saveTextFile(new StructureDump(yodesk).dumpActionsPhrases(), dumpsPath.resolve("actionsText" + E_MD));
     }
 
     public void dumpActionsTextToDocxClick() {
 
         Platform.runLater(() -> {
             try {
-                Path path = opath.resolve("actions" + E_DOCX);
+                Path path = translatePath.resolve("actions" + E_DOCX);
                 Log.debug("Save actions text to file: " + path);
                 WordUtils.saveZones(dtaCrc32, path);
                 Log.appendOk();
@@ -2165,7 +2180,7 @@ public class MainPaneController {
 
         Platform.runLater(() -> {
             try {
-                Path path = opath.resolve("actions" + E_DOCX);
+                Path path = translatePath.resolve("actions" + E_DOCX);
                 Log.debug("Load actions text from file: " + path);
                 WordRecord wordRecord = WordUtils.loadRecords(path);
                 validateProps(wordRecord.getProps());
@@ -2331,14 +2346,14 @@ public class MainPaneController {
 
         runInBackground(() -> {
             try {
-                Path path = opath.resolve("puzzles" + E_DOCX);
+                IOUtils.createDirectories(translatePath);
+                IOUtils.createDirectories(dumpsPath);
+                Path path = translatePath.resolve("puzzles" + E_DOCX);
                 Log.debug("Save puzzles text to file: " + path);
                 Log.debug("Total count: " + yodesk.getPuzzles().getPuzzles().size());
 
                 if (!disableNonTranslationMenuItem.isSelected()) {
-                    List<String> phrases = yodesk.getPuzzles().getFilteredPuzzles().stream()
-                            .flatMap(p -> p.getStrings().stream().filter(s -> !s.isEmpty())).map(s -> s.replace("\r\n", "\\r\\n")).collect(Collectors.toList());
-                    IOUtils.saveTextFile(phrases, opath.resolve("puzzles" + E_TXT));
+                    IOUtils.saveTextFile(new StructureDump(yodesk).dumpPuzzlesPhrases(), dumpsPath.resolve("puzzlesText" + E_MD));
                 }
 
                 WordUtils.savePuzzles(dtaCrc32, path);
@@ -2354,7 +2369,7 @@ public class MainPaneController {
 
         Platform.runLater(() -> {
             try {
-                Path path = opath.resolve("puzzles" + E_DOCX);
+                Path path = translatePath.resolve("puzzles" + E_DOCX);
                 Log.debug("Load puzzles text from file: " + path);
                 WordRecord wordRecord = WordUtils.loadRecords(path);
                 validateProps(wordRecord.getProps());
@@ -2418,27 +2433,26 @@ public class MainPaneController {
 
         runInBackground(() -> {
             try {
-                IOUtils.createDirectories(opath.resolve("CHAR"));
-                IOUtils.createDirectories(opath.resolve("Characters"));
-                IOUtils.createDirectories(opath.resolve("CAUX"));
-                IOUtils.createDirectories(opath.resolve("CHWP"));
+                Path path = resourcesPath.resolve("Characters");
+                IOUtils.createDirectories(path);
+                IOUtils.createDirectories(dumpsPath);
                 Log.debug("Saving characters...");
                 Log.debug("Total count: " + yodesk.getCharacters().getCharacters().size());
 
                 for (int i = 0; i < yodesk.getCharacters().getCharacters().size(); i++) {
                     Character character = yodesk.getCharacters().getCharacters().get(i);
                     for (Integer integer : character.getTileIds()) {
-                        Path path = opath.resolve("Characters").resolve(character.getName());
-                        IOUtils.createDirectories(path);
-                        BMPWriter.write(getTile(integer), path.resolve(String.format("%04d", integer) + E_BMP));
+                        Path charPath = path.resolve(character.getName());
+                        IOUtils.createDirectories(charPath);
+                        BMPWriter.write(getTile(integer), charPath.resolve(String.format("%04d", integer) + E_BMP));
                     }
                 }
 
-                Path path = opath.resolve("characters" + E_DOCX);
+                path = dumpsPath.resolve("characters" + E_DOCX);
                 Log.debug("Saving characters text to file: " + path);
                 WordUtils.saveCharacters("Characters", dtaCrc32, path);
 
-                IOUtils.saveTextFile(yodesk.getCharacters().getFilteredCharacters().stream().map(Character::getName).collect(Collectors.toList()), opath.resolve("characters" + E_TXT));
+                IOUtils.saveTextFile(yodesk.getCharacters().getFilteredCharacters().stream().map(Character::getName).collect(Collectors.toList()), dumpsPath.resolve("characters" + E_TXT));
                 Log.appendOk();
 
             } catch (Exception e) {
@@ -2451,7 +2465,7 @@ public class MainPaneController {
 
         runInBackground(() -> {
             try {
-                Path path = opath.resolve("characters" + E_XLSX);
+                Path path = dumpsPath.resolve("characters" + E_XLSX);
                 Log.debug("Generate characters report: " + path);
                 ExcelUtils.saveCharacters(path);
                 Log.appendOk();
@@ -2468,14 +2482,15 @@ public class MainPaneController {
                 Log.debug("Saving tile names...");
                 Log.debug("Total count: " + yodesk.getTileNames().getNames().size());
 
-                IOUtils.createDirectories(opath.resolve("TileNames"));
+                IOUtils.createDirectories(dumpsPath);
+                IOUtils.createDirectories(resourcesPath.resolve("TileNames"));
                 for (TileName n : yodesk.getTileNames().getNames()) {
                     if (null != n.getName()) {
-                        BMPWriter.write(getTile(n.getTileId(), icm), IOUtils.findUnusedFileName(opath.resolve("TileNames"), n.getName(), E_BMP));
+                        BMPWriter.write(getTile(n.getTileId(), icm), IOUtils.findUnusedFileName(resourcesPath.resolve("TileNames"), n.getName(), E_BMP));
                     }
                 }
                 IOUtils.saveTextFile(yodesk.getTileNames().getFilteredNames().stream().map(TileName::getName).filter(Objects::nonNull)
-                        .collect(Collectors.toList()), opath.resolve("tilenames" + E_TXT));
+                        .collect(Collectors.toList()), dumpsPath.resolve("tilenames" + E_TXT));
                 Log.appendOk();
             } catch (Exception e) {
                 JavaFxUtils.showAlert("Error saving TileNames to the files", e);
@@ -2487,7 +2502,8 @@ public class MainPaneController {
 
         Platform.runLater(() -> {
             try {
-                Path path = opath.resolve("tilenames" + E_DOCX);
+                IOUtils.createDirectories(translatePath);
+                Path path = translatePath.resolve("tilenames" + E_DOCX);
                 Log.debug("Saving tile names to file: " + path);
                 WordUtils.saveNames(dtaCrc32, path);
                 Log.appendOk();
@@ -2501,7 +2517,7 @@ public class MainPaneController {
 
         Platform.runLater(() -> {
             try {
-                Path path = opath.resolve("tilenames" + E_DOCX);
+                Path path = translatePath.resolve("tilenames" + E_DOCX);
                 Log.debug("Loading tile names from file: " + path);
                 WordRecord wordRecord = WordUtils.loadNames(path);
                 validateProps(wordRecord.getProps());

@@ -15,14 +15,6 @@ An original version: https://github.com/LeonisX/YExplorer
 
 ## TODO
 
-Group all resources to:
-
-* dumps
-* resources
-* translate
-* other
-
-
                 //TODO remove
                 Yodasav yodasav = Yodasav.fromFile("C:\\Users\\user\\Documents\\savegame.wld", yodesk);
                 assert yodasav.getInventory().get(0)== 18;
