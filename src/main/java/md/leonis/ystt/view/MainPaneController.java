@@ -1,8 +1,5 @@
 package md.leonis.ystt.view;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
 import io.kaitai.struct.ByteBufferKaitaiOutputStream;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -33,7 +30,8 @@ import md.leonis.ystt.model.docx.PropertyName;
 import md.leonis.ystt.model.docx.StringImagesRecord;
 import md.leonis.ystt.model.docx.StringRecord;
 import md.leonis.ystt.model.docx.WordRecord;
-import md.leonis.ystt.model.yodesk.*;
+import md.leonis.ystt.model.yodesk.CatalogEntry;
+import md.leonis.ystt.model.yodesk.Yodesk;
 import md.leonis.ystt.model.yodesk.characters.Character;
 import md.leonis.ystt.model.yodesk.characters.CharacterType;
 import md.leonis.ystt.model.yodesk.puzzles.PrefixedStr;
@@ -51,7 +49,6 @@ import org.apache.commons.lang3.StringUtils;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -182,9 +179,6 @@ public class MainPaneController {
     public FlowPane zoneRequiredItemsTilesFlowPane;
     public FlowPane lootTilesFlowPane;
 
-    public Tab hexOffsetsTab;
-    public TableView<Zone> zonesTableView;
-
     public RadioButton topRadioButton;
     public RadioButton middleRadioButton;
     public RadioButton bottomRadioButton;
@@ -209,6 +203,7 @@ public class MainPaneController {
     public Button replaceActionText;
     public CheckBox trimActionsTrailSpacesCheckBox;
     public CheckBox strictActionsReplacingRulesCheckBox;
+    public CheckBox generateMapsReports;
     public TableView<StringRecord> actionsTextTableView;
 
     public Label puzzlesCountLabel;
@@ -424,7 +419,6 @@ public class MainPaneController {
                 )
         );
         zoneLayerToggleGroup.selectedToggleProperty().addListener(zoneLayerToggleGroupListener());
-        zonesTableView.setItems(FXCollections.observableList(yodesk.getZones().getZones()));
         zoneEditorListView.setItems(FXCollections.observableList(yodesk.getZones().getZones().stream().map(m -> "Zone #" + m.getIndex()).collect(Collectors.toList())));
         zoneEditorListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> drawEditZone());
         zoneEditorListView.getSelectionModel().select(0);
@@ -541,7 +535,6 @@ public class MainPaneController {
         saveTilesToOneFile.setDisable(status);
         tilesInARowTextField.setDisable(status);
         dumpTab.setDisable(status);
-        hexOffsetsTab.setDisable(status);
         charactersTab.setDisable(status);
         Log.debug("Show all features: " + (status ? "OFF" : "ON"));
     }
@@ -1759,6 +1752,7 @@ public class MainPaneController {
         Platform.runLater(() -> {
             try {
                 Log.debug("Saving palettes...");
+                IOUtils.createDirectories(translatePath);
                 PaletteUtils.saveToFile(gamePalette, translatePath.resolve("palette.pal"));
                 PaletteUtils.saveSafeToFile(gamePalette, translatePath.resolve("palette-safe.pal"));
                 PaletteUtils.saveToFile(fuchsiaPalette, translatePath.resolve("palette-fuchsia.pal"));
@@ -1817,7 +1811,7 @@ public class MainPaneController {
             Path path = tilesPath.resolve(String.format("%04d", i) + E_BMP);
             BMPWriter.write(getTile(i, icm), path);
 
-            //TODO may be use PNG. Sample code
+            //TODO may be use PNG. Sample code. Now in used in ExcelUtils
             ImageIO.write(getTile(i, icm), "PNG", tilesPath.resolve(String.format("%04d", i) + ".png").toFile());
         }
     }
@@ -2093,6 +2087,15 @@ public class MainPaneController {
                             BMPWriter.write(getTile(i, icm), unusedTilesPath.resolve(String.format("%04d", i) + E_BMP));
                         }
                     }
+                }
+
+                if (generateMapsReports.isSelected()) {
+                    Path path = dumpsPath.resolve("monsters" + E_XLSX);
+                    Log.debug("Generate monsters report: " + path);
+                    ExcelUtils.saveMonsters(path);
+                    path = dumpsPath.resolve("zones" + E_XLSX);
+                    Log.debug("Generate zones report: " + path);
+                    ExcelUtils.saveZones(path);
                 }
 
                 if (dumpActionsCheckBox.isSelected()) {
@@ -2709,10 +2712,6 @@ public class MainPaneController {
 
         public static void debug(String message) {
             appendText("DEBUG: " + message);
-        }
-
-        public static void debug(int integer) {
-            debug(Integer.toString(integer));
         }
 
         public static void message(String message) {

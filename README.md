@@ -23,11 +23,9 @@ An original version: https://github.com/LeonisX/YExplorer
 
 * Resolve all TODO
 
-* Zone report. May be table in UI / or delete Map table
+* Dump all menu item
 
 * HEX
-
-* Сломан вывод таблицы Map (нужна ли?)
 
 * Dump app releases and verify them
 
