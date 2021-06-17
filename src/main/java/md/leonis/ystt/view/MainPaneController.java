@@ -73,6 +73,7 @@ public class MainPaneController {
     private static final int STANDARD_PALETTE_LOCATION = 0x550F0;
 
     public MenuItem openMenuItem;
+    public MenuItem dumpAllMenuItem;
     public MenuItem saveMenuItem;
     public MenuItem saveAsMenuItem;
     public MenuItem closeMenuItem;
@@ -525,6 +526,7 @@ public class MainPaneController {
 
     private void disableNonTranslationFeatures(boolean status) {
 
+        dumpAllMenuItem.setDisable(status);
         dumpAllSectionsButton.setDisable(status);
         saveHighMidStructureButton.setDisable(status);
         saveSoundsListToFileButton.setDisable(status);
@@ -1545,6 +1547,26 @@ public class MainPaneController {
         Config.updatePalette();
     }
 
+    public void dumpAllMenuItemClick() {
+
+        Log.debug("Dump all resources...");
+        dumpAllSectionsButtonClick();
+        saveHighMidStructureButtonClick();
+        saveStartupScreenButtonClick();
+        savePaletteButtonButtonClick();
+        dumpPaletteButtonButtonClick();
+        saveSoundsListToFileButtonClick();
+        saveTilesToSeparateFilesClick();
+        saveTilesToOneFileClick();
+        saveZonesToFilesButtonClick();
+        dumpActionsTextToDocxClick();
+        dumpPuzzlesTextToDocxClick();
+        saveCharactersToFilesButtonClick();
+        generateCharactersReportButtonClick();
+        saveNamesToFileButtonClick();
+        saveNamesTextToDocxCLick();
+    }
+
     public void saveMenuItemClick() {
 
         if (changesCount == 0) {
@@ -1677,7 +1699,7 @@ public class MainPaneController {
         });
     }
 
-    public void saveToBitmapButtonClick() {
+    public void saveStartupScreenButtonClick() {
 
         Platform.runLater(() -> {
             try {
@@ -2464,7 +2486,7 @@ public class MainPaneController {
         });
     }
 
-    public void generateCharactersReportButton() {
+    public void generateCharactersReportButtonClick() {
 
         runInBackground(() -> {
             try {
@@ -2501,7 +2523,7 @@ public class MainPaneController {
         });
     }
 
-    public void dumpNamesTextToDocxCLick() {
+    public void saveNamesTextToDocxCLick() {
 
         Platform.runLater(() -> {
             try {

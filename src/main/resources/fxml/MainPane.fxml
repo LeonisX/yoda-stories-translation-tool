@@ -47,6 +47,7 @@
                     <MenuBar>
                         <Menu text="File">
                             <MenuItem fx:id="openMenuItem" mnemonicParsing="false" onAction="#openMenuItemClick" text="Open" />
+                            <MenuItem fx:id="dumpAllMenuItem" mnemonicParsing="false" onAction="#dumpAllMenuItemClick" text="Dump all resources" disable="true" />
                             <MenuItem fx:id="saveMenuItem" mnemonicParsing="false" onAction="#saveMenuItemClick" text="Save" />
                             <MenuItem fx:id="saveAsMenuItem" mnemonicParsing="false" onAction="#saveAsMenuItemClick" text="Save As..." />
                             <MenuItem fx:id="closeMenuItem" mnemonicParsing="false" onAction="#closeMenuItemClick" text="Close" />
@@ -275,7 +276,7 @@
                         </Tab>
                         <Tab text="Title Screen/Palette">
                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                                <Button fx:id="saveToBitmapButton" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#saveToBitmapButtonClick" prefHeight="25.0" prefWidth="112.0" text="Save to Bitmap" />
+                                <Button fx:id="saveToBitmapButton" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#saveStartupScreenButtonClick" prefHeight="25.0" prefWidth="112.0" text="Save to Bitmap" />
                                 <Button fx:id="loadFromBitmapButton" layoutX="14.0" layoutY="47.0" mnemonicParsing="false" onAction="#loadFromBitmapButtonClick" text="Load from Bitmap" />
                                 <ImageView fx:id="titleScreenImageView" fitHeight="288.0" fitWidth="288.0" layoutX="141.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" />
                                 <Canvas fx:id="paletteCanvas" height="288.0" layoutX="450.0" layoutY="14.0" width="288.0" />
@@ -646,7 +647,7 @@
                                 <Label layoutX="14.0" layoutY="14.0" text="Characters count:" />
                                 <Label fx:id="charactersCountLabel" layoutX="115.0" layoutY="14.0" />
                                 <Button fx:id="saveCharactersToFilesButton" layoutX="14.0" layoutY="40.0" mnemonicParsing="false" onAction="#saveCharactersToFilesButtonClick" text="Save characters to files" />
-                                <Button fx:id="generateCharactersReportButton" layoutX="14.0" layoutY="78.0" mnemonicParsing="false" onAction="#generateCharactersReportButton" text="Generate characters report" />
+                                <Button fx:id="generateCharactersReportButton" layoutX="14.0" layoutY="78.0" mnemonicParsing="false" onAction="#generateCharactersReportButtonClick" text="Generate characters report" />
                                 <TextArea editable="false" layoutX="14.0" layoutY="116.0" prefHeight="140" prefWidth="137" text="Characters don't need to be translated. Don't waste your time :)" wrapText="true">
                                     <font>
                                         <Font name="System Bold" size="12.0" />
@@ -718,7 +719,7 @@
                                                         <padding>
                                                             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                                         </padding>
-                                                        <Button fx:id="dumpNamesTextToDocx" mnemonicParsing="false" onAction="#dumpNamesTextToDocxCLick" text="Dump text to DOCX" />
+                                                        <Button fx:id="dumpNamesTextToDocx" mnemonicParsing="false" onAction="#saveNamesTextToDocxCLick" text="Dump text to DOCX" />
                                                         <Button fx:id="loadTranslatedNamesText" mnemonicParsing="false" onAction="#loadTranslatedNamesTextClick" text="Load translated text" />
                                                         <Button fx:id="replaceNamesText" mnemonicParsing="false" onAction="#replaceNamesTextClick" text="Replace text in DTA" />
                                                         <CheckBox fx:id="trimNamesSpacesCheckBox" mnemonicParsing="false" selected="true" text="Trim spaces" />

@@ -23,8 +23,6 @@ An original version: https://github.com/LeonisX/YExplorer
 
 * Resolve all TODO
 
-* Dump all menu item
-
 * HEX
 
 * Dump app releases and verify them
