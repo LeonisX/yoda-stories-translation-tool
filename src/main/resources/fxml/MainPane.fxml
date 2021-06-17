@@ -761,22 +761,7 @@
             </BorderPane>
             <BorderPane prefHeight="180.0" prefWidth="200.0">
                 <center>
-                    <TabPane prefHeight="180.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
-                        <Tab text="Logs">
-                            <BorderPane prefHeight="180.0" prefWidth="200.0">
-                                <center>
-                                    <TextArea fx:id="logsTextArea" />
-                                </center>
-                            </BorderPane>
-                        </Tab>
-                        <Tab text="HEX Viewer">
-                            <BorderPane prefHeight="180.0" prefWidth="200.0">
-                                <center>
-                                    <TextArea fx:id="hexViewerTextArea" />
-                                </center>
-                            </BorderPane>
-                        </Tab>
-                    </TabPane>
+                    <TextArea fx:id="logsTextArea" />
                 </center>
                 <bottom>
                     <HBox alignment="CENTER_LEFT" prefHeight="32.0" prefWidth="1135.0" spacing="5" BorderPane.alignment="CENTER">
