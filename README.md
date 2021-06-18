@@ -1,12 +1,12 @@
 # Yoda Stories Translation Tool
 
-Utility for translating the game Yoda Stories.
+Utility for translation and comparison the Yoda Stories game.
  
 * Editing graphics, zones and tiles
 * Save text in DOCX format for easy translation
 * Ability to change window dimensions and font size 
 
-Утилита для перевода игры Yoda Stories.
+Утилита для перевода и исследования игры Yoda Stories.
  
 * Редактирование графики, зон и тайлов
 * Сохранение текста в DOCX формате для удобства перевода
@@ -16,6 +16,8 @@ Utility for translating the game Yoda Stories.
 
 * [Read Yoda Stories Translation Guide](documents/translation-guide.md)
 * [Руководство по переводу Yoda Stories](documents/ru/translation-guide.md)
+* [Versions comparison](documents/comparison.md)
+* [Demo version comparison](documents/comparison-demo.md)
 * [An original Delphi version](https://github.com/LeonisX/YExplorer)
 
 Powered with [Kaitai structure format from Cyco](https://github.com/cyco/kaitai_struct_formats/blob/add-yodesk/game/yodesk.ksy).
@@ -40,7 +42,12 @@ Uses modified code from http://image4j.sourceforge.net project.
 
 ## TODO List
 
+* Dump all secrets ()
+* Release 1.0
+* Correct output from different threads - OK/False + task name in logs + dialog
+* Zone editor - sticky tiles (not need to drag-drop)
 * Resolve all TODO
+* Remember if all features are enabled
 * When add/delete/replace tiles, gender - CatalogEntry bytes[] don't change. Dump only unchanged data.
 * Too big Alert dialogs, need a smallest solutions
 * graphics-translation-guide: link to Russian translation

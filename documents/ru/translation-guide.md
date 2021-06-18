@@ -24,21 +24,6 @@ Yoda Stories Translation Guide
 
 ## Какую версию переводить?
 
-В настоящее время известны следующие версии Yoda Stories:
-
-* Star Wars - Yoda Stories (14.02.1997) (Eng) (v1.0)
-* Star Wars - Yoda Stories (14.02.1997) (Eng) (v1.0) (Patch v6)
-* Star Wars - Yoda Stories (18.02.1997) (Eng) (v1.1)
-* Star Wars - Yoda Stories (18.02.1997) (Eng) (Demo)
-* **Star Wars - Yoda Stories (10.08.1998) (Eng) (v1.2) (Patch v6)**
-* Star Wars - Yoda Stories (22.05.1997) (Spa)
-* Star Wars - Yoda Stories (25.06.1997) (Ger)
-* Star Wars - Yoda Stories (13.12.2001) (T-Spa_Selva Translators)
-* Star Wars - Yoda Stories (12.11.2006) (T-Rus_PRO)
-* TODO My translation
-
-Они идентифицируются по контрольным суммам файлов yodesk.exe и yodesk.dta.
-
 Yoda Stories Translation Tool (далее по тексту YSTT) после загрузки игры выводит информацию о версии, а так же даёт необходимые рекомендации.
 
 ![](../images/gui-common.png)
@@ -47,6 +32,8 @@ Yoda Stories Translation Tool (далее по тексту YSTT) после з�
 
 Мы настоятельно рекомендуем брать в качестве основы ТОЛЬКО версию Star Wars - Yoda Stories (10.08.1998) (Eng) (v1.2) (Patch v6),
 поскольку в ней находятся самые последние исправления.
+
+[Сравнение версий](documents/comparison.md)
 
 Искать эту игру стоит в сборнике Star Wars - Yoda Stories & Behind The Magic - Vehicles Special Edition, который,
 в свою очередь, входил в сборник LucasArts Archives Vol. IV: Star Wars Collection II.

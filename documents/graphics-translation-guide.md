@@ -113,7 +113,7 @@ You need to pick one color at the start and use that color to save and replace r
 
 In fact, these screens are implemented in the same way as all play Zones in the game. Their numbers: 0, 76, 77.
 
-![](images/000.png) ![](images/076.png) ![](images/077.png)
+![](images/zones/000.png) ![](images/zones/076.png) ![](images/zones/077.png)
 
 Note that Zone #0 is very similar to the startup screen. It is displayed at the beginning of every game,
 and on it, you can see the flight of the X-Wing.
