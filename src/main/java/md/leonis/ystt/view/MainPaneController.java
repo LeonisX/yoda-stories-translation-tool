@@ -233,7 +233,6 @@ public class MainPaneController {
     public TableView<StringImagesRecord> namesTextTableView;
 
     public TextArea logsTextArea;
-    public TextArea hexViewerTextArea;
 
     public Label statusLabel;
     public Canvas statusCanvas;
@@ -1478,7 +1477,7 @@ public class MainPaneController {
         exeDump.setCharset(sourceCharset.getCode());
 
         Log.debug("DTA revision: " + release.getTitle());
-        Log.appendOk();
+        Log.appendOk("Load");
     }
 
     private static void loadDtaFile(Path dtaPath) throws IOException {
@@ -1550,10 +1549,13 @@ public class MainPaneController {
     public void dumpAllMenuItemClick() {
 
         Log.debug("Dump all resources...");
+        IOUtils.createDirectories(resourcesPath);
+        IOUtils.createDirectories(dumpsPath);
+        IOUtils.createDirectories(translatePath);
         dumpAllSectionsButtonClick();
         saveHighMidStructureButtonClick();
         saveStartupScreenButtonClick();
-        savePaletteButtonButtonClick();
+        savePaletteButtonClick();
         dumpPaletteButtonButtonClick();
         saveSoundsListToFileButtonClick();
         saveTilesToSeparateFilesClick();
@@ -1580,7 +1582,7 @@ public class MainPaneController {
                     IOUtils.copyFile(exeFile.toPath(), backupPath);
                     Log.debug("Save EXE file");
                     exeDump.saveToFile(exeFile);
-                    Log.appendOk();
+                    Log.appendOk("Save EXE file");
 
                     chunks = dtaFile.getFileName().toString().split("\\.");
                     backupPath = dtaFile.getParent().resolve(chunks[0] + ".dta.bak");
@@ -1614,7 +1616,7 @@ public class MainPaneController {
 
                         changesCount = 0; // if ok
 
-                        Log.appendOk();
+                        Log.appendOk("Save DTA file");
                     }
                 } catch (Exception e) {
                     JavaFxUtils.showAlert("DTA file saving error", e);
@@ -1678,7 +1680,7 @@ public class MainPaneController {
                     IOUtils.saveBytes(path.resolve(name + ".bin"), entry.getBytes());
                     Log.debug(name + " is saved");
                 }
-                Log.debug("OK");
+                Log.appendOk("Dump all sections");
             } catch (Exception e) {
                 JavaFxUtils.showAlert("Sections dumping error", e);
             }
@@ -1715,15 +1717,15 @@ public class MainPaneController {
                     BMPWriter.write8bit(titleScreenImageView, path);
                     BMPWriter.write8bit(titleScreenImageView, path2);
                 }
-                Log.appendOk();
+                Log.appendOk("Save startup screen");
 
             } catch (Exception e) {
-                JavaFxUtils.showAlert("Title screen saving error", e);
+                JavaFxUtils.showAlert("Startup screen saving error", e);
             }
         });
     }
 
-    public void loadFromBitmapButtonClick() {
+    public void loadStartupScreenButtonClick() {
 
         Platform.runLater(() -> {
             try {
@@ -1746,15 +1748,15 @@ public class MainPaneController {
                 SwingFXUtils.toFXImage(titleImage.getImage(), image);
                 titleScreenImageView.setImage(image);
                 titleScreenImageView.setUserData(titleImage);
-                Log.appendOk();
+                Log.appendOk("Load startup screen");
 
             } catch (Exception e) {
-                JavaFxUtils.showAlert("Title screen loading error", e);
+                JavaFxUtils.showAlert("Startup screen loading error", e);
             }
         });
     }
 
-    public void savePaletteButtonButtonClick() {
+    public void savePaletteButtonClick() {
 
         Platform.runLater(() -> {
             try {
@@ -1762,7 +1764,7 @@ public class MainPaneController {
                 Path path = resourcesPath.resolve("palette" + E_BMP);
                 Log.debug("Saving palette image: " + path);
                 BMPWriter.write8bit(paletteCanvas, path);
-                Log.appendOk();
+                Log.appendOk("Save palette image");
             } catch (Exception e) {
                 JavaFxUtils.showAlert("Palette loading error", e);
             }
@@ -1779,7 +1781,7 @@ public class MainPaneController {
                 PaletteUtils.saveSafeToFile(gamePalette, translatePath.resolve("palette-safe.pal"));
                 PaletteUtils.saveToFile(fuchsiaPalette, translatePath.resolve("palette-fuchsia.pal"));
                 PaletteUtils.saveSafeToFile(fuchsiaPalette, translatePath.resolve("palette-fuchsia-safe.pal"));
-                Log.appendOk();
+                Log.appendOk("Dump palettes");
             } catch (Exception e) {
                 JavaFxUtils.showAlert("Palette saving error", e);
             }
@@ -1793,7 +1795,7 @@ public class MainPaneController {
                 Path path = dumpsPath.resolve("sounds" + E_TXT);
                 Log.debug("Saving sounds to file: " + path);
                 IOUtils.saveTextFile(yodesk.getSounds().getSounds(), path);
-                Log.appendOk();
+                Log.appendOk("Save sounds");
             } catch (Exception e) {
                 JavaFxUtils.showAlert("Sounds list saving error", e);
             }
@@ -1822,7 +1824,7 @@ public class MainPaneController {
             } catch (Exception e) {
                 Log.error("Error saving tiles to separate files: " + e.getMessage());
             }
-        }, Log::appendOk);
+        }, () -> Log.appendOk("Save tiles to separate files"));
     }
 
     private void saveTiles() throws IOException {
@@ -1983,7 +1985,7 @@ public class MainPaneController {
             } catch (Exception e) {
                 Log.error("Error saving tiles to a single file: " + e.getMessage());
             }
-        }, Log::appendOk);
+        }, () -> Log.appendOk("Save tiles to single files"));
     }
 
     public void clipboardCanvasMouseEntered(MouseEvent mouseEvent) {
@@ -2015,13 +2017,13 @@ public class MainPaneController {
 
                 String initialFile = (null == clipboardFile) ? "clipboard.bmp" : clipboardFile.getName();
                 String initialDir = (null == clipboardFile) ? translatePath.toString() : clipboardFile.getParent();
-                File file = JavaFxUtils.showBMPLoadDialog("Load Clipboard image", initialDir, initialFile);
+                File file = JavaFxUtils.showBMPLoadDialog("Load clipboard image", initialDir, initialFile);
                 if (file != null) {
                     Log.debug("Loading clipboard file: " + file.getName());
                     clipboardFile = file;
                     clipboardBufferedImage = BMPReader.read(file);
                     ImageUtils.drawOnCanvas(clipboardBufferedImage, clipboardCanvas, transparentColor);
-                    Log.appendOk();
+                    Log.appendOk("Save clipboard image");
                 }
             } catch (Exception e) {
                 JavaFxUtils.showAlert("Clipboard image loading error", e);
@@ -2037,9 +2039,9 @@ public class MainPaneController {
                 String initialDir = (null == clipboardFile) ? translatePath.toString() : clipboardFile.getParent();
                 File file = JavaFxUtils.showBMPSaveDialog("Save Clipboard image", initialDir, initialFile);
                 if (file != null) {
-                    Log.debug("Loading clipboard file: " + file.getName());
+                    Log.debug("Saving clipboard file: " + file.getName());
                     BMPWriter.write(clipboardBufferedImage, file);
-                    Log.appendOk();
+                    Log.appendOk("Save clipboard image");
                 }
             } catch (Exception e) {
                 JavaFxUtils.showAlert("Clipboard image saving error", e);
@@ -2127,7 +2129,7 @@ public class MainPaneController {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }, Log::appendOk);
+        }, () -> Log.appendOk("Save zones to files"));
     }
 
     private void drawBIZone(BufferedImage canvas, Zone zone) {
@@ -2194,7 +2196,7 @@ public class MainPaneController {
                 Path path = translatePath.resolve("actions" + E_DOCX);
                 Log.debug("Save actions text to file: " + path);
                 WordUtils.saveZones(dtaCrc32, path);
-                Log.appendOk();
+                Log.appendOk("Save actions text");
             } catch (Exception e) {
                 JavaFxUtils.showAlert("Error saving Actions text to the DOCX file", e);
             }
@@ -2211,7 +2213,7 @@ public class MainPaneController {
                 validateProps(wordRecord.getProps());
                 actionTexts = wordRecord.getStringRecords();
                 actionsTextTableView.setItems(FXCollections.observableList(actionTexts));
-                Log.appendOk();
+                Log.appendOk("Load actions text");
             } catch (Exception e) {
                 JavaFxUtils.showAlert("Error loading Actions text from file", e);
             }
@@ -2281,7 +2283,7 @@ public class MainPaneController {
 
                 changesCount++;
 
-                Log.appendOk();
+                Log.appendOk("Replace actions text");
                 JavaFxUtils.showAlert("The text has been successfully replaced", "No errors were found during the replacement ", Alert.AlertType.INFORMATION);
 
             } catch (Exception e) {
@@ -2382,7 +2384,7 @@ public class MainPaneController {
                 }
 
                 WordUtils.savePuzzles(dtaCrc32, path);
-                Log.appendOk();
+                Log.appendOk("Save puzzles text to file");
 
             } catch (Exception e) {
                 JavaFxUtils.showAlert("Error saving puzzles to the files", e);
@@ -2400,7 +2402,7 @@ public class MainPaneController {
                 validateProps(wordRecord.getProps());
                 puzzlesTexts = wordRecord.getStringRecords().stream().map(s -> new StringImagesRecord(s.getId(), Collections.emptyList(), s.getOriginal(), s.getTranslation())).collect(Collectors.toList());
                 puzzlesTextTableView.setItems(FXCollections.observableList(puzzlesTexts));
-                Log.appendOk();
+                Log.appendOk("Load puzzles text");
             } catch (Exception e) {
                 JavaFxUtils.showAlert("Error loading Puzzles text from file", e);
             }
@@ -2436,7 +2438,7 @@ public class MainPaneController {
 
                 changesCount++;
 
-                Log.appendOk();
+                Log.appendOk("Replace puzzles text");
                 JavaFxUtils.showAlert("The text has been successfully replaced", "No errors were found during the replacement ", Alert.AlertType.INFORMATION);
 
             } catch (Exception e) {
@@ -2478,7 +2480,7 @@ public class MainPaneController {
                 WordUtils.saveCharacters("Characters", dtaCrc32, path);
 
                 IOUtils.saveTextFile(yodesk.getCharacters().getFilteredCharacters().stream().map(Character::getName).collect(Collectors.toList()), dumpsPath.resolve("characters" + E_TXT));
-                Log.appendOk();
+                Log.appendOk("Save characters");
 
             } catch (Exception e) {
                 JavaFxUtils.showAlert("Error saving characters to the files", e);
@@ -2493,7 +2495,7 @@ public class MainPaneController {
                 Path path = dumpsPath.resolve("characters" + E_XLSX);
                 Log.debug("Generate characters report: " + path);
                 ExcelUtils.saveCharacters(path);
-                Log.appendOk();
+                Log.appendOk("Generate characters report");
             } catch (Exception e) {
                 JavaFxUtils.showAlert("Error saving characters to the files", e);
             }
@@ -2516,7 +2518,7 @@ public class MainPaneController {
                 }
                 IOUtils.saveTextFile(yodesk.getTileNames().getFilteredNames().stream().map(TileName::getName).filter(Objects::nonNull)
                         .collect(Collectors.toList()), dumpsPath.resolve("tilenames" + E_TXT));
-                Log.appendOk();
+                Log.appendOk("Save tile names");
             } catch (Exception e) {
                 JavaFxUtils.showAlert("Error saving TileNames to the files", e);
             }
@@ -2531,7 +2533,7 @@ public class MainPaneController {
                 Path path = translatePath.resolve("tilenames" + E_DOCX);
                 Log.debug("Saving tile names to file: " + path);
                 WordUtils.saveNames(dtaCrc32, path);
-                Log.appendOk();
+                Log.appendOk("Save tile names text");
             } catch (Exception e) {
                 JavaFxUtils.showAlert("Error saving TileNames text to the DOCX file", e);
             }
@@ -2559,7 +2561,7 @@ public class MainPaneController {
                 }
 
                 //maxWidth = maxWidth * 179 / 130;
-                Log.appendOk();
+                Log.appendOk("Load tile names");
                 if (maxWidth > 141) {
                     JavaFxUtils.showAlert("Too long tile name(s)", "Please consider increasing the window width by at least " + (int) Math.ceil(maxWidth - 141) + "px", Alert.AlertType.INFORMATION);
                 }
@@ -2590,7 +2592,7 @@ public class MainPaneController {
 
                 changesCount++;
 
-                Log.appendOk();
+                Log.appendOk("Replace tile names");
                 JavaFxUtils.showAlert("The text has been successfully replaced", "No errors were found during the replacement ", Alert.AlertType.INFORMATION);
 
             } catch (Exception e) {
@@ -2740,8 +2742,8 @@ public class MainPaneController {
             appendText("MESSAGE: " + message);
         }
 
-        public static void appendOk() {
-            appendText("OK");
+        public static void appendOk(String text) {
+            appendText(text + ": OK");
         }
 
         private static void appendText(String text) {

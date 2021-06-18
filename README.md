@@ -42,7 +42,7 @@ Uses modified code from http://image4j.sourceforge.net project.
 
 ## TODO List
 
-* Dump all secrets ()
+* Dump all secrets (show tiles, ...)
 * Release 1.0
 * Correct output from different threads - OK/False + task name in logs + dialog
 * Zone editor - sticky tiles (not need to drag-drop)

@@ -39,8 +39,8 @@ public enum InstructionOpcode {
     WIN_GAME(31),
     LOSE_GAME(32),
     CHANGE_ZONE(33),
-    SET_SHARED_COUNTER(34),
-    ADD_TO_SHARED_COUNTER(35),
+    SET_SECTOR_COUNTER(34),
+    ADD_TO_SECTOR_COUNTER(35),
     SET_RANDOM(36),
     ADD_HEALTH(37);
 

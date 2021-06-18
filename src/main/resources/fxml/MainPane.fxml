@@ -41,7 +41,7 @@
 <?import md.leonis.ystt.view.HexCellFactory?>
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="765.0" prefWidth="1216.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="md.leonis.ystt.view.MainPaneController">
     <center>
-        <SplitPane dividerPositions="0.7238461538461539" orientation="VERTICAL" BorderPane.alignment="CENTER">
+        <SplitPane dividerPositions="0.76" orientation="VERTICAL" BorderPane.alignment="CENTER">
             <BorderPane>
                 <top>
                     <MenuBar>
@@ -277,10 +277,10 @@
                         <Tab text="Title Screen/Palette">
                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                 <Button fx:id="saveToBitmapButton" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#saveStartupScreenButtonClick" prefHeight="25.0" prefWidth="112.0" text="Save to Bitmap" />
-                                <Button fx:id="loadFromBitmapButton" layoutX="14.0" layoutY="47.0" mnemonicParsing="false" onAction="#loadFromBitmapButtonClick" text="Load from Bitmap" />
+                                <Button fx:id="loadFromBitmapButton" layoutX="14.0" layoutY="47.0" mnemonicParsing="false" onAction="#loadStartupScreenButtonClick" text="Load from Bitmap" />
                                 <ImageView fx:id="titleScreenImageView" fitHeight="288.0" fitWidth="288.0" layoutX="141.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" />
                                 <Canvas fx:id="paletteCanvas" height="288.0" layoutX="450.0" layoutY="14.0" width="288.0" />
-                                <Button fx:id="savePaletteButton" layoutX="14.0" layoutY="100.0" mnemonicParsing="false" onAction="#savePaletteButtonButtonClick" prefHeight="25.0" prefWidth="112.0" text="Save Palette" />
+                                <Button fx:id="savePaletteButton" layoutX="14.0" layoutY="100.0" mnemonicParsing="false" onAction="#savePaletteButtonClick" prefHeight="25.0" prefWidth="112.0" text="Save Palette" />
                                 <Button fx:id="dumpPaletteButton" layoutX="14.0" layoutY="133.0" mnemonicParsing="false" onAction="#dumpPaletteButtonButtonClick" prefHeight="25.0" prefWidth="112.0" text="Dump Palette" />
                             </AnchorPane>
                         </Tab>
