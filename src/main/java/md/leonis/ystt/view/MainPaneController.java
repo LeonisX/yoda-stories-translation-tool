@@ -162,6 +162,7 @@ public class MainPaneController {
     public CheckBox normalSaveCheckBox;
     public CheckBox groupByAttributesCheckBox;
     public CheckBox groupByPlanetTypeCheckBox;
+    public CheckBox groupByUnknownCheckBox;
     public CheckBox dumpActionsCheckBox;
     public CheckBox saveUnusedTilesCheckBox;
     public Button showActionsButton;
@@ -2097,6 +2098,20 @@ public class MainPaneController {
 
                         if (groupByPlanetTypeCheckBox.isSelected()) {
                             Path path = resourcesPath.resolve("ZonesByPlanetType").resolve(zone.getPlanet().name());
+                            IOUtils.createDirectories(path);
+                            BMPWriter.write(canvas, path.resolve(String.format("%03d", zone.getIndex()) + E_BMP));
+                        }
+
+                        if (groupByUnknownCheckBox.isSelected()) {
+                            Path path = resourcesPath.resolve("ZonesByIzaxUnk2").resolve(String.valueOf(zone.getIzax().get_unnamed2()));
+                            IOUtils.createDirectories(path);
+                            BMPWriter.write(canvas, path.resolve(String.format("%03d", zone.getIndex()) + E_BMP));
+
+                            path = resourcesPath.resolve("ZonesByIzx4Unk2").resolve(String.valueOf(zone.getIzx4().get_unnamed2()));
+                            IOUtils.createDirectories(path);
+                            BMPWriter.write(canvas, path.resolve(String.format("%03d", zone.getIndex()) + E_BMP));
+
+                            path = resourcesPath.resolve("ZonesByIzaxIzx4Unk2").resolve(String.valueOf(zone.getIzax().get_unnamed2()) + zone.getIzx4().get_unnamed2());
                             IOUtils.createDirectories(path);
                             BMPWriter.write(canvas, path.resolve(String.format("%03d", zone.getIndex()) + E_BMP));
                         }

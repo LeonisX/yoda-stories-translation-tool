@@ -42,6 +42,7 @@ Uses modified code from http://image4j.sourceforge.net project.
 
 ## TODO List
 
+* Actions cleaner, visualizer, interpreter
 * Dump all secrets (show tiles, ...)
 * Release 1.0
 * Correct output from different threads - OK/False + task name in logs + dialog
