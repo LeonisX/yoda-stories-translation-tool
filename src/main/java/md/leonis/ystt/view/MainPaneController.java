@@ -331,6 +331,7 @@ public class MainPaneController {
             JavaFxUtils.showAlert("UI update error", e);
         }
 
+        disableNonTranslationMenuItem.setSelected(!enableAllFestures);
         disableNonTranslationFeatures(disableNonTranslationMenuItem.isSelected());
     }
 
@@ -526,6 +527,7 @@ public class MainPaneController {
 
     private void disableNonTranslationFeatures(boolean status) {
 
+        enableAllFestures = !status;
         dumpAllMenuItem.setDisable(status);
         dumpAllSectionsButton.setDisable(status);
         saveHighMidStructureButton.setDisable(status);

@@ -219,6 +219,7 @@ public class Config {
     public static Release release;
 
     public static String lastVisitedDirectory = ".";
+    public static boolean enableAllFestures;
 
     private static final Properties properties = new Properties();
 
@@ -237,6 +238,9 @@ public class Config {
                 if (properties.getProperty("LastVisitedDirectory") != null) {
                     lastVisitedDirectory = properties.getProperty("LastVisitedDirectory");
                 }
+                if (properties.getProperty("EnableAllFeatures") != null) {
+                    enableAllFestures = Boolean.parseBoolean(properties.getProperty("EnableAllFeatures"));
+                }
                 reader.close();
             }
         } catch (IOException e) {
@@ -249,6 +253,7 @@ public class Config {
         try {
             Writer writer = Files.newBufferedWriter(Paths.get("settings.txt"));
             properties.setProperty("LastVisitedDirectory", lastVisitedDirectory);
+            properties.setProperty("EnableAllFeatures", Boolean.toString(enableAllFestures));
             properties.store(writer, "Yoda Stories Translation Tool Properties");
             writer.close();
         } catch (IOException e) {
