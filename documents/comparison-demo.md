@@ -4,10 +4,10 @@ Yoda Stories Demo Version Comparison
 1.1 vs Demo version
 -------------------
 
-Самое время посмотреть на то, что именно вырезали из демо-версии Yoda Stories.
-Различий достаточно много поэтому мы вероятно опустим несколько наименее значимых.
+t's time to take a look at what exactly was cut from the Demo version of Yoda Stories.
+There are many differences, so we will probably omit a few of the least significant ones.
 
-Нельзя сохраняться и загружаться.
+You cannot save and load.
 
 * Executable file
 * Startup screen
@@ -32,21 +32,21 @@ Deactivated menu items:
 * World Control
 * S&tatistics
 
-Причём, даже если их активировать, то игра в процессе загрузки отключит их снова.
+Moreover, even if you activate them, the game will turn them off again during the boot process.
 
 
 **Startup screen**
 
 ![](images/zones/startup-demo.png)
 
-Надпись "Demo".
+The inscription "Demo".
 
 **Tiles**
 
-Тайлы - очищены тайлы, связанные с пустыней и лесом.
-Фактически тут один уровень во льдах. Neshtab.
+Desert and Forest tiles have been cleared.
+In fact, there is one level in the ice, on the planet Neshtab.
 
-Так что, даже если восстановить полную функциональность, большинство уровней будут выглядеть голыми и будут непроходимыми.
+So even if full functionality is restored, most of the levels will look bare and impassable.
 
 * 0-6
 * 8-17
@@ -86,7 +86,7 @@ Deactivated menu items:
 * 1890-1893
 * 2059-2074
 
-Заменены тайлы:
+Replaced tiles:
 
 * 855
 * 872
@@ -97,7 +97,7 @@ Deactivated menu items:
 * 1170
 * 2121-2122 (Demo)
 
-Добавлены тайлы:
+Added tiles:
 
 * 2123-2127 (Demo)
 
@@ -116,28 +116,29 @@ Deactivated menu items:
 
 **Zones**
 
-Поскольку в демо версии должны быть недоступны планеты с пустынями и джунглями, и были удалены тайлы, связанные с ними,
-то из всех соответствующих зон эти тайлы были так же удалены (заменены на прозрачные тайлы).
+Since planets with deserts and jungles are not available in the demo version, 
+and the tiles associated with them were removed, 
+these tiles were also removed from all the corresponding zones (replaced with transparent tiles).
 
-Так же стиранию подверглась часть снежных локаций.
+Some snow locations were also erased.
 
 **Zone 0**: +1 instruction for Action 0
 
 ![](images/zones/startup-demo.png)
 
-Поскольку фраза "Demo" выводится на верхнем слое, её нижний тайл убирается во время полёта X-Wing.
+Since the phrase "Demo" is displayed on the top layer, its bottom tile is removed during the flight of the X-Wing.
 
 `remove-tile: 5 5 2 0 0 ""`
 
-**Zones 76-77**: добавлено Demo.
+**Zones 76-77**: added Demo.
 
 ![](images/zones/demo/076.png) ![](images/zones/demo/077.png)
 
-**Zones 93-96**: убраны все мини-квесты от Йоды, сцена его похищения.
+**Zones 93-96**: removed all mini-quests from Yoda, the scene of his abduction.
 
 ![](images/zones/demo/093.png) ![](images/zones/demo/094.png) ![](images/zones/demo/095.png) ![](images/zones/demo/096.png)
 
-Убрана фраза: Dagobah! Yoda must be around here somewhere. I better find him and see what's on his mind...
+Removed phrase: `Dagobah! Yoda must be around here somewhere. I better find him and see what's on his mind...`
 
 izx4._unnamed2: 1 -> 0
 
@@ -145,21 +146,21 @@ izx4._unnamed2: 1 -> 0
 
 ![](images/zones/demo/115.png)
 
-Странное решение, поскольку, это пустынная локация.
+A strange decision, since this is a deserted location.
 
 **Zone 146**:
 
 ![](images/zones/demo/146.png)
 
-В этой локации квестовые предметы никогда не появятся.
+Quest items will never appear in this location.
 
-**Zone 151**: космопорт.
+**Zone 151**: spaceport.
 
 ![](images/zones/demo/151.png)
 
-This is the tiny Spaceport on Neshtab. In a real game, I might find myself in the DESERT or a RAIN FOREST as easily as here, but the DEMO is all ICE, and there's only one ending...
+`This is the tiny Spaceport on Neshtab. In a real game, I might find myself in the DESERT or a RAIN FOREST as easily as here, but the DEMO is all ICE, and there's only one ending...`
 
-Новые действия, выполняемые по прилёту:
+New actions performed upon arrival:
 
 ```
 Action 16
@@ -193,20 +194,20 @@ then
 
 izx4._unnamed2: 1 -> 0
 
-Убран сугроб: [11; 1]
+Snowdrift removed: [11; 1]
 
 **Zone 152**:
 
 ![](images/zones/demo/152.png)
 
-Greetings, sir! Welcome to our DEMO. If you need my services, please don't hesitate to visit."
+`Greetings, sir! Welcome to our DEMO. If you need my services, please don't hesitate to visit."`
 
-Greetings, sir! Welcome to our DEMO!
+`Greetings, sir! Welcome to our DEMO!
 I'm a MEDICAL DROID, General Practitioner Class 2-1B, fully qualified to treat all injuries and wounds. If you need my services, please don't hesitate to visit.
 Meanwhile, this is dangerous country, so stay on the lookout for WEAPONS! You can never have too many.
-I like my patients well- equipped... that way they stay healthy, and I can relax."
+I like my patients well- equipped... that way they stay healthy, and I can relax.`
 
-Greetings, sir! Welcome to our DEMO!
+`Greetings, sir! Welcome to our DEMO!`
 
 **Zone 160**:
 
@@ -258,7 +259,7 @@ Removed all required and provided items.
 
 ![](images/zones/demo/263.png)
 
-This isn't the real game. It's only a DEMO.
+`This isn't the real game. It's only a DEMO.`
 
 izx4._unnamed2: 1 -> 0
 
@@ -268,9 +269,9 @@ izx4._unnamed2: 1 -> 0
 
 izx4._unnamed2: 1 -> 0
 
-If you want WEAPONS or MEDICINE, drop something on the table here, and I'll give you a DEMO of how the system works...
+`If you want WEAPONS or MEDICINE, drop something on the table here, and I'll give you a DEMO of how the system works...`
 
-Nice junk. Say, if you enjoy this DEMO, why not buy the real game? Then you can thaw out in some warmer terrain...
+`Nice junk. Say, if you enjoy this DEMO, why not buy the real game? Then you can thaw out in some warmer terrain...`
 
 **Zone 294**:
 
@@ -282,8 +283,8 @@ Removed all provided items.
 
 ![](images/zones/demo/316.png)
 
-Небольшое изменение проверки - убрано условие `tile-at-is: 444 4 3 1 12346`. Зачем? Shield Generator же есть на карте.
-Если эта проверка успешная, то далее Люк говорит: "Hey! that's the ship's shield generator over there... If I could disable the thing, it might cause a distraction..."
+Small check change - removed the `tile-at-is: 444 4 3 1 12346` condition. What for? The Shield Generator is on the map.
+If this check succeeds, Luke then says, `"Hey! that's the ship's shield generator over there... If I could disable the thing, it might cause a distraction..."`
 
 ![](images/tiles/demo/0444.png)
 
@@ -317,19 +318,19 @@ izx4._unnamed2: 1 -> 0
 
 izx4._unnamed2: 1 -> 0
 
-Playing the DEMO of LucasArts' new Desktop Adventure, I see. Well, we're peaceful snow farmers. Go away!
+`Playing the DEMO of LucasArts' new Desktop Adventure, I see. Well, we're peaceful snow farmers. Go away!`
 
 **Zone 385**:
 
 ![](images/zones/demo/385.png)
 
-Отключено завершение квеста по прилёту.
+Disabled completion of the quest upon arrival.
 
 **Zone 407**:
 
 ![](images/zones/demo/407.png)
 
-Отключено завершение квеста.
+Disabled quest completion.
 
 `mark-as-solved: 0 0 0 0 0 ""`
 
@@ -337,19 +338,19 @@ Playing the DEMO of LucasArts' new Desktop Adventure, I see. Well, we're peacefu
 
 ![](images/zones/demo/462.png)
 
-Эта зона не может появиться в игре, однако, текст в ней немного отличается от финальной версии:
+This zone cannot appear in the game, however, the text in it is slightly different from the final version:
 
-Было:
+It was:
 
-* Instruction 0: Good work, stranger! For rescuing me, I'll show you where I hid the ¥ that I stole from those stormtroopers!
-* Instruction 1: All right... where?
-* Instruction 2: Just follow me...
+* Instruction 0: `Good work, stranger! For rescuing me, I'll show you where I hid the ¥ that I stole from those stormtroopers!`
+* Instruction 1: `All right... where?`
+* Instruction 2: `Just follow me...`
 
-Стало:
+Became:
 
-* Instruction 0: Good work, stranger! What can I possibly give you in return for rescuing me?
-* Instruction 1: You mentioned something about a ¥...?
-* Instruction 2: That's right; I did. Well, follow me...
+* Instruction 0: `Good work, stranger! What can I possibly give you in return for rescuing me?`
+* Instruction 1: `You mentioned something about a ¥...?`
+* Instruction 2: `That's right; I did. Well, follow me...`
 
 **Zone 465**:
 
@@ -369,9 +370,9 @@ Added one required item:
 
 ![](images/zones/demo/535.png)
 
-Хижина Йоды
+Yoda's hut.
 
-Убраны все мини-квесты и Фетт
+Removed all mini-quests and Bobba Fett.
 
 izx4._unnamed2: 1 -> 0
 
@@ -380,44 +381,47 @@ izx4._unnamed2: 1 -> 0
 
 ![](images/zones/demo/596.png)
 
-Ещё одна лесная зона.
+Another forest zone.
 
-move-hero-to: 10 8 0 0 0 ""
+`move-hero-to: 10 8 0 0 0 ""`
 
-заменено на 
+replaced by
 
+```
 change-zone: 595 0 0 0 0 ""
-
 move-hero-to: 10 8 12576 8224 -26528 ""
-
 change-zone: 595 8 8 0 30561 ""
+```
 
 **Zone 605**:
 
 ![](images/zones/demo/605.png)
 
-Whoa... dark in this hovel. And what's that scuttling noise???"
+`Whoa... dark in this hovel. And what's that scuttling noise???"`
 
-Whoa... dark in this hovel. And what's that scuttling noise???."
+`Whoa... dark in this hovel. And what's that scuttling noise???."`
 
 **Zone 642**:
 
 ![](images/zones/demo/642.png)
 
-Очередная невидимая зона. Место, где Люк приходит в себя после того, как его подбили истребители.
-В демо-версии она выглядит достаточно сырой, в финале её достаточно сильно переработали.
+Another invisible zone. The place where Luke wakes up after being knocked out by fighters.
+In the demo version, it looks rather crude, in the final it was quite heavily reworked.
 
-Удалена половина действий, остальные переработаны.
+Removed half of the actions, the rest have been redesigned.
 
 **Puzzle 108**:
 
-Было:
+It was:
 
-Luke! Time it is for your training to advance a step...[CR2]The Empire has set up a HIDDEN FACTORY in the snowy wastes of planet Neshtab, where they are building stormtrooper droids. These robots could tip the balance against the Rebel Alliance.[CR2]Find this factory you must! Destroy it you must! [CR2]Here! Help you finish what you start, this will...
+`Luke! Time it is for your training to advance a step...[CR2]The Empire has set up a HIDDEN FACTORY in the snowy wastes of planet Neshtab, where they are building stormtrooper droids. These robots could tip the balance against the Rebel Alliance.[CR2]Find this factory you must! Destroy it you must! [CR2]Here! Help you finish what you start, this will...`
 
-Стало:
+Became:
 
-Hello! A ripple in the Force I feel... you are playing a DEMO of LucasArts' new Desktop Adventure, mmm? I thought so... fool Yoda you cannot! If you enjoy it, why not buy real game from your local retailer, mmm?[CR2]Now then, Luke! Time to continue your training...[CR2]The Empire has set up a HIDDEN FACTORY in the snowy wastes of planet Neshtab, where they are building combat droids. These robots could tip the balance against the Rebel Alliance.[CR2]Find this factory you must! Destroy it you must! [CR2]Here! Help you finish what you start, this will...
+`Hello! A ripple in the Force I feel... you are playing a DEMO of LucasArts' new Desktop Adventure, mmm? I thought so... fool Yoda you cannot! If you enjoy it, why not buy real game from your local retailer, mmm?[CR2]Now then, Luke! Time to continue your training...[CR2]The Empire has set up a HIDDEN FACTORY in the snowy wastes of planet Neshtab, where they are building combat droids. These robots could tip the balance against the Rebel Alliance.[CR2]Find this factory you must! Destroy it you must! [CR2]Here! Help you finish what you start, this will...`
+
+Pay attention, `[CR2]` means two line breaks.
+
 
 **Characters**:
 
@@ -429,7 +433,7 @@ Tank-Patrol
 
 frame1: [2120, 1959, 2120, 2119, 1959, 2120, 1958, 1959] -> [2119, 1959, 2119, 2119, 1959, 2119, 1958, 1959]
 
-Зачем это было сделано неясно, но в некоторых зонах эти танки так же поменяли местами.
+Why this was done is unclear, but in some areas these tanks were also swapped.
 
 ![](images/tiles/demo/2119.png) ![](images/tiles/demo/2120.png)
 

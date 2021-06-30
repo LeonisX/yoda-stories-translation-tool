@@ -16,79 +16,81 @@ We know and have identified the following versions of the game:
 
 They are identified by the checksums of the yodesk.exe and yodesk.dta files.
 
-Даты релизов не соответствуют датам начала продаж игр. Это даты последнего изменения файлов игры перед её публикацией.
+The release dates don't match the real release dates for the games. These are the dates of the last modification of the game files before it was published.
 
-Обратите внимание, что версия (v1.0) (Patch v6) в продажу не поступала. Это результат использования патча с исправлениями
-на первой версии игры. Она, кстати, а так же комбинация с патчем, являются самыми распространёнными версиями.
+Please note that version (v1.0) (Patch v6) was not available for sale. This is the result of using the Patch 6
+on the first version of the game. By the way, it, as well as the combination with the patch, are the most common versions in Web.
 
-DTA файл из версии игры 1.2 полностью совпадает с DTA файлом из версии игры 1.0 с наложенным патчем исправлений.
+The DTA file from the game version 1.2 completely coincides with the DTA file from the game version 1.0 with the patch applied.
 
-Версия игры 1.1 является самой редкой англоязычной версией, но именно на её основе была собрана демо-версия, которая, благодаря своей бесплатности, очень широко распространена.
+Game version 1.1 is the rarest English-language version. On its basis, a demo version was compiled, which, due to its freeness, is very widespread.
 
-Selva Translators изменили только экран About в Испанской версии игры.
+Selva Translators only changed the About screen in the Spanish version of the game.
 
-Испанская и Германская версии игры имеют все критические исправления из Patch 6, а если исправить ещё 3 байта, то в квестовых локациях будет играть верная мелодия.
+The Spanish and German versions of the game have all the critical fixes from Patch 6, and if you fix 3 more bytes, then the correct melody will play in the quest locations.
 
-Доподлинно известно существование ещё двух локализованных версий игры для Франции и Италии.
-Если они у вас сохранились, то, пожалуйста, пришлите нам их для изучения. E-mail: tv-games@mail.ru
+The existence of two more localized versions of the game for France and Italy is known for certain.
+If you still have them, please send them to us for study. E-mail: tv-games@mail.ru
 
-Поскольку сравнивать изменения в EXE файлах достаточно трудоёмко, мы сконцентрируем своё внимание на различиях DTA файлов.
+Since comparing changes in EXE files is quite time consuming, we will focus our attention on the differences between DTA files.
 
 1.0 vs 1.1
 ----------
 
-Несколько различий в зонах.
+Several differences in zones.
 
 **Zone 151**: Actions 4, 5
 
-Было:
+It was:
 
-* Скрывается тайл [11; 1; 2] (x, y, z координаты)
-* Скрывается тайл [11; 2; 1]
+* Hide tile [11; 1; 2] (x, y, z coordinates)
+* Hide tile [11; 2; 1]
 
-Стало:
+Became:
 
-* Показывается тайл 1787 [11; 1; 2] (x, y, z координаты)
-* Показывается тайл 1787 [11; 2; 2]
-* Скрывается тайл [11; 2; 1]
+* Show tile 1787 at [11; 1; 2] (x, y, z coordinates)
+* Show tile 1787 at [11; 2; 2]
+* Hide tile [11; 2; 1]
 
 ![](images/tiles/tauntaun.png)
 
-Это история со случайным появлением Tauntaun в правой части экрана.
-Приятный секретик, в снаряжении того двуногого ездового животного можно кое-что найти.
+This is a story with a Tauntaun randomly appearing on the right side of the screen.
+Nice secret, you can find something in the equipment of that two-legged riding animal.
 
 ![](images/code/z151-a4-5.png)
 
-Изменены сугробы в верхней части карты (розовые участки).
+Changed snowdrifts at the top of the map (pink areas).
 
 ![](images/zones/z151-diff.png)
 
 **Zone 176**: new Monster 61 [7; 6] loot: 65535; dropsLoot: 0
 
+![](images/tiles/1775.png)
+
 ![](images/zones/z176.png)
 
-Добавлен робот серии R2, не помню, падает из него что-то или нет.
-Куда интереснее следующее исправление:
+Added a robot of the R2 series, I do not remember whether something falls from it or not.
+Much more interesting is the following fix:
 
 `izx4:_unnamed2: 1 -> 0`
 
-Пока можно только догадываться что здесь поменяли разработчики.
+So far, one can only guess what the developers have changed here.
 
 **Zone 203**: new Monster 61 [1; 3] loot: 65535; dropsLoot: 0
 
 ![](images/zones/z203.png)
 
-Ещё один робот R2 на заснеженной локации.
+Another R2 robot in a snowy location.
 
-Так же в двух местах тайл 678 был заменён на тайл 680, но фактически эти файлы идентичны.
+Also, in two places, tile 678 was replaced with tile 680, but in fact these files are identical.
 
 ![](images/tiles/0678.png) ![](images/tiles/0680.png)
 
-**Zone 430**: Action 4: исправление в достаточно длинном действии, конкретно, в диалоге NPC:
+**Zone 430**: Action 4: fix in a rather long action, specifically in the NPC dialogue:
 
 ![](images/zones/z430.png)
 
-Неверная координата Y диалога.
+Invalid Y coordinate of the dialog.
 
 ![](images/code/z430-a4.png)
 
@@ -108,41 +110,41 @@ then
 
 ![](images/tiles/0780.png) ![](images/tiles/0809.png)
 
-Код достаточно легко понять. Йода (тайл 780) находится по координатам [5, 5, 1].
-Если ему отдать Хана (тайл 809), то из инвентаря этот тайл извлекается,
-и Йода произносит свою речь.
+The code is easy enough to understand. Yoda (tile 780) is located at coordinates [5, 5, 1].
+If you give Han to him (tile 809), then this tile is removed from the inventory,
+and Yoda delivers his speech.
 
 
 1.1 vs 1.2
 ----------
 
-Официально исправлены следующие зоны: `72, 236, 407, 473, 474, 572`.
-Фактически исправлены следующие зоны: `72, 236, 266, 267, 271, 407, 472, 572`.
+* The following zones have been officially fixed: `72, 236, 407, 473, 474, 572`.
+* The following zones have actually been fixed : `72, 236, 266, 267, 271, 407, 472, 572`.
 
-Различия найдены в: Tiles, Zones, Characters.
+Differences found in : Tiles, Zones, Characters.
 
 **Tile 1543**:
 
-Исправление достаточно забавное, оцените сами, что было, как стало, и разница:
+The fix is pretty funny, check it out for yourself. Below are the tiles - original, corrected and difference.
 
 ![](images/tiles/1543-11.png) ![](images/tiles/1543-12.png) ![](images/tiles/1543-diff.png)
 
-Пасхалочка?
+Easter egg?
 
-**Characters**: изменения в неиспользуемой части имени персонажа. У этого значения фиксированная длина 16, то есть,
-максимальная длина имени составляет 15, и последний байт равен 0x00.
-Если длина имени персонажа меньше 15, то выглядывают неиспользуемые данные.
-Они упорядочены, и вероятно являются какой-то перезаписанной структурой данных. Примеры:
+**Characters**: changes in the unused part of the character names. This value has a fixed length of 16, that is,
+the maximum name length is 15, and the last byte is 0x00.
+If the length of the character's name is less than 15, then unused data looks out.
+They are ordered and are probably some kind of overwritten data structure. Examples:
 
 ```
 1F440002000000 804CBE00 -> 1F440002000000 0072BE00
 1F440002000000 304DBE00 -> 1F440002000000 B072BE00
 ```
 
-В демо-версии игры, кстати, адрес заметно меньше, например: `207ABD00`.
+In the demo version of the game, by the way, the address is much smaller, for example: `207ABD00`.
 
-Единственное что можно добавить - расстояния между этими смещениями составляют 0xB0 (176).
-При том, что одна запись Characters имеет длину в 84 байта.
+The only thing that can be added is that the distances between these offsets are 0xB0 (176).
+Given that one Character record is 84 bytes long.
 
 ![](images/code/characters-diff.png)
 
@@ -150,11 +152,11 @@ then
 
 ![](images/zones/z072.png)
 
-NPC бросает квестовый предмет в [10, 12].
+The NPC drops the quest item at [10, 12].
 
 ![](images/code/z72-a14.png)
 
-**Zone 236**: Была проблема с хотспотом на транспорте, видимо, не получалось взять предмет.
+**Zone 236**: There was a problem with the hotspot on the transport, apparently, it was not possible to take the item.
 
 ![](images/zones/z236.png)
 
@@ -164,8 +166,8 @@ NPC бросает квестовый предмет в [10, 12].
 
 ![](images/zones/z266.png)
 
-Когда зона не инициализирована, играет музыкальная тема Mystery. Эту, и две последующие локации
-Йода показывает Люку через каждые 5 побед. После выполнения квеста юный джедай становится сильнее.
+When the zone is not initialized, the Mystery theme music plays. This, and two subsequent locations
+Yoda shows Luke every 5 wins. After completing the quest, the young Jedi becomes stronger.
 
 ```
 if
@@ -176,7 +178,7 @@ then
 
 Action 14 (15):
 
-Запустить музыкальную тему Flourish.
+Play Flourish theme song.
 
 ![](images/code/z266-14.png)
 
@@ -184,7 +186,7 @@ Action 14 (15):
 
 ![](images/zones/z267.png)
 
-Когда зона не инициализирована, играет музыкальная тема Mystery.
+When the zone is not initialized, the Mystery theme music plays.
 
 ```
 if
@@ -195,9 +197,9 @@ then
 
 Action 9 (10): 
 
-Исправлен звук здесь: Hello, Luke. Yoda has trained you well. May the FORCE be with you...!
+Fixed sound here: Hello, Luke. Yoda has trained you well. May the FORCE be with you...!
 
-Запустить музыкальную тему Flourish.
+Play Flourish theme song.
 
 ![](images/code/z267-9.png)
 	
@@ -205,7 +207,7 @@ Action 9 (10):
 
 ![](images/zones/z271.png)
 
-Снова исправление звуков.
+Correction of sounds again.
 
 ```
 if
@@ -214,44 +216,42 @@ then
     play-sound: 60 0 6368 128 0 ""
 ```
 
-Action 1 (2): 
-
-play-sound: 58
+Action 1 (2) - play-sound 58
 
 A dianoga heart... eeuw! Sometimes I wonder about old Yoda!"
 
 ![](images/code/z271-1.png)
 
-**Zone 407**: Небольшие ошибки в графике
+**Zone 407**: Small graphics errors
 
 ![](images/zones/z407.png)
 
-Здесь работает логика расстановки льда, пока зона не инициализирована.
+This is where the ice placement logic works until the zone is initialized.
 
 ![](images/code/z407-6.png)
 
 ![](images/code/z407-7.png)
 
-Три перестановки тайлов в верхней части карты:
+Three permutations of tiles at the top of the map:
 
 * [1; 3]: [678, 65535, 1248] -> [678, 681, 65535]
 * [1; 4]: [678, 65535, 1248] -> [678, 681, 65535]
 * [2; 5]: [678, 681, 65535] -> [2; 5]: [678, 65535, 1248]
 
-Визуально они не видны, так как эти тайлы идентичны. 
-Важно другое - появилось 2 препятствия в невидимой части карты, и одно было убрано.
+They are not visible visually, since these tiles are identical.
+Another thing is important - 2 obstacles appeared in the invisible part of the map, and one was removed.
 
 **Zone 472**: a lot of fixes
 
 ![](images/zones/z472.png)
 
-Это сложная карта и в её работу закралось приличное количество ошибок и недоработок.
-Есть смелое предположение, что не все ошибки были найдены до сих пор.
-Стоит написать интерпретатор скриптов, чтобы убедиться в этом наверняка.
+This is a complex map, and a decent amount of errors and flaws crept into its work.
+There is a bold assumption that not all errors have been found so far.
+It is worth writing a script interpreter to be sure of this.
 
-Action 6 теперь имеет номер 3.
+Action 6 is now numbered 3.
 
-Actions 3, 4: в зависимости от определённых условий на карте размещается тайл с трещиной: ![](images/tiles/0008.png)
+Actions 3, 4: depending on certain conditions, a tile with a crack is placed on the map: ![](images/tiles/0008.png)
 
 ![](images/code/z472-3-4.png)
 
@@ -368,7 +368,7 @@ then
 
 ![](images/zones/z572.png)
 
-Эта лесистая местность так же стала источником ошибок, когда не удавалось заполучить квестовый предмет.
+This wooded area also became a source of errors when it was not possible to get a quest item.
 
 ![](images/code/z572-hp.png)
 
@@ -376,9 +376,10 @@ then
 1.1 English vs Spanish version
 ----------------------
 
-Испанская версия Yoda Stories находится между 1.1 и 1.2. В частности, здесь ещё не добавлены мелодии для зон: 266, 267, 271.
+The Spanish version of Yoda Stories is between 1.1 and 1.2. In particular, melodies for zones: 266, 267, 271 have not been added here yet.
 
-На самом деле, достаточно изменить всего 3 байта, и эта игра получит все исправления, характерные для Patch 6, ведь код для проигрывания мелодии уже есть на месте, но он запускает мелодию под номером 0.
+In fact, it is enough to change only 3 bytes, and this game will receive all the fixes typical for Patch 6, 
+because the code for playing the melody is already in place, but it plays melody number 0.
 
 * Startup screen
 * Tiles
@@ -390,77 +391,74 @@ then
 
 **Startup screen**:
 
-Розовые участки показывают, где были звёзды.
+The pink areas show where the stars were.
 
 ![](images/zones/z000-diff.png)
 
-Надо понимать, что аналогичное изменение есть и в зоне 0.
+It should be understood that there is a similar change in Zone 0.
 
 **Tiles**:
 
-Чтобы уместить весь текст, количество тайлов было увеличено с 2123 до 2126.
+To accommodate all text, the number of tiles has been increased from 2123 to 2126.
 
-* Изменены: 2090-2108
-* Новые: 2123-2125
+* Changed tiles: 2090-2108
+* New tiles: 2123-2125
 
-Эти тайлы используются в зонах 76-77.
+These tiles are used in zones 76-77.
 
-**Zone 72**: исправление идентично версии 1.2
+**Zone 72**: fix identical to version 1.2
 
 **Zones 76-77**:
 
 ![](images/zones/076sp.png) ![](images/zones/077sp.png)
 
-**Zone 236**: исправление идентично версии 1.2
+**Zone 236**: fix identical to version 1.2
 
-**Zone 407**: исправление идентично версии 1.2
+**Zone 407**: fix identical to version 1.2
 
-**Zone 472**: исправление идентично версии 1.2*
+**Zone 472**: fix identical to version 1.2*
 
-На самом деле, если сравнивать добавленные скрипты, то можно увидеть очень много
-изменений в неиспользуемых аргументах, по сравнению с версией 1.2. Скорее всего это ничего не значащие данные.
+In fact, if you compare the added scripts, you can see, a lot of
+changes in unused arguments since 1.2. Most likely this is meaningless data.
 
-**Zone 572**: исправление идентично версии 1.2
-
-**Puzzles**: 100% различие в тесте, но это было ожидаемо.
-
-**Characters**: различия только в неиспользуемых данных.
-
-**Tile names**: 100% различие в тесте, но это было ожидаемо.
- 
-**Tile genders**: это новая структура данных, типичная для языков, в которых артикль используется для изменения рода.
+* **Zone 572**: fix identical to version 1.2
+* **Puzzles**: 100% difference in the text, but expected.
+* **Characters**: differences only in unused data.
+* **Tile names**: 100% difference in text, but expected.
+* **Tile genders**: This is a new data structure, typical for languages that use the article to change the gender.
 
 
 Spanish version vs German version
 ----------------------
 
-Несмотря на то, что Германская версия близка к Испанской, у неё есть одно
-важное отличие - загрузочный экран и Зона 0 не были испорчены. Вероятно, это может указывать на то, что над Испанским переводом
-работала другая команда, или, Германскую версию собирали раньше.
+Despite the fact that the German version is close to the Spanish version, it has one important difference - 
+the loading screen and Zone 0 have not been corrupted. 
+This could probably indicate that a different team was working on the Spanish translation, 
+or that the German version was assembled earlier.
 
-Если не обращать внимание на языковые различия, то в остальном эти версии идентичны.
+Language differences aside, these versions are otherwise identical.
 
 **Tiles**:
 
-В этой версии тайлов на 1 больше, чем в английской.
+This version has 1 more tiles than the English version.
 
-* Изменены: 2091-2095, 2097-2107
-* Новый: 2123
+* Changed: 2091-2095, 2097-2107
+* New: 2123
 
-Эти тайлы используются в зонах 76-77.
+These tiles are used in zones 76-77.
 
 **Zones 76-77**:
 
 ![](images/zones/076de.png) ![](images/zones/077de.png)
 
-**Zone 472**: различия среди неиспользуемых аргументов инструкций.
+**Zone 472**: differences among unused instruction arguments.
 
 
 T-Rus
 -----
 
-Основана на версии 1.2 (она же Patch 6)
+Based on version 1.2 (aka Patch 6).
 
-Два несущественных изменения в неиспользуемых аргументах действий в зонах 562 и 578. Вероятно, внесены вручную.
+Two minor changes for unused action arguments in zones 562 and 578. Probably manual.
 
-Графика не переведена, а имена тайлов переведены лишь частично.
+The graphics are not translated, and the tile names are only partially translated. 
