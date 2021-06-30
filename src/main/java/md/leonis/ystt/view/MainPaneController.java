@@ -1433,7 +1433,7 @@ public class MainPaneController {
     public static void openFile() {
 
         try {
-            File file = JavaFxUtils.showEXELoadDialog("Open Executable File", lastVisitedDirectory, "yodesk.dta");
+            File file = JavaFxUtils.showEXELoadDialog("Open Executable File", lastVisitedDirectory, "yodesk.exe");
 
             if (file != null) {
                 exeFile = file;
