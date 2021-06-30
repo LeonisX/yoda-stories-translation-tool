@@ -123,8 +123,8 @@ public class WordUtils {
 
         addTitle(document, title);
         addBullets(document, crc32);
-        XWPFParagraph paragraph = addItalicParagraph(document, "You can read about the available code pages "); // TODO
-        addItalicHyperlinkParagraph(paragraph, "here", "https://github.com/LeonisX/yoda-stories-translation-tool/blob/main/translation-guide.md#character-encodings"); // TODO
+        XWPFParagraph paragraph = addItalicParagraph(document, "You can read about the available code pages ");
+        addItalicHyperlinkParagraph(paragraph, "here", "https://github.com/LeonisX/yoda-stories-translation-tool/blob/main/translation-guide.md#character-encodings");
     }
 
     private static void addTitle(XWPFDocument document, String title) {

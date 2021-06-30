@@ -91,8 +91,7 @@ public class IOUtils {
         try {
             Files.createDirectories(path);
         } catch (IOException e) {
-            //TODO
-            //LOGGER.error("Can't create directory: {}", path.toString(), e);
+            throw new RuntimeException(e);
         }
     }
 

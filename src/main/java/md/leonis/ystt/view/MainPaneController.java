@@ -1838,7 +1838,7 @@ public class MainPaneController {
             Path path = tilesPath.resolve(String.format("%04d", i) + E_BMP);
             BMPWriter.write(getTile(i, icm), path);
 
-            //TODO may be use PNG. Sample code. Now in used in ExcelUtils
+            path.resolve("png");
             ImageIO.write(getTile(i, icm), "PNG", tilesPath.resolve(String.format("%04d", i) + ".png").toFile());
         }
     }

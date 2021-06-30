@@ -411,7 +411,6 @@ public class Dump {
             throw new RuntimeException("Bad HexDump: " + data);
         }
 
-        //TODO middle endian
         if (byteOrder == ByteOrder.BIG_ENDIAN) {
             for (int i = 0; i < data.length() / 2; i++) {
                 setByte(Integer.parseInt(data.substring(i * 2, i * 2 + 2) + "", 16));
