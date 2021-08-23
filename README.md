@@ -48,9 +48,7 @@ Uses modified code from http://image4j.sourceforge.net project.
 * Correct output from different threads - OK/False + task name in logs + dialog
 * Zone editor - sticky tiles (not need to drag-drop)
 * Resolve all TODO
-* Remember if all features are enabled
 * When add/delete/replace tiles, gender - CatalogEntry bytes[] don't change. Dump only unchanged data.
-* Too big Alert dialogs, need a smallest solutions
 * graphics-translation-guide: link to Russian translation
 
 ### Other tasks

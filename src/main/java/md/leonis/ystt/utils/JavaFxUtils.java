@@ -4,7 +4,10 @@ import javafx.application.Application;
 import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Region;
 import javafx.stage.FileChooser;
@@ -115,23 +118,10 @@ public class JavaFxUtils {
         alert.setTitle(title);
         alert.setHeaderText(header);
 
-        TextArea textArea = new TextArea(text);
-        //textArea.setEditable(false);
-        //textArea.setWrapText(true);
-
-        /*textArea.setMinWidth(720);
-        textArea.setMinHeight(600);
-        textArea.setMaxWidth(Double.MAX_VALUE);
-        textArea.setMaxHeight(Double.MAX_VALUE);*/
-
-        //alert.getDialogPane().setContent(textArea);
-
         alert.setResizable(true);
         if (StringUtils.isNotBlank(text)) {
             alert.setContentText(text);
         }
-        //alert.setWidth(800);
-        alert.getDialogPane().setPrefSize(880, 320);
         alert.getDialogPane().getChildren().stream().filter(node -> node instanceof Label).forEach(node -> ((Label) node).setMinHeight(Region.USE_PREF_SIZE));
         return alert.showAndWait();
     }

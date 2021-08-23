@@ -331,6 +331,7 @@ public class MainPaneController {
             JavaFxUtils.showAlert("UI update error", e);
         }
 
+        disableNonTranslationMenuItem.setSelected(!enableAllFestures);
         disableNonTranslationFeatures(disableNonTranslationMenuItem.isSelected());
     }
 
@@ -526,6 +527,7 @@ public class MainPaneController {
 
     private void disableNonTranslationFeatures(boolean status) {
 
+        enableAllFestures = !status;
         dumpAllMenuItem.setDisable(status);
         dumpAllSectionsButton.setDisable(status);
         saveHighMidStructureButton.setDisable(status);
@@ -1431,7 +1433,7 @@ public class MainPaneController {
     public static void openFile() {
 
         try {
-            File file = JavaFxUtils.showEXELoadDialog("Open Executable File", lastVisitedDirectory, "yodesk.dta");
+            File file = JavaFxUtils.showEXELoadDialog("Open Executable File", lastVisitedDirectory, "yodesk.exe");
 
             if (file != null) {
                 exeFile = file;
@@ -1836,7 +1838,7 @@ public class MainPaneController {
             Path path = tilesPath.resolve(String.format("%04d", i) + E_BMP);
             BMPWriter.write(getTile(i, icm), path);
 
-            //TODO may be use PNG. Sample code. Now in used in ExcelUtils
+            path.resolve("png");
             ImageIO.write(getTile(i, icm), "PNG", tilesPath.resolve(String.format("%04d", i) + ".png").toFile());
         }
     }
