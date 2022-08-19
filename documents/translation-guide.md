@@ -34,7 +34,7 @@ about the version, also gives the necessary recommendations.
 We strongly recommend taking as a basis ONLY the version of Star Wars - Yoda Stories (10.08.1998) (Eng) (v1.2) (Patch v6),
 as it contains the most recent fixes.
 
-[Versions comparison](documents/comparison.md)
+[Versions comparison](comparison.md)
 
 Search for this game in the collection Star Wars - Yoda Stories & Behind The Magic - Vehicles Special Edition, which,
 in turn was included in the collection LucasArts Archives Vol. IV: Star Wars Collection II.
