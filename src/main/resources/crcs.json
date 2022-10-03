@@ -40,6 +40,14 @@
     "description": "This is the best version of the game, however, it has received little distribution.\nIt contains all the fixes from Patch 6, but the EXE file is also improved.\nStar Wars - Yoda Stories & Behind The Magic - Vehicles Special Edition was recorded on 10.08.1998."
   },
   {
+    "id": "fra-1",
+    "title": "Star Wars - Yoda Stories (07.05.1997) (Fra)",
+    "exeCrc32": "7CAB4A78",
+    "dtaCrc32": "1D3B09FC",
+    "charset": "windows-1252",
+    "description": "French version of Yoda Stories.\nIn terms of the number of fixes it does not reach Patch 6.\nThe disc was recorded on 07.05.1997."
+  },
+  {
     "id": "spa-1",
     "title": "Star Wars - Yoda Stories (22.05.1997) (Spa)",
     "exeCrc32": "82CFC2E8",
@@ -54,6 +62,14 @@
     "dtaCrc32": "E7DB255D",
     "charset": "windows-1252",
     "description": "German version of Yoda Stories.\nIn terms of the number of fixes it does not reach Patch 6.\nThe disc was recorded approximately on 25.06.1997."
+  },
+  {
+    "id": "ita-1",
+    "title": "Star Wars - Yoda Stories (11.03.1998) (Ita)",
+    "exeCrc32": "50A8C77E",
+    "dtaCrc32": "E196F1BE",
+    "charset": "windows-1252",
+    "description": "Italian version of Yoda Stories.\nIn terms of the number of fixes it does not reach Patch 6.\nThe disc was recorded on 11.03.1998."
   },
   {
     "id": "spa-2",
