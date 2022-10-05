@@ -42,6 +42,12 @@ Uses modified code from http://image4j.sourceforge.net project.
 
 ## TODO List
 
+* Italy - Resize dialog tool tip text field :(. Also changes inventory font
+* France - Resize dialog tool tip text field :(. Also changes inventory font
+* Germany - Resize dialog tool tip text field :(
+* Spain - Resize dialog tool tip text field :(
+* Almost all fails on Resize dialog tool tip text field
+
 * Actions cleaner, visualizer, interpreter
 * Dump all secrets (show tiles, ...)
 * Release 1.0

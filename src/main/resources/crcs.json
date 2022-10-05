@@ -5,7 +5,7 @@
     "exeCrc32": "7E7250C9",
     "dtaCrc32": "1A8764FB",
     "charset": "windows-1252",
-    "description": "This is the very first and most widespread version of the game.\nOn pirated discs and compilations, it was most often delivered with Patch 6 preinstalled.\nThe Star Wars - Yoda Stories & Making Magic CD was recorded on 15.02.1997."
+    "description": "This is the very first and most widespread version of the game from LucasArts.\nOn pirated discs and compilations, it was most often delivered with Patch 6 preinstalled.\nThe Star Wars - Yoda Stories & Making Magic CD was recorded on 15.02.1997."
   },
   {
     "id": "eng-1-patched",
@@ -13,7 +13,7 @@
     "exeCrc32": "7E7250C9",
     "dtaCrc32": "6B79555B",
     "charset": "windows-1252",
-    "description": "This is the first version of the game with Patch 6.\nFixed all found errors of the DTA file,\nbut the EXE file is still old."
+    "description": "This is the first version of the game with Patch 6 from LucasArts.\nFixed all found errors of the DTA file,\nbut the EXE file is still old."
   },
   {
     "id": "eng-1.1",
@@ -21,7 +21,7 @@
     "exeCrc32": "B4E9D59F",
     "dtaCrc32": "B0FE9C2A",
     "charset": "windows-1252",
-    "description": "The rarest version of the English-language game. Compared to the first version, it has some fixes.\nThe files were modified on 18.02.1997."
+    "description": "The rarest version of the English-language game from LucasArts. Compared to the first version, it has some fixes.\nThe files were modified on 18.02.1997."
   },
   {
     "id": "eng-1.1-demo",
@@ -37,7 +37,7 @@
     "exeCrc32": "B4E9D59F",
     "dtaCrc32": "6B79555B",
     "charset": "windows-1252",
-    "description": "This is the best version of the game, however, it has received little distribution.\nIt contains all the fixes from Patch 6, but the EXE file is also improved.\nStar Wars - Yoda Stories & Behind The Magic - Vehicles Special Edition was recorded on 10.08.1998."
+    "description": "This is the best version of the game from LucasArts, however, it has received little distribution.\nIt contains all the fixes from Patch 6, but the EXE file is also improved.\nStar Wars - Yoda Stories & Behind The Magic - Vehicles Special Edition was recorded on 10.08.1998."
   },
   {
     "id": "fra-1",
@@ -45,7 +45,7 @@
     "exeCrc32": "7CAB4A78",
     "dtaCrc32": "1D3B09FC",
     "charset": "windows-1252",
-    "description": "French version of Yoda Stories.\nIn terms of the number of fixes it does not reach Patch 6.\nThe disc was recorded on 07.05.1997."
+    "description": "French version of Yoda Stories from Ubi Soft.\nIn terms of the number of fixes it does not reach Patch 6.\nThe disc was recorded on 07.05.1997."
   },
   {
     "id": "spa-1",
@@ -53,15 +53,23 @@
     "exeCrc32": "82CFC2E8",
     "dtaCrc32": "A0CE2095",
     "charset": "windows-1252",
-    "description": "Spanish version of Yoda Stories.\nIn terms of the number of fixes it does not reach Patch 6.\nThe disc was recorded on 22.05.1997."
+    "description": "Spanish version of Yoda Stories from ERBE Software.\nIn terms of the number of fixes it does not reach Patch 6.\nThe disc was recorded on 22.05.1997."
+  },
+  {
+    "id": "bra-1",
+    "title": "Star Wars - Yoda Stories (19.06.1997) (Bra)",
+    "exeCrc32": "AC18D97B",
+    "dtaCrc32": "2180282A",
+    "charset": "windows-1252",
+    "description": "Brazil version of Yoda Stories from BraSoft.\nIn terms of the number of fixes it does not reach Patch 6.\nThe disc was recorded 19.06.1997."
   },
   {
     "id": "ger-1",
-    "title": "Star Wars - Yoda Stories (25.06.1997) (Ger)",
+    "title": "Star Wars - Yoda Stories (24.06.1997) (Ger)",
     "exeCrc32": "3AD6EF74",
     "dtaCrc32": "E7DB255D",
     "charset": "windows-1252",
-    "description": "German version of Yoda Stories.\nIn terms of the number of fixes it does not reach Patch 6.\nThe disc was recorded approximately on 25.06.1997."
+    "description": "German version of Yoda Stories from FunSoft.\nIn terms of the number of fixes it does not reach Patch 6.\nThe disc was recorded 24.06.1997."
   },
   {
     "id": "ita-1",
@@ -69,7 +77,7 @@
     "exeCrc32": "50A8C77E",
     "dtaCrc32": "E196F1BE",
     "charset": "windows-1252",
-    "description": "Italian version of Yoda Stories.\nIn terms of the number of fixes it does not reach Patch 6.\nThe disc was recorded on 11.03.1998."
+    "description": "Italian version of Yoda Stories from C.T.O.\nIn terms of the number of fixes it does not reach Patch 6.\nThe disc was recorded on 11.03.1998.\nThis is probably not the first release of the game in Italian."
   },
   {
     "id": "spa-2",

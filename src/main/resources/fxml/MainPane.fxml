@@ -444,6 +444,7 @@
                                                                     <Label prefWidth="90.0" text="Actions:" />
                                                                     <Label fx:id="zoneActionsLabel" />
                                                                     <Button fx:id="showActionsButton" layoutX="14.0" layoutY="40.0" mnemonicParsing="false" onAction="#showActionsButtonClick" text="Show" />
+                                                                    <Button fx:id="showRawActionsButton" layoutX="14.0" layoutY="40.0" mnemonicParsing="false" onAction="#showRawActionsButtonClick" text="Show raw" />
                                                                 </HBox>
                                                                 <HBox alignment="CENTER_LEFT" prefHeight="24.0" prefWidth="531.0" spacing="5">
                                                                     <Label prefWidth="90.0" text="NPCs:" />
