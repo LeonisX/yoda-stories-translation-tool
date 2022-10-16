@@ -20,11 +20,11 @@ We know and have identified the following versions of the game:
 They are identified by the checksums of the `yodesk.exe` and `yodesk.dta` files.
 
 The release dates don't match the real release dates for the games. 
-No one knows the exact release dates, so we focused on the time the master discs were created.
+Точных дат выпуска не знает никто, поэтому мы ориентировались на время создания мастер-дисков.
 
-Of high interest are the dates of the last change of key game files:
+Высокий интерес представляют даты последнего изменения ключевых файлов игры:
 
-| Version            | YODESK.DTA |   CRC32  | YODESK.EXE |   CRC32  | YODESK.HLP |   CRC32  |
+| Версия             | YODESK.DTA |   CRC32  | YODESK.EXE |   CRC32  | YODESK.HLP |   CRC32  |
 |:------------------:|:----------:|:--------:|:----------:|:--------:|:----------:|:--------:|
 | (v1.0)             | 14.02.1997 | 1A8764FB | 14.02.1997 | 7E7250C9 | 14.02.1997 | 1A0E11EC |
 | (Demo)             | 18.02.1997 | F9543F00 | 18.02.1997 | E89D0EB1 | 14.02.1997 | 6254749B |
@@ -38,7 +38,7 @@ Of high interest are the dates of the last change of key game files:
 | (T-Spa)            | 22.05.1997 | A0CE2095 | 13.12.2001 | 8E4CAB0D | 08.05.1997 | D77A08DE |
 | (T-Rus)            | 19.08.2006 | 2350308B |  unknown   | 4B91AA5C | 14.02.1997 | 1A0E11EC |
 
-CD creation dates:
+Даты создания CD дисков:
 
 |   Version    |      Title                                                                   |    Date    |   Time   | Publisher |
 |:------------:|:-----------------------------------------------------------------------------|:----------:|:--------:|:----------|
@@ -53,75 +53,75 @@ CD creation dates:
 |    (Ita)     | Star Wars - Yoda Stories (Italy) & Making Magic & Screen Entertainment       | 11.03.1998 | 18:31:33 | C.T.O. |
 |    (v1.2)    | Star Wars - Yoda Stories (USA) & Behind The Magic - Vehicles Special Edition | 10.08.1998 | 14:57:40 | LucasArts |
 
-The demo version of the game was built in parallel with version 1.1, and it only contains fixes for winter zones.
+Демо-версия игры собиралась параллельно версии 1.1, и в ней есть только исправления для зимних зон.
 
 Game version `v1.1` is the rarest English-language version. On its basis, a demo version was compiled, which, due to its freeness, is very widespread.
 
 Game version `v1.0 + Patch v6` was not available for sale. This is the result of using the Patch 6
 on the first version of the game. By the way, it, as well as the combination with the patch, are the most common versions in Web.
 
-Game version `v1.2` found in pure form in the collection The LucasArts Archives Vol. IV - Star Wars Collection II. 
-It differs from version (v1.0) (Patch v6) by the combination of `YODESK.EXE` v1.1 and `YODESK.HLP` v1.2.
+Game version `v1.2` в чистом виде найдена в сборнике The LucasArts Archives Vol. IV - Star Wars Collection II. 
+От версии (v1.0) (Patch v6) она отличается комбинацией `YODESK.EXE` v1.1 и `YODESK.HLP` v1.2.
 The DTA file from the game version `1.2` completely coincides with the DTA file from the game version 1.0 with the patch applied.
 
-The European versions of the game have implemented approximately half of the fixes from Patch 6,
-in terms of code maturity, they are between `1.1` and `1.2` and differ from each other mainly in text.
+В Европейских версиях игры реализована примерно половина исправлений из Patch 6, 
+по зрелости кода они находятся между `1.1` и `1.2` и между собой различаются в основном текстом.
 
-After the French version, all European versions come with a `Rebel Assault II Demo`.
+После французской версии, все Европейские версии поставляются с демо-версией игры `Rebel Assault II`.
 
-The Japanese version of the game has almost certainly been translated into Japanese. 
-Little is known about other Asian versions yet.
+Японская версия игры почти наверняка была переведена на японский язык. 
+О других азиатских версиях пока мало чего известно.
 
-It should be noted that for third-party publishers, the game was so insignificant that they did not even
-bother to report it on their sites. Except Koreans, Brazilians and Italians.
+Надо отметить, что для сторонних издателей игра была столь незначительной, 
+что они даже не потрудились сообщить о ней на своих сайтах. Кроме корейцев, бразильцев и итальянцев.
 
-Additional material on the disc:
+Дополнительные материалы на диске:
 
-|   Version    |         Making Magic             |                             Other                           |
-|:------------:|:---------------------------------|:------------------------------------------------------------|
-|    (v1.0)    | version QA1.03 от 03.09.1996     | Themes                                                      |
-|  (v1.0) (NL) | version QA1.03 от 03.09.1996     | Themes                                                      |
-|    (v1.1)    | version QA1.03 от 03.09.1996     | Themes                                                      |
-|    (Fra)     | version FD1.03 от 22.09.1996     | Themes                                                      |
-|    (Spa)     | version FC1.03 от 22.11.1996     | Themes; Rebel Assault II Demo version DT1.15 от 22.11.1996  |
-|    (Bra)     | version FA1.04 от 28.01.1997     | Themes; Rebel Assault II Demo version DX1.15 от 06.02.1997  |
-|    (Ger)     | version FB1.04 от 14.09.1996     | Themes; Rebel Assault II Demo version FS1.15 от 14.10.1996  |
-|    (Ita)     | version FA1.15 от 03.09.1996     | Themes; Rebel Assault II Demo version DX1.14 от 30.01.1997; Screen Entertainment (Rerelease); 2 manuals |
-|    (v1.2)    | replaced by another encyclopedia | Themes; Behind The Magic: Vehicles Special Edition (USA) (1.0) (28.07.1998); DirectX 5.2 |
+|   Version    |         Making Magic         |                            Other                            |
+|:------------:|:-----------------------------|:------------------------------------------------------------|
+|    (v1.0)    | версия QA1.03 от 03.09.1996  | Themes                                                      |
+|  (v1.0) (NL) | версия QA1.03 от 03.09.1996  | Themes                                                      |
+|    (v1.1)    | версия QA1.03 от 03.09.1996  | Themes                                                      |
+|    (Fra)     | версия FD1.03 от 22.09.1996  | Themes                                                      |
+|    (Spa)     | версия FC1.03 от 22.11.1996  | Themes; Rebel Assault II Demo версия DT1.15 от 22.11.1996   |
+|    (Bra)     | версия FA1.04 от 28.01.1997  | Themes; Rebel Assault II Demo версия DX1.15 от 06.02.1997   |
+|    (Ger)     | версия FB1.04 от 14.09.1996  | Themes; Rebel Assault II Demo версия FS1.15 от 14.10.1996   |
+|    (Ita)     | версия FA1.15 от 03.09.1996  | Themes; Rebel Assault II Demo версия DX1.14 от 30.01.1997; Screen Entertainment (Rerelease); 2 manuals |
+|    (v1.2)    | заменён другой энциклопедией | Themes; Behind The Magic: Vehicles Special Edition (USA) (1.0) (28.07.1998); DirectX 5.2 |
 
 
-Attention wanted!!!
+Внимание, розыск!!!
 -------------------
 
-* Star Wars - Yoda Stories (Italy) (??.??.1997) & Making Magic - first edition for Italy by C.T.O.
-* Japanese version of the game by MicroMouse included with Making Magic.
-* Japanese version of the game by MicroMouse in the Star Wars Masterpieces compilation.
-* Taiwan version of the game by Unalis. It is likely that this is an English-language original in a national box.
-* Korean version of the game by Dong Seo Interactive. It is likely that this is an English-language original in a national box.
-* Australian version of the game by Playcorp. Probably the difference is only in the box and accompanying documents.
-* Netherlands and Belgian version of the game by Home Software Benelux B.V. Most likely only the manual was translated into Dutch.
-* Other European versions and re-releases.
-* Versions for other regions.
-* Apple Macintosh version. There is a mention of it in the catalog for 1998. True, Aaron Giles,
-who ported Indiana Jones and His Desktop Adventures to the Mac lamented that he didn't get a chance to port the "sequel".
+* Star Wars - Yoda Stories (Italy) (??.??.1997) & Making Magic - первый вариант для Италии от C.T.O.
+* Версия игры для Японии в комплекте с Making Magic от MicroMouse.
+* Версия игры для Японии в сборнике Star Wars Masterpieces от MicroMouse.
+* Версия игры для Тайваня от Unalis. Вероятно, что это англоязычный оригинал в национальной коробке.
+* Версия игры для Кореи от Dong Seo Interactive. Вероятно, что это англоязычный оригинал в национальной коробке.
+* Версия игры для Австралии от Playcorp. Вероятно, различие только в коробке и сопроводительных документах.
+* Версия игры для Нидерландов и Бельгии от Home Software Benelux B.V. Скорее всего на нидерландский язык был переведён только мануал.
+* Другие Европейские версии и переиздания.
+* Версии для других регионов.
+* Apple Macintosh version. О ней есть упоминание в каталоге за 1998-й год. Правда, Aaron Giles, 
+портировавший Indiana Jones and His Desktop Adventures на Мак посетовал, что у него не было шанса портировать "сиквел".
 
 If you still have them, please send them to us for study. E-mail: tv-games@mail.ru
 
-Short list of fixes
--------------------
+Краткий список исправлений
+--------------------------
 
-Corrected zones regarding the very first version of the game.
+Исправления в зонах относительно самой первой версии игры.
 
-| Version / zone number | 151 | 176 | 203 | 430 | 535 | 72, 236, 407 | 472, 572 | 266, 267, 271 |
-|:---------------------:|:---:|:---:|:---:|:---:|:---:|:------------:|:--------:|:-------------:|
-| (Demo)                |  v  |  v  |  v  |     |     |              |          |               |
-| (v1.1)                |  v  |  v  |  v  |  v  |  v  |              |          |               |
-| (Fra)                 |  v  |  v  |  v  |  v  |  v  |       v      |          |               |
-| (Spa)                 |  v  |  v  |  v  |  v  |  v  |       v      |    v     |               |
-| (Ita)                 |  v  |  v  |  v  |  v  |  v  |       v      |    v     |               |
-| (Bra)                 |  v  |  v  |  v  |  v  |  v  |       v      |    v     |               |
-| (Ger)                 |  v  |  v  |  v  |  v  |  v  |       v      |    v     |               |
-| (v1.2 or Patch v6)    |  v  |  v  |  v  |  v  |  v  |       v      |    v     |       v       |
+| Версия / номер зоны | 151 | 176 | 203 | 430 | 535 | 72, 236, 407 | 472, 572 | 266, 267, 271 |
+|:-------------------:|:---:|:---:|:---:|:---:|:---:|:------------:|:--------:|:-------------:|
+| (Demo)              |  v  |  v  |  v  |     |     |              |          |               |
+| (v1.1)              |  v  |  v  |  v  |  v  |  v  |              |          |               |
+| (Fra)               |  v  |  v  |  v  |  v  |  v  |       v      |          |               |
+| (Spa)               |  v  |  v  |  v  |  v  |  v  |       v      |    v     |               |
+| (Ita)               |  v  |  v  |  v  |  v  |  v  |       v      |    v     |               |
+| (Bra)               |  v  |  v  |  v  |  v  |  v  |       v      |    v     |               |
+| (Ger)               |  v  |  v  |  v  |  v  |  v  |       v      |    v     |               |
+| (v1.2 or Patch v6)  |  v  |  v  |  v  |  v  |  v  |       v      |    v     |       v       |
 
 
 1.0 vs 1.1
@@ -151,11 +151,11 @@ Nice secret, you can find something in the equipment of that two-legged riding a
 
 ![](images/code/z151-a4-5.png)
 
-Changed snowdrifts at the top of the map `151` (pink areas).
+Changed snowdrifts at the top of the map 151 (pink areas).
 
 ![](images/zones/z151-diff.png)
 
-**Zone 176**: new Monster `61` [7; 6] loot: 65535; dropsLoot: 0
+**Zone 176**: new Monster 61 [7; 6] loot: 65535; dropsLoot: 0
 
 ![](images/tiles/1775.png)
 
@@ -213,7 +213,7 @@ and Yoda delivers his speech.
 * The following zones have been officially fixed: `72, 236, 407, 473, 474, 572`.
 * The following zones have actually been fixed : `72, 236, 266, 267, 271, 407, 472, 572`.
 
-Differences found in: `Tiles`, `Zones`, `Characters`.
+Differences found in: Tiles, Zones, Characters.
 
 **Tile 1543**:
 
@@ -223,16 +223,17 @@ The fix is pretty funny, check it out for yourself. Below are the tiles - origin
 
 ```CGW SUCKS!```
 
-Easter egg? We are talking about the Computer Gaming World magazine, where the demo version of the game was sent.
-In the July 1997 issue, the game received only 1 out of 5 stars ([see page 190](https://www.cgwmuseum.org/galleries/issues/cgw_156.pdf)).
+Easter egg? Речь идёт о журнале Computer Gaming World, куда отправлялась демо-версия игры.
+В июльском номере за 1997 год игра получила лишь 1 звезду из 5 возможных (см. стр. 190).
+https://www.cgwmuseum.org/galleries/issues/cgw_156.pdf
 
 "The dull side of the Force wins in LucasArts' new desktop adventure."
 
-One thing is confusing - how did LucasArts find out about this verdict in February?
+Одно смущает - как в LucasArts узнали об этом вердикте в феврале? 
 
-**Zones 409, 445, 526, 567, 595**: slight difference under the bunker door (see pink dots).
+**Zones 409, 445, 526, 567, 595**: небольшое различие под дверью бункера (см. розовые точки).
 
-Graphical changes are related to tile `1543`.
+Графические изменения связаны с тайлом 1543.
 
 ![](images/zones/z409.png)
 
@@ -499,17 +500,17 @@ This wooded area also became a source of errors when it was not possible to get 
 1.1 English vs Spanish version
 ------------------------------
 
-The Spanish version was not released first, but among the European versions of Yoda Stories, it appeared on the Internet earlier than others.
-Therefore, it will become the basis for comparison with other European versions.
+Испанская версия не была выпущена первой, но среди Европейских версий Yoda Stories она появилась в интернете раньше других.
+Поэтому, она станет основой для сравнения с другими Европейскими версиями.  
 
-The Spanish version of Yoda Stories is between `1.1` and `1.2`.
+The Spanish version of Yoda Stories is between `1.1` and `1.2`. 
 
-* Implemented fixes: `72, 236, 407, 472, 572`
-* Missing fixes: `266, 267, 271`
+* Реализованные исправления: `72, 236, 407, 472, 572`
+* Отсутствующие исправления: `266, 267, 271`
 
-So, adding melodies in zones `266, 267, 271` will be enough for the game to match `Patch 6`.
+Так что, добавления мелодий в зонах `266, 267, 271` будет достаточно для того, чтобы игра соответствовала `Patch 6`.
 
-Changed categories:
+Изменённые категории:
 
 * `Startup screen`
 * `Tiles`
@@ -522,7 +523,7 @@ Changed categories:
 **Startup screen**:
 
 The pink areas show where the stars were.
-For some unknown reason, the tiles `1079` and `1078` at the bottom have been changed to `1084` (100% black square).
+По неизвестной причине тайлы `1079` и `1078` внизу были заменены на `1084` (100% чёрный квадрат).
 
 ![](images/zones/z000-diff.png)
 
@@ -547,7 +548,7 @@ These tiles are used in zones 76-77.
 
 **Zone 407**: important fix identical to version 1.2
 
-**Zone 472**: important fix identical to version 1.2, however, the new actions are added at the end of the zone, not in the middle.
+**Zone 472**: important fix identical to version 1.2, правда, новые действия добавлены в конце зоны, а не в середине.
 
 **Zone 572**: important fix identical to version 1.2
 
@@ -557,7 +558,7 @@ These tiles are used in zones 76-77.
 * **Tile genders**: This is a new data structure, TGEN, typical for languages that use the article to change the gender.
 
 Selva Translators only changed the About screen in the Spanish version of the game.
-News 12/13/2001, but they write that they finished in November 2001. What was their motivation is not clear.
+Новость 13.12.2001, но пишут что закончили в ноябре 2001. Какова была их мотивация - непонятно.
 
 
 Spanish version vs German version
@@ -585,20 +586,19 @@ These tiles are used in zones 76-77.
 
 **Zone 472**: differences among unused instruction arguments.
 
-The differences in the structure of TGEN are very large.
-It is interesting to observe how words in different languages change gender.
+Различия в структуре TGEN очень большие. Интересно наблюдать, как слова в разных языках меняют род.
 
 
 Spanish version vs Italian version
 ---------------------------------
 
-Here, as in the German version, the loading screen and Zone 0 have not been corrupted.
+Здесь, как и в германской версии, the loading screen and Zone 0 have not been corrupted.
 
-Currently, Yoda Stories in Italian can be found on the Internet only in the 1998 reissue.
-The one that came with `Star Wars - X-Wing vs. TIE Fighter (Italy) (Disco 1) (Gioco)` and `Star Wars - X-Wing vs. TIE Fighter (Italy) (Disco 2) (Multiplayer)`.
+В настоящее время в интернете можно найти Yoda Stories на Итальянском языке только в виде переиздания 1998 года. 
+Та, что шла в комплекте с `Star Wars - X-Wing vs. TIE Fighter (Italy) (Disco 1) (Gioco)` и `Star Wars - X-Wing vs. TIE Fighter (Italy) (Disco 2) (Multiplayer)`.
 
-The dates of the game files on the disc indicate that the game was ready around the same time
-as the other European versions, so we need to find the first edition of the game.
+Даты игровых файлов на диске говорят о том, что игра была готова примерно в то же время, что
+и другие Европейские версии, так что, надо найти первое издание игры.
 
 Language differences aside, these versions are otherwise identical.
 
@@ -615,7 +615,7 @@ These tiles are used in zones 76-77.
 
 ![](images/zones/076it.png) ![](images/zones/077it.png)
 
-**Zone 265**: replaced one tile on the intermediate layer:
+**Zone 265**: заменён один тайл на промежуточном слое:
 
 * [8; 16]: [0, 61, 65535] -> [0, 69, 65535]
 
@@ -623,31 +623,31 @@ These tiles are used in zones 76-77.
 
 ![](images/zones/z265.png)
 
-Most likely, the change was made out of curiosity, and the programmer used the level editor.
+Скорее всего, изменение было сделано из любопытства, и программист пользовался редактором уровней.
 
-There are differences in unused script fields for zone `472`.
+Есть различия в неиспользуемых полях скриптов для зоны 472.
 
-We will not even discuss differences in the structure of TGEN, they also exist, and significant ones.
+Различия в структуре TGEN даже обсуждать не будем, они тоже есть, и значительные.
 
 
 Spanish version vs French version
 ---------------------------------
 
-The French version of the game is missing very important fixes for zones `472` and `572`.
+Во французской версии игры отсутствуют очень важные исправления для зон `472` и `572`.
 
-So, on the one hand, this is the very first European version of Yoda Stories,
-but on the other hand, it has the fewest bug fixes.
+Так что, с одной стороны это самая первая Европейская версия Yoda Stories, но с другой,
+в ней исправлено меньше всего ошибок.
 
-_It's ironic that this game was the last one I got._
+_Иронично, что эта игра попала ко мне самой последней._
 
-Here, as in the German version, the loading screen and Zone 0 have not been corrupted.
+Здесь, как и в германской версии, the loading screen and Zone 0 have not been corrupted.
 
 Language differences aside, these versions are near identical.
 
 **Tiles**:
 
 To accommodate all text, the number of tiles has been increased from `2123` to `2135`.
-So many tiles were required in order to write text between the lines without limiting oneself to the dimensions of the tiles.
+Так много тайлов потребовалось для того, чтобы написать текст между строк, не ограничивая себя габаритами тайлов.
 
 * Changed tiles: 2090-2108
 * 11 new tiles: 2123-2134
@@ -658,33 +658,28 @@ These tiles are used in zones 76-77.
 
 ![](images/zones/076fr.png) ![](images/zones/077fr.png)
 
-**Zones 472, 572**: Major fixes missing.
-It would be logical to assume that these bugs were discovered only in May 1997, 
-but it is claimed that Patch 6 with all the fixes was made back in February (we doubt it).
+**Zones 472, 572**: отсутствуют важные исправления.
+Логично будет предположить, что эти ошибки обнаружили только в мае 1997-го года, но утверждается, 
+что Patch 6 со всеми исправлениями сделали ещё в феврале (мы в этом сомневаемся).
 
-The differences in the structure of TGEN are large, 
-but it seemed to me that not as much as with the German version.
+Различия в структуре TGEN большие, но мне показалось, что не настолько, как с германской версией.
 
 
 Spanish version vs Brazil version
 ---------------------------------
 
-We can say that this is the most complete translation of Yoda Stories, 
-not counting the modern translation of the game into Russian by Leonis.
+Можно сказать, что это самый полный перевод Yoda Stories, не считая современного перевода игры на русский язык от Leonis.
 
-`Guerra nas Estrelas: Histórias de Yoda` is the only version from the 90s 
-that even translated the title of the game on the loading screen and Zone 0.
-However, the quality of the graphics in the title screen is very mediocre. 
-In addition, the translators have managed to modify the background.
-There are no stars under the letter A in the word YODA, but star clusters 
-have been added to the right of the word "DE" and to the left of Yoda's ear.
+`Guerra nas Estrelas: Histórias de Yoda` - это единственная версия из 90-х, в которой было переведено даже название игры на загрузочном экране и Zone 0.
+Впрочем, качество графики в заставке весьма посредственное. Вдобавок, переводчики умудрились модифицировать фон.
+Не хватает звёзд под буквой A в слове YODA, зато добавлены звёздные скопления справа от слова "DE" и слева от уха Йоды.
 
 Language differences aside, these versions are otherwise identical.
 
 **Tiles**:
 
-So many tiles were not required even in the French version, this is a real record!
-The developers did not translate the original splash screen tiles, but added new ones.
+Так много тайлов не потребовалось даже во французкой версии, это настоящий рекорд!
+Разработчики не стали переводить оригинальные тайлы заставки, а добавили новые.
 
 * Changed: 2090-2108
 * New: 2123-2152
@@ -695,7 +690,7 @@ These tiles are used in zones 0-76-77.
 
 ![](images/zones/000br.png) ![](images/zones/z000-br-diff.png)
 
-Apart from the text, three of these tiles have been replaced:
+Не считая текста, заменены три эти тайла:
 
 * [1; 3]: 1084 -> 1077
 
@@ -711,11 +706,11 @@ Apart from the text, three of these tiles have been replaced:
 
 **Zone 3**
 
-Three changes made for an unknown purpose. The background became more heterogeneous.
+Три изменения, выполненные с неизвестной целью. Фон стал более неоднородный.
 
 ![](images/zones/z003.png)
 
-On the left is the original sprite, on the right is its replacement:
+Слева оригинальный спрайт, справа его замена:
 
 ![](images/tiles/0000.png) ![](images/tiles/0005.png)
 
@@ -727,7 +722,7 @@ On the left is the original sprite, on the right is its replacement:
 
 ![](images/zones/076br.png) ![](images/zones/077br.png)
 
-We will not even pay attention to differences in the structure of TGEN.
+На различия в структуре TGEN даже внимания обращать не будем.
 
 
 T-Rus Pro
@@ -745,10 +740,10 @@ T-Rus Leonis
 
 Based on version 1.2 (aka Patch 6).
 
-This translation has been in the making for many years and is qualitatively different from its predecessor.
+Этот перевод создавался много лет и качественно отличается от своего предшественника.
 
-Thanks to the complete information about the structure of the DTA file, it was possible to translate all the graphics and all the text.
+Благодаря полной информации о структуре DTA файла получилось перевести всю графика и весь текст.
 
-TODO pictures
+TODO картинки
 
-TODO compare with 1.2
+TODO сравнить с 1.2

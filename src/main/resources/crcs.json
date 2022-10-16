@@ -24,12 +24,12 @@
     "description": "The rarest version of the English-language game from LucasArts. Compared to the first version, it has some fixes.\nThe files were modified on 18.02.1997."
   },
   {
-    "id": "eng-1.1-demo",
+    "id": "eng-demo",
     "title": "Star Wars - Yoda Stories (18.02.1997) (Eng) (Demo)",
     "exeCrc32": "E89D0EB1",
     "dtaCrc32": "F9543F00",
     "charset": "windows-1252",
-    "description": "Demo version of the v1.1 game released on 18.02.1997.\nThere is only one mission available on planet Neshtab."
+    "description": "Demo version, released on 18.02.1997.\nThere is only one mission available on planet Neshtab."
   },
   {
     "id": "eng-1.2",

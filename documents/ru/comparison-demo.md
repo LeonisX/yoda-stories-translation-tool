@@ -7,10 +7,8 @@ Yoda Stories Demo Version Comparison
 It's time to take a look at what exactly was cut from the Demo version of Yoda Stories.
 There are many differences, so we will probably omit a few of the least significant ones.
 
-In the process of studying this version of the game, 
-I got the impression that the proofreaders had not yet had time to double-check the text, 
-but several zone corrections were made here at the last moment. 
-Specifically, all winter zones known at that time were corrected.
+В процессе изучения этой версии игры сложилось впечатление, что корректоры ещё не успели перепроверить текст,
+но несколько исправлений зон сюда в последний момент внесли. А конкретно, были исправлены все известные на тот момент зимние зоны.
 
 You cannot save and load.
 
@@ -150,9 +148,9 @@ these tiles were also removed from all the corresponding zones (replaced with tr
 
 Some snow locations were also erased.
 
-Recall that in version 1.1 the zones were fixed: `151, 176, 203, 430, 535`.
+Напомним, что в версии 1.1 были исправлены зоны: `151, 176, 203, 430, 535`.
 
-The demo version does not contain a fix for zones `430` and `535`, that is, only `151, 176, 203` are fixed.
+В демо-версии отсутствует исправление для зон `430` и `535`, то есть исправлены только: `151, 176, 203`.
 
 
 **Zone 0**: +1 instruction for Action 0
@@ -193,9 +191,8 @@ Quest items will never appear in this location. Absent all provided items.
 
 `This is the tiny Spaceport on Neshtab. In a real game, I might find myself in the DESERT or a RAIN FOREST as easily as here, but the DEMO is all ICE, and there's only one ending...`
 
-New actions performed upon arrival. 
-In theory, in Action 1, Luke's X-wing is displayed, and in the 16th Action it is hidden, and he makes a speech.
-In fact, the loss of the starship is imperceptible.
+New actions performed upon arrival. По-идее, в 1 действии отображается крестокрыл Люка, а в 16-м скрывается и он произносит речь.
+Фактически же пропажа звездолёта незаметна.
 
 ```
 Action 16
@@ -227,8 +224,8 @@ then
     disable-action
 ```
 
-Also in Action 5 the `remove-tile` command is inserted after `place-tile` and not before it.
-This will not affect the gameplay, but it clearly makes it clear that the demo version was corrected in parallel with version 1.1.
+Так же в Action 5 команда `remove-tile` вставлена после `place-tile` а не до неё.
+На геймплей это не повлияет, зато явно даёт понять, что демо-версия правилась параллельно версии 1.1.
 
 izx4._unnamed2: 1 -> 0
 
@@ -257,7 +254,7 @@ izx4._unnamed2: 1 -> 0
 
 ![](images/zones/demo/176.png)
 
-This zone received a fix similar to version 1.1.
+Эта зона получила исправление, аналогичное версии 1.1.
 
 izx4._unnamed2: 0 -> 1
 
@@ -265,7 +262,7 @@ izx4._unnamed2: 0 -> 1
 
 ![](images/zones/demo/203.png)
 
-This zone received a fix similar to version 1.1.
+Эта зона получила исправление, аналогичное версии 1.1.
 
 izx4._unnamed2: 1 -> 0
 
@@ -273,11 +270,11 @@ izx4._unnamed2: 1 -> 0
 
 ![](images/zones/demo/204.png)
 
-Zone type changed: EMPTY -> FIND
+Тип зоны изменён: EMPTY -> FIND
 
 Added hotspot: DROP_QUEST_ITEM [9; 8] enabled: 1; argument: 65535
 
-It turns out that in this zone you can now find a quest item.
+Получается, что в этой зоне теперь можно найти квестовый предмет.
 
 **Zone 210**:
 
@@ -319,21 +316,22 @@ izx4._unnamed2: 1 -> 0
 
 izx4._unnamed2: 1 -> 0
 
-It was:
+Было:
 
 `speak-npc: 6 1 "If you want WEAPONS or MEDICINE, drop something on the table here, and maybe we'll do business..."`
 
-It became:
+Стало:
  
 `speak-npc: 6 1 "If you want WEAPONS or MEDICINE, drop something on the table here, and I'll give you a DEMO of how the system works..."`
 
-It was:
+Было:
 
 `speak-npc: 6 1 "Nice junk..."`
 
-It became:
+Стало:
  
 `speak-npc: 6 1 "Nice junk. Say, if you enjoy this DEMO, why not buy the real game? Then you can thaw out in some warmer terrain..."`
+
 
 **Zone 294**:
 
@@ -408,7 +406,7 @@ then
 
 ![](images/zones/demo/407.png)
 
-Disabled quest completion. Removed `mark-as-solved` commands for steps 16 and 17.
+Disabled quest completion. Убраны команды `mark-as-solved` для действий 16 и 17.
 
 `mark-as-solved: 0 0 0 0 0 ""`
 
@@ -430,7 +428,7 @@ Became:
 * Instruction 1: `You mentioned something about a ¥...?`
 * Instruction 2: `That's right; I did. Well, follow me...`
 
-This is very strange, perhaps it is part of the draft text, which was finalized already for the final release of the game.
+Это очень странно, возможно это часть чернового текста, который был доработан уже к финальному релизу игры.
 
 **Zone 465**:
 
@@ -461,7 +459,7 @@ izx4._unnamed2: 1 -> 0
 
 ![](images/zones/demo/596.png)
 
-Another forest zone. Same fix in two actions.
+Another forest zone. Одинаковое исправление в двух действиях.
 
 `move-hero-to: 10 8`
 
@@ -471,14 +469,14 @@ replaced by
 change-zone: 595 0 0
 ```
 
-It should be added that zone 595 is also green, that is, it does not participate in the demo.
-This is probably another piece of draft code.
+Надо добавить, что зона 595 так же зелёная, то есть в демке не участвует.
+Вероятно, это ещё один фрагмент чернового кода.
 
 **Zone 605**:
 
 ![](images/zones/demo/605.png)
 
-Another invisible zone and unverified text:
+Очередная невидимая зона и не проверенный текст:
 
 `speak-npc: 4 3 "Whoa... dark in this hovel. And what's that scuttling noise???"`
 
