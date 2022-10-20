@@ -1,52 +1,52 @@
 Star Wars - Yoda Stories (USA) (10.08.1998) & Behind The Magic - Vehicles Special Edition
 =========================================================================================
 
-* Регион: `США` (скорее всего и Канада)
-* Язык: `английский`
-* Издатель: [`LucasArts Entertainment Company`](https://web.archive.org/web/19980214042448/http://www.lucasarts.com/org_index.html)
-* Дата выпуска: `лето 1998` года
-* Рейтинг ESRB: `E: Everyone`
+* Region: `USA` (most likely Canada)
+* Language: `English`
+* Publisher: [`LucasArts Entertainment Company`](https://web.archive.org/web/19980214042448/http://www.lucasarts.com/org_index.html)
+* Release date: `summer 1998`
+* ESRB Rating: `E: Everyone`
 * UPC, MPN: `0 23272 31118 6`
-* Цена: 39.95$ (за сборник из 6 дисков)
-* Версия: `1.2`
+* Price: $39.95 (for a 6-disc collection)
+* Version: `1.2`
 
-Входит в сборник `The LucasArts Archives Vol. IV: Star Wars Collection II`.
+Part of `The LucasArts Archives Vol. IV: Star Wars Collection II`.
 
 [![](images/cover/thumb/lucas-arts-archives-iv-box-front.jpg)](images/cover/lucas-arts-archives-iv-box-front.jpg)
 [![](images/cover/thumb/lucas-arts-archives-iv-box-back.jpg)](images/cover/lucas-arts-archives-iv-box-back.jpg)
 [![](images/cover/thumb/lucas-arts-archives-iv-disk-front-yoda-stories.jpg)](images/cover/lucas-arts-archives-iv-disk-front-yoda-stories.jpg)
 
-Год назад игра имела рейтинг `K-A`, а сейчас используется его более современный аналог `E`.
+A year ago, the game was rated `K-A`, and now its more modern counterpart `E` is used.
 
-Реализованы все исправления, которые годом ранее были доступны в `Patch 6`.
+Implemented all fixes that were available in `Patch 6` a year earlier.
 
-Диск:
+**Disk:**
 
-* Дата записи: `10.08.1998 14:57:40`
+* Recording date: `10.08.1998 14:57:40`
 * Volume Space Size (LBA): `123484`
 * Volume Identifier: `YODA`
-* Серийный номер: `8061834`
-* Mastering code: `8061834   Technicolor   C2   132045-01	IFPI L892`
+* Serial number: `8061834`
+* Mastering code: `8061834 Technicolor C2 132045-01 IFPI L892`
 
-Содержимое диска:
+**Disc content:**
 
 * `Star Wars: Yoda Stories (USA) (Rerelease)`
 * `Behind The Magic: Vehicles Special Edition (USA) (1.0) (28.07.1998)`
-* Тематические курсоры, иконки, обои и звуковые эффекты для Windows.
+* Themed cursors, icons, wallpapers and sound effects for Windows.
 * `DirectX 5.2`
 
-Ключевые файлы:
+**Key files:**
 
-* `YODESK.DTA`: полное соответствие `Patch 6`
-* `YODESK.EXE`: идентичен "версии" `1.1`
-* `YODESK.HLP`: обновлённый файл справки
+* `YODESK.DTA`: full match `Patch 6`
+* `YODESK.EXE`: identical to "version" `1.1`
+* `YODESK.HLP`: updated help file
 
-Новые файлы, не влияющие на геймплей:
+**New files that do not affect gameplay:**
 
 * `INSTALL\REGISTER.EXE`
 * `INSTALL\WEBSITE.EXE`
 
-Изменённые файлы, не влияющие на геймплей:
+**Changed files that do not affect gameplay:**
 
 * `BITMAPS\LMMB.BMP`
 * `BITMAPS\LMMY.BMP`
@@ -54,41 +54,38 @@ Star Wars - Yoda Stories (USA) (10.08.1998) & Behind The Magic - Vehicles Specia
 * `INSTALL\SETUP.INS`
 * `YODESK.GID`
 
-Изменения в файле справки и картинках связаны с тем,
-что `Making Magic` был заменён более современной энциклопедией.
+Changes in the help file and pictures are related to the fact that
+that `Making Magic` has been replaced by a more modern encyclopedia.
 
 ![](images/setup/usa12.png)
 
 Behind The Magic - Vehicles Special Edition
 -------------------------------------------
 
-* Версия от `24.07.1998`
+This is just part of an interactive encyclopedia of the Star Wars universe.
+200 megabytes of vehicle data.
 
-Это лишь часть интерактивной энциклопедии по вселенной Звёздных войн.
-200 мегабайт данных о транспортных средствах.
+The Complete Encyclopedia `Star Wars: Behind the Magic` is the definitive multimedia guide to Star Wars,
+both from the films in the original trilogy and beyond.
 
-Полная энциклопедия `Star Wars: Behind the Magic` представляет собой исчерпывающий 
-мультимедийный путеводитель по "Звездным войнам" как по фильмам оригинальной трилогии, 
-так и обо всём, что осталось за кадром.
+Seven other equally extensive thematic modules are available:
+* Characters (main characters, aliens and various creatures, groups and organizations);
+* Even more technologies (weapons and devices);
+* Behind the scenes (about the filmmakers, the filming process and companies);
+* Events (full timeline);
+* Locations and the expanded universe (toys, collectibles and other additions).
 
-Доступны ещё семь других столь же обширных тематических модулей: 
-* Персонажи (главные герои, пришельцы и различные существа, группировки и организации); 
-* Ещё больше технологий (оружие и устройства); 
-* За кадром (о создателях фильма, процессе съёмок и компаниях); 
-* События (полная временная шкала); 
-* Локации и расширенная вселенная (игрушки, предметы коллекционирования и другие дополнения). 
+The complete collection also includes previews of the upcoming `Star Wars: Episode I `movie,
+as well as the "Glossary" section, various quizzes and questionnaires.
 
-Полная коллекция также включает в себя предварительную информацию о грядущем фильме "`Звездные войны: Эпизод I`", 
-а также раздел "Глоссарий", же различные викторины и опросники.
-
-Системные требования: Windows 95/98 с DirectX 5.2, Pentium 133, 16MB RAM и 4x CD-ROM.
-Но на свой страх и риск можно попытаться запустить энциклопедию даже в MS-DOS!
+System requirements: Windows 95/98 with DirectX 5.2, Pentium 133, 16MB RAM and 4x CD-ROM.
+But the developers are hinting that the encyclopedia can work even in MS-DOS!
  
-Надо добавить, что полная версия `Star Wars: Behind the Magic`, выпущенная осенью 1998 года,
-поставляется в комплекте с DirectX 6.0 и занимает 2 диска.
+The full version of `Star Wars: Behind the Magic`, released in the fall of 1998,
+comes bundled with DirectX 6.0 and occupies 2 disks:
 
-* Версия энциклопедии: `31.08.1998`
-* Дата записи диска: `02.09.1998 11:40:22`
+* Version: `31.08.1998`
+* Recording date of the disc: `02.09.1998 11:40:22`
 
 USA 1.2 vs 1.1
 --------------

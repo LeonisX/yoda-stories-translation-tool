@@ -29,7 +29,7 @@ and partially in all European versions.
 **Disc content:**
 
 * `Star Wars: Yoda Stories (USA) (Rev 1)`
-* `Star Wars: Making Magic (USA)`
+* `Star Wars: Making Magic (USA) (QA1.03) (03.09.1996)`
 * Themed cursors, icons, wallpapers and sound effects for Windows.
 
 Files changed:
