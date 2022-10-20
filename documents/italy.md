@@ -1,29 +1,28 @@
 Star Wars - Yoda Stories (Ita) & Making Magic
 =============================================
 
-* Регион: `Италия` и вероятно часть Швейцарии
-* Язык: `итальянский`
-* Издатель: [`CTO, S.p.A.`](http://web.archive.org/web/19980526073707fw_/http://www.cto.it/Yodastor.html)
-* Дата выпуска: `июнь 1997`, переиздание `1998 года`
-* Возрастной рейтинг: `отсутствует`
+* Region: `Italy` and probably part of Switzerland
+* Language: `Italian`
+* Publisher: [`CTO, S.p.A.`](http://web.archive.org/web/19980526073707fw_/http://www.cto.it/Yodastor.html)
+* Release date: `June 1997`, rerelease `1998`
+* Age rating: `none`
 * Serial: `FD005`, `LUC629`, `LUC630`
-* UPC: `0 23272 31118 6` (отдельное издание)
-* EAN: `8 015887 002209` (сборник)
+* UPC: `0 23272 31118 6` (separate edition)
+* EAN: `8 015887 002209` (collection)
 
 [![](images/cover/thumb/yoda-stories-italy-box-front.jpg)](images/cover/yoda-stories-italy-box-front.jpg)
 [![](images/cover/thumb/yoda-stories-italy-box-back.jpg)](images/cover/yoda-stories-italy-box-back.jpg)
 [![](images/cover/thumb/yoda-stories-italy-disk-front.jpg)](images/cover/yoda-stories-italy-disk-front.jpg)
 
-Игра полностью переведена на итальянский язык, включая упаковку, 
-сопроводительные документы и даже скриншоты на коробке.
+The game is fully translated into Italian, including the packaging, accompanying documents, and even the screenshots on the box.
 
-Бумажный мануал отпечатан в апреле 1997 года.
+Paper manual printed in April 1997.
 
-Коробка типичная для Yoda Stories, возрастного рейтинга на упаковке нет.
+The box is typical of Yoda Stories, there is no age rating on the packaging.
 
-Самое любопытное то, что предприимчивые менеджеры из C.T.O. продавали Yoda Stories
-и как самостоятельный продукт, и как часть [комплектации](http://web.archive.org/web/19991007205410fw_/http://www.cto.it/collezione99/main.html) 
-с более популярными играми от LucasArts:
+Most curiously, the enterprising managers at C.T.O. sold Yoda Stories
+both as a standalone product and as part of a [compilation](http://web.archive.org/web/19991007205410fw_/http://www.cto.it/collezione99/main.html)
+with more popular games from LucasArts:
 
 * `Star Wars: Dark Forces + Yoda Stories + Star Wars Screen Entertainment`
 * `Star Wars: Rebel Assault II + Yoda Stories + Star Wars Screen Entertainment` (3 CDs)
@@ -38,49 +37,49 @@ Star Wars - Yoda Stories (Ita) & Making Magic
 
 [![](images/cover/thumb/yoda-stories-x-wing-italy-box-front.jpg)](images/cover/yoda-stories-x-wing-italy-box-front.jpg)
 
-Последние два сборника в списке были выпущены первыми, до мая 1998 года. 
-Видимо, этим и объясняется их хоть какая-то известность.
+The last two compilations on the list were the first to be released, until May 1998.
+Apparently, this explains their at least some fame.
 
-Белая книжка-коробка сборника раскрывалась дважды, демонстрируя сначала обложку с документацией, 
-а потом сами диски.
+The white book-box of the collection was opened twice, showing first the cover with documentation,
+and then the discs themselves.
 
-Образ диска, выпущенного в 1997 году пока не найден. Известно лишь, что у него аскетичное оформление.
-Поэтому давайте рассмотрим игру из сборника.
+The disk image that was released in 1997 has not yet been found. It is only known that it has an ascetic design.
+So let's look at the game from the collection.
 
-Диск:
+Disk:
 
-* Дата записи: `11.03.1998 18:31:33`
+* Recording date: `11.03.1998 18:31:33`
 * Volume Space Size (LBA): `332032`
 * Volume Identifier: `Yoda+SWSE`
-* Mastering code: `DADC AUSTRIA   A0100241137-0303   13	IFPI L553`
+* Mastering code: `DADC AUSTRIA A0100241137-0303 13 IFPI L553`
 
-Содержимое диска:
+Disc content:
 
 * `Star Wars: Yoda Stories (Italy)`
 * `Star Wars: Making Magic (Italy) (FA1.15 от 03.09.1996)`
 * `Star Wars: Rebel Assault II Demo (Italy) (DX1.14 от 30.01.1997)`
 * `Star Wars: Screen Entertainment (Rev 1)`
-* Тематические курсоры, иконки, обои и звуковые эффекты для Windows.
-* Два мануала в `PDF` формате. По-идее, они же отпечатаны на бумаге.
+* Themed cursors, icons, wallpapers and sound effects for Windows.
+* Two manuals in `PDF` format. In theory, they are printed on a paper.
 
-`Star Wars: Making Magic` на этом диске аналогичен другим Европейским версиям.
-Интерфейс полностью переведён, уникальная ссылка на сайт регистрации и на домашний сайт.
-Версия демки игры `Rebel Assault II` так же переведена на Итальянский язык.
+`Star Wars: Making Magic` on this disc is similar to other European versions.
+The interface is completely translated, there is a unique link to the registration site and to the home site.
+The demo version of the game `Rebel Assault II` is also translated into Italian.
 
-`Star Wars: Screen Entertainment` - набор хранителей экрана по кинофильму "Новая надежда", 
-созданный `Presage Software Development` и опубликованный `LucasArts Entertainment Company` летом 1994 года для Windows 3.0. 
-Помимо чисто визуальных скринсейверов, в комплекте имеются хранители экрана, 
-содержащие справочные сведения по персонажам и транспортным средствам "Звёздных войн".
-Смотрятся весьма достойно даже по меркам 21-го века.
+`Star Wars: Screen Entertainment` - a set of screen savers based on the movie "A New Hope",
+created by `Presage Software Development` and published by `LucasArts Entertainment Company` in the summer of 1994 for Windows 3.0.
+In addition to purely visual screensavers, the kit includes screensavers,
+containing background information on the characters and vehicles from Star Wars.
+They look very dignified even by the standards of the 21st century.
 
-Хранители экрана сделаны в формате, отличном от формата, принятого в Windows (scr),
-так что, отдельно их использовать не получится, нужен полный дистрибутив.
+Screen savers are in a different format than Windows (`scr`), so it's not enough just to copy them to the Windows system folder.
+They are launched by the `intermis.exe` utility, which is supplied with the `Star Wars: Screen Entertainment` package.
 
-На этом сборнике - англоязычное переиздание `Screen Entertainment`, 
-лучше приспособленное под более современные системы (Windows 95).
-В частности, обновлена библиотека `Win-G` (предшественник Direct X).
+On this compilation is an English-language rerelease of `Screen Entertainment`, 
+better adapted to more modern systems (Windows 95).
+In particular, the `Win-G` library (predecessor of Direct X) has been updated.
 
-Так же изменены следующие хранители экрана:
+The following screensavers have also been changed:
 
 * `Cantina`
 * `Character Biographies`
@@ -89,9 +88,9 @@ Star Wars - Yoda Stories (Ita) & Making Magic
 * `Scrolling Text`
 * `Storyboards`
 
-Отсутствует библиотека `SWSFX.DLL` и файл `SWSESET.EXE`.
+Missing library `SWSFX.DLL` and file `SWSESET.EXE`.
 
-Надо сказать, что уже через несколько лет некоторые данные с этих заставок потеряли свою актуальность.
+It must be said that after a few years, some of the data from these screensavers lost their relevance.
 
 The Italian version vs Spanish version
 --------------------------------------
