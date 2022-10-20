@@ -1,43 +1,41 @@
 Star Wars - Yoda Stories (Demo) (18.02.1997)
 ============================================
 
-Демонстрационная версия игры, которую можно было скачать совершенно бесплатно с сайта [lucasarts.com](http://web.archive.org/web/19980214043537/http://www.lucasarts.com/static/yodastories/yodastories.htm),
-содержала только одну миссию по разрушению Имперского оружейного завода на скованной льдом планете Нештаб.
+Demo version of the game, which could be downloaded completely free of charge from the site [lucasarts.com](http://web.archive.org/web/19980214043537/http://www.lucasarts.com/static/yodastories/yodastories.htm) ,
+contained only one mission to destroy the Imperial Arms Factory on the ice-bound planet Neshtab.
 
-[Скачать yodademo.exe](download.md)
+[Download yodademo.exe](download.md)
 
-Самораспаковывающийся WinZip архив `yodademo.exe` занимает 3.2 Мб. 
-Making Magic в комплекте отсутствует.
+The self-extracting WinZip archive `yodademo.exe` takes 3.2 MB.
+`Making Magic` is not included.
 
-Неверная дата в PE заголовке файла `13.09.1996` не позволяет узнать точное время его создания.
+Wrong date in PE file header `13.09.1996` does not allow to know the exact time of its creation.
 
-Разработчики сберегли время хакерам и кроме изменения скриптов попросту удалили почти всю неиспользуемую графику, 
-так что, восстановить демку до полноценной игры не получится.
+The developers saved time for hackers and, in addition to changing scripts, simply removed almost all unused graphics,
+so, it will not be possible to restore the demo to a full-fledged game.
 
-Если судить по датам, то релиз стали готовить примерно 14-го февраля. Именно тогда был готов файл справки.
-Доработка (вернее обрезка игры) заняла ещё 3-4 дня.
+Judging by the dates, the release began to be prepared around February 14th. That's when the help file was ready.
+Finalization (or rather trimming of the game) took another 3-4 days.
 
-Самое примечательное то, что в это время готовилась версия игры `1.1`, но в демо-версию попали только исправления для зимних зон, 
-что ещё раз подтверждает параллельную разработку этих версий.  
+The most remarkable thing is that at that time the `1.1` version of the game was being prepared,
+but only fixes for winter zones got into the demo version,
+which once again confirms the parallel development of these games.
 
-Так же можно смело предполагать, что пробничек формировался даже раньше версии `1.0`,
-поскольку, при изучении списка различий найдены артефакты, исправленные к первому релизу игры.
+We can also safely assume that the probe was formed even before version `1.0`,
+because, when studying the list of differences, artifacts were found that were corrected in the first release of the game.
 
-* Исправленные зоны версии 1.1: `151, 176, 203, 430, 535`
-* Исправленные зоны в демо-версии: `151, 176, 203`
-
-В распакованном (установленном) виде демку можно встретить на многих сборниках того времени:
+The demo version can be found on many collections of that time:
 
 * `LucasArts Super Sampler, The (USA) (1997)`
 * `LucasArts Super Sampler 2 (USA)`
 * `Shamrock's Fall '97 CD-ROM (USA)`
-* `Shamrock's Fall '97 CD-ROM (USA) (Older)` - по-сути, на этих двух дисках записан `LucasArts Super Sampler 2.1`
+* `Shamrock's Fall '97 CD-ROM (USA) (Older)` - in fact, these two discs contain `LucasArts Super Sampler 2.1`
 * `Computer Buyer Issue 75 CD-ROM`
 * `PCGamer Demo Disc 3.4`
 * `PC Gamer (Italian Edition) Coverdisc 021`
 * `Personal Computer World Interactive - Disk 11`
 
-и так далее...
+and so on...
 
 Yoda Stories Demo Version Comparison
 ====================================
@@ -48,10 +46,10 @@ Demo version vs 1.1
 It's time to take a look at what exactly was cut from the Demo version of Yoda Stories.
 There are many differences, so we will probably omit a few of the least significant ones.
 
-In the process of studying this version of the game, 
-I got the impression that the proofreaders had not yet had time to double-check the text, 
-but several zone corrections were made here at the last moment. 
-Specifically, all winter zones known at that time were corrected.
+In the process of studying this version of the game, an opinion was formed
+that the proofreaders had not yet had time to double-check the text,
+and here at the last moment several zonal corrections were made.
+In particular, all winter zones known at that time were adjusted.
 
 Differences are found in the following sections:
 
@@ -78,7 +76,7 @@ Deactivated menu items:
 * World Control
 * S&tatistics
 
-Loading and saving gameplay is completely blocked.
+Loading and saving gameplay completely blocked.
 
 Moreover, even if they are enabled in the PE resource editor, the game will disable them again during the loading process.
 
@@ -194,8 +192,7 @@ Some snow locations were also erased.
 
 Recall that in version 1.1 the zones were fixed: `151, 176, 203, 430, 535`.
 
-The demo version does not contain a fix for zones `430` and `535`, that is, only `151, 176, 203` are fixed.
-
+The demo version does not contain fixes for zones `430` and `535`, that is, only `151, 176, 203` are fixed.
 
 **Zone 0**: +1 instruction for Action 0
 
@@ -216,14 +213,14 @@ its bottom tile must be removed after the X-Wing has been flown.
 
 This phrase is missing: `Dagobah! Yoda must be around here somewhere. I better find him and see what's on his mind...`
 
-Изменение: izx4._unnamed2: 1 -> 0
+Change: izx4._unnamed2: 1 -> 0
 
 **Zone 115**: removed hotspot: DROP_ITEM [12; 11] enabled: 1; argument: 1198
 
 ![](images/zones/demo/115.png)
 
 A strange decision, since this is a deserted location.
-Скорее всего, эта зона содержит ошибку, и была исправлена в версии `1.0`.
+Most likely, this zone contains a bug that was fixed in version `1.0`.
 
 **Zone 146**:
 
@@ -271,21 +268,21 @@ then
     disable-action
 ```
 
-Also in Action 5 the `remove-tile` command is inserted after `place-tile` and not before it.
+Also in Action 5 the `remove-tile` command inserted after `place-tile` and not before it.
 This will not affect the gameplay, but it clearly makes it clear that the demo version
-was corrected in parallel with the commercial implementation.
+corrected in parallel with the commercial implementation.
 
 izx4._unnamed2: 1 -> 0
 
-На самом деле поле `izx4._unnamed2` мне не даёт покоя.
-Можно допустить, что оно не используется,
-Но может быть и так, что это значение каким-то образом используется при генерации карты, или где-то ещё.
+_In fact, the `izx4._unnamed2` field is haunting me.
+It can be assumed that it is not used,
+But it may also be that this value is somehow used when generating a map, or somewhere else._
 
 **Zone 152**:
 
 ![](images/zones/demo/152.png)
 
-Изменён монолог медицинского дроида.
+Changed medical droid monologue.
 
 `Greetings, sir! Welcome to our DEMO. If you need my services, please don't hesitate to visit."`
 
@@ -326,7 +323,7 @@ Zone type changed: EMPTY -> FIND
 
 Added hotspot: DROP_QUEST_ITEM [9; 8] enabled: 1; argument: 65535
 
-It turns out that in this zone you can now find a quest item.
+A quest item can now be found in this zone.
 
 **Zone 210**:
 
@@ -352,11 +349,11 @@ Removed all required and provided items.
 
 ![](images/zones/demo/263.png)
 
-Было:
+It was:
 
 `speak-npc: 4 4 "I'm not really a farm droid. I belong in the big city."`
 
-Стало:
+It became:
  
 `speak-npc: 4 4 "This isn't the real game. It's only a DEMO."`
 
@@ -397,7 +394,7 @@ Removed all provided items.
 Small check change - removed the `tile-at-is: 444 4 3 1` condition. What for? The Shield Generator is on the map.
 If this check succeeds, Luke then says, `"Hey! that's the ship's shield generator over there... If I could disable the thing, it might cause a distraction..."`
 
-Вероятно это устаревшая часть игры, котороа впоследствии была доработана.
+This is probably an outdated part of the game that was improved in the final release.
 
 ![](images/tiles/demo/0444.png)
 
@@ -429,11 +426,11 @@ izx4._unnamed2: 1 -> 0
 
 ![](images/zones/demo/336.png)
 
-Было:
+It was:
 
 `speak-npc: 8 15 "Go away. We're peaceful snow farmers. You don't want to be here."`
 
-Стало:
+It became:
 
 `speak-npc: 8 15 "Playing the DEMO of LucasArts' new Desktop Adventure, I see. Well, we're peaceful snow farmers. Go away!"`
 
@@ -569,3 +566,5 @@ frame1: [2120, 1959, 2120, 2119, 1959, 2120, 1958, 1959] -> [2119, 1959, 2119, 2
 Why this was done is unclear, but in some areas these tanks were also swapped.
 
 ![](images/tiles/demo/2119.png) ![](images/tiles/demo/2120.png)
+
+This is probably the last thing that was fixed before the release of version 1.0.
