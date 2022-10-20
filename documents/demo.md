@@ -1,7 +1,48 @@
-Yoda Stories Demo Version Comparison
-===============================
+Star Wars - Yoda Stories (Demo) (18.02.1997)
+============================================
 
-1.1 vs Demo version
+Демонстрационная версия игры, которую можно было скачать совершенно бесплатно с сайта [lucasarts.com](http://web.archive.org/web/19980214043537/http://www.lucasarts.com/static/yodastories/yodastories.htm),
+содержала только одну миссию по разрушению Имперского оружейного завода на скованной льдом планете Нештаб.
+
+[Скачать yodademo.exe](files/yodademo.exe)
+
+Самораспаковывающийся WinZip архив `yodademo.exe` занимает 3.2 Мб. 
+Making Magic в комплекте отсутствует.
+
+Неверная дата в PE заголовке файла `13.09.1996` не позволяет узнать точное время его создания.
+
+Разработчики сберегли время хакерам и кроме изменения скриптов попросту удалили почти всю неиспользуемую графику, 
+так что, восстановить демку до полноценной игры не получится.
+
+Если судить по датам, то релиз стали готовить примерно 14-го февраля. Именно тогда был готов файл справки.
+Доработка (вернее обрезка игры) заняла ещё 3-4 дня.
+
+Самое примечательное то, что в это время готовилась версия игры `1.1`, но в демо-версию попали только исправления для зимних зон, 
+что ещё раз подтверждает параллельную разработку этих версий.  
+
+Так же можно смело предполагать, что пробничек формировался даже раньше версии `1.0`,
+поскольку, при изучении списка различий найдены артефакты, исправленные к первому релизу игры.
+
+* Исправленные зоны версии 1.1: `151, 176, 203, 430, 535`
+* Исправленные зоны в демо-версии: `151, 176, 203`
+
+В распакованном (установленном) виде демку можно встретить на многих сборниках того времени:
+
+* `LucasArts Super Sampler, The (USA) (1997)`
+* `LucasArts Super Sampler 2 (USA)`
+* `Shamrock's Fall '97 CD-ROM (USA)`
+* `Shamrock's Fall '97 CD-ROM (USA) (Older)` - по-сути, на этих двух дисках записан `LucasArts Super Sampler 2.1`
+* `Computer Buyer Issue 75 CD-ROM`
+* `PCGamer Demo Disc 3.4`
+* `PC Gamer (Italian Edition) Coverdisc 021`
+* `Personal Computer World Interactive - Disk 11`
+
+и так далее...
+
+Yoda Stories Demo Version Comparison
+====================================
+
+Demo version vs 1.1
 -------------------
 
 It's time to take a look at what exactly was cut from the Demo version of Yoda Stories.
@@ -12,7 +53,7 @@ I got the impression that the proofreaders had not yet had time to double-check 
 but several zone corrections were made here at the last moment. 
 Specifically, all winter zones known at that time were corrected.
 
-You cannot save and load.
+Differences are found in the following sections:
 
 * Executable file
 * Startup screen
@@ -27,7 +68,7 @@ Modified About dialog.
 
 ![](images/about-demo.png)
 
-Yoda(tm) Stories Demo
+`Yoda(tm) Stories Demo`
 
 Deactivated menu items:
 
@@ -37,8 +78,9 @@ Deactivated menu items:
 * World Control
 * S&tatistics
 
-Moreover, even if you activate them, the game will turn them off again during the boot process.
+Loading and saving gameplay is completely blocked.
 
+Moreover, even if they are enabled in the PE resource editor, the game will disable them again during the loading process.
 
 **Startup screen**
 
@@ -48,8 +90,8 @@ The inscription "Demo".
 
 **Tiles**
 
-Desert and Forest tiles have been cleared.
-In fact, there is one level in the ice, on the planet Neshtab.
+Desert and Forest tiles have been erased.
+In fact, there is one level in the winter, on the planet Neshtab.
 
 So even if full functionality is restored, most of the levels will look bare and impassable.
 
@@ -132,14 +174,14 @@ Added tiles:
 ![](images/tiles/0855.png)![](images/tiles/0872.png)![](images/tiles/0874.png)
 ![](images/tiles/0875.png)![](images/tiles/0877.png)![](images/tiles/0878.png)
 ![](images/tiles/0902.png)![](images/tiles/0961.png)![](images/tiles/1170.png)
-![](images/tiles/2121.png)![](images/tiles/2122.png) original
+![](images/tiles/2121.png)![](images/tiles/2122.png) (original)
 
 ![](images/tiles/demo/0855.png)![](images/tiles/demo/0872.png)![](images/tiles/demo/0874.png)
 ![](images/tiles/demo/0875.png)![](images/tiles/demo/0877.png)![](images/tiles/demo/0878.png)
 ![](images/tiles/demo/0902.png)![](images/tiles/demo/0961.png)![](images/tiles/demo/1170.png)
 ![](images/tiles/demo/2121.png)![](images/tiles/demo/2122.png)![](images/tiles/demo/2123.png)
 ![](images/tiles/demo/2124.png)![](images/tiles/demo/2125.png)![](images/tiles/demo/2126.png)
-![](images/tiles/demo/2127.png) demo
+![](images/tiles/demo/2127.png) (demo)
 
 
 **Zones**
@@ -159,7 +201,8 @@ The demo version does not contain a fix for zones `430` and `535`, that is, only
 
 ![](images/zones/startup-demo.png)
 
-Since the phrase "Demo" is displayed on the top layer, its bottom tile is removed during the flight of the X-Wing.
+Since the phrase "Demo" is displayed on the top layer,
+its bottom tile must be removed after the X-Wing has been flown.
 
 `remove-tile: 5 5 2 0 0 ""`
 
@@ -171,15 +214,16 @@ Since the phrase "Demo" is displayed on the top layer, its bottom tile is remove
 
 ![](images/zones/demo/093.png) ![](images/zones/demo/094.png) ![](images/zones/demo/095.png) ![](images/zones/demo/096.png)
 
-Removed phrase: `Dagobah! Yoda must be around here somewhere. I better find him and see what's on his mind...`
+This phrase is missing: `Dagobah! Yoda must be around here somewhere. I better find him and see what's on his mind...`
 
-izx4._unnamed2: 1 -> 0
+Изменение: izx4._unnamed2: 1 -> 0
 
 **Zone 115**: removed hotspot: DROP_ITEM [12; 11] enabled: 1; argument: 1198
 
 ![](images/zones/demo/115.png)
 
 A strange decision, since this is a deserted location.
+Скорее всего, эта зона содержит ошибку, и была исправлена в версии `1.0`.
 
 **Zone 146**:
 
@@ -191,7 +235,7 @@ Quest items will never appear in this location. Absent all provided items.
 
 ![](images/zones/demo/151.png)
 
-`This is the tiny Spaceport on Neshtab. In a real game, I might find myself in the DESERT or a RAIN FOREST as easily as here, but the DEMO is all ICE, and there's only one ending...`
+Snowdrift removed: [11; 1]
 
 New actions performed upon arrival. 
 In theory, in Action 1, Luke's X-wing is displayed, and in the 16th Action it is hidden, and he makes a speech.
@@ -228,15 +272,20 @@ then
 ```
 
 Also in Action 5 the `remove-tile` command is inserted after `place-tile` and not before it.
-This will not affect the gameplay, but it clearly makes it clear that the demo version was corrected in parallel with version 1.1.
+This will not affect the gameplay, but it clearly makes it clear that the demo version
+was corrected in parallel with the commercial implementation.
 
 izx4._unnamed2: 1 -> 0
 
-Snowdrift removed: [11; 1]
+На самом деле поле `izx4._unnamed2` мне не даёт покоя.
+Можно допустить, что оно не используется,
+Но может быть и так, что это значение каким-то образом используется при генерации карты, или где-то ещё.
 
 **Zone 152**:
 
 ![](images/zones/demo/152.png)
+
+Изменён монолог медицинского дроида.
 
 `Greetings, sir! Welcome to our DEMO. If you need my services, please don't hesitate to visit."`
 
@@ -348,6 +397,8 @@ Removed all provided items.
 Small check change - removed the `tile-at-is: 444 4 3 1` condition. What for? The Shield Generator is on the map.
 If this check succeeds, Luke then says, `"Hey! that's the ship's shield generator over there... If I could disable the thing, it might cause a distraction..."`
 
+Вероятно это устаревшая часть игры, котороа впоследствии была доработана.
+
 ![](images/tiles/demo/0444.png)
 
 **Zone 317**:
@@ -452,10 +503,9 @@ Added one required item (449):
 
 Yoda's hut.
 
-Removed all mini-quests and Bobba Fett.
+Removed all mini-quests and any mention of Boba Fett.
 
 izx4._unnamed2: 1 -> 0
-
 
 **Zone 596**:
 

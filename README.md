@@ -16,13 +16,54 @@ Utility for translation and comparison the Yoda Stories game.
 
 * [Read Yoda Stories Translation Guide](documents/translation-guide.md)
 * [Руководство по переводу Yoda Stories](documents/ru/translation-guide.md)
-* [Versions comparison](documents/comparison.md)
-* [Demo version comparison](documents/comparison-demo.md)
 * [An original Delphi version](https://github.com/LeonisX/YExplorer)
 
 Powered with [Kaitai structure format from Cyco](https://github.com/cyco/kaitai_struct_formats/blob/add-yodesk/game/yodesk.ksy).
 
 Uses modified code from http://image4j.sourceforge.net project.
+
+## Docs
+
+* [Introduction](documents/introduction.md)
+* [Versions comparison summary](documents/summary.md)
+
+### Releases
+
+* [USA v1.0](documents/usa-10.md)
+* [USA v1.1](documents/usa-11.md)
+* [USA v1.2](documents/usa-12.md)
+* [Demo version](documents/demo.md)
+* [Patch ](documents/patch6.md)
+* [United Kingdom](documents/uk.md)
+* [Australia](documents/australia.md)
+* [France](documents/france.md)
+* [Germany](documents/germany.md)
+* [Netherlands](documents/netherlands.md)
+* [Italy](documents/italy.md)
+* [Spain](documents/spain.md)
+* [Brazil](documents/brazil.md)
+* [Japan](documents/japan.md)
+* [Taiwan](documents/taiwan.md)
+* [Korea](documents/korea.md)
+* [Russia](documents/russia.md)
+* [Game Boy](documents/gameboy.md)
+
+### Boxes, disks
+
+* [Boxes: front side](documents/box-front.md)
+* [Boxes: back side](documents/box-back.md)
+* [Jewel Case: front side](documents/jewel-case-front.md)
+* [Jewel Case: back side](documents/jewel-case-back.md)
+* [Disks: front side](documents/disk-front.md)
+
+### Game
+
+* [Compatibility issues](documents/compatibility.md)
+* [In-game dialogs](documents/dialogs.md)
+* [INI file](documents/ini.md)
+* [Cheats, tips, secrets](documents/cheats.md)
+* [Credits](documents/credits.md)
+
 
 ## Other Yoda Stories / Desktop Adventures solutions
 
@@ -62,4 +103,4 @@ Uses modified code from http://image4j.sourceforge.net project.
 * Paste from clipboard (good idea)
 * Think how to drag-drop from UI from Windows Explorer (Open file)\
 
-(c) Leonis, 2021
+(c) Leonis, 2014-2022
