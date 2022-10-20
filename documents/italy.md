@@ -38,9 +38,9 @@ with more popular games from LucasArts:
 [![](images/cover/thumb/yoda-stories-x-wing-italy-box-front.jpg)](images/cover/yoda-stories-x-wing-italy-box-front.jpg)
 
 The last two compilations on the list were the first to be released, until May 1998.
-Apparently, this explains their at least some fame.
+Apparently, this explains their at least some prevalence.
 
-The white book-box of the collection was opened twice, showing first the cover with documentation,
+The collection's white bookcase is opened twice, revealing first the documentation cover,
 and then the discs themselves.
 
 The disk image that was released in 1997 has not yet been found. It is only known that it has an ascetic design.
@@ -56,23 +56,23 @@ Disk:
 Disc content:
 
 * `Star Wars: Yoda Stories (Italy)`
-* `Star Wars: Making Magic (Italy) (FA1.15 от 03.09.1996)`
-* `Star Wars: Rebel Assault II Demo (Italy) (DX1.14 от 30.01.1997)`
+* `Star Wars: Making Magic (Italy) (FA1.15 from 03.09.1996)`
+* `Star Wars: Rebel Assault II Demo (Italy) (DX1.14 from 30.01.1997)`
 * `Star Wars: Screen Entertainment (Rev 1)`
 * Themed cursors, icons, wallpapers and sound effects for Windows.
 * Two manuals in `PDF` format. In theory, they are printed on a paper.
 
 `Star Wars: Making Magic` on this disc is similar to other European versions.
-The interface is completely translated, there is a unique link to the registration site and to the home site.
+The interface is completely translated, there is a unique link to the registration site and to the `C.T.O.` home site.
 The demo version of the game `Rebel Assault II` is also translated into Italian.
 
-`Star Wars: Screen Entertainment` - a set of screen savers based on the movie "A New Hope",
+`Star Wars: Screen Entertainment` - a set of screen savers based on the movie `Star Wars: Episode IV - A New Hope`,
 created by `Presage Software Development` and published by `LucasArts Entertainment Company` in the summer of 1994 for Windows 3.0.
 In addition to purely visual screensavers, the kit includes screensavers,
-containing background information on the characters and vehicles from Star Wars.
+containing background information on the characters and vehicles from the space saga.
 They look very dignified even by the standards of the 21st century.
 
-Screen savers are in a different format than Windows (`scr`), so it's not enough just to copy them to the Windows system folder.
+Screen savers are in a different format than typical Windows (`scr`), so it's not enough just to copy them to the system folder.
 They are launched by the `intermis.exe` utility, which is supplied with the `Star Wars: Screen Entertainment` package.
 
 On this compilation is an English-language rerelease of `Screen Entertainment`, 
@@ -88,7 +88,7 @@ The following screensavers have also been changed:
 * `Scrolling Text`
 * `Storyboards`
 
-Missing library `SWSFX.DLL` and file `SWSESET.EXE`.
+Absent library `SWSFX.DLL` and file `SWSESET.EXE`.
 
 It must be said that after a few years, some of the data from these screensavers lost their relevance.
 
