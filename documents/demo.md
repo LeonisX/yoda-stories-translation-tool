@@ -4,7 +4,7 @@ Star Wars - Yoda Stories (Demo) (18.02.1997)
 Демонстрационная версия игры, которую можно было скачать совершенно бесплатно с сайта [lucasarts.com](http://web.archive.org/web/19980214043537/http://www.lucasarts.com/static/yodastories/yodastories.htm),
 содержала только одну миссию по разрушению Имперского оружейного завода на скованной льдом планете Нештаб.
 
-[Скачать yodademo.exe](files/yodademo.exe)
+[Скачать yodademo.exe](download.md)
 
 Самораспаковывающийся WinZip архив `yodademo.exe` занимает 3.2 Мб. 
 Making Magic в комплекте отсутствует.

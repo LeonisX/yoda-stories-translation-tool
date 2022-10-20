@@ -64,6 +64,9 @@ Uses modified code from http://image4j.sourceforge.net project.
 * [Cheats, tips, secrets](documents/cheats.md)
 * [Credits](documents/credits.md)
 
+### Download
+
+* [Download](documents/download.md)
 
 ## Other Yoda Stories / Desktop Adventures solutions
 
