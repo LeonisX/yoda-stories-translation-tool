@@ -17,7 +17,7 @@ The following versions of the game have been discovered and studied:
 * Star Wars - Yoda Stories (12.11.2006) (T-Rus_PRO)
 * TODO Star Wars - Yoda Stories (??.??.???) (T+Rus_Leonis)
 
-They are identified by the checksums of the `yodesk.exe` and `yodesk.dta` files.
+They are identified by the checksums and content of the `yodesk.exe` and `yodesk.dta` files.
 
 Specified dates don't match the real release dates for the games. No one knows them exactly.
 
@@ -36,8 +36,8 @@ Creation time of the master discs
 | (Ita)       | Star Wars: Yoda Stories (Italy) & Making Magic & Screen Entertainment      | 11.03.1998 | 18:31:33 | C.T.O.                |
 | (v1.2)      | Star Wars: Yoda Stories (USA) & Behind The Magic: Vehicles Special Edition | 10.08.1998 | 14:57:40 | LucasArts             |
 
-Демо-версия игры была доступна для скачивания на сайте [lucasarts.com](http://web.archive.org/web/19980214043537/http://www.lucasarts.com/static/yodastories/yodastories.htm),
-и в самостоятельном виде на дисках не издавалась.
+A demo version of the game can be downloaded for free at [lucasarts.com](http://web.archive.org/web/19980214043537/http://www.lucasarts.com/static/yodastories/yodastories.htm),
+and not released separately on CD.
 
 Dates of the last change of major game files
 --------------------------------------------
@@ -55,27 +55,28 @@ Dates of the last change of major game files
 | (Ger)              | 24.06.1997 | E7DB255D | 25.06.1997 | 3AD6EF74 | 18.06.1997 | 68F23E02 |
 | (T-Spa)            | 22.05.1997 | A0CE2095 | 13.12.2001 | 8E4CAB0D | 08.05.1997 | D77A08DE |
 | (T-Rus)            | 19.08.2006 | 2350308B |  unknown   | 4B91AA5C | 14.02.1997 | 1A0E11EC |
+| (T+Rus)            | TODO       | TODO     |  TODO      | TODO     | TODO       | TODO     |
 
-Известно 3 полноценные версии игры Yoda Stories, выпущенные в США.
-В каждой последующей были исправлены ошибки в нескольких зонах.
-Чтобы не запутаться, мы так их и назвали: `1.0`, `1.1` и `1.2`.
+There are 3 full-fledged versions of the Yoda Stories game released in the USA.
+In each subsequent bugs were corrected in several zones.
+In order not to get confused, we called them like this: `1.0`, `1.1` and `1.2`.
 
-Проект сохранения дисков Redump имеет свой стандарт именования:
+The `Redump` disk preservation project has its own naming standard:
 
 * `1.0`: [`Star Wars - Yoda Stories (USA)`](http://redump.org/disc/21160/)
 * `1.1`: [`Star Wars - Yoda Stories (USA) (Rev 1)`](http://redump.org/disc/36442/)
 * `1.2`: [`Star Wars - Yoda Stories (USA) (Rerelease)`](http://redump.org/disc/43758/)
 
-Такие названия дисков самодостаточны, но когда идёт речь о сохранении не только
-образов дисков, но ещё и различных пиратских релизов, часто урезанных, то подобной информации недостаточно.
-Поэтому, где это необходимо, в названии мы указываем дату записи диска
-и наличие дополнительного программного обеспечения.
+_Such disc names are self-sufficient, but when it comes to preservation, not only
+disk images, but also various pirated releases, often truncated, then such information is not enough.
+Therefore, where necessary, we indicate the recording date of the disc in the title
+and availability of additional software._
 
 The `demo` version of the game created in parallel with version `1.1`, and it only contains fixes for winter zones.
-Благодаря небольшому размеру и бесплатности, была опубликована в многочисленных игровыхх сборниках того времени.
+Due to its small size and free of charge, it was published in numerous game collections of that time.
 
 Game version `v1.1` is the rarest English-language version.
-Несмотря на это, она является основой для сравнения с другими выпусками Yoda Stories.
+Despite this, it is the basis for comparison with other releases of Yoda Stories.
 
 Game version `v1.0 + Patch v6` was not available for sale. This is the result of using the `Patch 6`
 on the very first version of the game. By the way, `v1.0`, as well as the combination with the patch, are the most common versions in Web.
@@ -95,7 +96,7 @@ Little is known about other Asian versions yet.
 It should be noted that for third-party publishers, the game was so insignificant, that they did not even
 bother to report it on their sites. Except Koreans, Brazilians and Italians.
 
-В отличие от первой игры серии `Desktop Adventures`, вторая не издавалась для Apple Macintosh.
+Unlike the first game in the `Desktop Adventures` series, the second game was not released for the Apple Macintosh.
 Aaron Giles, who ported `Indiana Jones and His Desktop Adventures` to the Mac lamented that he didn't get a chance to port the "sequel".
 
 Additional material on the disc
@@ -121,11 +122,11 @@ Wanted!!!
 * Japanese version from MicroMouse in the Star Wars Masterpieces compilation.
 * Taiwan version from Unalis. It is likely this is an English-language release in a national box.
 * Korean version from Dong Seo Interactive. It is likely this is an English-language release in a national box.
-* Australian version from Playcorp. Probably the difference is only in the box and accompanying documents.
+* Australian version from Playcorp/Metro. Probably the difference is only in the box and accompanying documents.
 * Netherlands and Belgian from Home Software Benelux B.V. Most likely, only the manual has been translated into Dutch.
 * Other regions releases and re-releases.
 
-If you still have them, please send them to us for study. E-mail: tv-games@mail.ru
+If you still have them, please send them to us for study. E-mail: [tv-games@mail.ru](mailto:tv-games@mail.ru)
 
 Short list of fixes
 -------------------

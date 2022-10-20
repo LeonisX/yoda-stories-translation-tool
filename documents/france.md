@@ -21,13 +21,13 @@ but the box used screenshots from the US version.
 
 The text on the box, except for the screenshots, is entirely French. There is no age rating on the packaging.
 
-Disk:
+**Disk:**
 
 * Recording date: `05/07/1997 10:21:28`
 * Volume Space Size (LBA): `252658`
 * Volume Identifier: `YODAFRENCH`
 
-Disc content:
+**Disc content:**
 
 * `Star Wars: Yoda Stories (France)`
 * `Star Wars: Making Magic (France) (FD1.03) (22.09.1996)`

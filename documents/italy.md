@@ -46,14 +46,14 @@ and then the discs themselves.
 The disk image that was released in 1997 has not yet been found. It is only known that it has an ascetic design.
 So let's look at the game from the collection.
 
-Disk:
+**Disk:**
 
 * Recording date: `11.03.1998 18:31:33`
 * Volume Space Size (LBA): `332032`
 * Volume Identifier: `Yoda+SWSE`
 * Mastering code: `DADC AUSTRIA A0100241137-0303 13 IFPI L553`
 
-Disc content:
+****Disc content:
 
 * `Star Wars: Yoda Stories (Italy)`
 * `Star Wars: Making Magic (Italy) (FA1.15) (03.09.1996)`

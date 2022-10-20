@@ -19,13 +19,13 @@ accompanying documents and even screenshots on the box.
 
 There is no age rating on the packaging.
 
-Disk:
+**Disk:**
 
 * Recording date: `24.06.1997 18:20:18`
 * Volume Space Size (LBA): `328929`
 * Volume Identifier: `YODA_GERMAN`
 
-Disc content:
+**Disc content:**
 
 * `Star Wars: Yoda Stories (Germany)`
 * `Star Wars: Making Magic (Germany) (FB1.04) (14.09.1996)`
