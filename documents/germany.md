@@ -32,6 +32,10 @@ There is no age rating on the packaging.
 * `Star Wars: Rebel Assault II Demo (Germany) (FS1.15) (14.10.1996)`
 * Themed cursors, icons, wallpapers and sound effects for Windows.
 
+Yoda Stories can be run from a CD or installed on a hard drive.
+
+![](images/setup/germany.png)
+
 The text in `Star Wars - Making Magic` has been translated into German.
 Otherwise, the encyclopedia does not differ from the Spanish one, with the exception of the language
 and links to the home site. The demo version of `Rebel Assault II` is also unique.

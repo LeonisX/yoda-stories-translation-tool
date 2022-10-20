@@ -62,6 +62,10 @@ So let's look at the game from the collection.
 * Themed cursors, icons, wallpapers and sound effects for Windows.
 * Two manuals in `PDF` format. In theory, they are printed on a paper.
 
+Yoda Stories can be run from a CD or installed on a hard drive.
+
+![](images/setup/italy.png)
+
 `Star Wars: Making Magic` on this disc is similar to other European versions.
 The interface is completely translated, there is a unique link to the registration site and to the `C.T.O.` home site.
 The demo version of the game `Rebel Assault II` is also translated into Italian.

@@ -35,6 +35,10 @@ The text on the box, except for the screenshots, is entirely French. There is no
 
 We can notice that the disc was recorded at the beginning of May, the publisher did not fit into the scheduled time.
 
+Yoda Stories can be run from a CD or installed on a hard drive.
+
+![](images/setup/france.png)
+
 `Star Wars - Making Magic` on this disc is different from the US version, which was released on September 3rd.
 The interface is fully translated into French. Two dozen new files appeared on the disk,
 probably with additional materials. From the font files it becomes obvious
