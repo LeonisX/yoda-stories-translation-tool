@@ -29,7 +29,7 @@ Download Yoda Stories
 * [Star Wars - Yoda Stories (Germany) (24.06.1997) & Making Magic](https://archive.org/details/Star_Wars_-_Yoda_Stories_1997_German)
 * [Star Wars - Yoda Stories (Italy) (11.03.1998) & Making Magic + Star Wars - Screen Entertainment](https://archive.org/download/redump_pc_S/Star%20Wars%20-%20Yoda%20Stories%20%2B%20Star%20Wars%20-%20Screen%20Entertainment%20%28Italy%29.7z)
 
-В моей коллекции игр и других материалов ещё больше. Не стесняйтесь попросить ссылку [tv-games@mail.ru](mailto:tv-games@mail.ru)
+В моей коллекции игр и других материалов ещё больше. Например, различные сборники или интересные страницы. Не стесняйтесь попросить ссылку [tv-games@mail.ru](mailto:tv-games@mail.ru)
 
 **Instruction manuals**
 
