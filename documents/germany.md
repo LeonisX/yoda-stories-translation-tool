@@ -28,8 +28,8 @@ Disk:
 Disc content:
 
 * `Star Wars: Yoda Stories (Germany)`
-* `Star Wars: Making Magic (Germany) (FB1.04 от 14.09.1996)`
-* `Star Wars: Rebel Assault II Demo (Germany) (FS1.15 от 14.10.1996)`
+* `Star Wars: Making Magic (Germany) (FB1.04) (14.09.1996)`
+* `Star Wars: Rebel Assault II Demo (Germany) (FS1.15) (14.10.1996)`
 * Themed cursors, icons, wallpapers and sound effects for Windows.
 
 The text in `Star Wars - Making Magic` has been translated into German.

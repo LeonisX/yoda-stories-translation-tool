@@ -56,8 +56,8 @@ Disk:
 Disc content:
 
 * `Star Wars: Yoda Stories (Italy)`
-* `Star Wars: Making Magic (Italy) (FA1.15 from 03.09.1996)`
-* `Star Wars: Rebel Assault II Demo (Italy) (DX1.14 from 30.01.1997)`
+* `Star Wars: Making Magic (Italy) (FA1.15) (03.09.1996)`
+* `Star Wars: Rebel Assault II Demo (Italy) (DX1.14) (30.01.1997)`
 * `Star Wars: Screen Entertainment (Rev 1)`
 * Themed cursors, icons, wallpapers and sound effects for Windows.
 * Two manuals in `PDF` format. In theory, they are printed on a paper.

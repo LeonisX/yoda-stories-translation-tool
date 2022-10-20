@@ -1,74 +1,74 @@
 Star Wars - Yoda Stories (Fra) & Making Magic
 =============================================
 
-* Регион: `Франция`, вероятно, Бельгия, французская Канада и Швейцария
-* Язык: `французский`
-* Издатель: [`Ubi Soft Entertainment`](http://web.archive.org/web/19971010184138/http://www.ubisoft.fr/)
-* Планируемая дата выпуска: `апрель 1997` года
-* Возрастной рейтинг: `отсутствует`
+* Region: `France`, probably Belgium, French Canada and Switzerland
+* Language: `French`
+* Publisher: [`Ubi Soft Entertainment`](http://web.archive.org/web/19971010184138/http://www.ubisoft.fr/)
+* Planned release date: `April 1997`
+* Age rating: `none`
 * UPC: `3 362932 248507`
 
-Дату выпуска удалось найти на рекламном листке, который поставляется в комплекте с игрой.
+The release date is printed on the flyer that comes with the game.
 
 [![](images/cover/thumb/yoda-stories-france-box-front.jpg)](images/cover/yoda-stories-france-box-front.jpg)
 [![](images/cover/thumb/yoda-stories-france-box-back.jpg)](images/cover/yoda-stories-france-box-back.jpg)
 [![](images/cover/thumb/yoda-stories-france-jewel-case-front.jpg)](images/cover/yoda-stories-france-jewel-case-front.jpg)
 [![](images/cover/thumb/yoda-stories-france-disk-front.jpg)](images/cover/yoda-stories-france-disk-front.jpg)
 
-Любопытно, что скриншоты на коробке не переведены.
-Это наводит на мысль, что и некоторые другие игры могли быть локализованы, 
-но на коробке использовались скриншоты из американской версии.
+Curiously, the screenshots on the box are not translated.
+This suggests that some other games may have been localized as well,
+but the box used screenshots from the US version.
 
-Текст на коробке, за исключением скриншотов полностью французский. Возрастного рейтинга на упаковке нет.
+The text on the box, except for the screenshots, is entirely French. There is no age rating on the packaging.
 
-Диск:
+Disk:
 
-* Дата записи: `07.05.1997 10:21:28`
+* Recording date: `05/07/1997 10:21:28`
 * Volume Space Size (LBA): `252658`
 * Volume Identifier: `YODAFRENCH`
 
-Содержимое диска:
+Disc content:
 
 * `Star Wars: Yoda Stories (France)`
 * `Star Wars: Making Magic (France) (FD1.03) (22.09.1996)`
-* Тематические курсоры, иконки, обои и звуковые эффекты для Windows.
+* Themed cursors, icons, wallpapers and sound effects for Windows.
 
-Можно заметить, что диск был записан в начале мая, издатель не вписался в запланированные строки.
+We can notice that the disc was recorded at the beginning of May, the publisher did not fit into the scheduled time.
 
-`Star Wars - Making Magic` на этом диске отличается от версии для США, готовой уже 3 сентября.
-Интерфейс полностью переведён, так же можно встретить два десятка новых файлов,
-вероятно, с дополнительными материалами. По файлам шрифтов можно понять,
-что где-то во вселенной ещё есть подобные энциклопедии на корейском и японском языках.
+`Star Wars - Making Magic` on this disc is different from the US version, which was released on September 3rd.
+The interface is fully translated into French. Two dozen new files appeared on the disk,
+probably with additional materials. From the font files it becomes obvious
+that somewhere in the universe there are still such encyclopedias in Korean and Japanese.
 
-Результаты сравнения с Испанской версией показывают, что локализованы следующие файлы:
+The results of the comparison with the Spanish version show that the following files are localized:
 
 * `data\drivers\bootdisk.exe` [48346 bytes]
 * `data\launch\launch.trs` [89807 bytes]
 * `data\system\hope.trs` [64190 bytes]
 * `support\bootdisk.exe` [48346 bytes]
 
-Вероятно, есть смысл попытаться перевести энциклопедию на русский язык, и если не удастся сделать это
-с англоязычным вариантом, то взять за основу одну из Европейских версий.
+Probably, it makes sense to try to translate the encyclopedia into Russian, and if it is not possible to do this with the English version, 
+then take one of the European versions as a basis.
 
 
 The French version vs Spanish version
 -------------------------------------
 
-Французская версия игры среди Европейских версий была разработана самой первой.
-В ней ещё отсутствует демо-версия рельсового шутера Rebel Assault II,
-и исправлено меньше зон, чем у последующих игр.
+Among all Europeans, the French were the first to have the opportunity to listen to Yoda's stories.
+That's why there is no demo version of the rail shooter `Rebel Assault II` on the disc,
+and fixed fewer zones than subsequent games.
 
-Но при сравнении Европейских версий мы будем опираться прежде всего на
-[Испанское издание](spain.md),
-потому что оно раньше других появилось в сети, лучше изучено,
-и очень похоже на все другие версии, то есть, не придётся каждый раз перечислять одни и те же различия.
+_When comparing European versions, we will rely primarily on
+[Spanish Edition](spain.md),
+because it appeared on the net earlier than others, it is better studied,
+and is very similar to all other versions, that is, we do not have to list the same differences every time._
 
-По сравнению с Испанской игрой, 
+Compared to the Spanish game,
 French version of the game is missing very important fixes for zones `472` and `572`.
 
 So, on the one hand, this is the very first European version of Yoda Stories,
-but on the other hand, it has the fewest bug fixes for zones `72, 236, 407`.
-Подробнее об этих исправлениях написано на страничке, посвящённой [версии 1.2](usa-12.md).
+but on the other hand, it has only bug fixes for zones `72, 236, 407`.
+More information about these fixes can be found on the page dedicated to [version 1.2](usa-12.md).
 
 _It's ironic that this game was the last one I got._
 
