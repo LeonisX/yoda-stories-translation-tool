@@ -1,42 +1,43 @@
 Star Wars - Yoda Stories (USA) (20.03.1997) & Making Magic
 ==========================================================
 
-* Регион: `США` (скорее всего и Канада)
-* Язык: `английский`
-* Издатель: [`LucasArts Entertainment Company`](https://web.archive.org/web/19980214042448/http://www.lucasarts.com/org_index.html)
-* Дата выпуска: `весна 1997` года
-* Версия: `1.1`
+* Region: `USA` (most likely Canada)
+* Language: `English`
+* Publisher: [`LucasArts Entertainment Company`](https://web.archive.org/web/19980214042448/http://www.lucasarts.com/org_index.html)
+* Release date: `Spring 1997`
+* Version: `1.1`
 
-Пока в нашем распоряжении имеется только образ диска, без полиграфии.
+So far, we have at our disposal only the disk image, without printing.
 
-Это достаточно редкий диск. В игре исправлены ошибки, найденные к тому времени. 
-Аналогичные исправления реализованы в большинстве Европейских релизов.
+This is a fairly rare disc. The game fixed bugs found by that time.
+Similar fixes are implemented in all European releases.
 
-Надо добавить, что позже подоспела вторая пачка исправлений.
-они были реализованы в `Patch 6`, а так же в версии Yoda Stories `1.2`.
+It should be added that the second batch of fixes arrived later.
+They were implemented in `Patch 6`, as well as in Yoda Stories `1.2`,
+and partially in all European versions.
 
-Диск:
+**Disk:**
 
-* Дата записи: `20.03.1997 11:08:42`
+* Recorded date: `20.03.1997 11:08:42`
 * Volume Space Size (LBA): `249087`
 * Volume Identifier: `YODA`
-* Серийный номер: `3111830`
+* Serial number: `3111830`
 * Mastering codes:
-  * `KAO OPTICAL PRODUCTS   3111830  ***RF105805-300***	IFPI L954`
-  * `KAO OPTICAL PRODUCTS   311830   ***RF105805-200***	IFPI L954`
+   * `KAO OPTICAL PRODUCTS 3111830 ***RF105805-300*** IFPI L954`
+   * `KAO OPTICAL PRODUCTS 311830 ***RF105805-200*** IFPI L954`
 
-Содержимое диска:
+**Disc content:**
 
 * `Star Wars: Yoda Stories (USA) (Rev 1)`
 * `Star Wars: Making Magic (USA)`
-* Тематические курсоры, иконки, обои и звуковые эффекты для Windows.
+* Themed cursors, icons, wallpapers and sound effects for Windows.
 
-Изменены файлы:
+Files changed:
 
 * `YODESK.DTA`
 * `YODESK.EXE`
 
-Добавлен не обязательный файл `YODESK.GID`.
+Added an unwanted `YODESK.GID` file.
 
 
 USA 1.1 version vs 1.0

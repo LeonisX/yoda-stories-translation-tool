@@ -27,7 +27,7 @@ Box layout:
 A translucent image of Yoda was layered on top. Similar wallpapers are on the disk.
 * `Indiana Jones and His Desktop Adventures` advertisement on the back of the disc box.
 
-Disk:
+**Disk:**
 
 * Recording date: `15.02.1997 10:24:25`
 * Volume Space Size (LBA): `249081`
@@ -38,10 +38,10 @@ Disk:
   * `KAO OPTICAL PRODUCTS 3111830 ***RF105719-003*** IFPI L953`
   * `KAO OPTICAL PRODUCTS 3111830 ***RF105719-004*** IFPI L953`
 
-Disc content:
+**Disc content:**
 
 * `Star Wars: Yoda Stories (USA)`
-* `Star Wars: Making Magic (USA)`
+* `Star Wars: Making Magic (USA) (QA1.03) (03.09.1996)`
 * Themed cursors, icons, wallpapers and sound effects for Windows.
 
 Yoda Stories can be run from a CD or installed on a hard drive.
@@ -53,7 +53,7 @@ Yoda Stories can be run from a CD or installed on a hard drive.
 * `data\launch\launch.trs`
 
 The section "Where To Find Us On-Line" first mentions the interactive tool `Yoda's Help Desk`,
-helping to solve most typical problems. Version `QA1.03` dated 03.09.1996.
+helping to solve most typical problems. At the same time, the version number did not change.
 
 Themes
 ------
