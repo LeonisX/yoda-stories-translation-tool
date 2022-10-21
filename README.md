@@ -33,7 +33,7 @@ Uses modified code from http://image4j.sourceforge.net project.
 * [USA v1.1](documents/usa-11.md)
 * [USA v1.2](documents/usa-12.md)
 * [Demo version](documents/demo.md)
-* [Patch ](documents/patch6.md)
+* [Patch 6](documents/patch6.md)
 * [United Kingdom](documents/uk.md)
 * [Australia](documents/australia.md)
 * [France](documents/france.md)

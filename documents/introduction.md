@@ -1,34 +1,36 @@
 Yoda Stories Investigation Project
 ==================================
 
-Проект исследования игры Star Wars: Yoda Stories.
+Yoda Stories is a real find for fans of gaming archeology.
+The originally English-language baby game translated into French, German,
+Italian, Spanish, Portuguese, Japanese, and probably Korean and Chinese,
+apart from unofficial translations into Russian and several reissues.
 
-Yoda Stories - настоящая находка для ценителей игровой археологии.
-Игра была переведена на несколько языков, а так же пережила несколько переизданий.
-Но из-за умеренной популярности в сети тяжело найти все варианты игры,
-а некоторые пока известны только по фотографиям обложек.
+Due to the moderate popularity, it is difficult to find all the versions,
+and some are known only from cover photos so far.
+In the collectors community, Windows games aren't as hot as, say, DOS games.
 
-В сообществе коллекционеров игры для Windows не пользуются таким ажиотажем, как, скажем, игры для DOS.
+This is a real white crow in the line of Star Wars games. The game created to fill the niche with "office games",
+like Solitaire or Minesweeper. Therefore, despite the abundance of favorite characters and unique adventures in the plot,
+the game will not interest hardcore gamers, and among office workers, not everyone is a fan of the franchise.
 
-Это настоящая белая ворона в линейке игр Star Wars. Игра создавалась, чтобы заполнить нишу "офисных игр",
-наподобие карточных пасьянсов. Поэтому несмотря на обилие в сюжете любимых персонажей и уникальных приключений,
-игра не заинтересует хардкорных геймеров, а среди офисных работников далеко не все являются фанатами франшизы.
+The game has a huge advantage - fully generated worlds. There are only 15 quests and three types of planets in Yoda Stories,
+but the young Jedi spends a lot of time wandering, solving puzzles and helping the locals,
+and these wanderings each time will not be like the previous ones. Depending on the settings and experience of the player
+one adventure can take from 15 minutes to an hour, that is, it fits perfectly into a lunch break.
 
-Важным плюсом Yoda Stories являются полностью генерируемые миры. В игре всего 15 ключевых квестов,
-но юный джедай много времени проводит в странствиях, решая головоломки и помогая местным жителям,
-и эти странствия каждый раз будут не похожими на предыдущие. В зависимости от настроек и опыта игрока
-одно приключение может занимать от 15 минут до часа, то есть, идеально вписывается в обеденный перерыв.
+The implementation suffers due to not the most successful controls, 
+including because of tile animation and moving strictly in cells.
+The game window has a fixed size, and on modern monitors is claustrophobic.
 
-Реализация страдает из-за не самого удачного управление, в том числе из-за познакоместной анимации.
-Игровое пространство имеет строго фиксированный размер, и на современных мониторах вызывает клаустрофобию,
-а так же желание воспользоваться очками.
+As part of this project, we set a goal to collect all existing versions of the game.
+Each of them has been carefully studied under a microscope and accurately documented.
 
-В рамках этого проекта мы поставили цель собрать все существующие версии игры.
-Каждая из них была внимательно изучена под микроскопом и тщательно задокументирована.
+The idea of the project arose during the translation of Yoda Stories into Russian.
+All the necessary material accumulated in the process of creating a utility for editing the game.
 
-Идея проекта возникла во время перевода Yoda Stories на русский язык.
-Весь необходимый материал был накоплен в процессе создания утилиты для редактирования игры.
-
-Отдельно следует поблагодарить Christoph Leimbrock за его проект [webfun.io](https://www.webfun.io/).
-Он смог собрать и структурировать информацию о внутренней реализации игры, воплотив её в онлайновом игровом движке.
-[Yodesk.ksy](https://www.webfun.io/docs/appendix/yodesk.html) описывает структуру DTA файла и позволяет сгенерировать код для работы с ним.
+Special thanks to Christoph Leimbrock for his project [webfun.io](https://www.webfun.io/).
+He was able to collect and structure information about the internal implementation of the game,
+embodying it in an online game engine.
+[Yodesk.ksy](https://www.webfun.io/docs/appendix/yodesk.html) file
+describes the structure of a DTA file and allows generating code to work with it.
