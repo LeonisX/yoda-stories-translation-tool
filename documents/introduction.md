@@ -1,7 +1,7 @@
 Yoda Stories Investigation Project
 ==================================
 
-Yoda Stories is a real find for fans of gaming archeology.
+<img style="float: right;" alt="" src="images/zones/000.png" />Yoda Stories is a real find for fans of gaming archeology.
 The originally English-language baby game translated into French, German,
 Italian, Spanish, Portuguese, Japanese, and probably Korean and Chinese,
 apart from unofficial translations into Russian and several reissues.
