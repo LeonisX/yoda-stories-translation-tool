@@ -1,37 +1,39 @@
 Patch 6
 =======
 
-Пакет исправлений `YOPATCH6.EXE` опубликовали на сайте [lucasarts.com](https://web.archive.org/web/20000304052609/http://support.lucasarts.com/patches/yoda.htm) в феврале 1997-го года.
+The `YOPATCH6.EXE` patch package published on [lucasarts.com](https://web.archive.org/web/20000304052609/http://support.lucasarts.com/patches/yoda.htm) in February 1997.
 
-_На самом деле, дата публикации вызывает большие сомнения. Мы предполагаем, что этот патч был готов только летом 1997-го года.
-К сожалению, веб-архив не смог сохранить подтверждения в пользу нашей точки зрения._
+_Actually, the publication date is highly questionable. We assume that this patch was only ready in the summer of 1997.
+We assume that there is an error on the site.
+Unfortunately, the web archive has not been able to maintain evidence in favor of our point of view._
 
-Фактически это не патч, а самораспаковывающийся архив, внутри которого находится файл `yodesk.dta`.
+In fact, this is not a patch, but a self-extracting archive, inside of which is the `yodesk.dta` file.
 
-* Размер: 1172 Кб
+* Size: 1172 Kb
 
-[Скачать yopatch.exe](download.md)
+[Download yopatch.exe](download.md)
 
-Самораспаковывающийся архив WinZip имеет неверную дату в PE заголовке файла (`13.09.1996`),
-поэтому мы не в состоянии узнать точное время его создания.
+WinZip self-extracting archive has wrong date in PE file header (`13.09.1996`),
+therefore we are not able to know the exact time of its creation.
 
-Дата распакованного файла `yodesk.dta`: `06.06.1997`.
+Date of unpacked file `yodesk.dta`: `06.06.1997`.
 
-* Объявлено об исправлениях в следующих зонах: `72, 236, 407, 473, 474, 572`.
-* Фактически были исправлены следующие зоны: `72, 236, 266, 267, 271, 407, 472, 572`.
+* Bug fixes announced for the following zones: `72, 236, 407, 473, 474, 572`.
+* The following zones actually fixed: `72, 236, 266, 267, 271, 407, 472, 572`.
 
-`Patch 6` на 100% соответствует DTA файлу из версии `1.2`, то есть, подходит только для англоязычных игроков.
+`Patch 6` is 100% consistent with the DTA file from version `1.2`, that is, it is only suitable for English-speaking players.
 
-Ради интереса мы подставляли его в Европейские версии, и наоборот.
-В обоих случаях игра работала без проблем, хотя,
-в Европейских версиях должны наблюдаться проблемы с родами предметов, это логично,
-а версия для США, на удивление, уверенно работает, даже встретив незнакомый тег `TGEN` в конце DTA файла.
+For the sake of interest, we tested it with European versions, and vice versa.
 
-Единственное чего не стоит делать, так это сохраняться, подменять DTA файл и потом загружать игру.
-Может возникнуть такая ошибка:
+In both cases the game worked without problems though,
+in the European versions there should be problems with quest items gender, this is logical,
+but the US version works surprisingly well, even when it encounters an unfamiliar `TGEN` tag at the end of the DTA file.
+
+The only thing no one should do is to save the game, replace the DTA file and then load the game.
+The following error may occur:
 
 ![](images/errors/unknown-error.png)
 
-`An unknown error occured while accessing an unnamed file.`
+`An unknown error occurred while accessing an unnamed file.`
 
-Если вернуть прежний DTA файл, то ошибка исчезает.
+However, if return the original DTA file, then the error disappears.
