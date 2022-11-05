@@ -17,3 +17,5 @@ There is no disk image on hand, we do not know Chinese, so we need help to find 
 
 It is known that Unalis mainly specialized in office software,
 we know about 10 games released in this region.
+
+The first mention of this version of the game found on the [Star Wars Collectors Archive (SWCA)](http://theswca.com/index.php?action=disp_item&item_id=67068) website.

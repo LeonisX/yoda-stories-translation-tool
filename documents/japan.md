@@ -32,6 +32,8 @@ The fact that the game translated into Japanese known from two sources:
 [second](http://web.archive.org/web/20220703101647/https://www.pcgamingwiki.com/wiki/Star_Wars:_Yoda_Stories), 
 but we need to verify this for ourselves.
 
+The first mention of this version of the game found on the [Star Wars Collectors Archive (SWCA)](http://theswca.com/index.php?action=disp_item&item_id=66966) website.
+
 It is also known about the re-release of the game:
 
 The **Star Wars Masterpieces** (or `Star Wars Masterpiece Special Pack`) contains 6 discs:
