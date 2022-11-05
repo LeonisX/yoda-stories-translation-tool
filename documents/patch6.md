@@ -5,7 +5,8 @@ The `YOPATCH6.EXE` patch package published on [lucasarts.com](https://web.archiv
 
 _Actually, the publication date is highly questionable. We assume that this patch was only ready in the summer of 1997.
 We assume that there is an error on the site.
-Unfortunately, the web archive has not been able to maintain evidence in favor of our point of view._
+Unfortunately, the web archive has not been able to maintain evidence in favor of our point of view.
+[link1](https://web.archive.org/web/20000304052609/http://support.lucasarts.com/patches/yoda.htm), [link2](https://web.archive.org/web/20011014162056/http://support.lucasarts.com:80/patches/yoda.htm)..._
 
 In fact, this is not a patch, but a self-extracting archive, inside of which is the `yodesk.dta` file.
 
@@ -15,6 +16,8 @@ In fact, this is not a patch, but a self-extracting archive, inside of which is 
 
 WinZip self-extracting archive has wrong date in PE file header (`13.09.1996`),
 therefore we are not able to know the exact time of its creation.
+
+![](images/setup/patch-6.png)
 
 Date of unpacked file `yodesk.dta`: `06.06.1997`.
 

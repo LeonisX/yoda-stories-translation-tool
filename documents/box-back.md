@@ -1,7 +1,9 @@
 Коробка Yoda Stories - тыльная сторона
 ======================================
 
-TODO
+TODO взять инфу у Cyco
+
+https://www.webfun.io/docs/yoda/trivia.html
 
 США (v1.0, v1.1)
 ----------------
