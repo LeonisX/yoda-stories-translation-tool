@@ -1,16 +1,16 @@
 Star Wars - Yoda Stories (Australia) & Making Magic
 ===================================================
 
-* Регион: `Австралия`, скорее всего Новая Зеландия и с небольшой вероятностью Бруней, Гонг Конг, Малайзия, Сингапур, Тайланд и Филипины
-* Язык: `английский`
-* Издатель: [`Playcorp PTY. Ltd`](http://web.archive.org/web/19981201201808/http://www.playcorp.com/) (вернее подразделение [`Metro Games`](http://web.archive.org/web/19981205025924/http://www.metrogames.com.au/))
-* Дата выпуска: `14.04.1997`
-* Рейтинг ACB (Australian Classification Board): `General (G)` (подходит всем, содержимое очень мягкое по воздействию)
+* Region: `Australia`, most likely New Zealand and with a small probability Brunei, Hong Kong, Malaysia, Singapore, Thailand and the Philippines.
+* Language: `English`
+* Publisher: [`Playcorp PTY. Ltd`](http://web.archive.org/web/19981201201808/http://www.playcorp.com/) (more precisely, a division of [`Metro Games`](http://web.archive.org/web/19981205025924/http://www.metrogames.com.au/))
+* Release date: `14.04.1997`
+* ACB (Australian Classification Board) rating: `General (G)` (suitable for everyone, content is very mild in impact)
 
 [![](images/cover/thumb/yoda-stories-australia-box-front.jpg)](images/cover/yoda-stories-australia-box-front.jpg)
 
 
-Точная дата выпуска не известна, но именно 14 апреля игра [получила возрастной рейтинг](https://www.classification.gov.au/titles/yoda-stories).
+The exact release date is unknown, but it was on April 14 that the game [received an age rating](https://www.classification.gov.au/titles/yoda-stories).
 
-На сайте Metro Games есть ссылки на сайты дистрибьюторов. Информацию о Yoda Stories там найти не удалось,
-но дизайн и оформление невольно вызывают ностальгическую слезу.
+The Metro Games website has links to distributor websites. Information about Yoda Stories could not be found there,
+but the design and decoration involuntarily evoke a nostalgic tear.
