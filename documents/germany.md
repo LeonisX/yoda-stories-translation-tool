@@ -14,7 +14,7 @@ Star Wars - Yoda Stories (Ger) & Making Magic
 [![](images/cover/thumb/yoda-stories-germany-jewel-case-back.jpg)](images/cover/yoda-stories-germany-jewel-case-back.jpg)
 [![](images/cover/thumb/yoda-stories-germany-disk-front.jpg)](images/cover/yoda-stories-germany-disk-front.jpg)
 
-The game is fully translated into German, including packaging,
+The game fully translated into German, including packaging,
 accompanying documents and even screenshots on the box.
 
 There is no age rating on the packaging.
@@ -37,7 +37,7 @@ Yoda Stories can be run from a CD or installed on a hard drive.
 ![](images/setup/germany.png)
 
 The text in `Star Wars - Making Magic` has been translated into German.
-Otherwise, the encyclopedia does not differ from the Spanish one, with the exception of the language
+Otherwise, the encyclopedia does not differ from the Spanish one, except the language
 and links to the home site. The demo version of `Rebel Assault II` is also unique.
 
 Unnecessary `MAGIC/STATE.RST` file got stuck on the disk.
@@ -55,7 +55,7 @@ The German version vs Spanish version
 Despite the fact that the German version is close to the [Spanish version](spain.md),
 it has one important difference - the loading screen and Zone 0 have not been corrupted. 
 This could probably indicate that a different team was working on the Spanish translation, 
-or that the German version was assembled earlier.
+or that the German version assembled earlier.
 
 Language differences aside, these versions are otherwise identical.
 

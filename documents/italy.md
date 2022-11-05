@@ -14,7 +14,7 @@ Star Wars - Yoda Stories (Ita) & Making Magic
 [![](images/cover/thumb/yoda-stories-italy-box-back.jpg)](images/cover/yoda-stories-italy-box-back.jpg)
 [![](images/cover/thumb/yoda-stories-italy-disk-front.jpg)](images/cover/yoda-stories-italy-disk-front.jpg)
 
-The game is fully translated into Italian, including the packaging, accompanying documents, and even the screenshots on the box.
+The game fully translated into Italian, including the packaging, accompanying documents, and even the screenshots on the box.
 
 Paper manual printed in April 1997.
 
@@ -40,7 +40,7 @@ with more popular games from LucasArts:
 The last two compilations on the list were the first to be released, until May 1998.
 Apparently, this explains their at least some prevalence.
 
-The collection's white bookcase is opened twice, revealing first the documentation cover,
+The collection's white bookcase opened twice, revealing first the documentation cover,
 and then the discs themselves.
 
 The disk image that was released in 1997 has not yet been found. It is only known that it has an ascetic design.
@@ -67,7 +67,7 @@ Yoda Stories can be run from a CD or installed on a hard drive.
 ![](images/setup/italy.png)
 
 `Star Wars: Making Magic` on this disc is similar to other European versions.
-The interface is completely translated, there is a unique link to the registration site and to the `C.T.O.` home site.
+The interface completely translated, there is a unique link to the registration site and to the `C.T.O.` home site.
 The demo version of the game `Rebel Assault II` is also translated into Italian.
 
 `Star Wars: Screen Entertainment` - a set of screen savers based on the movie `Star Wars: Episode IV - A New Hope`,
@@ -94,7 +94,7 @@ The following screensavers have also been changed:
 
 Absent library `SWSFX.DLL` and file `SWSESET.EXE`.
 
-It must be said that after a few years, some of the data from these screensavers lost their relevance.
+It must be said that after a few years, some data from these screensavers lost their relevance.
 
 The Italian version vs Spanish version
 --------------------------------------
@@ -130,7 +130,7 @@ These tiles used in zones 76-77.
 
 ![](images/zones/z265.png)
 
-Most likely, the change was made out of curiosity, and the programmer used the level editor.
+Most likely, the change made out of curiosity, and the programmer used the level editor.
 
 **Zone 472**: differences in unused script fields.
 

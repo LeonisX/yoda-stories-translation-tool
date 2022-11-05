@@ -15,7 +15,7 @@ The release date is printed on the flyer that comes with the game.
 [![](images/cover/thumb/yoda-stories-france-jewel-case-front.jpg)](images/cover/yoda-stories-france-jewel-case-front.jpg)
 [![](images/cover/thumb/yoda-stories-france-disk-front.jpg)](images/cover/yoda-stories-france-disk-front.jpg)
 
-Curiously, the screenshots on the box are not translated.
+Curiously, the screenshots on the box not translated.
 This suggests that some other games may have been localized as well,
 but the box used screenshots from the US version.
 
@@ -33,14 +33,14 @@ The text on the box, except for the screenshots, is entirely French. There is no
 * `Star Wars: Making Magic (France) (FD1.03) (22.09.1996)`
 * Themed cursors, icons, wallpapers and sound effects for Windows.
 
-We can notice that the disc was recorded at the beginning of May, the publisher did not fit into the scheduled time.
+We can notice that the disc recorded at the beginning of May, the publisher did not fit into the scheduled time.
 
 Yoda Stories can be run from a CD or installed on a hard drive.
 
 ![](images/setup/france.png)
 
 `Star Wars - Making Magic` on this disc is different from the US version, which was released on September 3rd.
-The interface is fully translated into French. Two dozen new files appeared on the disk,
+The interface fully translated into French. Two dozen new files appeared on the disk,
 probably with additional materials. From the font files it becomes obvious
 that somewhere in the universe there are still such encyclopedias in Korean and Japanese.
 
@@ -83,7 +83,7 @@ Language differences aside, these versions are near identical.
 **Tiles**:
 
 To accommodate all text, the number of tiles has been increased from `2123` to `2135`.
-So many tiles were required in order to write text between the lines without limiting oneself to the dimensions of the tiles.
+So many tiles required in order to write text between the lines without limiting oneself to the dimensions of the tiles.
 
 * Changed tiles: 2090-2108
 * 11 new tiles: 2123-2134
@@ -95,7 +95,7 @@ These tiles are used in zones 76-77.
 ![](images/zones/076fr.png) ![](images/zones/077fr.png)
 
 **Zones 472, 572**: Major fixes missing.
-It would be logical to assume that these bugs were discovered only in May 1997.
+It would be logical to assume that these bugs discovered only in May 1997.
 
 The differences in the structure of TGEN are large, 
 but it seemed that not as much as with the German version.
