@@ -1,71 +1,71 @@
 Star Wars - Yoda Stories (Jap) & Making Magic
 =============================================
 
-* Оригинальное название: `スターウォーズ ヨーダストーリー ＆ メイキングマジック`
-* Регион: `Япония`
-* Язык: `японский`
-* Издатель: [`MicroMouse Company Ltd.`](http://web.archive.org/web/19980120082600/http://www.micromouse.co.jp/) (яп. `マイクロマウス`)
-* Дата выпуска: `18.07.1997` (пятница)
-* Возрастной рейтинг: `отсутствует`
+* Original title: `スターウォーズ ヨーダストーリー ＆ メイキングマジック`
+* Region: `Japan`
+* Language: `Japanese`
+* Publisher: [`MicroMouse Company Ltd.`](http://web.archive.org/web/19980120082600/http://www.micromouse.co.jp/) (Japanese `マイクロマウス`)
+* Release date: `18.07.1997` (Friday)
+* Age rating: `none`
 * UPC: `4 943027 130090`
-* Платформы: `DOS/V`, `NEC PC-98`
-* Цена: `5,500 円`
+* Platforms: `DOS/V`, `NEC PC-98`
+* Price: `5,500 円`
 
 [![](images/cover/thumb/yoda-stories-japan-box-front.jpg)](images/cover/yoda-stories-japan-box-front.jpg)
 [![](images/cover/thumb/yoda-stories-japan-box-back.jpg)](images/cover/yoda-stories-japan-box-back.jpg)
 [![](images/cover/thumb/yoda-stories-japan-disk-front.jpg)](images/cover/yoda-stories-japan-disk-front.jpg)
 
-Содержимое диска (согласно фотографии):
+The contents of the disc (according to the photo):
 
 * `Star Wars: Yoda Stories (Japan)`
 * `Star Wars: Making Magic (Japan)`
-* `Star Wars: Screen Entertainment` (версия неизвестна)
-* Тематические курсоры, иконки, обои и звуковые эффекты для Windows.
+* `Star Wars: Screen Entertainment` (version unknown)
+* Themed cursors, icons, wallpapers and sound effects for Windows.
 
-Диск оформлен синим, но вместо Люка на нём нарисована звезда смерти и атакующий её X-Wing.
-Это часть обложки `Star Wars: Screen Entertainment`.
+The disc is blue, but instead of Luke, it has an X-Wing, attacking a Death Star.
+This is part of the cover of `Star Wars: Screen Entertainment`.
 
-О содержимом диска пока нет никакой информации, его ещё предстоит найти.
+There is no information about the contents of the disk yet, it has yet to be found.
 
-О том что игра переведена на Японский язык известно из двух источников: 
-[первый](https://www.amazon.co.jp/%E3%83%9E%E3%82%A4%E3%82%AF%E3%83%AD%E3%83%9E%E3%82%A6%E3%82%B9-STAR-WARS-MasterPieces-%E3%82%B9%E3%83%9A%E3%82%B7%E3%83%A3%E3%83%AB%E3%83%91%E3%83%83%E3%82%AF/dp/B00008I14K),
-[второй](http://web.archive.org/web/20220703101647/https://www.pcgamingwiki.com/wiki/Star_Wars:_Yoda_Stories), 
-но в этом нужно убедиться лично.
+The fact that the game translated into Japanese known from two sources:
+[first](https://www.amazon.co.jp/%E3%83%9E%E3%82%A4%E3%82%AF%E3%83%AD%E3%83%9E%E3%82%A6%E3%82%B9-STAR-WARS-MasterPieces-%E3%82%B9%E3%83%9A%E3%82%B7%E3%83%A3%E3%83%AB%E3%83%91%E3%83%83%E3%82%AF/dp/B00008I14K),
+[second](http://web.archive.org/web/20220703101647/https://www.pcgamingwiki.com/wiki/Star_Wars:_Yoda_Stories), 
+but we need to verify this for ourselves.
 
-Так же известно о переиздании игры:
+It is also known about the re-release of the game:
 
-Сборник **Star Wars Masterpieces** (или `Star Wars Masterpiece Special Pack`) состоит из 6 дисков:
+The **Star Wars Masterpieces** (or `Star Wars Masterpiece Special Pack`) contains 6 discs:
 
-* `Star Wars: Dark Forces` (английский), пробная версия, 3 уровня
-* `Star Wars: Jedi Knight` (английский), играбельная демо-версия
-* `Star Wars: Rebel Assault II` (английский), пробная версия, 3 уровня
-* `Star Wars: Rebel Assault` (английский)
-* `Star Wars: Yoda Stories` (японский)
-* `Star Wars: Making Magic` (японский)
+* `Star Wars: Dark Forces` (English) trial version, 3 levels
+* `Star Wars: Jedi Knight` (English) playable demo
+* `Star Wars: Rebel Assault II` (English) trial version, 3 levels
+* `Star Wars: Rebel Assault` (English)
+* `Star Wars: Yoda Stories` (Japanese)
+* `Star Wars: Making Magic` (Japanese)
 
 [![](images/cover/thumb/yoda-stories-masterpieces-japan-box-front.jpg)](images/cover/yoda-stories-masterpieces-japan-box-front.jpg)
 [![](images/cover/thumb/yoda-stories-masterpieces-japan-box-back.jpg)](images/cover/yoda-stories-masterpieces-japan-box-back.jpg)
 [![](images/cover/thumb/yoda-stories-masterpieces-japan-disk-front.jpg)](images/cover/yoda-stories-masterpieces-japan-disk-front.jpg)
 
-Диск `Star Wars: Yoda Stories` окрашен в цвет морской волны, на нём изображён Люк.
+The `Star Wars: Yoda Stories` disc is navy blue and depicts Luke.
 
-* Дата выпуска: `16.07.1999`
-* Возрастной рейтинг: `K-A: Kids to Adults`
-* Издатель: `MicroMouse Company Ltd.` (яп. マイクロマウス)
+* Release date: `16.07.1999`
+* Age rating: `K-A: Kids to Adults`
+* Publisher: `MicroMouse Company Ltd.` (Japanese `マイクロマウス`)
 * ASIN:‎ `B00008I14K`
-* Коробка: `22.4 x 16.6 x 4` см; `521.63` грамм
-* Цена: `3,980 円`
+* Box: `22.4 x 16.6 x 4` cm; `521.63` grams
+* Price: `3,980 円`
 
-Возрастной рейтинг смущает, поскольку ESRB действует в США, но никак не в Японии.
+The age rating is confusing because the ESRB valid in the US, but not in Japan.
 
-Запускается на `Windows 95/98` (и `NEC PC-9800`), однако, `Making Magic` может не запустится на Японской машине, надо проверять.
+Runs on `Windows 95/98` (and `NEC PC-9800`), however, `Making Magic` may not run on a Japanese machine, we need to check.
 
-Похожий сборник продавался и в США, но без приключений юного джедая.
+A similar collection sold in the United States, but without the adventures of a young Jedi.
 
-_Для поиска в сети учим Японский:_
+_To search the web, learn Japanese:_
 
 * Star Wars: `スターウォーズ`
-* Yoda Stories: `ヨーダストーリー` либо `ヨーダ・ストーリー`
+* Yoda Stories: `ヨーダストーリー` or `ヨーダ・ストーリー`
 * Making Magic: `メイキングマジック`
 * Micro Mouse: `マイクロマウス`
 * Screen Entertainment Special Pack: `スクリーンエンターテイメント スペシャルパック`
