@@ -1,19 +1,21 @@
-Пароли и секреты
-================
+Cheats and secrets
+==================
 
-В игре доступно всего два чита, которые можно выполнить с экрана Локатора.
+There are only two cheats available in the game, which can be performed from the `Locator` screen.
 
-При вводе этих паролей надо помнить, что этот экран следует открывать мышкой, кликнув по Локатору.
-Если открыть экран с помощью клавиши "L", то лишняя буква будет учтена как часть пароля и ничего не получится.
+When entering these passwords, remember that this screen should be opened with the mouse by clicking on the `Locator`.
+If you open the screen with the "`L`" key, then the extra letter will be taken into account as part of the password and nothing will work.
 
-* goyoda: неуязвимость
-* gojedi: получить пять `Thermal Detonators`, а так же `Blaster Rifle`, `Blaster` и `THE FORCE`.
-    
+* `goyoda`: invincibility
+* `gojedi`: get five `Thermal Detonators`, as well as `Blaster Rifle`, `Blaster` and `THE FORCE`.
+
 ![](images/cheats/goyoda.png) ![](images/cheats/gojedi.png)
 
 
-Неиспользуемые метаданные столкновения
---------------------------------------
+Unused collision metadata
+-------------------------
 
-На карте 0 (начальная заставка) голова, тело Йоды и текст "Yoda Stories" представляют собой препятствия, вроде стен.
-Но они остаются незамеченными из-за того, что игра запускает сценарий IACT карты при запуске и тут выходит из карты, не позволяя игроку исследовать ее.
+![](images/zones/000.png)
+
+On map 0 (opening cut scene), Yoda's head, body, and the text "Yoda Stories" are obstacles, like walls.
+But they go unnoticed due to the fact that the game runs the map's `IACT` script on a startup and then exits the map, preventing the player from exploring it.
