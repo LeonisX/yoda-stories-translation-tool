@@ -1,11 +1,11 @@
 Star Wars - Yoda Stories (Spa) & Making Magic
 =============================================
 
-* Регион: `Испания` и вероятно Португалия
-* Язык: `испанский`
-* Издатель: [`ERBE Software S.A.`](http://web.archive.org/web/19990209054839/http://www.teknoland.es/erbe/)
-* Дата выпуска: `весна 1997` года
-* Возрастной рейтинг: `отсутствует`
+* Region: `Spain` and probably Portugal
+* Language: `Spanish`
+* Publisher: [`ERBE Software S.A.`](http://web.archive.org/web/19990209054839/http://www.teknoland.es/erbe/)
+* Release date: `Spring 1997`
+* Age rating: `none`
 * UPC: `8 420224 343103`
 * MPN: `1997AYDP`
 * EAN: `023272311186`
@@ -17,39 +17,39 @@ Star Wars - Yoda Stories (Spa) & Making Magic
 [![](images/cover/thumb/yoda-stories-spain-jewel-case-back.jpg)](images/cover/yoda-stories-spain-jewel-case-back.jpg)
 [![](images/cover/thumb/yoda-stories-spain-disk-front.jpg)](images/cover/yoda-stories-spain-disk-front.jpg)
 
-Скриншоты на коробке и весь текст переведены на испанский. Возрастного рейтинга на упаковке нет.
+Screenshots on the box and all text translated into Spanish. There is no age rating on the packaging.
 
-Диск:
+Disk:
 
-* Дата записи: `22.05.1997 11:14:33`
+* Recording date: `22.05.1997 11:14:33`
 * Volume Space Size (LBA): `328840`
 * Volume Identifier: `YODASPANISH`
 
-Содержимое диска:
+Disc content:
 
 * `Star Wars: Yoda Stories (Spain)`
-* `Star Wars: Making Magic (Spain) (FC1.03) (22.11.1996)`
-* `Star Wars: Rebel Assault II Demo (Spain) (DT1.15) (22.11.1996)`
-* Тематические курсоры, иконки, обои и звуковые эффекты для Windows.
+* `Star Wars: Making Magic (Spain) (FC1.03) (11/22/1996)`
+* `Star Wars: Rebel Assault II Demo (Spain) (DT1.15) (11/22/1996)`
+* Themed cursors, icons, wallpapers and sound effects for Windows.
 
-Оформление диска тёмное, нестандартное, совпадает с оформлением на коробке.
+The design of the disc is dark, non-standard, it matches the design on the box.
 
-`Star Wars - Making Magic` здесь отличается от предыдущих, причём, не только номером версии.
-Интерфейс полностью переведён, в остальном же версия не отличается от Французской, хотя...
+`Star Wars - Making Magic` here differs from the previous ones, and not only by the version number.
+The interface completely translated, otherwise the version does not differ from the French one, although...
 
-В каталоге со `Star Wars - Making Magic` припрятана демо-версия игры `Rebel Assault II`.
-Теперь понятно, почему размер диска вырос на 150 мб.
-Эта игра новее первоначальной, которая шла на оригинальном диске Making Magic 1996-го года.
+A demo version of the game `Rebel Assault II` is hidden in the catalog with `Star Wars - Making Magic`.
+Now it is clear why the disk size has grown by 150 MB.
+This game is newer than the original one that was on the original Making Magic CD from 1996.
 
-* `DT1.15` от `22.11.1996` вместо `DH1.15` от `03.10.1996`.
+* `DT1.15` from `22.11.1996` instead of `DH1.15` from `03.10.1996`.
 
-Демо-версия так же переведена на испанский язык.
+The demo version also translated into Spanish.
 
 
 The Spanish version vs 1.1 
 --------------------------
 
-The Spanish version was not released first, but among the European versions of Yoda Stories, 
+The Spanish version not released first, but among the European versions of Yoda Stories, 
 it appeared on the Internet earlier than others.
 Therefore, it will become the basis for comparison with other European versions.
 
@@ -102,15 +102,17 @@ These tiles used in zones 76-77.
 
 **Zone 572**: an important fix identical to version 1.2
 
+Other sections:
+
 * **Puzzles**: 100% difference in the text, but expected.
 * **Characters**: differences only in unused data.
 * **Tile names**: 100% difference in text, but expected.
 * **Tile genders**: This is a new data structure, TGEN, typical for languages that use the article to change the gender.
 
-On the Internet you can also find a version of this game from "Spanish translators".
+On the Internet can also be find a version of this game from "Spanish translators".
 Truth, [`Selva Translators`](https://www.angelfire.com/emo/translations/traducciones/yoda/traducciones_yoda.htm)
-only the "About" screen in the existing Spanish version has changed..
+only the "About" screen in the existing Spanish version has changed.
 
 ![](images/dialogs/selva.png)
 
-News publlished 13.12.2001, but they write that they finished in November 2001. What was their motivation is not clear.
+News published 13.12.2001, but they write that they finished in November 2001. What was their motivation is not clear.
