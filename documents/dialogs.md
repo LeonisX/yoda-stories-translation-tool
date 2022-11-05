@@ -1,72 +1,75 @@
-Диалоги
+Dialogs
+=======
 
-Большая часть этой информации найдена [здесь](https://tcrf.net/Star_Wars:_Yoda_Stories_(Windows)).
+Much of this information found [here](https://tcrf.net/Star_Wars:_Yoda_Stories_(Windows)).
 
-В файле YODESK.EXE находится 15 диалоговых окон, из которых 12 унаследованы из игры Indiana Jones and His Desktop Adventures, а 3 уникальных.
+There are 15 dialog windows in the `YODESK.EXE` file, 
+12 of which are inherited from `Indiana Jones and His Desktop Adventures` and 3 are unique.
 
-С нашей точки зрения интересно несколько диалогов, использовавшихся для отладки или ввода читов.
-К сожалению, лишь один из них можно задействовать.
+From our point of view, several dialogs used for debugging or entering cheats are interesting.
+Unfortunately, only one of them can be used.
 
-Диалог 100 открывается из меню Help -> About...
+Dialog 100 is opened from the menu `Help -> About...`
 
 ![](images/dialogs/100.png)
 
-Диалог 111 открывается из меню Options -> Combat Difficulty...
+Dialog 111 is opened from the menu `Options -> Combat Difficulty...`
 
 ![](images/dialogs/111.png)
 
-Диалог 134 имеет неизвестное предназначение и недоступен в игре. Три кнопки: DNA, UPA, CLOSE и блок текста.
-Не виден в большинстве редакторов ресурсов.
+Dialog 134 has an unknown purpose and is not available in the game. Three buttons: DNA, UPA, CLOSE and block text.
+Not visible in most resource editors.
 
 ![](images/dialogs/134.png)
 
-Диалог 147 недоступен в игре. Предназначался для быстрого перехода в требуемую зону.
+Dialog 147 is not available in the game. Intended for a quick transition to the required zone.
 
 ![](images/dialogs/147.png)
 
-Диалог 191 открывается комбинацией клавиш `Ctrl+F8`.
-Он показывает номер текущей зоны, координаты и значение E.
+Dialog 191 is opened by the key combination `Ctrl+F8`.
+It shows the current zone number, coordinates and `E` value.
 
 ![](images/dialogs/191.png)
 
-Диалог 193 недоступен в игре. Предназначался для добавления предмета в инвентарь.
+Dialog 193 is not available in the game. Intended to add an item to the inventory.
 
 ![](images/dialogs/193.png)
 
-Диалог 204 недоступен в игре. Предназначался для назначения квестовых предметов определённому NPC.
+Dialog 204 is not available in the game. Intended for assigning quest items to a specific NPC.
 
 ![](images/dialogs/204.png)
 
-Диалог 206 недоступен в игре. Назначение неизвестно. На нём расположен один компонент CTEXT.
+Dialog 206 is not available in the game. Purpose unknown. It contains one CTEXT component.
 
 ![](images/dialogs/206.png)
 
-Диалог 207 недоступен в игре. Назначение не совсем очевидное. Генерировались повторяющиеся миры. Видимо, возможность генерировать мир по уникальному номеру.
+Dialog 207 is not available in the game. The purpose is not entirely clear. Repeated worlds generator.
+Apparently, the ability to generate the world by a unique number.
 
 ![](images/dialogs/207.png)
 
-Диалог 215 открывается из меню Options -> Game Speed...
+Dialog 215 is opened from the menu `Options -> Game Speed...`
 
 ![](images/dialogs/215.png)
 
-Диалог 218 открывается из меню Options -> World Control...
+Dialog 218 is opened from the menu `Options -> World Control...`
 
 ![](images/dialogs/218.png)
 
-Следующие три диалога уникальны для Yoda Stories.
+The next three dialogues are unique to Yoda Stories.
 
-Диалог 223 недоступен в игре. Предназначался для создания и настройки тестового мира, а так же тестирования различных концовок.
+Dialog 223 is not available in the game. Intended for creating and setting up a test world, as well as testing different endings.
    
 ![](images/dialogs/223.png)
 
-Диалог 224 недоступен в игре. Назначение неизвестно.
+Dialog 224 is not available in the game. Purpose unknown.
 
 ![](images/dialogs/224.png)
 
-Диалог 225 открывается из меню Options -> Statistics...
+Dialog 225 is opened from the menu `Options -> Statistics...`
 
 ![](images/dialogs/225.png)
 
-Диалог 30721 недоступен в игре. Вероятно, просто какое-то типовое окно.
+Dialog 30721 is not available in the game. Probably just some window template.
 
 ![](images/dialogs/30721.png)
