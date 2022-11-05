@@ -1,47 +1,47 @@
 Star Wars - Yoda Stories (Bra) & Making Magic
 =============================================
 
-* Оригинальное название: `Guerra nas Estrelas: Histórias de Yoda`
-* Регион: `Бразилия`
-* Язык: `португальский`
-* Издатель: [`BraSoft Produtos de Informatica Ltda`](http://web.archive.org/web/19980214043915/http://www.brasoft.com.br/)
-* Дата выпуска: `июнь-июль 1997` года
-* Возрастной рейтинг: `отсутствует`
-* Стоимость: `37 реалов`
+* Original title: `Guerra nas Estrelas: Histórias de Yoda`
+* Region: `Brazil`
+* Language: `Portuguese`
+* Publisher: [`BraSoft Produtos de Informatica Ltda`](http://web.archive.org/web/19980214043915/http://www.brasoft.com.br/)
+* Release date: `June-July 1997`
+* Age rating: `none`
+* Cost: `37 reals`
 
-`Guerra nas Estrelas: Historias de Yoda` - единственная версия Yoda Stories из 90-х,
-в которой переведено практически всё, включая и название самой игры.
-Из-за этого, в частности, данный релиз долгое время не удавалось найти.
+`Guerra nas Estrelas: Historias de Yoda` is the only version of Yoda Stories from the 90s
+that has almost everything translated, including the title of the game itself.
+Because of this, in particular, this release could not be found for a long time.
 
 [![](images/cover/thumb/yoda-stories-brazil-jewel-case-front.jpg)](images/cover/yoda-stories-brazil-jewel-case-front.jpg)
 [![](images/cover/thumb/yoda-stories-brazil-jewel-case-back.jpg)](images/cover/yoda-stories-brazil-jewel-case-back.jpg)
 [![](images/cover/thumb/yoda-stories-brazil-disk-front.jpg)](images/cover/yoda-stories-brazil-disk-front.jpg)
 
-Возрастного рейтинга на упаковке нет.
+There is no age rating on the packaging.
 
-Игру продемонстрировали 04.07.1997 на 11-й выставке `Fenasoft`.
+The game demonstrated on 04.07.1997 at the 11th `Fenasoft` exhibition.
 
-В настоящее время не известно, продавалась ли игра в большой коробке, или в виде обычного jewel case. 
+It is not currently known if the game sold in a large box, or as a regular jewel case.
 
-Диск:
+Disk:
 
-* Дата записи: `19.06.1997 11:28:54`
+* Recording date: `19.06.1997 11:28:54`
 * Volume Space Size (LBA): `328861`
 * Volume Identifier: `YODABRAZIL`
-* Числа на диске: 0824.04.0 06/97
+* Numbers on disk: 0824.04.0 06/97
 
-Игра была готова ещё в мае, поэтому непонятно, чем была вызвана задержка в 1 месяц.
+The game was ready back in May, so it is not clear what caused the delay of 1 month.
 
-Содержимое диска:
+Disc content:
 
 * `Star Wars: Yoda Stories (Brazil)`
-* `Star Wars: Making Magic (Brazil) (FA1.04 от 28.01.1997)`
-* `Star Wars: Rebel Assault II Demo (Brazil) (DX1.15 от 06.02.1996)`
-* Тематические курсоры, иконки, обои и звуковые эффекты для Windows.
+* `Star Wars: Making Magic (Brazil) (FA1.04) (28.01.1997)`
+* `Star Wars: Rebel Assault II Demo (Brazil) (DX1.15) (06.02.1996)`
+* Themed cursors, icons, wallpapers and sound effects for Windows.
 
-`Star Wars - Making Magic` на этом диске тоже отличается от предыдущих.
-Интерфейс полностью переведён, в остальном же энциклопедия не отличается от Испанской,
-за исключением языка и ссылки на домашний сайт. Версия демки игры `Rebel Assault II` так же уникальная.
+`Star Wars - Making Magic` on this disc is also different from the previous ones.
+The interface is completely translated, otherwise the encyclopedia does not differ from the Spanish one,
+except for the language and link to the home site. The demo version of `Rebel Assault II` is also unique.
 
 
 The Brazil version vs Spanish version
