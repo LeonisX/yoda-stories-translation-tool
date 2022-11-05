@@ -1,23 +1,23 @@
 Download Yoda Stories
 =====================
 
-Ссылки на бесплатные раздачи с сайта lucasarts.com:
+Links to free versions from `lucasarts.com`:
 
 **Demo-version**:
 
-* [Скачать yodademo.exe](files/yodademo.exe); ([link2](https://archive.org/details/StarWarsYodaStories_1020))
+* [Download yodademo.exe](files/yodademo.exe); ([link2](https://archive.org/details/StarWarsYodaStories_1020))
 * Size: 3.2 Мб
 * CRC32: D237F4EF
 * [Virustotal report](https://www.virustotal.com/gui/file/4e29f4d1009ea2f2cca1c003b40539a4f79adea67fa4fc6829bdd89dff91f3c6): 0/67
 
 **Patch 6**:
 
-* [Скачать yopatch.exe](files/yopatch6.exe)
+* [Download yopatch.exe](files/yopatch6.exe)
 * Size: 1172 Кб
 * CRC32: D04B6A3F
 * [Virustotal report](https://www.virustotal.com/gui/file/8adcc4a3763d0507a8da81ff0d14339750158af7150457493b6b8e1a6e4ce1df): 0/67
 
-**Ссылки на все известные образы дисков игры**:
+**Links to all known game disc images**:
 
 * [Star Wars - Yoda Stories (USA) (15.02.1997) & Making Magic](https://archive.org/details/StarWarsYodaStoriesUSA); ([link2](https://archive.org/details/yoda_20220125)); ([redump](https://archive.org/download/redump_pc_S/Star%20Wars%20-%20Yoda%20Stories%20%28USA%29.7z))
 * [Star Wars - Yoda Stories (USA) (15.02.1997) & Making Magic (NL)](https://archive.org/details/Star_Wars_-_Yoda_Stories_1997_LucasArts_NL)
@@ -29,7 +29,8 @@ Download Yoda Stories
 * [Star Wars - Yoda Stories (Germany) (24.06.1997) & Making Magic](https://archive.org/details/Star_Wars_-_Yoda_Stories_1997_German)
 * [Star Wars - Yoda Stories (Italy) (11.03.1998) & Making Magic + Star Wars - Screen Entertainment](https://archive.org/download/redump_pc_S/Star%20Wars%20-%20Yoda%20Stories%20%2B%20Star%20Wars%20-%20Screen%20Entertainment%20%28Italy%29.7z)
 
-В моей коллекции игр и других материалов ещё больше. Например, различные сборники или интересные страницы. Не стесняйтесь попросить ссылку [tv-games@mail.ru](mailto:tv-games@mail.ru)
+There are even more in my collection of games and other materials.
+For example, various compilations or interesting pages. Feel free to ask for a link: [tv-games@mail.ru](mailto:tv-games@mail.ru)
 
 **Instruction manuals**
 
@@ -43,4 +44,4 @@ Download Yoda Stories
 * [Star Wars - Yoda Stories (Russian Help)](manuals/Star%20Wars%20-%20Yoda%20Stories%20(Russian%20Help).pdf)
 
 
-TODO картинки, картинки в облаке
+TODO images, images in cloud
