@@ -10,7 +10,7 @@ this value is also `512`.
 
 Perhaps LucasArts had other games with a similar engine, if you know of such, then write to us.
 
-Hacking opportunities
+Hacking possibilities
 ---------------------
 
 These 4 bytes strictly checked when loading the game, and any other value will cause the game to crash.

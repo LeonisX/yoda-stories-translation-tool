@@ -25,10 +25,11 @@ Uses modified code from http://image4j.sourceforge.net project.
 ## Docs
 
 * [Introduction](documents/introduction.md)
-* [Versions comparison summary](documents/summary.md)
+* [How to play](documents/how-to-play.md)
 
 ### Releases
 
+* [Versions comparison summary](documents/summary.md)
 * [USA v1.0](documents/usa-10.md)
 * [USA v1.1](documents/usa-11.md)
 * [USA v1.2](documents/usa-12.md)
@@ -58,7 +59,6 @@ Uses modified code from http://image4j.sourceforge.net project.
 
 ### Game
 
-* [Yoda Stories rules](documents/rules.md)
 * [Compatibility issues](documents/compatibility.md)
 * [In-game dialogs](documents/dialogs.md)
 * [Color palette](documents/color-palette.md)
@@ -97,6 +97,9 @@ Uses modified code from http://image4j.sourceforge.net project.
 * [Resources](documents/resources.md)
 
 ## TODO List
+
+* Add hex dumps to all sections, other images
+* 65535 values == -1; 255 == -1; - need correct values when load DTA assets
 
 * Italy - Resize dialog tool tip text field :(. Also changes inventory font
 * France - Resize dialog tool tip text field :(. Also changes inventory font
