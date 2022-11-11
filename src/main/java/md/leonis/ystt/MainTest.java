@@ -2,17 +2,29 @@ package md.leonis.ystt;
 
 import com.google.gson.Gson;
 import md.leonis.ystt.model.Encoding;
+import md.leonis.ystt.utils.IOUtils;
 
-import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class MainTest {
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
 
+        // Sounds usage
+        showSounds("eng-1.2");
+        showSounds("eng-1.1");
+        showSounds("eng-1");
+        showSounds("eng-demo");
+        showSounds("spa-1");
+
+        // Encodings
         List<Encoding> encodings = new ArrayList<>();
         encodings.add(new Encoding("windows-1250", "Eastern European (Latin 2)"));
         encodings.add(new Encoding("windows-1251", "Cyrillic (Slavic)"));
@@ -87,5 +99,15 @@ public class MainTest {
         System.out.println(strings);*/
     }
 
+    private static void showSounds(String version) {
+        List<String> lines = IOUtils.loadTextFile(Paths.get(String.format("D:\\yoda-stories-translation-tool\\output-%s\\dumps\\actionsScripts.txt", version)));
+        List<Integer> sounds = lines.stream().filter(l -> l.contains("play-sound"))
+                .map(l -> Integer.valueOf(l.split(":")[1].trim())).collect(Collectors.toList());
 
+        System.out.println();
+        System.out.println(version);
+        System.out.println();
+        sounds.stream().collect(Collectors.groupingBy(Function.identity())).entrySet().stream()
+                .sorted(Map.Entry.comparingByKey()).forEach(e -> System.out.println(e.getKey() + ": " + e.getValue().size()));
+    }
 }

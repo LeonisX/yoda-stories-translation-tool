@@ -48,9 +48,9 @@ public class Sounds extends KaitaiStruct {
     }
 
     private void _read() {
-        this.count = this.io.readS2le();
-        prefixedSounds = new ArrayList<>(((Number) (-count)).intValue());
-        for (int i = 0; i < -(count); i++) {
+        this.count = (short) -this.io.readS2le();
+        prefixedSounds = new ArrayList<>(((Number) count).intValue());
+        for (int i = 0; i < count; i++) {
             PrefixedStrz prefixedStrz = new PrefixedStrz(this.io, this, root);
             prefixedSounds.add(prefixedStrz);
         }
@@ -58,7 +58,7 @@ public class Sounds extends KaitaiStruct {
 
     @Override
     public void write(KaitaiOutputStream os) {
-        os.writeS2le(count);
+        os.writeS2le((short) -count);
         prefixedSounds.forEach(s -> s.write(os));
     }
 
