@@ -378,3 +378,9 @@ There were 85 actions in total. It's not the most interactive map in the game, b
 This wooded area also became a source of errors when it was not possible to get a quest item.
 
 ![](images/code/z572-hp.png)
+
+### Sound usage statistic
+
+* `0` (schwing.wav): 493 (-3)
+* `58` (flourish.wav): 79 (+3)
+* `60` (mystery.wav): 26 (+3)

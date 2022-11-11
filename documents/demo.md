@@ -568,3 +568,9 @@ Why this was done is unclear, but in some areas these tanks were also swapped.
 ![](images/tiles/demo/2119.png) ![](images/tiles/demo/2120.png)
 
 This is probably the last thing that was fixed before the release of version 1.0.
+
+### Sound usage statistic
+
+* `0` (schwing.wav): 482 (-14)
+* `3` (shpoonk.wav): 41 (-1)
+* `39` (xwingout.wav): 27 (-2)

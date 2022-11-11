@@ -121,3 +121,9 @@ then
 The code is easy enough to understand. `Yoda` (tile `780`) is located at coordinates [5, 5, 1].
 When you give `Han` to him (tile `809`), then Yoda delivers his speech.
 In this case, tile `809` is removed from the inventory.
+
+### Sound usage statistic
+
+* `0` (schwing.wav): 496 (+1)
+
+This is also true for all European versions of Yoda Stories.
