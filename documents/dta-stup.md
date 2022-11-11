@@ -3,11 +3,15 @@ Startup screen
 
 ![](images/startup.png)
 
+#### Format
+
+* 4 bytes: "`STUP`"
+* 4 bytes: section size (`0x14400` bytes in hex)
+* `82944` pixels
+
 Technically `Startup Screen` is the most common Bitmap. Dimensions:
 
 * `288x288` pixels, `256` colors
-* `82944` bytes
-* `0x14400` in hex
 
 Each pixel corresponds to 1 byte - the index of color in [palette](color-palette.md).
 
