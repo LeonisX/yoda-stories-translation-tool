@@ -13,13 +13,14 @@ T-Rus PRO
 * Date: `19.08.2006`
 * Based on version 1.2 (aka Patch 6).
 
-Two minor changes for unused action arguments in zones `562` and `578`. Probably manual.
+Two minor changes for unused action arguments in zones `562` and `578`.
+ Apparently, this was an attempt to translate dummy data that fills unused variables.
 
 ![](images/gameplay/rus-pro.png)
 
 The graphics are not translated, and the tile names only partially translated.
 
-The translation was included on the disc `Yoda Stories (R. G. Catalyst Old Games)`.
+The translation included on the disc `Yoda Stories (R. G. Catalyst Old Games)`.
 
 ![](images/setup/rg1.png)
 

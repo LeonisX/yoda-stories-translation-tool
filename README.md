@@ -52,17 +52,26 @@ Uses modified code from http://image4j.sourceforge.net project.
 
 * [Boxes: front side](documents/box-front.md)
 * [Boxes: back side](documents/box-back.md)
-* [Jewel Case: front side](documents/jewel-case-front.md)
-* [Jewel Case: back side](documents/jewel-case-back.md)
+* [Jewel Cases: front side](documents/jewel-case-front.md)
+* [Jewel Cases: back side](documents/jewel-case-back.md)
 * [Disks: front side](documents/disk-front.md)
 
 ### Game
 
+* [Yoda Stories rules](documents/rules.md)
 * [Compatibility issues](documents/compatibility.md)
 * [In-game dialogs](documents/dialogs.md)
+* [Color palette](documents/color-palette.md)
 * [INI file](documents/ini.md)
 * [Cheats, tips, secrets](documents/cheats.md)
 * [Credits](documents/credits.md)
+
+### YODESK.DTA
+
+* [Format](documents/dta-format.md)
+* [VERS](documents/dta-vers.md)
+* [STUP](documents/dta-stup.md)
+* [SNDS](documents/dta-snds.md)
 
 ### Download
 
@@ -83,6 +92,9 @@ Uses modified code from http://image4j.sourceforge.net project.
 * https://github.com/Archenoth/yodesk-notes
 * https://github.com/kirbysayshi/yoda-stories-docker
 
+## Other links and resources
+
+* [Resources](documents/resources.md)
 
 ## TODO List
 
