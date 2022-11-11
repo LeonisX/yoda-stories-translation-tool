@@ -107,6 +107,7 @@ public class Config {
     public static IndexColorModel icmw; // white zero color
 
     public static Color transparentColor = Color.rgb(0xF4, 0xF4, 0xF4);
+    public static boolean transparencyHack = false;
 
     static {
         updatePalette();

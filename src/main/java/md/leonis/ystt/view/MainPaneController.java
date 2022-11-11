@@ -84,6 +84,7 @@ public class MainPaneController {
     public RadioMenuItem fuchsiaMenuItem;
     public RadioMenuItem blackMenuItem;
     public RadioMenuItem whiteMenuItem;
+    public CheckMenuItem transparencyMenuItem;
     public CheckMenuItem disableNonTranslationMenuItem;
 
     public MenuItem howToMenuItem;
@@ -547,7 +548,8 @@ public class MainPaneController {
 
     private void drawTitleImage() {
         try {
-            WritableImage image = readWPicture(yodesk.getStartupImage().getPixels(), 0, 288, 288, transparentColor);
+            Color color = transparencyHack ? transparentColor : null;
+            WritableImage image = readWPicture(yodesk.getStartupImage().getPixels(), 0, 288, 288, color);
             titleScreenImageView.setImage(image);
         } catch (Exception e) {
             JavaFxUtils.showAlert("Title screen display error", e);
@@ -1399,7 +1401,8 @@ public class MainPaneController {
         int tileId = zone.getTileIds().get(y * zone.getWidth() + x).getColumn().get(layerId);
         if (tileId < yodesk.getTiles().getTiles().size()) {
             usedTiles.set(tileId, true);
-            drawTileOnCanvas(tileId, canvas, x * TILE_SIZE, y * TILE_SIZE, null);
+            Color color = transparencyHack || layerId > 0 ? null : Color.BLACK;
+            drawTileOnCanvas(tileId, canvas, x * TILE_SIZE, y * TILE_SIZE, color);
         }
     }
 
@@ -1657,6 +1660,16 @@ public class MainPaneController {
         });
     }
 
+    public void transparencyHackMenuItemClick() {
+        Platform.runLater(() -> {
+            transparencyHack = transparencyMenuItem.isSelected();
+            //updatePalette();
+            Log.debug("Lower tiles layer transparency: " + transparencyHack);
+            drawTitleImage();
+            drawZone(zoneEditorCanvas, zoneEditorListView.getSelectionModel().getSelectedIndex());
+        });
+    }
+
     public void howToMenuItemClick() {
         JavaFxUtils.showWindow("How to translate Yoda Stories...", "HowTo.fxml");
     }
@@ -1734,7 +1747,7 @@ public class MainPaneController {
                     }
                 }
 
-                changesCount = 0;
+                changesCount++;
 
                 WritableImage image = new WritableImage(titleImage.getWidth(), titleImage.getHeight());
                 SwingFXUtils.toFXImage(titleImage.getImage(), image);
@@ -2176,7 +2189,7 @@ public class MainPaneController {
         String raw = isRaw ? "Raw" : "";
 
         IOUtils.saveTextFile(Collections.singletonList(sb.toString()), dumpsPath.resolve("actionsScripts" + raw + E_TXT));
-        IOUtils.saveTextFile(Collections.singletonList(sbn.toString()), dumpsPath.resolve("actionsScriptsNoText" + raw  + E_TXT));
+        IOUtils.saveTextFile(Collections.singletonList(sbn.toString()), dumpsPath.resolve("actionsScriptsNoText" + raw + E_TXT));
 
         IOUtils.saveTextFile(new StructureDump(yodesk).dumpActionsPhrases(), dumpsPath.resolve("actionsText" + E_MD));
     }

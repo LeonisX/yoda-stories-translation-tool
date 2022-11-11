@@ -33,7 +33,7 @@ public class ImageUtils {
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
                 int colorIndex = bytes[position] & 0xFF;
-                Color color = (colorIndex == 0) ? transparentColor : Config.palette[colorIndex];
+                Color color = (colorIndex == 0 && transparentColor != null) ? transparentColor : Config.palette[colorIndex];
                 image.getPixelWriter().setColor(x, y, color);
                 /*titleScreenCanvas.getGraphicsContext2D().getPixelWriter().setArgb(x, y, palette[index]);
                 image.getPixelWriter().setArgb(x, y, palette[index]);*/

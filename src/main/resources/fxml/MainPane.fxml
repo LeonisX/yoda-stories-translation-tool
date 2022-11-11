@@ -81,6 +81,7 @@
                                     </graphic>
                                 </RadioMenuItem>
                             </Menu>
+                            <CheckMenuItem fx:id="transparencyMenuItem" mnemonicParsing="false" onAction="#transparencyHackMenuItemClick" text="Transparent lower tiles layer hack" />
                             <CheckMenuItem fx:id="disableNonTranslationMenuItem" mnemonicParsing="false" onAction="#disableNonTranslationMenuItemClick" selected="true" text="Disable non-translation features" />
                         </Menu>
                         <Menu mnemonicParsing="false" text="Help">
@@ -274,7 +275,7 @@
                                 </left>
                             </BorderPane>
                         </Tab>
-                        <Tab text="Title Screen/Palette">
+                        <Tab text="Startup Screen/Palette">
                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                 <Button fx:id="saveToBitmapButton" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#saveStartupScreenButtonClick" prefHeight="25.0" prefWidth="112.0" text="Save to Bitmap" />
                                 <Button fx:id="loadFromBitmapButton" layoutX="14.0" layoutY="47.0" mnemonicParsing="false" onAction="#loadStartupScreenButtonClick" text="Load from Bitmap" />

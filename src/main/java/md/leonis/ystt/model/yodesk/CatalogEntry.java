@@ -49,7 +49,6 @@ public class CatalogEntry extends KaitaiStruct {
     }
 
     private void _read() {
-
         try {
             position = io.pos();
 
