@@ -1059,7 +1059,7 @@ public class MainPaneController {
         action.getConditions().forEach(c -> {
             boolean hasText = !c.getText().isEmpty();
             String args = printArguments(c, isRaw);
-            sb.append("    ").append(c.getOpcode().name().toLowerCase().replace("_", "-"));
+            sb.append("    ").append(c.getOpcode().getOpcode());
             if (isRaw || hasText || !args.isEmpty()) {
                 sb.append(": ");
             }
@@ -1073,7 +1073,7 @@ public class MainPaneController {
         action.getInstructions().forEach(i -> {
             boolean hasText = !noText & !i.getText().isEmpty();
             String args = printArguments(i, isRaw);
-            sb.append("    ").append(i.getOpcode().name().toLowerCase().replace("_", "-"));
+            sb.append("    ").append(i.getOpcode().getOpcode());
             if (isRaw || hasText || !args.isEmpty()) {
                 sb.append(": ");
             }

@@ -159,7 +159,7 @@ public class WordUtils {
         addBulletsList(document, items);
     }
 
-    private static void addBulletsList(XWPFDocument document, List<String> items) {
+    public static void addBulletsList(XWPFDocument document, List<String> items) {
 
         CTAbstractNum cTAbstractNum = CTAbstractNum.Factory.newInstance();
         //Next we set the AbstractNumId. This requires care.

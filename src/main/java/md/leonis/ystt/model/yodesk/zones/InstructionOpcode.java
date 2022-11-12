@@ -83,6 +83,10 @@ public enum InstructionOpcode {
         return argsCount;
     }
 
+    public String getOpcode() {
+        return name().toLowerCase().replace("_", "-");
+    }
+
     public String getDescription() {
         return description;
     }
