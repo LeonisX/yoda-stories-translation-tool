@@ -548,7 +548,7 @@ public class MainPaneController {
 
     private void drawTitleImage() {
         try {
-            Color color = transparencyHack ? transparentColor : null;
+            Color color = transparencyHack ? null : transparentColor;
             WritableImage image = readWPicture(yodesk.getStartupImage().getPixels(), 0, 288, 288, color);
             titleScreenImageView.setImage(image);
         } catch (Exception e) {
@@ -1400,8 +1400,9 @@ public class MainPaneController {
     private void drawTileOnMap(Canvas canvas, Zone zone, int x, int y, int layerId) {
         int tileId = zone.getTileIds().get(y * zone.getWidth() + x).getColumn().get(layerId);
         if (tileId < yodesk.getTiles().getTiles().size()) {
+            boolean isTransparent = yodesk.getTiles().getTiles().get(tileId).getAttributes().hasTransparency();
             usedTiles.set(tileId, true);
-            Color color = transparencyHack || layerId > 0 ? null : Color.BLACK;
+            Color color = (transparencyHack && layerId == 0) || !isTransparent ? Color.BLACK : null;
             drawTileOnCanvas(tileId, canvas, x * TILE_SIZE, y * TILE_SIZE, color);
         }
     }
@@ -1664,7 +1665,7 @@ public class MainPaneController {
         Platform.runLater(() -> {
             transparencyHack = transparencyMenuItem.isSelected();
             //updatePalette();
-            Log.debug("Lower tiles layer transparency: " + transparencyHack);
+            Log.debug("Lower tiles layer not transparent: " + transparencyHack);
             drawTitleImage();
             drawZone(zoneEditorCanvas, zoneEditorListView.getSelectionModel().getSelectedIndex());
         });

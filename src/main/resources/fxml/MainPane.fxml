@@ -81,7 +81,7 @@
                                     </graphic>
                                 </RadioMenuItem>
                             </Menu>
-                            <CheckMenuItem fx:id="transparencyMenuItem" mnemonicParsing="false" onAction="#transparencyHackMenuItemClick" text="Transparent lower tiles layer hack" />
+                            <CheckMenuItem fx:id="transparencyMenuItem" mnemonicParsing="false" onAction="#transparencyHackMenuItemClick" selected="true" text="Non-transparent lower tiles layer hack" />
                             <CheckMenuItem fx:id="disableNonTranslationMenuItem" mnemonicParsing="false" onAction="#disableNonTranslationMenuItemClick" selected="true" text="Disable non-translation features" />
                         </Menu>
                         <Menu mnemonicParsing="false" text="Help">
