@@ -101,25 +101,13 @@ So even if full functionality is restored, most of the levels will look bare and
 * 151-154
 * 156-162
 * 235-250
-
-![](images/tiles/demo/tiles0.gif)
-
 * 281-284
 * 311-343
 * 345-350
 * 356
 * 364-372
-
-![](images/tiles/demo/tiles1.gif)
-
 * 642-647
-
-![](images/tiles/demo/tiles2.gif)
-
 * 879-897
-
-![](images/tiles/demo/tiles3.gif)
-
 * 1184-1185
 * 1188-1195
 * 1215-1217
@@ -128,18 +116,12 @@ So even if full functionality is restored, most of the levels will look bare and
 * 1344-1347
 * 1353
 * 1357-1359
-
-![](images/tiles/demo/tiles4.gif)
-
 * 1399-1402
 * 1451-1473
 * 1484-1517
 * 1519-1539
 * 1581-1595
 * 1619-1624
-
-![](images/tiles/demo/tiles5.gif)
-
 * 1631-1645
 * 1663-1664
 * 1667-1672
@@ -147,12 +129,7 @@ So even if full functionality is restored, most of the levels will look bare and
 * 1813-1814
 * 1872-1879
 * 1890-1893
-
-![](images/tiles/demo/tiles6.gif)
-
 * 2059-2074
-
-![](images/tiles/demo/tiles7.gif)
 
 Replaced tiles:
 
@@ -164,6 +141,110 @@ Replaced tiles:
 * 961
 * 1170
 * 2121-2122 (Demo)
+
+
+###### Character Enemy (transparent)
+
+Removed `Rancor`, `Little Rancor`, `Bugs` (Jabba quest).
+
+![](images/tiles/demo/tiles-enemy-transparent.gif)
+
+###### Character Hero (transparent)
+
+![](images/tiles/demo/tiles-luke-transparent.png)
+
+###### Character NPC (transparent)
+
+![](images/tiles/demo/tiles-npc-transparent.png)
+
+###### Floor
+
+![](images/tiles/demo/tiles-floor.gif)
+
+###### Floor Doorway
+
+![](images/tiles/demo/tiles-floor-doorway.gif)
+
+###### Item Edible (transparent)
+
+![](images/tiles/demo/tiles-edible-transparent.png)
+
+###### Item Keycard (transparent)
+
+![](images/tiles/demo/tiles-keycard-transparent.png)
+
+###### Item Locator (transparent)
+
+![](images/tiles/demo/tiles-locator-transparent.png)
+
+###### Item Part (transparent)
+
+Removed `C-3PO Body`.
+
+![](images/tiles/demo/tiles-part-transparent.gif)
+
+###### Item Tool (transparent)
+
+![](images/tiles/demo/tiles-tool-transparent.png)
+
+###### Item Valuable (transparent)
+
+Removed `C-3PO`, `DataCube`, `Star Sapphire` and `Dianoga Heart`.  
+
+![](images/tiles/demo/tiles-valuable-transparent.gif)
+
+###### Map
+
+Blockade East/Solved, North/Solved, South/Solved, West/Solved, Final Chapter Unsolved,
+Puzzle/Solved, Spaceport, Gateway/Solved, Locator Indicator.
+
+![](images/tiles/demo/tiles-blockade-east.png)
+![](images/tiles/demo/tiles-blockade-east-solved.png)
+![](images/tiles/demo/tiles-blockade-north.png)
+![](images/tiles/demo/tiles-blockade-north-solved.png)
+![](images/tiles/demo/tiles-blockade-south.png)
+![](images/tiles/demo/tiles-blockade-south-solved.png)
+![](images/tiles/demo/tiles-blockade-west.png)
+![](images/tiles/demo/tiles-blockade-west-solved.png)
+![](images/tiles/demo/tiles-goal.png)
+![](images/tiles/demo/tiles-puzzle.png)
+![](images/tiles/demo/tiles-puzzle-solved.png)
+![](images/tiles/demo/tiles-town.png)
+![](images/tiles/demo/tiles-travel.png)
+![](images/tiles/demo/tiles-travel-solved.png)
+![](images/tiles/demo/tiles-locator-indicator.png)
+
+###### Object
+
+Among other removed `Jabba Hutt`.
+
+![](images/tiles/demo/tiles-object.gif)
+
+###### Object (transparent)
+
+![](images/tiles/demo/tiles-object-transparent.gif)
+
+###### Object Draggable (transparent)
+
+![](images/tiles/demo/tiles-draggable-object-transparent.png)
+
+###### Roof
+
+![](images/tiles/demo/tiles-roof.gif)
+
+###### Roof (transparent)
+
+![](images/tiles/demo/tiles-roof-transparent.gif)
+
+###### Weapons
+
+`Blasters Low/High`, `Lightsaber` and `The Force`:
+
+![](images/tiles/demo/tiles-blaster-pistol-transparent.png)
+![](images/tiles/demo/tiles-blaster-rifle-thermal-detonator-transparent.png)
+![](images/tiles/demo/tiles-lightsaber-transparent.png)
+![](images/tiles/demo/tiles-the-force-transparent.png)
+
 
 Added tiles:
 
