@@ -40,7 +40,6 @@ public class Tiles extends KaitaiStruct {
     }
 
     private void _read() {
-
         rawTiles = io.readBytes(getParent().getSize());
         KaitaiInputStream kis = new ByteBufferKaitaiInputStream(rawTiles);
         tilesEntries = new TilesEntries(kis, this, root);
@@ -53,7 +52,6 @@ public class Tiles extends KaitaiStruct {
     }
 
     public int tilePosition(int tileId) {
-
         int position = 0;
         for (int i = 0; i < tileId; i++) {
             position += tiles.get(i).byteSize();
@@ -85,23 +83,20 @@ public class Tiles extends KaitaiStruct {
         return parent;
     }
 
-    public void addTile() {
-
+    public void addTile(String binaryString) {
         rawTiles = Arrays.copyOf(rawTiles, rawTiles.length + tiles.get(0).byteSize());
         tilesEntries.getTiles().add(new Tile(tilesEntries, root));
-        setAttributes(tiles.size() - 1, "00000000000000000000000000000101"); // Object (transparent)
+        setAttributes(tiles.size() - 1, binaryString);
         parent.setSize(rawTiles.length);
     }
 
     public void deleteTile() {
-
         rawTiles = Arrays.copyOf(rawTiles, rawTiles.length - tiles.get(0).byteSize());
         tilesEntries.getTiles().remove(tilesEntries.getTiles().size() - 1);
         parent.setSize(rawTiles.length);
     }
 
     public void replaceTile(int tileId, byte[] pixels) {
-
         getTiles().get(tileId).setPixels(pixels);
 
         int offset = getTilePixelsPosition(tileId);
@@ -109,7 +104,6 @@ public class Tiles extends KaitaiStruct {
     }
 
     public void setAttributes(int tileId, String binaryString) {
-
         Tile tile = tiles.get(tileId);
         byte[] rawAttributes = tile.getRawAttributes();
 

@@ -37,6 +37,7 @@ import md.leonis.ystt.model.yodesk.characters.CharacterType;
 import md.leonis.ystt.model.yodesk.puzzles.PrefixedStr;
 import md.leonis.ystt.model.yodesk.puzzles.Puzzle;
 import md.leonis.ystt.model.yodesk.puzzles.StringMeaning;
+import md.leonis.ystt.model.yodesk.tiles.Tile;
 import md.leonis.ystt.model.yodesk.tiles.TileGender;
 import md.leonis.ystt.model.yodesk.tiles.TileName;
 import md.leonis.ystt.model.yodesk.zones.*;
@@ -153,6 +154,9 @@ public class MainPaneController {
     private final Map<String, RadioMenuItem> tileAttributesMap = new HashMap<>();
     public Button addNewTile;
     public Button deleteTile;
+    public CheckBox enableTilesFilterCheckBox;
+    public ComboBox<String> tilesFilterComboBox;
+    public Button saveFilteredTilesToOneFile;
 
     private Node currentTile;
 
@@ -251,6 +255,7 @@ public class MainPaneController {
     Path rootPath, releasePath, resourcesPath, translatePath, dumpsPath;
 
     public static List<Boolean> usedTiles = new ArrayList<>();
+    private Map<Integer, String> tileNames;
 
     private File clipboardFile;
     private BufferedImage clipboardBufferedImage = new BufferedImage(288, 288, BufferedImage.TYPE_BYTE_INDEXED, icm);
@@ -406,11 +411,13 @@ public class MainPaneController {
         soundsTextArea.setText(String.join("\n", yodesk.getSounds().getSounds()));
 
         // Tiles, sprites
-        drawTiles();
         tilesCountLabel.setText(Integer.toString(yodesk.getTiles().getTiles().size()));
         tilesContextMenu.setOnShown(this::selectTileMenuItem);
         tilesToggleGroup.selectedToggleProperty().addListener(tilesAttributesToggleGroupListener());
         tilesGenderToggleGroup.selectedToggleProperty().addListener(tilesGenderToggleGroupListener());
+        tilesFilterComboBox.getItems().addAll(tilesToggleGroup.getToggles().stream().map(t -> ((RadioMenuItem) t).getText()).collect(Collectors.toList()));
+        tilesFilterComboBox.getSelectionModel().select(0);
+        drawTiles();
 
         // Zones
         zonesCountLabel.setText(String.valueOf(yodesk.getZones().getZones().size()));
@@ -509,6 +516,7 @@ public class MainPaneController {
             return cell;
         });
         namesTableView.setItems(FXCollections.observableList(yodesk.getTileNames().getFilteredNames()));
+        tileNames = yodesk.getTileNames().getFilteredNames().stream().collect(Collectors.toMap(t -> t.getTileId(), t -> t.getName()));
 
         namesTexts = WordHelper.getNamesTexts();
         namesTextTableView.setItems(FXCollections.observableList(namesTexts));
@@ -568,10 +576,21 @@ public class MainPaneController {
         try {
             tilesFlowPane.getChildren().clear();
             for (int i = 0; i < yodesk.getTiles().getTiles().size(); i++) {
-                tilesFlowPane.getChildren().add(newTile(i, true));
+                boolean condition = true;
+                if (enableTilesFilterCheckBox.isSelected()) {
+                    String tileAttribute = yodesk.getTiles().getTiles().get(i).getAttributesBinaryString();
+                    int selectedIndex = tilesFilterComboBox.getSelectionModel().getSelectedIndex();
+                    String radioTileAttribute = (String) tilesToggleGroup.getToggles().get(selectedIndex).getUserData();
+                    condition = tileAttribute.equals(radioTileAttribute);
+                }
+                if (condition) {
+                    tilesFlowPane.getChildren().add(newTile(i, true));
+                }
             }
             tilesFlowPane.getChildren().add(addNewTile);
-            tilesFlowPane.getChildren().add(deleteTile);
+            if (!enableTilesFilterCheckBox.isSelected()) {
+                tilesFlowPane.getChildren().add(deleteTile);
+            }
         } catch (Exception e) {
             JavaFxUtils.showAlert("Tiles display error", e);
         }
@@ -693,12 +712,17 @@ public class MainPaneController {
 
     public void addNewTileClick() {
         try {
-            yodesk.getTiles().addTile();
+            String tileAttribute = "00000000000000000000000000000101"; // Object (transparent)
+            if (enableTilesFilterCheckBox.isSelected()) {
+                int selectedIndex = tilesFilterComboBox.getSelectionModel().getSelectedIndex();
+                tileAttribute = (String) tilesToggleGroup.getToggles().get(selectedIndex).getUserData();
+            }
+            yodesk.getTiles().addTile(tileAttribute);
             if (null != yodesk.getTileGenders()) {
                 yodesk.getTileGenders().addTileGender();
             }
             int tileId = yodesk.getTiles().getTiles().size() - 1;
-            tilesFlowPane.getChildren().add(tileId, newTile(tileId, true));
+            tilesFlowPane.getChildren().add(tilesFlowPane.getChildren().size() - 1, newTile(tileId, true));
             zoneEditorTilesFlowPane.getChildren().add(tileId, newTile(tileId, false));
             usedTiles.add(false);
             Log.debug("Added new tile");
@@ -931,8 +955,12 @@ public class MainPaneController {
             if (null != yodesk.getTileGenders()) {
                 gender = "; Gender: " + yodesk.getTileGenders().getGenders().get(tileId).name().toLowerCase();
             }
+            String name = "";
+            if (null != tileNames.get(tileId)) {
+                name = ": " + tileNames.get(tileId);
+            }
             if (tileAttributesMap.get(binaryTileName) != null) {
-                statusLabel.setText("Tile #" + tileId + ": " + tileAttributesMap.get(binaryTileName).getText() + gender);
+                statusLabel.setText("Tile #" + tileId + ": " + tileAttributesMap.get(binaryTileName).getText() + name + gender);
             }
         }
     };
@@ -1564,6 +1592,7 @@ public class MainPaneController {
         saveSoundsListToFileButtonClick();
         saveTilesToSeparateFilesClick();
         saveTilesToOneFileClick();
+        saveFilteredTilesToOneFileClick();
         saveZonesToFilesButtonClick();
         dumpActionsTextToDocxClick();
         dumpPuzzlesTextToDocxClick();
@@ -1831,13 +1860,12 @@ public class MainPaneController {
 
     private void saveTiles() throws IOException {
         Path tilesPath = resourcesPath.resolve("Tiles");
+        Path pngTilesPath = tilesPath.resolve("png");
         IOUtils.createDirectories(tilesPath);
+        IOUtils.createDirectories(pngTilesPath);
         for (int i = 0; i < yodesk.getTiles().getTiles().size(); i++) {
-            Path path = tilesPath.resolve(String.format("%04d", i) + E_BMP);
-            BMPWriter.write(getTile(i, icm), path);
-
-            path.resolve("png");
-            ImageIO.write(getTile(i, icm), "PNG", tilesPath.resolve(String.format("%04d", i) + ".png").toFile());
+            BMPWriter.write(getTile(i, icm), tilesPath.resolve(String.format("%04d", i) + E_BMP));
+            ImageIO.write(getTile(i, icm), "PNG", pngTilesPath.resolve(String.format("%04d", i) + ".png").toFile());
         }
     }
 
@@ -1903,11 +1931,11 @@ public class MainPaneController {
         appendIfSet(title, byteString, 3, "Draggable");
         appendIfSet(title, byteString, 4, "Roof");
         appendIfSet(title, byteString, 5, "Map");
-        appendIfSetAndSet(title, byteString, 5, 17, "Town");
+        appendIfSetAndSet(title, byteString, 5, 17, "Spaceport");
         appendIfSetAndSet(title, byteString, 5, 18, "PuzzleUnsolved");
         appendIfSetAndSet(title, byteString, 5, 19, "PuzzleSolved");
-        appendIfSetAndSet(title, byteString, 5, 20, "TravelUnsolved");
-        appendIfSetAndSet(title, byteString, 5, 21, "TravelSolved");
+        appendIfSetAndSet(title, byteString, 5, 20, "GatewayUnsolved");
+        appendIfSetAndSet(title, byteString, 5, 21, "GatewayActivated");
         appendIfSetAndSet(title, byteString, 5, 22, "BlockadeNorthUnsolved");
         appendIfSetAndSet(title, byteString, 5, 23, "BlockadeSouthUnsolved");
         appendIfSetAndSet(title, byteString, 5, 24, "BlockadeWestUnsolved");
@@ -1916,11 +1944,11 @@ public class MainPaneController {
         appendIfSetAndSet(title, byteString, 5, 27, "BlockadeSouthSolved");
         appendIfSetAndSet(title, byteString, 5, 28, "BlockadeWestSolved");
         appendIfSetAndSet(title, byteString, 5, 29, "BlockadeEastSolved");
-        appendIfSetAndSet(title, byteString, 5, 30, "GoalUnsolved");
-        appendIfSetAndSet(title, byteString, 5, 31, "YouAreHere");
+        appendIfSetAndSet(title, byteString, 5, 30, "FinalChapterUnsolved");
+        appendIfSetAndSet(title, byteString, 5, 31, "LocatorIndicator");
         appendIfSet(title, byteString, 6, "Weapon");
-        appendIfSetAndSet(title, byteString, 6, 16, "BlasterLow");
-        appendIfSetAndSet(title, byteString, 6, 17, "BlasterHigh");
+        appendIfSetAndSet(title, byteString, 6, 16, "Blaster");
+        appendIfSetAndSet(title, byteString, 6, 17, "Heavy");
         appendIfSetAndSet(title, byteString, 6, 18, "Lightsaber");
         appendIfSetAndSet(title, byteString, 6, 19, "TheForce");
         appendIfSet(title, byteString, 7, "Item");
@@ -1982,6 +2010,46 @@ public class MainPaneController {
                 Log.error("Error saving tiles to a single file: " + e.getMessage());
             }
         }, () -> Log.appendOk("Save tiles to single files"));
+    }
+
+    public void saveFilteredTilesToOneFileClick() {
+        runInBackground(() -> {
+            try {
+                Path groupedPath = resourcesPath.resolve("TilesGroupedByAttr");
+                Log.debug("Saving tiles grouped by attribute to one file: " + groupedPath);
+                IOUtils.createDirectories(groupedPath);
+                for (int i = 0; i < tilesToggleGroup.getToggles().size(); i++) {
+                    RadioMenuItem radioMenuItem = (RadioMenuItem) tilesToggleGroup.getToggles().get(i);
+                    String binaryAttrs = (String) radioMenuItem.getUserData();
+                    String title = radioMenuItem.getText().replace(" ", "-").replace(":", "")
+                            .replace("(", "").replace(")", "").replace(",", "").toLowerCase();
+                    List<Integer> tiles = new ArrayList<>();
+                    for (int j = 0; j < yodesk.getTiles().getTiles().size(); j++) {
+                        Tile tile = yodesk.getTiles().getTiles().get(j);
+                        if (tile.getAttributesBinaryString().equals(binaryAttrs)) {
+                            tiles.add(j);
+                        }
+                    }
+                    int width = Math.min(Integer.parseInt(tilesInARowTextField.getText()), tiles.size());
+                    int height = (int) Math.ceil(tiles.size() * 1.0 / width);
+                    Path path = groupedPath.resolve(String.format("tiles-%s%s", title, E_BMP));
+
+                    BufferedImage canvas = new BufferedImage(width * TILE_SIZE, height * TILE_SIZE, BufferedImage.TYPE_BYTE_INDEXED, icm);
+
+                    for (int y = 0; y < height; y++) {
+                        for (int x = 0; x < width; x++) {
+                            if ((y * width + x) < tiles.size()) {
+                                int tileId = tiles.get(y * width + x);
+                                drawTileOnBufferedImage(tileId, canvas, x * TILE_SIZE, y * TILE_SIZE, true);
+                            }
+                        }
+                    }
+                    BMPWriter.write(canvas, path);
+                }
+            } catch (Exception e) {
+                Log.error("Error saving tiles grouped by attribute to a single file: " + e.getMessage());
+            }
+        }, () -> Log.appendOk("Save tiles grouped by attribute to single files"));
     }
 
     public void clipboardCanvasMouseEntered(MouseEvent mouseEvent) {
@@ -2700,6 +2768,16 @@ public class MainPaneController {
         disableNonTranslationFeatures(disableNonTranslationMenuItem.isSelected());
     }
 
+    public void enableTilesFilterCheckBoxAction() {
+        tilesFilterComboBox.setVisible(enableTilesFilterCheckBox.isSelected());
+        saveFilteredTilesToOneFile.setVisible(enableTilesFilterCheckBox.isSelected());
+        drawTiles();
+    }
+
+    public void tilesFilterComboBoxAction() {
+        drawTiles();
+    }
+
     public static class Log {
 
         private static final List<String> lines = new ArrayList<>();
@@ -2732,7 +2810,9 @@ public class MainPaneController {
             if (textArea == null) {
                 lines.add(text);
             } else {
-                textArea.appendText(text + "\n");
+                synchronized (textArea) {
+                    textArea.appendText(text + "\n");
+                }
             }
         }
 

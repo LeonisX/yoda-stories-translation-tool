@@ -39,6 +39,7 @@
 
 <?import md.leonis.ystt.view.StringCellFactory?>
 <?import md.leonis.ystt.view.HexCellFactory?>
+<?import javafx.scene.control.ComboBox?>
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="765.0" prefWidth="1216.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="md.leonis.ystt.view.MainPaneController">
     <center>
         <SplitPane dividerPositions="0.76" orientation="VERTICAL" BorderPane.alignment="CENTER">
@@ -310,6 +311,11 @@
                                 <Button fx:id="saveTilesToOneFile" layoutX="10.0" layoutY="185.0" mnemonicParsing="false" onAction="#saveTilesToOneFileClick" text="Save tiles to one file" />
                                 <Label layoutX="12.0" layoutY="219.0" text="Tiles in a row:" />
                                 <TextField fx:id="tilesInARowTextField" layoutX="96.0" layoutY="215.0" prefHeight="25.0" prefWidth="39.0" text="16" />
+
+                                <CheckBox fx:id="enableTilesFilterCheckBox" layoutX="10.0" layoutY="250.0" mnemonicParsing="false" text="Enable filter" onAction="#enableTilesFilterCheckBoxAction" />
+                                <ComboBox fx:id="tilesFilterComboBox" layoutX="10.0" layoutY="272.0" prefWidth="153.0" onAction="#tilesFilterComboBoxAction" visible="false"/>
+                                <Button fx:id="saveFilteredTilesToOneFile" layoutX="10.0" layoutY="305.0" mnemonicParsing="false" onAction="#saveFilteredTilesToOneFileClick" text="Save filtered tiles to file" visible="false" />
+
                                 <Rectangle fill="TRANSPARENT" height="288.0" layoutX="720.0" layoutY="14.0" smooth="false" stroke="BLACK" strokeType="OUTSIDE" width="288.0" />
                                 <Canvas fx:id="clipboardCanvas" height="288.0" layoutX="720.0" layoutY="14.0" onDragDetected="#clipboardCanvasDragDetected" onDragDropped="#clipboardCanvasDragDropped" onDragEntered="#clipboardCanvasDragEntered" onDragExited="#clipboardCanvasDragExited" onDragOver="#clipboardCanvasDragOver" onMouseEntered="#clipboardCanvasMouseEntered" onMouseExited="#clipboardCanvasMouseExited" onMouseMoved="#clipboardCanvasMouseMoved" pickOnBounds="true" width="288.0" />
                                 <Label layoutX="824.0" layoutY="417.0" text="Clipboard image" />
@@ -336,11 +342,11 @@
                                                     <RadioMenuItem text="Roof (transparent)" toggleGroup="$tilesToggleGroup" userData="00000000000000000000000000010001" />
 
                                                     <Menu mnemonicParsing="false" text="Mini Map">
-                                                        <RadioMenuItem text="Town" toggleGroup="$tilesToggleGroup" userData="00000000000000100000000000100000" />
+                                                        <RadioMenuItem text="Spaceport" toggleGroup="$tilesToggleGroup" userData="00000000000000100000000000100000" />
                                                         <RadioMenuItem text="Puzzle" toggleGroup="$tilesToggleGroup" userData="00000000000001000000000000100000" />
                                                         <RadioMenuItem text="Puzzle (solved)" toggleGroup="$tilesToggleGroup" userData="00000000000010000000000000100000" />
-                                                        <RadioMenuItem text="Travel" toggleGroup="$tilesToggleGroup" userData="00000000000100000000000000100000" />
-                                                        <RadioMenuItem text="Travel (solved)" toggleGroup="$tilesToggleGroup" userData="00000000001000000000000000100000" />
+                                                        <RadioMenuItem text="Gateway" toggleGroup="$tilesToggleGroup" userData="00000000000100000000000000100000" />
+                                                        <RadioMenuItem text="Gateway (solved)" toggleGroup="$tilesToggleGroup" userData="00000000001000000000000000100000" />
                                                         <RadioMenuItem text="Blockade North" toggleGroup="$tilesToggleGroup" userData="00000000010000000000000000100000" />
                                                         <RadioMenuItem text="Blockade South" toggleGroup="$tilesToggleGroup" userData="00000000100000000000000000100000" />
                                                         <RadioMenuItem text="Blockade East" toggleGroup="$tilesToggleGroup" userData="00000010000000000000000000100000" />
@@ -349,8 +355,8 @@
                                                         <RadioMenuItem text="Blockade South (solved)" toggleGroup="$tilesToggleGroup" userData="00001000000000000000000000100000" />
                                                         <RadioMenuItem text="Blockade East (solved)" toggleGroup="$tilesToggleGroup" userData="00100000000000000000000000100000" />
                                                         <RadioMenuItem text="Blockade West (solved)" toggleGroup="$tilesToggleGroup" userData="00010000000000000000000000100000" />
-                                                        <RadioMenuItem text="Goal" toggleGroup="$tilesToggleGroup" userData="01000000000000000000000000100000" />
-                                                        <RadioMenuItem text="You Are Here" toggleGroup="$tilesToggleGroup" userData="10000000000000000000000000100000" />
+                                                        <RadioMenuItem text="Final Chapter" toggleGroup="$tilesToggleGroup" userData="01000000000000000000000000100000" />
+                                                        <RadioMenuItem text="Locator Indicator" toggleGroup="$tilesToggleGroup" userData="10000000000000000000000000100000" />
                                                     </Menu>
                                                     <Menu mnemonicParsing="false" text="Items">
                                                         <RadioMenuItem text="Keycard (transparent)" toggleGroup="$tilesToggleGroup" userData="00000000000000010000000010000001" />
@@ -362,7 +368,7 @@
                                                     </Menu>
 
                                                     <Menu mnemonicParsing="false" text="Weapons">
-                                                        <RadioMenuItem text="Blaster Pistol (transparent) " toggleGroup="$tilesToggleGroup" userData="00000000000000010000000001000001" />
+                                                        <RadioMenuItem text="Blaster Pistol (transparent)" toggleGroup="$tilesToggleGroup" userData="00000000000000010000000001000001" />
                                                         <RadioMenuItem text="Blaster Rifle, Thermal Detonator (transparent)" toggleGroup="$tilesToggleGroup" userData="00000000000000100000000001000001" />
                                                         <RadioMenuItem text="Lightsaber (transparent)" toggleGroup="$tilesToggleGroup" userData="00000000000001000000000001000001" />
                                                         <RadioMenuItem text="The Force (transparent)" toggleGroup="$tilesToggleGroup" userData="00000000000010000000000001000001" />
@@ -375,7 +381,6 @@
                                                     </Menu>
                                                 </Menu>
                                                 <Menu fx:id="setGenderMenu" mnemonicParsing="false" text="Set gender">
-
                                                     <RadioMenuItem text="Male" userData="0">
                                                         <toggleGroup>
                                                             <ToggleGroup fx:id="tilesGenderToggleGroup" />

@@ -15,18 +15,18 @@ public class TileAttributes extends KaitaiStruct {
     private boolean isObject;
     private boolean isDraggable;
     private boolean isRoof;
-    private boolean isLocator;
+    private boolean isMap;
     private boolean isWeapon;
     private boolean isItem;
     private boolean isCharacter;
     private long unused;
     private Boolean isDoorway;
     private Boolean unused1;
-    private Boolean isTown;
+    private Boolean isSpaceport;
     private Boolean isUnsolvedPuzzle;
     private Boolean isSolvedPuzzle;
-    private Boolean isUnsolvedTravel;
-    private Boolean isSolvedTravel;
+    private Boolean isUnsolvedGateway;
+    private Boolean isSolvedGateway;
     private Boolean isUnsolvedBlockadeNorth;
     private Boolean isUnsolvedBlockadeSouth;
     private Boolean isUnsolvedBlockadeWest;
@@ -35,17 +35,17 @@ public class TileAttributes extends KaitaiStruct {
     private Boolean isSolvedBlockadeSouth;
     private Boolean isSolvedBlockadeWest;
     private Boolean isSolvedBlockadeEast;
-    private Boolean isUnsolvedGoal;
+    private Boolean isUnsolvedFinalChapter;
     private Boolean isLocationIndicator;
     private Boolean isKeycard;
     private Boolean isTool;
     private Boolean isPart;
     private Boolean isValuable;
-    private Boolean isMap;
+    private Boolean isLocator;
     private Boolean unused2;
     private Boolean isEdible;
-    private Boolean isLowBlaster;
-    private Boolean isHighBlaster;
+    private Boolean isBlaster;
+    private Boolean isHeavy;
     private Boolean isLightsaber;
     private Boolean isTheForce;
     private Boolean isHero;
@@ -84,10 +84,10 @@ public class TileAttributes extends KaitaiStruct {
 
         hasTransparency = io.readBitsIntLe(1) != 0;
         isFloor = io.readBitsIntLe(1) != 0;
-        this.isObject = io.readBitsIntLe(1) != 0;
+        isObject = io.readBitsIntLe(1) != 0;
         isDraggable = io.readBitsIntLe(1) != 0;
         isRoof = io.readBitsIntLe(1) != 0;
-        isLocator = io.readBitsIntLe(1) != 0;
+        isMap = io.readBitsIntLe(1) != 0;
         isWeapon = io.readBitsIntLe(1) != 0;
         isItem = io.readBitsIntLe(1) != 0;
         isCharacter = io.readBitsIntLe(1) != 0;
@@ -95,94 +95,42 @@ public class TileAttributes extends KaitaiStruct {
         if (isFloor()) {
             isDoorway = io.readBitsIntLe(1) != 0;
         }
-        if (isLocator()) {
+        if (isMap()) {
             unused1 = io.readBitsIntLe(1) != 0;
-        }
-        if (isLocator()) {
-            isTown = io.readBitsIntLe(1) != 0;
-        }
-        if (isLocator()) {
+            isSpaceport = io.readBitsIntLe(1) != 0;
             isUnsolvedPuzzle = io.readBitsIntLe(1) != 0;
-        }
-        if (isLocator()) {
             isSolvedPuzzle = io.readBitsIntLe(1) != 0;
-        }
-        if (isLocator()) {
-            isUnsolvedTravel = io.readBitsIntLe(1) != 0;
-        }
-        if (isLocator()) {
-            isSolvedTravel = io.readBitsIntLe(1) != 0;
-        }
-        if (isLocator()) {
+            isUnsolvedGateway = io.readBitsIntLe(1) != 0;
+            isSolvedGateway = io.readBitsIntLe(1) != 0;
             isUnsolvedBlockadeNorth = io.readBitsIntLe(1) != 0;
-        }
-        if (isLocator()) {
             isUnsolvedBlockadeSouth = io.readBitsIntLe(1) != 0;
-        }
-        if (isLocator()) {
             isUnsolvedBlockadeWest = io.readBitsIntLe(1) != 0;
-        }
-        if (isLocator()) {
             isUnsolvedBlockadeEast = io.readBitsIntLe(1) != 0;
-        }
-        if (isLocator()) {
             isSolvedBlockadeNorth = io.readBitsIntLe(1) != 0;
-        }
-        if (isLocator()) {
             isSolvedBlockadeSouth = io.readBitsIntLe(1) != 0;
-        }
-        if (isLocator()) {
             isSolvedBlockadeWest = io.readBitsIntLe(1) != 0;
-        }
-        if (isLocator()) {
             isSolvedBlockadeEast = io.readBitsIntLe(1) != 0;
-        }
-        if (isLocator()) {
-            isUnsolvedGoal = io.readBitsIntLe(1) != 0;
-        }
-        if (isLocator()) {
+            isUnsolvedFinalChapter = io.readBitsIntLe(1) != 0;
             isLocationIndicator = io.readBitsIntLe(1) != 0;
         }
         if (isItem()) {
             isKeycard = io.readBitsIntLe(1) != 0;
-        }
-        if (isItem()) {
             isTool = io.readBitsIntLe(1) != 0;
-        }
-        if (isItem()) {
             isPart = io.readBitsIntLe(1) != 0;
-        }
-        if (isItem()) {
             isValuable = io.readBitsIntLe(1) != 0;
-        }
-        if (isItem()) {
-            isMap = io.readBitsIntLe(1) != 0;
-        }
-        if (isItem()) {
+            isLocator = io.readBitsIntLe(1) != 0;
             unused2 = io.readBitsIntLe(1) != 0;
-        }
-        if (isItem()) {
             isEdible = io.readBitsIntLe(1) != 0;
         }
         if (isWeapon()) {
-            this.isLowBlaster = io.readBitsIntLe(1) != 0;
-        }
-        if (isWeapon()) {
-            isHighBlaster = io.readBitsIntLe(1) != 0;
-        }
-        if (isWeapon()) {
+            isBlaster = io.readBitsIntLe(1) != 0;
+            isHeavy = io.readBitsIntLe(1) != 0;
             isLightsaber = io.readBitsIntLe(1) != 0;
-        }
-        if (isWeapon()) {
             isTheForce = io.readBitsIntLe(1) != 0;
         }
         if (isCharacter()) {
             isHero = io.readBitsIntLe(1) != 0;
-        }
-        if (isCharacter()) {
             isEnemy = io.readBitsIntLe(1) != 0;
-        }
-        if (isCharacter()) {
             isNpc = io.readBitsIntLe(1) != 0;
         }
     }
@@ -193,9 +141,8 @@ public class TileAttributes extends KaitaiStruct {
     }
 
     /**
-     * Affects how tile image should be drawn. If set, the
-     * value 0 in `pixels` is treated as transparent. Otherwise
-     * it is drawn as black.
+     * Affects how tile image should be drawn. If set, the value 0 in `pixels` is treated as transparent.
+     * Otherwise it is drawn as black.
      */
     public boolean hasTransparency() {
         return hasTransparency;
@@ -231,10 +178,10 @@ public class TileAttributes extends KaitaiStruct {
     }
 
     /**
-     * Locator, tile is used in world map view overview
+     * Tile is used in world mini-map
      */
-    public boolean isLocator() {
-        return isLocator;
+    public boolean isMap() {
+        return isMap;
     }
 
     /**
@@ -273,8 +220,8 @@ public class TileAttributes extends KaitaiStruct {
     /**
      * Marks the spaceport on the map
      */
-    public Boolean isTown() {
-        return isTown;
+    public Boolean isSpaceport() {
+        return isSpaceport;
     }
 
     /**
@@ -292,17 +239,17 @@ public class TileAttributes extends KaitaiStruct {
     }
 
     /**
-     * Marks a place of travel on the map that has not been solved
+     * Marks a gateway on the map that has not been solved
      */
-    public Boolean isUnsolvedTravel() {
-        return isUnsolvedTravel;
+    public Boolean isUnsolvedGateway() {
+        return isUnsolvedGateway;
     }
 
     /**
-     * Marks a solved place of travel on the map
+     * Marks a solved gateway on the map
      */
-    public Boolean isSolvedTravel() {
-        return isSolvedTravel;
+    public Boolean isSolvedGateway() {
+        return isSolvedGateway;
     }
 
     /**
@@ -334,32 +281,28 @@ public class TileAttributes extends KaitaiStruct {
     }
 
     /**
-     * Marks a solved sector on the map that used to block access to
-     * northern zones
+     * Marks a solved sector on the map that used to block access to northern zones
      */
     public Boolean isSolvedBlockadeNorth() {
         return isSolvedBlockadeNorth;
     }
 
     /**
-     * Marks a solved sector on the map that used to block access to
-     * southern zones
+     * Marks a solved sector on the map that used to block access to southern zones
      */
     public Boolean isSolvedBlockadeSouth() {
         return isSolvedBlockadeSouth;
     }
 
     /**
-     * Marks a solved sector on the map that used to block access to
-     * western zones
+     * Marks a solved sector on the map that used to block access to western zones
      */
     public Boolean isSolvedBlockadeWest() {
         return isSolvedBlockadeWest;
     }
 
     /**
-     * Marks a solved sector on the map that used to block access to
-     * eastern zones
+     * Marks a solved sector on the map that used to block access to eastern zones
      */
     public Boolean isSolvedBlockadeEast() {
         return isSolvedBlockadeEast;
@@ -368,8 +311,8 @@ public class TileAttributes extends KaitaiStruct {
     /**
      * The final puzzle of the world. Solving this wins the game
      */
-    public Boolean isUnsolvedGoal() {
-        return isUnsolvedGoal;
+    public Boolean isUnsolvedFinalChapter() {
+        return isUnsolvedFinalChapter;
     }
 
     /**
@@ -395,8 +338,8 @@ public class TileAttributes extends KaitaiStruct {
         return isValuable;
     }
 
-    public Boolean isMap() {
-        return isMap;
+    public Boolean isLocator() {
+        return isLocator;
     }
 
     public Boolean unused2() {
@@ -410,15 +353,15 @@ public class TileAttributes extends KaitaiStruct {
     /**
      * Item is a low intensity blaster (like the blaster pistol)
      */
-    public Boolean isLowBlaster() {
-        return isLowBlaster;
+    public Boolean isBlaster() {
+        return isBlaster;
     }
 
     /**
-     * Item is a high intensity blaster (like the blaster rifle)
+     * Item is a high intensity blaster (like the blaster rifle), or thermal detonator
      */
-    public Boolean isHighBlaster() {
-        return isHighBlaster;
+    public Boolean isHeavy() {
+        return isHeavy;
     }
 
     public Boolean isLightsaber() {

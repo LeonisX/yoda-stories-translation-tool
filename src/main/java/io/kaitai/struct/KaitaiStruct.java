@@ -37,7 +37,11 @@ public abstract class KaitaiStruct {
 
     public KaitaiStruct(KaitaiInputStream io) {
         this.io = io;
-        this.pos = io.pos();
+        if (io != null) {
+            this.pos = io.pos();
+        } else {
+            this.pos = 0;
+        }
     }
 
     public KaitaiInputStream getIo() { return io; }

@@ -98,8 +98,11 @@ Uses modified code from http://image4j.sourceforge.net project.
 
 ## TODO List
 
-* Add hex dumps to all sections, other images
-* 65535 values == -1; 255 == -1; - need correct values when load DTA assets
+* Add hex dumps images to all sections, other images
+* 65535 values == -1; 255 == -1; 4294967295 - need correct values when load DTA assets. Unsigned -> Signed, may be all
+
+* Dump tile names, grouped by attributes 0820-tile-name.bmp - for tilenames
+* Characters online - something wrong with tiles :(
 
 * Italy - Resize dialog tool tip text field :(. Also changes inventory font
 * France - Resize dialog tool tip text field :(. Also changes inventory font
