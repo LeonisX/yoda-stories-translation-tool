@@ -77,7 +77,7 @@ List of sections/chunks:
 * [`VERS`](dta-vers.md): verification signature (version)
 * [`STUP`](dta-stup.md): startup image
 * [`SNDS`](dta-snds.md): sounds
-* `TILE`: tiles. Occupy almost half of the DTA file
+* [`TILE`](dta-tile.md): tiles. Occupy almost half of the DTA file
 * `ZONE`: zones. Occupy almost half of the DTA file
    *`IZON`
    * `IZAX`
