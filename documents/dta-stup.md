@@ -52,7 +52,8 @@ Hacking possibilities
 
 The image can be replaced with any other, the main thing is to comply with the condition that
 the palette completely coincides with the palette of the game.
-But the most correct option is to change `Zone #0` and then export it to a `BMP` file.
+
+The most correct option is to change `Zone #0` and then export it to a `BMP` file.
 Although, if the startup image is different from `Zone #0`,
 then there is an opportunity to implement the simplest animation, for example:
 
@@ -60,3 +61,5 @@ then there is an opportunity to implement the simplest animation, for example:
 * After loading, the words "STORIES" appear;
 * After loading, some stars fade out, while others light up;
 * And so on, there are a lot of options.
+
+Attempting to resize an image or resize a section causes the game to freeze while loading.

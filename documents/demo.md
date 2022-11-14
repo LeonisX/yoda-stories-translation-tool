@@ -238,7 +238,7 @@ Among other removed `Jabba Hutt`.
 
 ###### Weapons
 
-`Blasters Low/High`, `Lightsaber` and `The Force`:
+`Blaster`, `Heavy`, `Lightsaber` and `The Force`:
 
 ![](images/tiles/demo/tiles-blaster-pistol-transparent.png)
 ![](images/tiles/demo/tiles-blaster-rifle-thermal-detonator-transparent.png)

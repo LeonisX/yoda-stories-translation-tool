@@ -110,6 +110,7 @@ Uses modified code from http://image4j.sourceforge.net project.
 * Spain - Resize dialog tool tip text field :(
 * Almost all fails on Resize dialog tool tip text field
 
+* Undo/Redo
 * Sounds editor (table: id, name). add, remove, as tiles
 * Actions cleaner, visualizer, interpreter
 * Dump all secrets (show tiles, ...)
