@@ -101,6 +101,7 @@ Uses modified code from http://image4j.sourceforge.net project.
 * Add hex dumps images to all sections, other images
 * 65535 values == -1; 255 == -1; 4294967295 - need correct values when load DTA assets. Unsigned -> Signed, may be all
 
+* Map movement types with monsters
 * Dump tile names, grouped by attributes 0820-tile-name.bmp - for tilenames
 * Characters online - something wrong with tiles :(
 

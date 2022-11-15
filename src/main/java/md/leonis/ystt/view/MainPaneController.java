@@ -2197,8 +2197,9 @@ public class MainPaneController {
                             for (Monster m : zone.getIzax().getMonsters()) {
                                 Character character = yodesk.getCharacters().getCharacters().stream().filter(c -> c.getIndex() == m.getCharacter()).findFirst()
                                         .orElseThrow(() -> new IllegalStateException("Unknown character: " + m.getCharacter()));
-                                if (uniqueValues.add(character.getName())) {
-                                    Path path = resourcesPath.resolve("ZonesByMonsters").resolve(character.getName());
+                                String characterName = character.getName();
+                                if (uniqueValues.add(characterName)) {
+                                    Path path = resourcesPath.resolve("ZonesByMonsters").resolve(characterName);
                                     IOUtils.createDirectories(path);
                                     BMPWriter.write(canvas, path.resolve(String.format("%03d", zone.getIndex()) + E_BMP));
                                 }

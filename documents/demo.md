@@ -145,7 +145,7 @@ Replaced tiles:
 
 ###### Character Enemy (transparent)
 
-Removed `Rancor`, `Little Rancor`, `Bugs` (Jabba quest).
+Removed `Rancor`, `Little Rancor` (Tatooine quest), `Bugs` (Tarsa quest).
 
 ![](images/tiles/demo/tiles-enemy-transparent.gif)
 
