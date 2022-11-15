@@ -5,6 +5,7 @@ import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 import md.leonis.config.Config;
 
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;
 import java.awt.image.WritableRaster;
@@ -21,13 +22,11 @@ public class ImageUtils {
     }
 
     public static BufferedImage getTile(int tileId, IndexColorModel icm) {
-
         int position = yodesk.getTiles().getTilePixelsPosition(tileId);
         return ImageUtils.readBPicture(yodesk.getTiles().getRawTiles(), position, TILE_SIZE, TILE_SIZE, icm);
     }
 
     public static WritableImage readWPicture(byte[] bytes, int position, int width, int height, Color transparentColor) {
-
         WritableImage image = new WritableImage(width, height);
 
         for (int y = 0; y < height; y++) {
@@ -45,9 +44,7 @@ public class ImageUtils {
     }
 
     public static BufferedImage readBPicture(byte[] bytes, int position, int width, int height, IndexColorModel icm) {
-
         BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_INDEXED, icm);
-
         WritableRaster raster = image.getRaster();
 
         for (int y = 0; y < height; y++) {
@@ -62,7 +59,6 @@ public class ImageUtils {
     }
 
     public static void drawOnBufferedImage(byte[] bytes, int position, BufferedImage bi, int xOffset, int yOffset, boolean transparent) {
-
         for (int y = 0; y < 32; y++) {
             for (int x = 0; x < 32; x++) {
                 int b = bytes[position] & 0xFF;
@@ -74,8 +70,26 @@ public class ImageUtils {
         }
     }
 
-    public static void drawPalette(Canvas canvas) {
+    public static void drawBorderOnBufferedImage(BufferedImage bi, int xOffset, int yOffset, java.awt.Color borderColor) {
+        Graphics2D g2d = bi.createGraphics();
+        g2d.setColor(borderColor);
+        //g2d.setStroke(borderColor);
+        //graphics2D.setLineDashes(1.5, 4);
+        //graphics2D.strokeRect(xOffset + 0.5, yOffset + 0.5, 32 - 0.5, 32 - 0.5);
 
+        float[] dash1 = { 2f, 0f, 2f };
+
+        BasicStroke bs1 = new BasicStroke(1,
+                BasicStroke.CAP_BUTT,
+                BasicStroke.JOIN_ROUND,
+                1.0f,
+                dash1,
+                2f);
+        g2d.setStroke(bs1);
+        g2d.drawRect(xOffset, yOffset, 32, 32);
+    }
+
+    public static void drawPalette(Canvas canvas) {
         for (int y = 0; y < 16; y++) {
             for (int x = 0; x < 16; x++) {
                 canvas.getGraphicsContext2D().setFill(Config.palette[y * 16 + x]);
@@ -85,7 +99,6 @@ public class ImageUtils {
     }
 
     public static void drawOnCanvas(byte[] bytes, int position, Canvas canvas, int xOffset, int yOffset, Color transparentColor) {
-
         for (int y = 0; y < 32; y++) {
             for (int x = 0; x < 32; x++) {
                 int colorIndex = bytes[position] & 0xFF;
@@ -102,14 +115,12 @@ public class ImageUtils {
     }
 
     public static void drawBorderOnCanvas(Canvas canvas, int xOffset, int yOffset, Color borderColor) {
-
         canvas.getGraphicsContext2D().setStroke(borderColor);
         canvas.getGraphicsContext2D().setLineDashes(1.5, 4);
         canvas.getGraphicsContext2D().strokeRect(xOffset + 0.5, yOffset + 0.5, 32 - 0.5, 32 - 0.5);
     }
 
     public static void drawOnCanvas(BufferedImage bi, Canvas canvas, Color transparentColor) {
-
         canvas.setHeight(bi.getHeight());
         canvas.setWidth(bi.getWidth());
 
@@ -132,7 +143,6 @@ public class ImageUtils {
     }
 
     public static void fillCanvas(Canvas canvas, int xOffset, int yOffset, Color fillColor) {
-
         for (int y = 0; y < 32; y++) {
             for (int x = 0; x < 32; x++) {
                 canvas.getGraphicsContext2D().getPixelWriter().setColor(xOffset + x, yOffset + y, fillColor);
@@ -141,7 +151,6 @@ public class ImageUtils {
     }
 
     public static void fillCanvas(Canvas canvas, Color fillColor) {
-
         for (int y = 0; y < canvas.getHeight(); y++) {
             for (int x = 0; x < canvas.getWidth(); x++) {
                 canvas.getGraphicsContext2D().getPixelWriter().setColor(x, y, fillColor);
@@ -150,7 +159,6 @@ public class ImageUtils {
     }
 
     public static WritableImage snapshot(Canvas canvas, int x, int y, int width, int height) {
-
         Canvas result = new Canvas(width, height);
         WritableImage wi = canvas.snapshot(null, null);
         result.getGraphicsContext2D().drawImage(wi, x, y, width, height, 0, 0, width, height);
@@ -158,20 +166,17 @@ public class ImageUtils {
     }
 
     public static byte[] getBytes(Canvas canvas, int x, int y, int width, int height, Color transparentColor) {
-
         WritableImage snap = canvas.snapshot(null, null);
         return getBytes(snap, x, y, width, height, transparentColor);
     }
 
     public static byte[] getBytes(WritableImage image, Color transparentColor) {
-
         int width = (int) image.getWidth();
         int height = (int) image.getHeight();
         return getBytes(image, 0, 0, width, height, transparentColor);
     }
 
     public static byte[] getBytes(WritableImage image, int x, int y, int width, int height, Color transparentColor) {
-
         byte[] raster = new byte[width * height];
 
         int k = 0;
