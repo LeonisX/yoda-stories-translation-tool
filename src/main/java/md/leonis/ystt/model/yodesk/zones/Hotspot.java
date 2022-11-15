@@ -19,7 +19,7 @@ public class Hotspot extends KaitaiStruct {
     private HotspotType type;
     private int x;
     private int y;
-    // If disabled, hotspots can not be triggered. See instruction opcodes  called `enable_hotspot` and `disable_hotspot`.
+    // If disabled, hotspots can not be triggered. See instruction opcodes called `enable_hotspot` and `disable_hotspot`.
     private int enabled;
     private int argument;
 

@@ -10,7 +10,7 @@ public enum HotspotType {
     DROP_UNIQUE_WEAPON(2),
     VEHICLE_TO(3),
     VEHICLE_BACK(4),
-    DROP_MAP(5),
+    DROP_LOCATOR(5),
     DROP_ITEM(6),
     NPC(7),
     DROP_WEAPON(8),

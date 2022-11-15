@@ -94,8 +94,8 @@ public class CatalogEntry extends KaitaiStruct {
                     parent.setZones(zones);
 
                     size = zones.getZones().stream().map(Zone::getSize).reduce(0L, Long::sum)
-                            + 2                                 // numZones
-                            + (long) zones.getZones().size() * (2 + 4);   // planet + size of every zone
+                            + 2                                             // numZones
+                            + (long) zones.getZones().size() * (2 + 4);     // planet + size of every zone
 
                     io.seek(position);
                     bytes = io.readBytes(size);

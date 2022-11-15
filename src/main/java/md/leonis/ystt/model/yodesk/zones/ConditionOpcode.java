@@ -18,7 +18,7 @@ public enum ConditionOpcode {
     RANDOM_IS_GREATER_THAN(7, 1, "Current zone's `random` value is greater than `args[0]`"),
     RANDOM_IS_LESS_THAN(8, 1, "Current zone's `random` value is less than `args[0]`"),
     ENTER_BY_PLANE(9, 0, ""),
-    TILE_AT_IS(10, 4, "x,y,z,tileId. Check if tile at `args[1]`x`args[2]`x`args[3]` is equal to `args[0]`"),
+    TILE_AT_IS(10, 4, "tileId,x,y,z. Check if tile at `args[1]`x`args[2]`x`args[3]` is equal to `args[0]`"),
     MONSTER_IS_DEAD(11, 1, "True if monster `args[0]` is dead. `args[0]`: monsterId"),
     HAS_NO_ACTIVE_MONSTERS(12, 0, "undefined"),
     HAS_ITEM(13, 1, "True if inventory contains `args[0]`. " +
