@@ -168,6 +168,11 @@ public class MainPaneController {
     public CheckBox groupByAttributesCheckBox;
     public CheckBox groupByPlanetTypeCheckBox;
     public CheckBox groupByUnknownCheckBox;
+    public CheckBox groupByHotSpotTypeCheckBox;
+    public CheckBox groupByMonsterCheckBox;
+    public CheckBox drawMonsters;
+    public CheckBox drawMonstersBorder;
+    public CheckBox drawHotSpots;
     public CheckBox dumpActionsCheckBox;
     public CheckBox saveUnusedTilesCheckBox;
     public Button showActionsButton;
@@ -516,7 +521,7 @@ public class MainPaneController {
             return cell;
         });
         namesTableView.setItems(FXCollections.observableList(yodesk.getTileNames().getFilteredNames()));
-        tileNames = yodesk.getTileNames().getFilteredNames().stream().collect(Collectors.toMap(t -> t.getTileId(), t -> t.getName()));
+        tileNames = yodesk.getTileNames().getFilteredNames().stream().collect(Collectors.toMap(TileName::getTileId, TileName::getName));
 
         namesTexts = WordHelper.getNamesTexts();
         namesTextTableView.setItems(FXCollections.observableList(namesTexts));
@@ -1219,11 +1224,10 @@ public class MainPaneController {
 
             Character character = yodesk.getCharacters().getCharacters().get(monster.getCharacter());
 
-
             lines.add("Monster: " + character.getName());
             lines.add("Movement type: " + StringUtils.capitalize(character.getMovementType().name().toLowerCase().replace("_", " ")));
 
-            int weapon = yodesk.getCharacterWeapons().getWeapons().get(monster.getCharacter()).getReference();
+            int weapon = yodesk.getCharacterWeapons().getWeapons().get(character.getIndex()).getReference();
 
             if (weapon == 65535) {
                 lines.add("Weapon: none");
@@ -2136,7 +2140,9 @@ public class MainPaneController {
 
                 IOUtils.saveTextFile(new StructureDump(yodesk).dumpZoneTilesStructure(), dumpsPath.resolve("zoneTiles" + E_MD));
 
-                if (normalSaveCheckBox.isSelected() || groupByAttributesCheckBox.isSelected() || groupByPlanetTypeCheckBox.isSelected()) {
+                if (normalSaveCheckBox.isSelected() || groupByAttributesCheckBox.isSelected() || groupByPlanetTypeCheckBox.isSelected()
+                || groupByUnknownCheckBox.isSelected() || groupByUnknownCheckBox.isSelected() || groupByHotSpotTypeCheckBox.isSelected()
+                || groupByMonsterCheckBox.isSelected()) {
 
                     for (int i = 0; i < yodesk.getZones().getZones().size(); i++) {
 
@@ -2175,9 +2181,31 @@ public class MainPaneController {
                             IOUtils.createDirectories(path);
                             BMPWriter.write(canvas, path.resolve(String.format("%03d", zone.getIndex()) + E_BMP));
                         }
+                        if (groupByHotSpotTypeCheckBox.isSelected()) {
+                            Set<String> uniqueValues = new HashSet<>();
+                            for (Hotspot h : zone.getHotspots()) {
+                                String hotspot = h.getType().name();
+                                if (uniqueValues.add(hotspot)) {
+                                    Path path = resourcesPath.resolve("ZonesByHotSpot").resolve(hotspot);
+                                    IOUtils.createDirectories(path);
+                                    BMPWriter.write(canvas, path.resolve(String.format("%03d", zone.getIndex()) + E_BMP));
+                                }
+                            }
+                        }
+                        if (groupByMonsterCheckBox.isSelected()) {
+                            Set<String> uniqueValues = new HashSet<>();
+                            for (Monster m : zone.getIzax().getMonsters()) {
+                                Character character = yodesk.getCharacters().getCharacters().stream().filter(c -> c.getIndex() == m.getCharacter()).findFirst()
+                                        .orElseThrow(() -> new IllegalStateException("Unknown character: " + m.getCharacter()));
+                                if (uniqueValues.add(character.getName())) {
+                                    Path path = resourcesPath.resolve("ZonesByMonsters").resolve(character.getName());
+                                    IOUtils.createDirectories(path);
+                                    BMPWriter.write(canvas, path.resolve(String.format("%03d", zone.getIndex()) + E_BMP));
+                                }
+                            }
+                        }
                     }
                 }
-
                 if (saveUnusedTilesCheckBox.isSelected()) {
                     Path unusedTilesPath = resourcesPath.resolve("ZonesTilesUnused");
                     IOUtils.createDirectories(unusedTilesPath);
@@ -2213,7 +2241,19 @@ public class MainPaneController {
 
         drawBIZoneLayer(canvas, zone, 0);
         drawBIZoneLayer(canvas, zone, 1);
+        if (drawMonsters.isSelected()) {
+            zone.getIzax().getMonsters().forEach(m -> {
+                int tileId = yodesk.getCharacters().getCharacters().get(m.getCharacter()).getTileIds().get(0);
+                drawTileOnBufferedImage(tileId, canvas, m.getX() * TILE_SIZE, m.getY() * TILE_SIZE, true);
+                if (drawMonstersBorder.isSelected()) {
+                    drawBorderOnBufferedImage(canvas, m.getX() * TILE_SIZE, m.getY() * TILE_SIZE, new java.awt.Color(127, 255, 255));
+                }
+            });
+        }
         drawBIZoneLayer(canvas, zone, 2);
+        if (drawHotSpots.isSelected()) {
+            zone.getHotspots().forEach(h -> drawBorderOnBufferedImage(canvas, h.getX() * TILE_SIZE, h.getY() * TILE_SIZE, new java.awt.Color(255, 0, 255)));
+        }
     }
 
     private void drawBIZoneLayer(BufferedImage canvas, Zone zone, int layerId) {
@@ -2673,6 +2713,10 @@ public class MainPaneController {
         ImageUtils.drawOnCanvas(yodesk.getTiles().getRawTiles(), position, canvas, xOffset, yOffset, transparentColor);
     }
 
+    private void drawBorderOnBufferedImage(BufferedImage bi, int xOffset, int yOffset, java.awt.Color borderColor) {
+        ImageUtils.drawBorderOnBufferedImage(bi, xOffset, yOffset, borderColor);
+    }
+
     private void drawBorderOnCanvas(Canvas canvas, int xOffset, int yOffset, Color borderColor) {
         ImageUtils.drawBorderOnCanvas(canvas, xOffset, yOffset, borderColor);
     }
@@ -2806,6 +2850,7 @@ public class MainPaneController {
             appendText(text + ": OK");
         }
 
+        @SuppressWarnings("all")
         private static void appendText(String text) {
             if (textArea == null) {
                 lines.add(text);

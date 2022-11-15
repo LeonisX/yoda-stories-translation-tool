@@ -559,10 +559,15 @@
                                                 <CheckBox fx:id="normalSaveCheckBox" layoutX="25.0" layoutY="98.0" mnemonicParsing="false" selected="true" text="Normal save" />
                                                 <CheckBox fx:id="groupByAttributesCheckBox" layoutX="25.0" layoutY="123.0" mnemonicParsing="false" text="Group by attributes" />
                                                 <CheckBox fx:id="groupByPlanetTypeCheckBox" layoutX="25.0" layoutY="148.0" mnemonicParsing="false" text="Group by planet type" />
-                                                <CheckBox fx:id="groupByUnknownCheckBox" layoutX="25.0" layoutY="174.0" mnemonicParsing="false" selected="false" text="Group by unknown" />
-                                                <CheckBox fx:id="dumpActionsCheckBox" layoutX="25.0" layoutY="200.0" mnemonicParsing="false" selected="true" text="Dump actions" />
-                                                <CheckBox fx:id="saveUnusedTilesCheckBox" layoutX="25.0" layoutY="226.0" mnemonicParsing="false" text="Save non-zones tiles" />
-                                                <CheckBox fx:id="generateMapsReports" layoutX="25.0" layoutY="252.0" mnemonicParsing="false" text="Generate reports" />
+                                                <CheckBox fx:id="groupByUnknownCheckBox" layoutX="25.0" layoutY="174.0" mnemonicParsing="false" text="Group by unknown" />
+                                                <CheckBox fx:id="groupByHotSpotTypeCheckBox" layoutX="25.0" layoutY="200.0" mnemonicParsing="false" text="Group by hotspot type" />
+                                                <CheckBox fx:id="groupByMonsterCheckBox" layoutX="25.0" layoutY="226.0" mnemonicParsing="false" text="Group by monsters" />
+                                                <CheckBox fx:id="dumpActionsCheckBox" layoutX="25.0" layoutY="252.0" mnemonicParsing="false" selected="true" text="Dump actions" />
+                                                <CheckBox fx:id="saveUnusedTilesCheckBox" layoutX="25.0" layoutY="278.0" mnemonicParsing="false" text="Save non-zones tiles" />
+                                                <CheckBox fx:id="generateMapsReports" layoutX="25.0" layoutY="304.0" mnemonicParsing="false" text="Generate reports" />
+                                                <CheckBox fx:id="drawMonsters" layoutX="25.0" layoutY="340.0" mnemonicParsing="false" text="Draw Monsters" />
+                                                <CheckBox fx:id="drawMonstersBorder" layoutX="25.0" layoutY="366.0" mnemonicParsing="false" text="Draw Monsters Border" />
+                                                <CheckBox fx:id="drawHotSpots" layoutX="25.0" layoutY="392.0" mnemonicParsing="false" text="Draw HotSpots" />
                                             </AnchorPane>
                                         </Tab>
                                     </TabPane>
