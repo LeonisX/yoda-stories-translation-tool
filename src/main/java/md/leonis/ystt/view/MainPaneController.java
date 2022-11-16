@@ -25,6 +25,7 @@ import javafx.stage.WindowEvent;
 import md.leonis.bin.ByteOrder;
 import md.leonis.bin.Dump;
 import md.leonis.config.Config;
+import md.leonis.ystt.filter.ZoneFilter;
 import md.leonis.ystt.model.*;
 import md.leonis.ystt.model.docx.PropertyName;
 import md.leonis.ystt.model.docx.StringImagesRecord;
@@ -56,6 +57,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -192,6 +194,14 @@ public class MainPaneController {
     public FlowPane zoneProvidedItemsTilesFlowPane;
     public FlowPane zoneRequiredItemsTilesFlowPane;
     public FlowPane lootTilesFlowPane;
+
+    public CheckBox enableZonesFilterCheckBox;
+    public ComboBox<String> zonesFilterPropertyComboBox;
+    public ComboBox<String> zonesFilterConditionComboBox;
+
+    public CheckBox enableZonesFilterCheckBox2;
+    public ComboBox<String> zonesFilterPropertyComboBox2;
+    public ComboBox<String> zonesFilterConditionComboBox2;
 
     public RadioButton topRadioButton;
     public RadioButton middleRadioButton;
@@ -426,6 +436,14 @@ public class MainPaneController {
         drawTiles();
 
         // Zones
+        List<String> properties = Arrays.stream(ZoneFilter.values()).map(ZoneFilter::getTitle).collect(Collectors.toList());
+        zonesFilterPropertyComboBox.setItems(FXCollections.observableList(properties));
+        zonesFilterPropertyComboBox.getSelectionModel().select(0);
+        fillConditionComboBox(zonesFilterPropertyComboBox, zonesFilterConditionComboBox, ZoneFilter.values()[0].getTitle());
+
+        zonesFilterPropertyComboBox2.getItems().addAll(properties);
+        zonesFilterPropertyComboBox2.getSelectionModel().select(0);
+        fillConditionComboBox(zonesFilterPropertyComboBox2, zonesFilterConditionComboBox2, ZoneFilter.values()[0].getTitle());
         zonesCountLabel.setText(String.valueOf(yodesk.getZones().getZones().size()));
         phrasesCountLabel.setText(
                 String.valueOf(yodesk.getZones().getZones().stream().mapToLong(z -> z.getActions().stream()
@@ -434,9 +452,8 @@ public class MainPaneController {
                 )
         );
         zoneLayerToggleGroup.selectedToggleProperty().addListener(zoneLayerToggleGroupListener());
-        zoneEditorListView.setItems(FXCollections.observableList(yodesk.getZones().getZones().stream().map(m -> "Zone #" + m.getIndex()).collect(Collectors.toList())));
         zoneEditorListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> drawEditZone());
-        zoneEditorListView.getSelectionModel().select(0);
+        fillZoneListView();
         zoneEditorCanvas.setOnContextMenuRequested(e -> zoneEditorContextMenu.show((Node) e.getSource(), e.getScreenX(), e.getScreenY()));
         zoneOptionsTabPane.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> positionZoneOptionsTabPane());
         drawMapEditorTiles();
@@ -990,8 +1007,8 @@ public class MainPaneController {
 
     @FXML
     private void drawEditZone() {
-        if (getEditorZoneId() >= 0) {
-            int zoneId = getEditorZoneId();
+        int zoneId = getEditorZoneId();
+        if (zoneId >= 0) {
             drawEditorMap(zoneId);
             showMapInfo(zoneId);
             positionZoneOptionsTabPane();
@@ -1211,8 +1228,13 @@ public class MainPaneController {
         mapY = (int) (event.getY() / TILE_SIZE);
 
         Zone zone = getEditorZone();
-        List<Integer> column = zone.getTileIds().get(mapY * zone.getWidth() + mapX).getColumn();
+        if (zone == null) {
+            return;
+        }
+
         showZoneStatus(zone);
+
+        List<Integer> column = zone.getTileIds().get(mapY * zone.getWidth() + mapX).getColumn();
 
         List<String> lines = new ArrayList<>();
         lines.add(String.format("Top tileId: %s\nMiddle tileId: %s\nBottom tileId: %s", column.get(2), column.get(1), column.get(0)));
@@ -1288,7 +1310,10 @@ public class MainPaneController {
     }
 
     public void zoneEditorCanvasMouseExited() {
-        showZoneStatus(getEditorZone());
+        Zone zone = getEditorZone();
+        if (zone != null) {
+            showZoneStatus(zone);
+        }
         zoneSpotStatusLabel.setVisible(false);
         statusCanvas.setVisible(false);
     }
@@ -1307,6 +1332,10 @@ public class MainPaneController {
 
     private void changeZoneSpot(int x, int y, int layerId, int tileId) {
         Zone zone = getEditorZone();
+        if (zone == null) {
+            return;
+        }
+
         int oldValue = zone.getTileIds().get(y * zone.getWidth() + x).getColumn().get(layerId);
 
         modifyZoneSpot(zone.getIndex(), x, y, layerId, tileId);
@@ -1449,16 +1478,26 @@ public class MainPaneController {
             } else {
                 Log.debug(String.format("Hide layer: %s", layerName));
             }
-            drawZone(zoneEditorCanvas, getEditorZone());
+            Zone zone = getEditorZone();
+            if (zone != null) {
+                drawZone(zoneEditorCanvas, zone);
+            }
         });
     }
 
     private Zone getEditorZone() {
-        return yodesk.getZones().getZones().get(getEditorZoneId());
+        int zoneId = getEditorZoneId();
+        return zoneId == -1 ? null : yodesk.getZones().getZones().get(zoneId);
     }
 
     private int getEditorZoneId() {
-        return zoneEditorListView.getSelectionModel().getSelectedIndex();
+        if (zoneEditorListView.getItems().size() == 0) {
+            return -1;
+        }
+        if (zoneEditorListView.getSelectionModel().getSelectedItem() == null) {
+            zoneEditorListView.getSelectionModel().select(0);
+        }
+        return Integer.parseInt(zoneEditorListView.getSelectionModel().getSelectedItem().split("#")[1]);
     }
 
     public void openMenuItemClick() {
@@ -2196,8 +2235,7 @@ public class MainPaneController {
                         if (groupByMonsterCheckBox.isSelected()) {
                             Set<String> uniqueValues = new HashSet<>();
                             for (Monster m : zone.getIzax().getMonsters()) {
-                                Character character = yodesk.getCharacters().getCharacters().stream().filter(c -> c.getIndex() == m.getCharacter()).findFirst()
-                                        .orElseThrow(() -> new IllegalStateException("Unknown character: " + m.getCharacter()));
+                                Character character = yodesk.getCharacters().getCharacters().get(m.getCharacter());
                                 String characterName = character.getName();
                                 if (uniqueValues.add(characterName)) {
                                     Path path = resourcesPath.resolve("ZonesByMonsters").resolve(characterName);
@@ -2208,8 +2246,7 @@ public class MainPaneController {
                         }
                         if (groupMonstersByMovementType.isSelected()) {
                             for (Monster m : zone.getIzax().getMonsters()) {
-                                Character character = yodesk.getCharacters().getCharacters().stream().filter(c -> c.getIndex() == m.getCharacter()).findFirst()
-                                        .orElseThrow(() -> new IllegalStateException("Unknown character: " + m.getCharacter()));
+                                Character character = yodesk.getCharacters().getCharacters().get(m.getCharacter());
                                 String characterName = character.getName();
                                 int tileId = character.getTileIds().get(0);
                                 Path path = resourcesPath.resolve("MonstersByMovementType").resolve(character.getMovementType().name());
@@ -2839,6 +2876,123 @@ public class MainPaneController {
 
     public void tilesFilterComboBoxAction() {
         drawTiles();
+    }
+
+    // Zone filtersL
+    public void enableZonesFilterCheckBoxAction() {
+        zonesFilterPropertyComboBox.setVisible(enableZonesFilterCheckBox.isSelected());
+        zonesFilterConditionComboBox.setVisible(enableZonesFilterCheckBox.isSelected());
+        fillZoneListView();
+    }
+
+    public void enableZonesFilterCheckBoxAction2() {
+        zonesFilterPropertyComboBox2.setVisible(enableZonesFilterCheckBox2.isSelected());
+        zonesFilterConditionComboBox2.setVisible(enableZonesFilterCheckBox2.isSelected());
+        fillZoneListView();
+    }
+
+    public void zonesFilterPropertyComboBoxAction() {
+        fillConditionComboBox(zonesFilterPropertyComboBox, zonesFilterConditionComboBox, zonesFilterPropertyComboBox.getSelectionModel().getSelectedItem());
+        fillZoneListView();
+    }
+
+    public void zonesFilterPropertyComboBoxAction2() {
+        fillConditionComboBox(zonesFilterPropertyComboBox2, zonesFilterConditionComboBox2, zonesFilterPropertyComboBox2.getSelectionModel().getSelectedItem());
+        fillZoneListView();
+    }
+
+    public void zonesFilterConditionComboBoxAction() {
+        fillZoneListView();
+    }
+
+    private void fillZoneListView() {
+        Function<Zone, Boolean> filter1 = z -> zoneFilter(enableZonesFilterCheckBox, zonesFilterPropertyComboBox, zonesFilterConditionComboBox).apply(z);
+        Function<Zone, Boolean> filter2 = z -> zoneFilter(enableZonesFilterCheckBox2, zonesFilterPropertyComboBox2, zonesFilterConditionComboBox2).apply(z);
+        zoneEditorListView.getItems().clear();
+        zoneEditorListView.setItems(FXCollections.observableList(yodesk.getZones().getZones().stream()
+                .filter(z -> filter1.apply(z) && filter2.apply(z)).map(m -> "Zone #" + m.getIndex()).collect(Collectors.toList())));
+        zoneEditorListView.getSelectionModel().select(0);
+    }
+
+    private Function<Zone, Boolean> zoneFilter(CheckBox enableFilterCheckBox, ComboBox<String> propertyComboBox, ComboBox<String> conditionComboBox) {
+        if (!enableFilterCheckBox.isSelected()) {
+            return z -> true;
+        }
+        if (conditionComboBox.getSelectionModel().getSelectedItem() == null) {
+            conditionComboBox.getSelectionModel().select(0);
+        }
+        ZoneFilter zoneFilter = ZoneFilter.byTitle(propertyComboBox.getSelectionModel().getSelectedItem());
+        switch (zoneFilter) {
+            case PLANET:
+                if (conditionComboBox.getSelectionModel().getSelectedIndex() > Planet.values().length - 1) {
+                    return z -> z.getPlanet() == null;
+                } else {
+                    return z -> z.getPlanet().equals(Planet.valueOf(conditionComboBox.getSelectionModel().getSelectedItem()));
+                }
+            case DIMENSIONS:
+                switch (conditionComboBox.getSelectionModel().getSelectedIndex()) {
+                    case 0:
+                        return z -> z.getWidth() == 9 && z.getHeight() == 9;
+                    case 1:
+                        return z -> z.getWidth() == 18 && z.getHeight() == 18;
+                    default:
+                        return z -> !(z.getWidth() == 9 && z.getHeight() == 9) && !(z.getWidth() == 18 && z.getHeight() == 18);
+                }
+            case TYPE:
+                if (conditionComboBox.getSelectionModel().getSelectedIndex() > Planet.values().length - 1) {
+                    return z -> z.getType() == null;
+                } else {
+                    return z -> z.getType().equals(ZoneType.valueOf(conditionComboBox.getSelectionModel().getSelectedItem()));
+                }
+            case HOTSPOT:
+                if (conditionComboBox.getSelectionModel().getSelectedIndex() > Planet.values().length - 1) {
+                    return z -> z.getHotspots().stream().anyMatch(h -> h.getType() == null);
+                } else {
+                    return z -> z.getHotspots().stream().anyMatch(h -> h.getType().equals(HotspotType.valueOf(conditionComboBox.getSelectionModel().getSelectedItem())));
+                }
+        }
+        //todo
+        return z -> true;
+    }
+
+    private void fillConditionComboBox(ComboBox<String> propertyComboBox, ComboBox<String> conditionComboBox, String value) {
+        if (value != null) {
+            ZoneFilter zoneFilter = ZoneFilter.byTitle(propertyComboBox.getSelectionModel().getSelectedItem());
+            switch (zoneFilter) {
+                case PLANET:
+                    conditionComboBox.setItems(FXCollections
+                            .observableList(Arrays.stream(Planet.values()).map(Enum::name).collect(Collectors.toList())));
+                    conditionComboBox.getItems().add("<null>");
+                    break;
+                case DIMENSIONS:
+                    conditionComboBox.setItems(FXCollections.observableList(Arrays.asList("9x9", "18x18", "<other>")));
+                    break;
+                case TYPE:
+                    conditionComboBox.setItems(FXCollections
+                            .observableList(Arrays.stream(ZoneType.values()).map(Enum::name).collect(Collectors.toList())));
+                    conditionComboBox.getItems().add("<null>");
+                    break;
+                case HOTSPOT:
+                    conditionComboBox.setItems(FXCollections
+                            .observableList(Arrays.stream(HotspotType.values()).map(Enum::name).collect(Collectors.toList())));
+                    conditionComboBox.getItems().add("<null>");
+                    break;
+
+                //TODO empty, other values
+                //TODO
+                /*private int _unnamed2; // 0 or 1
+                private int numMonsters;
+                private List<Monster> monsters;
+                private int numRequiredItems;
+                // List of items that can be used to solve the zone.
+                private List<Integer> requiredItems;
+                private int numGoalItems;
+                // Additional items that are needed to solve the zone. Only used if the zone type is `goal`.
+                private List<Integer> goalItems;*/
+            }
+            conditionComboBox.getSelectionModel().select(0);
+            fillZoneListView();
+        }
     }
 
     public static class Log {
