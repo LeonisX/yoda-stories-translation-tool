@@ -170,6 +170,7 @@ public class MainPaneController {
     public CheckBox groupByUnknownCheckBox;
     public CheckBox groupByHotSpotTypeCheckBox;
     public CheckBox groupByMonsterCheckBox;
+    public CheckBox groupMonstersByMovementType;
     public CheckBox drawMonsters;
     public CheckBox drawMonstersBorder;
     public CheckBox drawHotSpots;
@@ -2141,8 +2142,8 @@ public class MainPaneController {
                 IOUtils.saveTextFile(new StructureDump(yodesk).dumpZoneTilesStructure(), dumpsPath.resolve("zoneTiles" + E_MD));
 
                 if (normalSaveCheckBox.isSelected() || groupByAttributesCheckBox.isSelected() || groupByPlanetTypeCheckBox.isSelected()
-                || groupByUnknownCheckBox.isSelected() || groupByUnknownCheckBox.isSelected() || groupByHotSpotTypeCheckBox.isSelected()
-                || groupByMonsterCheckBox.isSelected()) {
+                        || groupByUnknownCheckBox.isSelected() || groupByUnknownCheckBox.isSelected() || groupByHotSpotTypeCheckBox.isSelected()
+                        || groupByMonsterCheckBox.isSelected() || groupMonstersByMovementType.isSelected()) {
 
                     for (int i = 0; i < yodesk.getZones().getZones().size(); i++) {
 
@@ -2203,6 +2204,17 @@ public class MainPaneController {
                                     IOUtils.createDirectories(path);
                                     BMPWriter.write(canvas, path.resolve(String.format("%03d", zone.getIndex()) + E_BMP));
                                 }
+                            }
+                        }
+                        if (groupMonstersByMovementType.isSelected()) {
+                            for (Monster m : zone.getIzax().getMonsters()) {
+                                Character character = yodesk.getCharacters().getCharacters().stream().filter(c -> c.getIndex() == m.getCharacter()).findFirst()
+                                        .orElseThrow(() -> new IllegalStateException("Unknown character: " + m.getCharacter()));
+                                String characterName = character.getName();
+                                int tileId = character.getTileIds().get(0);
+                                Path path = resourcesPath.resolve("MonstersByMovementType").resolve(character.getMovementType().name());
+                                IOUtils.createDirectories(path);
+                                BMPWriter.write(getTile(tileId, icm), path.resolve(String.format("%04d %s", tileId, characterName) + E_BMP));
                             }
                         }
                     }
@@ -2564,6 +2576,7 @@ public class MainPaneController {
         runInBackground(() -> {
             try {
                 Path path = resourcesPath.resolve("Characters");
+                Path path2 = resourcesPath.resolve("CharactersNames");
                 IOUtils.createDirectories(path);
                 IOUtils.createDirectories(dumpsPath);
                 Log.debug("Saving characters...");
@@ -2574,7 +2587,12 @@ public class MainPaneController {
                     for (Integer integer : character.getTileIds()) {
                         Path charPath = path.resolve(character.getName());
                         IOUtils.createDirectories(charPath);
-                        BMPWriter.write(getTile(integer), charPath.resolve(String.format("%04d", integer) + E_BMP));
+                        BMPWriter.write(getTile(integer, icm), charPath.resolve(String.format("%04d", integer) + E_BMP));
+                        // Tile -> name
+                        IOUtils.createDirectories(path2);
+                        String name = md.leonis.ystt.utils.StringUtils.splitCamelCase(character.getName())
+                                .replace(" ", "-").replace("--", "-").replace("--", "-").toLowerCase();
+                        BMPWriter.write(getTile(integer, icm), path2.resolve(name + "-" + String.format("%04d", integer) + E_BMP));
                     }
                 }
 

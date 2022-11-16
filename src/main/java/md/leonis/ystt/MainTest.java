@@ -26,12 +26,26 @@ public class MainTest {
         Yodesk yodesk = Yodesk.fromFile("C:\\Users\\user\\Downloads\\Games_YS\\my experiments\\Star Wars - Yoda Stories (USA) (10.08.1998) (The LucasArts Archives Vol. IV) (Leonis)\\yodesk.dta", "windows-1252");
         //Yodesk yodesk = Yodesk.fromFile("C:\\Users\\user\\Downloads\\Games_YS\\my experiments\\Star Wars - Yoda Stories (Spain) (22.05.1997) (Installed)\\yodesk.dta", "windows-1252");
 
-        showGarbage(yodesk);
+        showZonesTypeVsUnk2(yodesk);
+        //showZonesTypeVsProvidedItems(yodesk);
+
+        //showGarbage(yodesk);
         //showInstructionTitles(yodesk);
         //showConditionsTitles(yodesk);
         //showSoundsUsage();
         //encodingsToJson();
         //docExcelExperiments();
+    }
+
+    private static void showZonesTypeVsUnk2(Yodesk yodesk) {
+        yodesk.getZones().getZones().stream().map(z -> z.getType() + ":" + z.getIzax().get_unnamed2())
+                .collect(Collectors.groupingBy(Function.identity())).entrySet().stream().sorted(Map.Entry.comparingByKey())
+                .forEach(e -> System.out.println(e.getKey() + ": " + e.getValue().size()));
+    }
+
+    private static void showZonesTypeVsProvidedItems(Yodesk yodesk) {
+        yodesk.getZones().getZones().stream().filter(z -> z.getIzx2().getNumProvidedItems() > 0)
+                .collect(Collectors.groupingBy(Zone::getType)).forEach((key, value) -> System.out.println(key + ": " + value.size()));
     }
 
     private static void showGarbage(Yodesk yodesk) {
