@@ -35,6 +35,7 @@ import md.leonis.ystt.model.yodesk.CatalogEntry;
 import md.leonis.ystt.model.yodesk.Yodesk;
 import md.leonis.ystt.model.yodesk.characters.Character;
 import md.leonis.ystt.model.yodesk.characters.CharacterType;
+import md.leonis.ystt.model.yodesk.characters.MovementType;
 import md.leonis.ystt.model.yodesk.puzzles.PrefixedStr;
 import md.leonis.ystt.model.yodesk.puzzles.Puzzle;
 import md.leonis.ystt.model.yodesk.puzzles.StringMeaning;
@@ -2912,6 +2913,7 @@ public class MainPaneController {
         zoneEditorListView.setItems(FXCollections.observableList(yodesk.getZones().getZones().stream()
                 .filter(z -> filter1.apply(z) && filter2.apply(z)).map(m -> "Zone #" + m.getIndex()).collect(Collectors.toList())));
         zoneEditorListView.getSelectionModel().select(0);
+        Log.debug("Zones count: " + zoneEditorListView.getItems().size());
     }
 
     private Function<Zone, Boolean> zoneFilter(CheckBox enableFilterCheckBox, ComboBox<String> propertyComboBox, ComboBox<String> conditionComboBox) {
@@ -2939,19 +2941,80 @@ public class MainPaneController {
                         return z -> !(z.getWidth() == 9 && z.getHeight() == 9) && !(z.getWidth() == 18 && z.getHeight() == 18);
                 }
             case TYPE:
-                if (conditionComboBox.getSelectionModel().getSelectedIndex() > Planet.values().length - 1) {
+                if (conditionComboBox.getSelectionModel().getSelectedIndex() > ZoneType.values().length - 1) {
                     return z -> z.getType() == null;
                 } else {
                     return z -> z.getType().equals(ZoneType.valueOf(conditionComboBox.getSelectionModel().getSelectedItem()));
                 }
             case HOTSPOT:
-                if (conditionComboBox.getSelectionModel().getSelectedIndex() > Planet.values().length - 1) {
+                if (conditionComboBox.getSelectionModel().getSelectedIndex() > HotspotType.values().length - 1) {
                     return z -> z.getHotspots().stream().anyMatch(h -> h.getType() == null);
                 } else {
                     return z -> z.getHotspots().stream().anyMatch(h -> h.getType().equals(HotspotType.valueOf(conditionComboBox.getSelectionModel().getSelectedItem())));
                 }
+            case NPC:
+                if (conditionComboBox.getSelectionModel().getSelectedIndex() == conditionComboBox.getItems().size() - 1) {
+                    return z -> z.getIzx3().getNpcs().isEmpty();
+                } else {
+                    int tileId = Integer.parseInt(conditionComboBox.getSelectionModel().getSelectedItem().split("#")[1]);
+                    return z -> z.getIzx3().getNpcs().stream().anyMatch(m -> m == tileId);
+                }
+            case MONSTER:
+                if (conditionComboBox.getSelectionModel().getSelectedIndex() == conditionComboBox.getItems().size() - 1) {
+                    return z -> z.getIzax().getMonsters().isEmpty();
+                } else {
+                    int characterId = Integer.parseInt(conditionComboBox.getSelectionModel().getSelectedItem().split("#")[1]);
+                    return z -> z.getIzax().getMonsters().stream().anyMatch(m -> m.getCharacter() == characterId);
+                }
+            case MONSTER_LOOT:
+                int tileId = Integer.parseInt(conditionComboBox.getSelectionModel().getSelectedItem().split("#")[1]);
+                return z -> z.getIzax().getMonsters().stream().anyMatch(m -> m.getLoot() == tileId);
+            case MONSTER_DROP_LOOT:
+                int id = Integer.parseInt(conditionComboBox.getSelectionModel().getSelectedItem());
+                return z -> z.getIzax().getMonsters().stream().anyMatch(m -> m.getDropsLoot() == id);
+            case MONSTER_MOVEMENT_TYPE:
+                id = conditionComboBox.getSelectionModel().getSelectedIndex();
+                if (id > MovementType.values().length - 1) {
+                    return z -> z.getIzax().getMonsters().stream().anyMatch(m -> yodesk.getCharacters().getCharacters().get(m.getCharacter()).getMovementType() == null);
+                } else {
+                    return z -> z.getIzax().getMonsters().stream().anyMatch(m -> yodesk.getCharacters().getCharacters().get(m.getCharacter()).getMovementType().getId() == id);
+                }
+            case MONSTER_WAYPOINT:
+                switch (conditionComboBox.getSelectionModel().getSelectedIndex()) {
+                    case 0:
+                        return z -> z.getIzax().getMonsters().stream().anyMatch(m -> m.getWaypoints().get(0).getX() == 0 && m.getWaypoints().get(0).getY() == 0);
+                    case 1:
+                        return z -> z.getIzax().getMonsters().stream().anyMatch(m -> (m.getWaypoints().get(0).getX() > 0 && m.getWaypoints().get(0).getX() < 65535)
+                                || (m.getWaypoints().get(0).getY() > 0 && m.getWaypoints().get(0).getY() < 65535));
+                    default:
+                        return z -> z.getIzax().getMonsters().stream().anyMatch(m -> m.getWaypoints().get(0).getX() == 65535 && m.getWaypoints().get(0).getY() == 65535);
+                }
+            case PROVIDED_ITEM:
+                if (conditionComboBox.getSelectionModel().getSelectedIndex() == conditionComboBox.getItems().size() - 1) {
+                    return z -> z.getIzx2().getNumProvidedItems() == 0;
+                } else {
+                    tileId = Integer.parseInt(conditionComboBox.getSelectionModel().getSelectedItem().split("#")[1]);
+                    return z -> z.getIzx2().getProvidedItems().stream().anyMatch(m -> m == tileId);
+                }
+            case REQUIRED_ITEM:
+                if (conditionComboBox.getSelectionModel().getSelectedIndex() == conditionComboBox.getItems().size() - 1) {
+                    return z -> z.getIzax().getNumRequiredItems() == 0;
+                } else {
+                    tileId = Integer.parseInt(conditionComboBox.getSelectionModel().getSelectedItem().split("#")[1]);
+                    return z -> z.getIzax().getRequiredItems().stream().anyMatch(m -> m == tileId);
+                }
+            case GOAL_ITEM:
+                if (conditionComboBox.getSelectionModel().getSelectedIndex() == conditionComboBox.getItems().size() - 1) {
+                    return z -> z.getIzax().getNumGoalItems() == 0;
+                } else {
+                    tileId = Integer.parseInt(conditionComboBox.getSelectionModel().getSelectedItem().split("#")[1]);
+                    return z -> z.getIzax().getGoalItems().stream().anyMatch(m -> m == tileId);
+                }
+            case IZAX_UNNAMED2:
+                return z -> z.getIzax().get_unnamed2() == Integer.parseInt(conditionComboBox.getSelectionModel().getSelectedItem());
+            case IZX4_UNNAMED2:
+                return z -> z.getIzx4().get_unnamed2() == Integer.parseInt(conditionComboBox.getSelectionModel().getSelectedItem());
         }
-        //todo
         return z -> true;
     }
 
@@ -2977,18 +3040,59 @@ public class MainPaneController {
                             .observableList(Arrays.stream(HotspotType.values()).map(Enum::name).collect(Collectors.toList())));
                     conditionComboBox.getItems().add("<null>");
                     break;
-
-                //TODO empty, other values
-                //TODO
-                /*private int _unnamed2; // 0 or 1
-                private int numMonsters;
-                private List<Monster> monsters;
-                private int numRequiredItems;
-                // List of items that can be used to solve the zone.
-                private List<Integer> requiredItems;
-                private int numGoalItems;
-                // Additional items that are needed to solve the zone. Only used if the zone type is `goal`.
-                private List<Integer> goalItems;*/
+                case NPC:
+                    conditionComboBox.setItems(FXCollections.observableList(yodesk.getZones().getZones().stream().flatMap(z -> z.getIzx3().getNpcs().stream())
+                            .distinct().sorted().map(m -> yodesk.getTileNames().getFilteredNames().stream().filter(t -> t.getTileId() == m)
+                                    .findFirst().map(TileName::getName).orElse("???") + " #" + m).sorted().collect(Collectors.toList())));
+                    conditionComboBox.getItems().add("<null>");
+                    break;
+                case MONSTER:
+                    conditionComboBox.setItems(FXCollections.observableList(yodesk.getZones().getZones().stream().flatMap(z -> z.getIzax().getMonsters().stream())
+                            .map(Monster::getCharacter).distinct().sorted().map(m -> yodesk.getCharacters().getCharacters().get(m).getName() + " #" + m).sorted().collect(Collectors.toList())));
+                    conditionComboBox.getItems().add("<null>");
+                    break;
+                case MONSTER_LOOT:
+                    conditionComboBox.setItems(FXCollections.observableList(yodesk.getZones().getZones().stream().flatMap(z -> z.getIzax().getMonsters().stream())
+                            .map(Monster::getLoot).distinct().sorted().map(m -> yodesk.getTileNames().getFilteredNames().stream().filter(t -> t.getTileId() == m - 1)
+                                    .findFirst().map(TileName::getName).orElse("???") + " #" + m).sorted().collect(Collectors.toList())));
+                    break;
+                case MONSTER_DROP_LOOT:
+                    conditionComboBox.setItems(FXCollections.observableList(yodesk.getZones().getZones().stream().flatMap(z -> z.getIzax().getMonsters().stream())
+                            .map(Monster::getDropsLoot).distinct().sorted().map(m -> "" + m).collect(Collectors.toList())));
+                    break;
+                    case MONSTER_MOVEMENT_TYPE:
+                    conditionComboBox.setItems(FXCollections.observableList(Arrays.stream(MovementType.values()).map(Enum::name).collect(Collectors.toList())));
+                    conditionComboBox.getItems().add("<null>");
+                    break;
+                case MONSTER_WAYPOINT:
+                    conditionComboBox.setItems(FXCollections.observableList(Arrays.asList("[0,0]...", "[m,n],...", "[-1,-1],...")));
+                    break;
+                case PROVIDED_ITEM:
+                    conditionComboBox.setItems(FXCollections.observableList(yodesk.getZones().getZones().stream().flatMap(z -> z.getIzx2().getProvidedItems().stream())
+                            .distinct().sorted().map(m -> yodesk.getTileNames().getFilteredNames().stream().filter(t -> t.getTileId() == m)
+                                    .findFirst().map(TileName::getName).orElse("???") + " #" + m).sorted().collect(Collectors.toList())));
+                    conditionComboBox.getItems().add("<null>");
+                    break;
+                case REQUIRED_ITEM:
+                    conditionComboBox.setItems(FXCollections.observableList(yodesk.getZones().getZones().stream().flatMap(z -> z.getIzax().getRequiredItems().stream())
+                            .distinct().sorted().map(m -> yodesk.getTileNames().getFilteredNames().stream().filter(t -> t.getTileId() == m)
+                                    .findFirst().orElseThrow(() -> new RuntimeException("No tile name! " + m)).getName() + " #" + m).sorted().collect(Collectors.toList())));
+                    conditionComboBox.getItems().add("<null>");
+                    break;
+                case GOAL_ITEM:
+                    conditionComboBox.setItems(FXCollections.observableList(yodesk.getZones().getZones().stream().flatMap(z -> z.getIzax().getGoalItems().stream())
+                            .distinct().sorted().map(m -> yodesk.getTileNames().getFilteredNames().stream().filter(t -> t.getTileId() == m)
+                                    .findFirst().orElseThrow(() -> new RuntimeException("No tile name! " + m)).getName() + " #" + m).sorted().collect(Collectors.toList())));
+                    conditionComboBox.getItems().add("<null>");
+                    break;
+                case IZAX_UNNAMED2:
+                    conditionComboBox.setItems(FXCollections.observableList(yodesk.getZones().getZones().stream()
+                            .map(z -> z.getIzax().get_unnamed2()).distinct().sorted().map(m -> m + "").collect(Collectors.toList())));
+                    break;
+                case IZX4_UNNAMED2:
+                    conditionComboBox.setItems(FXCollections.observableList(yodesk.getZones().getZones().stream()
+                            .map(z -> z.getIzx4().get_unnamed2()).distinct().sorted().map(m -> m + "").collect(Collectors.toList())));
+                    break;
             }
             conditionComboBox.getSelectionModel().select(0);
             fillZoneListView();
