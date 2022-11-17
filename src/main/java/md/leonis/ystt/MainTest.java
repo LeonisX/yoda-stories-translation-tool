@@ -3,6 +3,7 @@ package md.leonis.ystt;
 import com.google.gson.Gson;
 import md.leonis.ystt.model.Encoding;
 import md.leonis.ystt.model.yodesk.Yodesk;
+import md.leonis.ystt.model.yodesk.tiles.TileName;
 import md.leonis.ystt.model.yodesk.zones.*;
 import md.leonis.ystt.utils.IOUtils;
 import org.apache.poi.xwpf.usermodel.*;
@@ -17,6 +18,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static md.leonis.config.Config.yodesk;
 import static md.leonis.ystt.utils.WordUtils.addBulletsList;
 
 public class MainTest {
@@ -26,7 +28,8 @@ public class MainTest {
         Yodesk yodesk = Yodesk.fromFile("C:\\Users\\user\\Downloads\\Games_YS\\my experiments\\Star Wars - Yoda Stories (USA) (10.08.1998) (The LucasArts Archives Vol. IV) (Leonis)\\yodesk.dta", "windows-1252");
         //Yodesk yodesk = Yodesk.fromFile("C:\\Users\\user\\Downloads\\Games_YS\\my experiments\\Star Wars - Yoda Stories (Spain) (22.05.1997) (Installed)\\yodesk.dta", "windows-1252");
 
-        showZonesTypeVsUnk2(yodesk);
+        showUnreachableLoot(yodesk);
+        //showZonesTypeVsUnk2(yodesk);
         //showZonesTypeVsProvidedItems(yodesk);
 
         //showGarbage(yodesk);
@@ -35,6 +38,22 @@ public class MainTest {
         //showSoundsUsage();
         //encodingsToJson();
         //docExcelExperiments();
+    }
+
+    private static void showUnreachableLoot(Yodesk yodesk) {
+        for (Zone z : yodesk.getZones().getZones()) {
+            for (Monster m : z.getIzax().getMonsters()) {
+                if (m.getLoot() != 0 && m.getLoot() != 65535 && m.getDropsLoot() == 0) {
+                    String character = yodesk.getCharacters().getCharacters().get(m.getCharacter()).getName();
+                    String tileName = yodesk.getTileNames().getFilteredNames().stream().filter(t -> t.getTileId() == m.getLoot() - 1)
+                            .findFirst().map(TileName::getName).orElse(null);
+                    if (tileName == null) {
+                        tileName = "??? #" + (m.getLoot() - 1);
+                    }
+                    System.out.println(String.format("* Zone #%s: %s: %s", z.getIndex(), character, tileName));
+                }
+            }
+        }
     }
 
     private static void showZonesTypeVsUnk2(Yodesk yodesk) {
