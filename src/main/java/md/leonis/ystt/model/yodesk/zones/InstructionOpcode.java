@@ -12,7 +12,7 @@ public enum InstructionOpcode {
     REMOVE_TILE(1, 3, "Remove tile at `arg_0`x`arg_1`x`arg_2`"),
     MOVE_TILE(2, 5, "Move Tile at `arg_0`x`arg_1`x`arg_2` to `arg_3`x`arg_4`x`arg_2`. " +
             "*Note that this can not be used to move tiles between layers!*"),
-    DRAW_TILE(3, 5, ""), // Very strange... https://github.com/cyco/WebFun/blob/master/src/engine/script/instructions/draw-tile.ts
+    DRAW_TILE(3, 3, "Draw tile `arg_2` at `arg_0`x`arg_1`"), // Very strange... https://github.com/cyco/WebFun/blob/master/src/engine/script/instructions/draw-tile.ts
     SPEAK_HERO(4, 0, "Show speech bubble next to hero. _Uses `text` attribute_."),
     SPEAK_NPC(5, 2, "Show speech bubble at `arg_0`x`arg_1`. _Uses `text` attribute_. " +
             " characters `¢` and `¥` are used as placeholders for provided and required items of the current zone, respectively."),

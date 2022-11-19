@@ -18,7 +18,6 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static md.leonis.config.Config.yodesk;
 import static md.leonis.ystt.utils.WordUtils.addBulletsList;
 
 public class MainTest {
@@ -44,7 +43,7 @@ public class MainTest {
         for (Zone z : yodesk.getZones().getZones()) {
             for (Monster m : z.getIzax().getMonsters()) {
                 if (m.getLoot() != 0 && m.getLoot() != 65535 && m.getDropsLoot() == 0) {
-                    String character = yodesk.getCharacters().getCharacters().get(m.getCharacter()).getName();
+                    String character = yodesk.getCharacters().getCharacters().get(m.getCharacterId()).getName();
                     String tileName = yodesk.getTileNames().getFilteredNames().stream().filter(t -> t.getTileId() == m.getLoot() - 1)
                             .findFirst().map(TileName::getName).orElse(null);
                     if (tileName == null) {

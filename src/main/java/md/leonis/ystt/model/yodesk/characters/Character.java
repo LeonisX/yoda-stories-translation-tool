@@ -76,7 +76,6 @@ public class Character extends KaitaiStruct {
 
     @Override
     public void write(KaitaiOutputStream os) {
-
         os.writeU2le(index);
 
         if (index != 65535) {
@@ -95,7 +94,6 @@ public class Character extends KaitaiStruct {
     }
 
     public int byteSize() {
-
         return (null == marker) ? 2 :               // if marker == null, then we have last character with FFFF index only
                 2 +                                 // index
                         marker.length +             // marker
@@ -111,7 +109,6 @@ public class Character extends KaitaiStruct {
     }
 
     public List<Integer> getTileIds() {
-
         List<Integer> tileIds = new ArrayList<>();
 
         if (null != marker) {
@@ -125,7 +122,6 @@ public class Character extends KaitaiStruct {
 
     @SuppressWarnings("all")
     public void replaceTile(int tileId, int newTileId) {
-
         if (frame1 != null) {
             Collections.replaceAll(frame1.getTiles(), tileId, newTileId);
         }

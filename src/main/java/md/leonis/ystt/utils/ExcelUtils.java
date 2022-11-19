@@ -3,6 +3,9 @@ package md.leonis.ystt.utils;
 import md.leonis.ystt.model.yodesk.characters.Character;
 import md.leonis.ystt.model.yodesk.characters.CharacterAuxiliary;
 import md.leonis.ystt.model.yodesk.characters.CharacterWeapon;
+import md.leonis.ystt.model.yodesk.puzzles.Puzzle;
+import md.leonis.ystt.model.yodesk.tiles.Tile;
+import md.leonis.ystt.model.yodesk.tiles.TileName;
 import md.leonis.ystt.model.yodesk.zones.*;
 import org.apache.poi.ss.usermodel.ClientAnchor;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -26,8 +29,199 @@ import static md.leonis.ystt.utils.ImageUtils.getTile;
 
 public class ExcelUtils {
 
-    public static void saveCharacters(Path path) throws IOException {
+    public static void saveTiles(Path path) throws IOException {
+        XSSFWorkbook workbook = new XSSFWorkbook();
+        XSSFSheet sheet = workbook.createSheet("Tiles");
 
+        int columnIndex = 0;
+        XSSFRow row = sheet.createRow(0);
+        XSSFCell cell = row.createCell(columnIndex++);
+        cell.setCellValue("TileId         ");
+
+        cell = row.createCell(columnIndex++);
+        cell.setCellValue("Tile Name    ");
+
+        cell = row.createCell(columnIndex++);
+        cell.setCellValue("Zone    ");
+
+        cell = row.createCell(columnIndex++);
+        cell.setCellValue("Loot    ");
+
+        cell = row.createCell(columnIndex++);
+        cell.setCellValue("Goal Item    ");
+
+        cell = row.createCell(columnIndex++);
+        cell.setCellValue("Required Item    ");
+
+        cell = row.createCell(columnIndex++);
+        cell.setCellValue("Provided Item    ");
+
+        cell = row.createCell(columnIndex++);
+        cell.setCellValue("NPC    ");
+
+        cell = row.createCell(columnIndex++);
+        cell.setCellValue("Action    ");
+
+        cell = row.createCell(columnIndex++);
+        cell.setCellValue("Puzzle    ");
+
+        cell = row.createCell(columnIndex++);
+        cell.setCellValue("Character    ");
+
+        cell = row.createCell(columnIndex++);
+        cell.setCellValue("Transparent    ");
+
+        cell = row.createCell(columnIndex++);
+        cell.setCellValue("Floor    ");
+
+        cell = row.createCell(columnIndex++);
+        cell.setCellValue("Object    ");
+
+        cell = row.createCell(columnIndex++);
+        cell.setCellValue("Draggable    ");
+
+        cell = row.createCell(columnIndex++);
+        cell.setCellValue("Roof    ");
+
+        cell = row.createCell(columnIndex++);
+        cell.setCellValue("Map    ");
+
+        cell = row.createCell(columnIndex++);
+        cell.setCellValue("Weapon    ");
+
+        cell = row.createCell(columnIndex++);
+        cell.setCellValue("Item    ");
+
+        cell = row.createCell(columnIndex++);
+        cell.setCellValue("Character    ");
+
+        List<Tile> tiles = yodesk.getTiles().getTiles();
+
+        String flag = "true";
+
+        Map<Integer, Integer> imagesMap = new HashMap<>();
+
+        Map<Integer, List<Integer>> zoneTiles = yodesk.getZones().getZones().stream()
+                .flatMap(z -> z.getTileIds().stream()).flatMap(t -> t.getColumn().stream()).collect(Collectors.groupingBy(t -> t));
+
+        Map<Integer, List<Integer>> actionsTiles = yodesk.getZones().getZones().stream()
+                .flatMap(z -> z.getActions().stream()).flatMap(t -> t.getInstructions().stream()).map(i -> {
+                    switch (i.getOpcode()) {
+                        case PLACE_TILE: return (int) i.getArguments().get(3);
+                        case DRAW_TILE: return (int) i.getArguments().get(2);
+                        case SET_VARIABLE: return (int) i.getArguments().get(3);
+                        case DROP_ITEM: return (int) i.getArguments().get(0);
+                        case ADD_ITEM: return (int) i.getArguments().get(0);
+                        case REMOVE_ITEM: return (int) i.getArguments().get(0);
+                        default: return -1;
+                    }
+                }).collect(Collectors.groupingBy(t -> t));
+
+        for (int tId = 0; tId < tiles.size() - 1; tId++) {
+            Tile tile = tiles.get(tId);
+            final int tileId = tId;
+
+            columnIndex = 0;
+            row = sheet.createRow(tileId + 1);
+            row.setHeight((short) (32 * 15));
+
+            // TileId
+            cell = row.createCell(columnIndex++);
+            cell.setCellValue(tileId);
+            addPicture(workbook, sheet, imagesMap, tileId, 0, tileId + 1);
+            // Tile Name
+            String tileName = yodesk.getTileNames().getFilteredNames().stream().filter(t -> t.getTileId() == tileId).map(TileName::getName).findFirst().orElse("");
+            cell = row.createCell(columnIndex++);
+            cell.setCellValue(tileName);
+            // Zone
+            List<Integer> zoneIds = zoneTiles.get(tileId);
+            cell = row.createCell(columnIndex++);
+            cell.setCellValue(zoneIds == null ? 0 : zoneIds.size());
+            // Loot
+            long loot = yodesk.getZones().getZones().stream().flatMap(z -> z.getIzax().getMonsters().stream())
+                    .map(Monster::getLoot).filter(l -> tileId == l - 1).count();
+            cell = row.createCell(columnIndex++);
+            cell.setCellValue(loot);
+            // Goal Item
+            long goal = yodesk.getZones().getZones().stream().flatMap(z -> z.getIzax().getGoalItems().stream()).filter(l -> tileId == l).count();
+            cell = row.createCell(columnIndex++);
+            cell.setCellValue(goal);
+            // Required Item
+            long required = yodesk.getZones().getZones().stream().flatMap(z -> z.getIzax().getRequiredItems().stream()).filter(l -> tileId == l).count();
+            cell = row.createCell(columnIndex++);
+            cell.setCellValue(required);
+            // Provided Item
+            long provided = yodesk.getZones().getZones().stream().flatMap(z -> z.getIzx2().getProvidedItems().stream()).filter(l -> tileId == l).count();
+            cell = row.createCell(columnIndex++);
+            cell.setCellValue(provided);
+            // NPC
+            long npc = yodesk.getZones().getZones().stream().flatMap(z -> z.getIzx3().getNpcs().stream()).filter(l -> tileId == l).count();
+            cell = row.createCell(columnIndex++);
+            cell.setCellValue(npc);
+            // Actions
+            List<Integer> actionIds = actionsTiles.get(tileId);
+            cell = row.createCell(columnIndex++);
+            cell.setCellValue(actionIds == null ? 0 : actionIds.size());
+            // Puzzle
+            long puzzle1 = yodesk.getPuzzles().getPuzzles().stream().map(Puzzle::getItem1).filter(l -> l != null && l != 0 && tileId == l).count();
+            long puzzle2 = yodesk.getPuzzles().getPuzzles().stream().map(Puzzle::getItem2).filter(l -> l != null && l != 0 && tileId == l).count();
+            cell = row.createCell(columnIndex++);
+            cell.setCellValue(puzzle1 + puzzle2);
+            //TODO actions
+
+
+            // Character
+            long character = yodesk.getCharacters().getCharacters().stream().flatMap(c -> c.getTileIds().stream()).filter(l -> tileId == l).count();
+            cell = row.createCell(columnIndex++);
+            cell.setCellValue(character);
+            // Transparent
+            String transparent = tile.getAttributes().hasTransparency() ? flag : "";
+            cell = row.createCell(columnIndex++);
+            cell.setCellValue(transparent);
+            // Floor
+            String floor = tile.getAttributes().isFloor() ? flag : "";
+            cell = row.createCell(columnIndex++);
+            cell.setCellValue(floor);
+            // Object
+            String object = tile.getAttributes().isObject() ? flag : "";
+            cell = row.createCell(columnIndex++);
+            cell.setCellValue(object);
+            // Draggable
+            String draggable = tile.getAttributes().isDraggable() ? flag : "";
+            cell = row.createCell(columnIndex++);
+            cell.setCellValue(draggable);
+            // Roof
+            String roof = tile.getAttributes().isRoof() ? flag : "";
+            cell = row.createCell(columnIndex++);
+            cell.setCellValue(roof);
+            // Map
+            String map = tile.getAttributes().isMap() ? flag : "";
+            cell = row.createCell(columnIndex++);
+            cell.setCellValue(map);
+            // Weapon
+            String weapon = tile.getAttributes().isWeapon() ? flag : "";
+            cell = row.createCell(columnIndex++);
+            cell.setCellValue(weapon);
+            // Item
+            String item = tile.getAttributes().isItem() ? flag : "";
+            cell = row.createCell(columnIndex++);
+            cell.setCellValue(item);
+            // Character
+            String chara = tile.getAttributes().isCharacter() ? flag : "";
+            cell = row.createCell(columnIndex++);
+            cell.setCellValue(chara);
+        }
+
+        CellReference topLeft = new CellReference(sheet.getRow(0).getCell(0));
+        CellReference bottomRight = new CellReference(sheet.getRow(tiles.size() - 1).getCell(columnIndex - 2));
+        formatTable(workbook, sheet, topLeft, bottomRight);
+
+        try (FileOutputStream outputStream = new FileOutputStream(path.toFile())) {
+            workbook.write(outputStream);
+        }
+    }
+
+    public static void saveCharacters(Path path) throws IOException {
         List<Character> characters = yodesk.getCharacters().getCharacters();
         List<CharacterAuxiliary> auxiliaries = yodesk.getCharacterAuxiliaries().getAuxiliaries();
         List<CharacterWeapon> weapons = yodesk.getCharacterWeapons().getWeapons();
@@ -116,7 +310,6 @@ public class ExcelUtils {
     }
 
     public static void saveMonsters(Path path) throws IOException {
-
         XSSFWorkbook workbook = new XSSFWorkbook();
         XSSFSheet sheet = workbook.createSheet("Monsters");
 
@@ -165,9 +358,9 @@ public class ExcelUtils {
                 cell.setCellValue(monsterId);
 
                 cell = row.createCell(columnIndex++);
-                cell.setCellValue(m.getCharacter());
+                cell.setCellValue(m.getCharacterId());
 
-                int tileId = characters.get(m.getCharacter()).getTileIds().get(0);
+                int tileId = characters.get(m.getCharacterId()).getTileIds().get(0);
                 addPicture(workbook, sheet, imagesMap, tileId, 2, monsterLine);
 
                 cell = row.createCell(columnIndex++);
@@ -206,7 +399,6 @@ public class ExcelUtils {
     }
 
     public static void saveZones(Path path) throws IOException {
-
         XSSFWorkbook workbook = new XSSFWorkbook();
         XSSFSheet sheet = workbook.createSheet("Zones");
 
@@ -322,7 +514,6 @@ public class ExcelUtils {
     }
 
     private static void addPicture(Workbook workbook, XSSFSheet sheet, Map<Integer, Integer> imagesMap, int tileId, int col, int row) throws IOException {
-
         Integer pictureId = imagesMap.get(tileId);
 
         if (null == pictureId) {
@@ -342,7 +533,6 @@ public class ExcelUtils {
     }
 
     private static void formatTable(Workbook workbook, XSSFSheet sheet, CellReference topLeft, CellReference bottomRight) {
-
         AreaReference tableArea = workbook.getCreationHelper().createAreaReference(topLeft, bottomRight);
         XSSFTable dataTable = sheet.createTable(tableArea);
         dataTable.setDisplayName("Table1");

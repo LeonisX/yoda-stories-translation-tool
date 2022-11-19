@@ -165,7 +165,7 @@ public class StructureDump extends ArrayList<String> {
             add("    * size: " + zone.getIzax().getSize());
             add("    * _unnamed2: " + zone.getIzax().get_unnamed2());
             zone.getIzax().getMonsters().forEach(m ->
-                    add(String.format("    * monster %s [%s; %s] loot: %s; dropsLoot: %s; waypoints: %s", m.getCharacter(), m.getX(), m.getY(),
+                    add(String.format("    * monster %s [%s; %s] loot: %s; dropsLoot: %s; waypoints: %s", m.getCharacterId(), m.getX(), m.getY(),
                             m.getLoot(), m.getDropsLoot(), m.getWaypoints().stream().map(w -> String.format("[%s; %s]", w.getX(), w.getY())).collect(Collectors.joining(", ")))));
             add("    * requiredItems: " + zone.getIzax().getRequiredItems());
             add("    * goalItems: " + zone.getIzax().getGoalItems());

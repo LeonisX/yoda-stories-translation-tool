@@ -5,10 +5,10 @@ import java.util.Map;
 
 public enum TileGender {
 
-    MALE(0),
-    FEMALE(1),
+    MASCULINE(0),
+    FEMININE(1),
     NEUTER(2),
-    UNUSED(0x1684);
+    UNKNOWN(0x1684);
 
     private final int id;
 

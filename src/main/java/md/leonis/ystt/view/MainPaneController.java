@@ -160,6 +160,7 @@ public class MainPaneController {
     public CheckBox enableTilesFilterCheckBox;
     public ComboBox<String> tilesFilterComboBox;
     public Button saveFilteredTilesToOneFile;
+    public Button generateTilesReport;
 
     private Node currentTile;
 
@@ -812,20 +813,47 @@ public class MainPaneController {
     public void deleteTileClick() {
         try {
             int tileId = yodesk.getTiles().getTiles().size() - 1;
+            // Zone tiles
             List<Integer> zoneIds = yodesk.getZones().getZones().stream().filter(z -> z.getTileIds().stream()
                     .flatMap(l -> l.getColumn().stream()).anyMatch(i -> i.equals(tileId))).map(Zone::getIndex).collect(Collectors.toList());
+            // Loot tiles
+            zoneIds.addAll(yodesk.getZones().getZones().stream().filter(z -> z.getIzax().getMonsters().stream()
+                    .anyMatch(i -> i.getLoot() - 1 == tileId)).map(Zone::getIndex).collect(Collectors.toList()));
+            // Goal tiles
             zoneIds.addAll(yodesk.getZones().getZones().stream().filter(z -> z.getIzax().getGoalItems().stream()
                     .anyMatch(i -> i.equals(tileId))).map(Zone::getIndex).collect(Collectors.toList()));
+            // Required tiles
             zoneIds.addAll(yodesk.getZones().getZones().stream().filter(z -> z.getIzax().getRequiredItems().stream()
                     .anyMatch(i -> i.equals(tileId))).map(Zone::getIndex).collect(Collectors.toList()));
+            // Provided tiles
             zoneIds.addAll(yodesk.getZones().getZones().stream().filter(z -> z.getIzx2().getProvidedItems().stream()
                     .anyMatch(i -> i.equals(tileId))).map(Zone::getIndex).collect(Collectors.toList()));
+            // NPC tiles
+            zoneIds.addAll(yodesk.getZones().getZones().stream().filter(z -> z.getIzx3().getNpcs().stream()
+                    .anyMatch(i -> i.equals(tileId))).map(Zone::getIndex).collect(Collectors.toList()));
+            //Actions
+            zoneIds.addAll(yodesk.getZones().getZones().stream()
+                    .filter(z -> z.getActions().stream().flatMap(t -> t.getInstructions().stream()).anyMatch(i -> {
+                        switch (i.getOpcode()) {
+                            case PLACE_TILE: return (int) i.getArguments().get(3) == tileId;
+                            case DRAW_TILE: return (int) i.getArguments().get(2) == tileId;
+                            case SET_VARIABLE: return (int) i.getArguments().get(3) == tileId;
+                            case DROP_ITEM: return (int) i.getArguments().get(0) == tileId;
+                            case ADD_ITEM: return (int) i.getArguments().get(0) == tileId;
+                            case REMOVE_ITEM: return (int) i.getArguments().get(0) == tileId;
+                            default: return false;
+                        }
+                    })).map(Zone::getIndex).collect(Collectors.toList()));
+
             zoneIds = zoneIds.stream().distinct().sorted().collect(Collectors.toList());
+            // Puzzle tiles
             List<Integer> puzzleIds = yodesk.getPuzzles().getPuzzles().stream()
                     .filter(p -> (p.getItem2() != null && p.getItem2().equals(tileId)) || p.getItem1() != null && p.getItem1().equals(tileId))
                     .map(Puzzle::getIndex).collect(Collectors.toList());
+            // Character tiles
             List<Integer> charactersIds = yodesk.getCharacters().getCharacters().stream().filter(c -> c.getTileIds().stream()
                     .anyMatch(i -> i.equals(tileId))).map(Character::getIndex).collect(Collectors.toList());
+            // Tile names
             List<String> tileNameIds = yodesk.getTileNames().getNames().stream().filter(t -> t.getTileId() == tileId).map(TileName::getName).collect(Collectors.toList());
 
             boolean isSafe = (zoneIds.size() + puzzleIds.size() + charactersIds.size() + tileNameIds.size()) == 0;
@@ -862,6 +890,16 @@ public class MainPaneController {
 
         usedTiles.remove(usedTiles.size() - 1);
         drawEditZone();
+    }
+
+    public void generateTilesReportClick() {
+        try {
+            Path path = dumpsPath.resolve("tiles" + E_XLSX);
+            Log.debug("Generate tiles report: " + path);
+            ExcelUtils.saveTiles(path);
+        } catch (Exception e) {
+            JavaFxUtils.showAlert("Error creating tiles report", e);
+        }
     }
 
     private ChangeListener<Toggle> tilesAttributesToggleGroupListener() {
@@ -1246,7 +1284,7 @@ public class MainPaneController {
         if (!monsters.isEmpty()) {
             Monster monster = monsters.get(0);
 
-            Character character = yodesk.getCharacters().getCharacters().get(monster.getCharacter());
+            Character character = yodesk.getCharacters().getCharacters().get(monster.getCharacterId());
 
             lines.add("Monster: " + character.getName());
             lines.add("Movement type: " + StringUtils.capitalize(character.getMovementType().name().toLowerCase().replace("_", " ")));
@@ -1260,8 +1298,8 @@ public class MainPaneController {
             } else {
                 lines.add("Sound: " + yodesk.getSounds().getSounds().get(weapon));
             }
-            lines.add("Damage: " + yodesk.getCharacterAuxiliaries().getAuxiliaries().get(monster.getCharacter()).getDamage());
-            lines.add("Health: " + yodesk.getCharacterWeapons().getWeapons().get(monster.getCharacter()).getHealth());
+            lines.add("Damage: " + yodesk.getCharacterAuxiliaries().getAuxiliaries().get(monster.getCharacterId()).getDamage());
+            lines.add("Health: " + yodesk.getCharacterWeapons().getWeapons().get(monster.getCharacterId()).getHealth());
             if (monster.getDropsLoot() > 0) {
                 if (monster.getLoot() == 0xFFFF) {
                     lines.add("Loot: Zone's quest item");
@@ -1409,7 +1447,7 @@ public class MainPaneController {
         }
         if (showZoneMonstersCheckBox.isSelected()) {
             zone.getIzax().getMonsters().forEach(m -> {
-                int tileId = yodesk.getCharacters().getCharacters().get(m.getCharacter()).getTileIds().get(0);
+                int tileId = yodesk.getCharacters().getCharacters().get(m.getCharacterId()).getTileIds().get(0);
                 drawTileOnCanvas(tileId, canvas, m.getX() * TILE_SIZE, m.getY() * TILE_SIZE, null);
                 drawBorderOnCanvas(canvas, m.getX() * TILE_SIZE, m.getY() * TILE_SIZE, Color.rgb(127, 255, 255));
             });
@@ -1442,7 +1480,7 @@ public class MainPaneController {
         if (showZoneMonstersCheckBox.isSelected()) {
             zone.getIzax().getMonsters().forEach(m -> {
                 if (m.getX() == x && m.getY() == y) {
-                    int tileId = yodesk.getCharacters().getCharacters().get(m.getCharacter()).getTileIds().get(0);
+                    int tileId = yodesk.getCharacters().getCharacters().get(m.getCharacterId()).getTileIds().get(0);
                     drawTileOnCanvas(tileId, canvas, m.getX() * TILE_SIZE, m.getY() * TILE_SIZE, null);
                     drawBorderOnCanvas(canvas, m.getX() * TILE_SIZE, m.getY() * TILE_SIZE, Color.rgb(127, 255, 255));
                 }
@@ -1638,6 +1676,7 @@ public class MainPaneController {
         saveTilesToSeparateFilesClick();
         saveTilesToOneFileClick();
         saveFilteredTilesToOneFileClick();
+        generateTilesReportClick();
         saveZonesToFilesButtonClick();
         dumpActionsTextToDocxClick();
         dumpPuzzlesTextToDocxClick();
@@ -2236,7 +2275,7 @@ public class MainPaneController {
                         if (groupByMonsterCheckBox.isSelected()) {
                             Set<String> uniqueValues = new HashSet<>();
                             for (Monster m : zone.getIzax().getMonsters()) {
-                                Character character = yodesk.getCharacters().getCharacters().get(m.getCharacter());
+                                Character character = yodesk.getCharacters().getCharacters().get(m.getCharacterId());
                                 String characterName = character.getName();
                                 if (uniqueValues.add(characterName)) {
                                     Path path = resourcesPath.resolve("ZonesByMonsters").resolve(characterName);
@@ -2247,7 +2286,7 @@ public class MainPaneController {
                         }
                         if (groupMonstersByMovementType.isSelected()) {
                             for (Monster m : zone.getIzax().getMonsters()) {
-                                Character character = yodesk.getCharacters().getCharacters().get(m.getCharacter());
+                                Character character = yodesk.getCharacters().getCharacters().get(m.getCharacterId());
                                 String characterName = character.getName();
                                 int tileId = character.getTileIds().get(0);
                                 Path path = resourcesPath.resolve("MonstersByMovementType").resolve(character.getMovementType().name());
@@ -2294,7 +2333,7 @@ public class MainPaneController {
         drawBIZoneLayer(canvas, zone, 1);
         if (drawMonsters.isSelected()) {
             zone.getIzax().getMonsters().forEach(m -> {
-                int tileId = yodesk.getCharacters().getCharacters().get(m.getCharacter()).getTileIds().get(0);
+                int tileId = yodesk.getCharacters().getCharacters().get(m.getCharacterId()).getTileIds().get(0);
                 drawTileOnBufferedImage(tileId, canvas, m.getX() * TILE_SIZE, m.getY() * TILE_SIZE, true);
                 if (drawMonstersBorder.isSelected()) {
                     drawBorderOnBufferedImage(canvas, m.getX() * TILE_SIZE, m.getY() * TILE_SIZE, new java.awt.Color(127, 255, 255));
@@ -2964,7 +3003,7 @@ public class MainPaneController {
                     return z -> z.getIzax().getMonsters().isEmpty();
                 } else {
                     int characterId = Integer.parseInt(conditionComboBox.getSelectionModel().getSelectedItem().split("#")[1]);
-                    return z -> z.getIzax().getMonsters().stream().anyMatch(m -> m.getCharacter() == characterId);
+                    return z -> z.getIzax().getMonsters().stream().anyMatch(m -> m.getCharacterId() == characterId);
                 }
             case MONSTER_LOOT:
                 int tileId = Integer.parseInt(conditionComboBox.getSelectionModel().getSelectedItem().split("#")[1]);
@@ -2975,9 +3014,9 @@ public class MainPaneController {
             case MONSTER_MOVEMENT_TYPE:
                 id = conditionComboBox.getSelectionModel().getSelectedIndex();
                 if (id > MovementType.values().length - 1) {
-                    return z -> z.getIzax().getMonsters().stream().anyMatch(m -> yodesk.getCharacters().getCharacters().get(m.getCharacter()).getMovementType() == null);
+                    return z -> z.getIzax().getMonsters().stream().anyMatch(m -> yodesk.getCharacters().getCharacters().get(m.getCharacterId()).getMovementType() == null);
                 } else {
-                    return z -> z.getIzax().getMonsters().stream().anyMatch(m -> yodesk.getCharacters().getCharacters().get(m.getCharacter()).getMovementType().getId() == id);
+                    return z -> z.getIzax().getMonsters().stream().anyMatch(m -> yodesk.getCharacters().getCharacters().get(m.getCharacterId()).getMovementType().getId() == id);
                 }
             case MONSTER_WAYPOINT:
                 switch (conditionComboBox.getSelectionModel().getSelectedIndex()) {
@@ -3048,7 +3087,7 @@ public class MainPaneController {
                     break;
                 case MONSTER:
                     conditionComboBox.setItems(FXCollections.observableList(yodesk.getZones().getZones().stream().flatMap(z -> z.getIzax().getMonsters().stream())
-                            .map(Monster::getCharacter).distinct().sorted().map(m -> yodesk.getCharacters().getCharacters().get(m).getName() + " #" + m).sorted().collect(Collectors.toList())));
+                            .map(Monster::getCharacterId).distinct().sorted().map(m -> yodesk.getCharacters().getCharacters().get(m).getName() + " #" + m).sorted().collect(Collectors.toList())));
                     conditionComboBox.getItems().add("<null>");
                     break;
                 case MONSTER_LOOT:

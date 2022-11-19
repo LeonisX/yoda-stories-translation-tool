@@ -81,7 +81,6 @@ public class TileAttributes extends KaitaiStruct {
     }
 
     private void _read() {
-
         hasTransparency = io.readBitsIntLe(1) != 0;
         isFloor = io.readBitsIntLe(1) != 0;
         isObject = io.readBitsIntLe(1) != 0;

@@ -41,7 +41,6 @@ public class TileGenders extends KaitaiStruct {
     }
 
     private void _read() {
-
         genders = new ArrayList<>();
         for (int i = 0; i < parent.getParent().getTiles().getTiles().size(); i++) {
             genders.add(TileGender.byId(io.readU2le()));
@@ -50,14 +49,13 @@ public class TileGenders extends KaitaiStruct {
 
     @Override
     public void write(KaitaiOutputStream os) {
-
         for (int i = 0; i < parent.getParent().getTiles().getTiles().size(); i++) {
             os.writeU2le(genders.get(i).getId());
         }
     }
 
     public void addTileGender() {
-        genders.add(TileGender.MALE);
+        genders.add(TileGender.MASCULINE);
         parent.setSize(genders.size() * 2L);
     }
 

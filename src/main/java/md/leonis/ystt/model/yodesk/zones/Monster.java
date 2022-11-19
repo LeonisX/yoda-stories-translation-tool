@@ -15,7 +15,7 @@ import java.util.List;
  */
 public class Monster extends KaitaiStruct {
 
-    private int character;
+    private int characterId;
     private int x;
     private int y;
     // References the item (loot - 1) that will be dropped if the monster is killed.
@@ -48,7 +48,7 @@ public class Monster extends KaitaiStruct {
     }
 
     private void _read() {
-        character = io.readU2le();
+        characterId = io.readU2le();
         x = io.readU2le();
         y = io.readU2le();
         loot = io.readU2le();
@@ -61,7 +61,7 @@ public class Monster extends KaitaiStruct {
 
     @Override
     public void write(KaitaiOutputStream os) {
-        os.writeU2le(character);
+        os.writeU2le(characterId);
         os.writeU2le(x);
         os.writeU2le(y);
         os.writeU2le(loot);
@@ -72,8 +72,8 @@ public class Monster extends KaitaiStruct {
         }
     }
 
-    public int getCharacter() {
-        return character;
+    public int getCharacterId() {
+        return characterId;
     }
 
     public int getX() {
