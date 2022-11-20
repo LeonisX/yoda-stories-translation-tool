@@ -1,11 +1,15 @@
 package md.leonis.ystt;
 
 import com.google.gson.Gson;
+import javafx.util.Pair;
 import md.leonis.ystt.model.Encoding;
 import md.leonis.ystt.model.yodesk.Yodesk;
+import md.leonis.ystt.model.yodesk.puzzles.Puzzle;
 import md.leonis.ystt.model.yodesk.tiles.TileName;
 import md.leonis.ystt.model.yodesk.zones.*;
 import md.leonis.ystt.utils.IOUtils;
+import org.apache.commons.lang3.tuple.ImmutableTriple;
+import org.apache.commons.lang3.tuple.Triple;
 import org.apache.poi.xwpf.usermodel.*;
 
 import java.io.FileInputStream;
@@ -22,12 +26,21 @@ import static md.leonis.ystt.utils.WordUtils.addBulletsList;
 
 public class MainTest {
 
+    //TODO puzzles
+    //TODO puzzles report
     public static void main(String[] args) throws IOException {
 
         Yodesk yodesk = Yodesk.fromFile("C:\\Users\\user\\Downloads\\Games_YS\\my experiments\\Star Wars - Yoda Stories (USA) (10.08.1998) (The LucasArts Archives Vol. IV) (Leonis)\\yodesk.dta", "windows-1252");
         //Yodesk yodesk = Yodesk.fromFile("C:\\Users\\user\\Downloads\\Games_YS\\my experiments\\Star Wars - Yoda Stories (Spain) (22.05.1997) (Installed)\\yodesk.dta", "windows-1252");
 
-        showUnreachableLoot(yodesk);
+        showPuzzles(yodesk);
+        //showActionsOnlyTiles(yodesk);
+        //showNPCs(yodesk);
+        //showProvidedItems(yodesk);
+        //showRequiredItems(yodesk);
+        //showGoalItems(yodesk);
+        //showLoot(yodesk);
+        //showUnreachableLoot(yodesk);
         //showZonesTypeVsUnk2(yodesk);
         //showZonesTypeVsProvidedItems(yodesk);
 
@@ -39,16 +52,167 @@ public class MainTest {
         //docExcelExperiments();
     }
 
+    //TODO
+    private static void showPuzzles(Yodesk yodesk) {
+        List<Triple<Integer, String, Integer>> triples = new ArrayList<>();
+        for (Zone z : yodesk.getZones().getZones()) {
+            for (Integer m : z.getIzx3().getNpcs()) {
+                triples.add(new ImmutableTriple<>(z.getIndex(), getTileName(yodesk, m), m));
+            }
+        }
+        triples.stream().collect(Collectors.groupingBy(Triple::getRight))
+                .entrySet().stream().sorted((e1, e2) -> Integer.compare(e2.getValue().size(), e1.getValue().size()))
+                .forEach((e) -> System.out.println(String.format("| %d | ![](images/tiles/%04d.png) | %s | %s | %s |", e.getKey(), e.getKey(), e.getValue().get(0).getMiddle(), e.getValue().size(),
+                        e.getValue().size() > 16 ? e.getValue().subList(0, 16).stream().map(z -> "" + z.getLeft()).collect(Collectors.joining(", ")) + ", ..."
+                                : e.getValue().stream().map(z -> "" + z.getLeft()).collect(Collectors.joining(", ")))));
+    }
+
+    private static void showActionsOnlyTiles(Yodesk yodesk) {
+        Map<Integer, List<Integer>> zoneTiles = yodesk.getZones().getZones().stream()
+                .flatMap(z -> z.getTileIds().stream()).flatMap(t -> t.getColumn().stream()).collect(Collectors.groupingBy(t -> t));
+
+        List<Pair<Integer, Integer>> actionZones = new ArrayList<>();
+        for (Zone z : yodesk.getZones().getZones()) {
+            z.getActions().stream().flatMap(t -> t.getInstructions().stream()).forEach(i -> {
+                switch (i.getOpcode()) {
+                    case PLACE_TILE:
+                        actionZones.add(new Pair<>((int) i.getArguments().get(3), z.getIndex()));
+                        break;
+                    case DRAW_TILE:
+                        actionZones.add(new Pair<>((int) i.getArguments().get(2), z.getIndex()));
+                        break;
+                    case SET_VARIABLE:
+                        actionZones.add(new Pair<>((int) i.getArguments().get(3), z.getIndex()));
+                        break;
+                    case DROP_ITEM:
+                        actionZones.add(new Pair<>((int) i.getArguments().get(0), z.getIndex()));
+                        break;
+                    case ADD_ITEM:
+                        actionZones.add(new Pair<>((int) i.getArguments().get(0), z.getIndex()));
+                        break;
+                    case REMOVE_ITEM:
+                        actionZones.add(new Pair<>((int) i.getArguments().get(0), z.getIndex()));
+                        break;
+                }
+            });
+        }
+
+        Map<Integer, List<Pair<Integer, Integer>>> actions = actionZones.stream().collect(Collectors.groupingBy(Pair::getKey));
+
+        actions.keySet().removeAll(zoneTiles.keySet());
+        actions.keySet().removeAll(yodesk.getZones().getZones().stream().flatMap(z -> z.getIzax().getRequiredItems().stream()).distinct().collect(Collectors.toList()));
+        actions.keySet().removeAll(yodesk.getZones().getZones().stream().flatMap(z -> z.getIzax().getGoalItems().stream()).distinct().collect(Collectors.toList()));
+        actions.keySet().removeAll(yodesk.getZones().getZones().stream().flatMap(z -> z.getIzx2().getProvidedItems().stream()).distinct().collect(Collectors.toList()));
+        actions.keySet().removeAll(yodesk.getZones().getZones().stream().flatMap(z -> z.getIzx3().getNpcs().stream()).distinct().collect(Collectors.toList()));
+        actions.keySet().removeAll(yodesk.getZones().getZones().stream().flatMap(z -> z.getIzax().getMonsters().stream().map(m -> m.getLoot() - 1)).distinct().collect(Collectors.toList()));
+        actions.keySet().removeAll(yodesk.getCharacters().getFilteredCharacters().stream().flatMap(c -> c.getTileIds().stream()).distinct().collect(Collectors.toList()));
+        actions.keySet().removeAll(yodesk.getPuzzles().getPuzzles().stream().map(Puzzle::getItem1).distinct().collect(Collectors.toList()));
+        actions.keySet().removeAll(yodesk.getPuzzles().getPuzzles().stream().map(Puzzle::getItem2).distinct().collect(Collectors.toList()));
+
+        actions.entrySet().stream().sorted((e1, e2) -> Integer.compare(e2.getValue().size(), e1.getValue().size()))
+                .forEach((e) -> System.out.println(String.format("| %d | ![](images/tiles/%04d.png) | %s | %s | %s |", e.getKey(), e.getKey(), getTileName2(yodesk, e.getKey()), e.getValue().size(),
+                        distinctZones(e.getValue()).stream().map(z -> "" + z).collect(Collectors.joining(", ")))));
+    }
+
+    private static List<Integer> distinctZones(List<Pair<Integer, Integer>> pairs) {
+        return pairs.stream().map(Pair::getValue).distinct().sorted().collect(Collectors.toList());
+    }
+
+
+    private static String getTileName2(Yodesk yodesk, int tileId) {
+        String tileName = yodesk.getTileNames().getFilteredNames().stream().filter(t -> t.getTileId() == tileId)
+                .findFirst().map(TileName::getName).orElse(null);
+        if (tileName == null) {
+            tileName = "";
+        }
+        return tileName;
+    }
+
+    private static void showNPCs(Yodesk yodesk) {
+        List<Triple<Integer, String, Integer>> triples = new ArrayList<>();
+        for (Zone z : yodesk.getZones().getZones()) {
+            for (Integer m : z.getIzx3().getNpcs()) {
+                triples.add(new ImmutableTriple<>(z.getIndex(), getTileName(yodesk, m), m));
+            }
+        }
+        triples.stream().collect(Collectors.groupingBy(Triple::getRight))
+                .entrySet().stream().sorted((e1, e2) -> Integer.compare(e2.getValue().size(), e1.getValue().size()))
+                .forEach((e) -> System.out.println(String.format("| %d | ![](images/tiles/%04d.png) | %s | %s | %s |", e.getKey(), e.getKey(), e.getValue().get(0).getMiddle(), e.getValue().size(),
+                        e.getValue().size() > 16 ? e.getValue().subList(0, 16).stream().map(z -> "" + z.getLeft()).collect(Collectors.joining(", ")) + ", ..."
+                                : e.getValue().stream().map(z -> "" + z.getLeft()).collect(Collectors.joining(", ")))));
+    }
+
+    private static void showProvidedItems(Yodesk yodesk) {
+        List<Triple<Integer, String, Integer>> triples = new ArrayList<>();
+        for (Zone z : yodesk.getZones().getZones()) {
+            for (Integer m : z.getIzax().getRequiredItems()) {
+                triples.add(new ImmutableTriple<>(z.getIndex(), getTileName(yodesk, m), m));
+            }
+        }
+        triples.stream().collect(Collectors.groupingBy(Triple::getRight))
+                .entrySet().stream().sorted((e1, e2) -> Integer.compare(e2.getValue().size(), e1.getValue().size()))
+                .forEach((e) -> System.out.println(String.format("| %d | ![](images/tiles/%04d.png) | %s | %s | %s |", e.getKey(), e.getKey(), e.getValue().get(0).getMiddle(), e.getValue().size(),
+                        e.getValue().size() > 16 ? e.getValue().subList(0, 16).stream().map(z -> "" + z.getLeft()).collect(Collectors.joining(", ")) + ", ..."
+                                : e.getValue().stream().map(z -> "" + z.getLeft()).collect(Collectors.joining(", ")))));
+    }
+
+    private static void showRequiredItems(Yodesk yodesk) {
+        List<Triple<Integer, String, Integer>> triples = new ArrayList<>();
+        for (Zone z : yodesk.getZones().getZones()) {
+            for (Integer m : z.getIzax().getRequiredItems()) {
+                triples.add(new ImmutableTriple<>(z.getIndex(), getTileName(yodesk, m), m));
+            }
+        }
+        triples.stream().collect(Collectors.groupingBy(Triple::getRight))
+                .entrySet().stream().sorted((e1, e2) -> Integer.compare(e2.getValue().size(), e1.getValue().size()))
+                .forEach((e) -> System.out.println(String.format("| %d | ![](images/tiles/%04d.png) | %s | %s | %s |", e.getKey(), e.getKey(), e.getValue().get(0).getMiddle(), e.getValue().size(),
+                        e.getValue().size() > 16 ? e.getValue().subList(0, 16).stream().map(z -> "" + z.getLeft()).collect(Collectors.joining(", ")) + ", ..."
+                                : e.getValue().stream().map(z -> "" + z.getLeft()).collect(Collectors.joining(", ")))));
+    }
+
+    private static void showGoalItems(Yodesk yodesk) {
+        List<Triple<Integer, String, Integer>> triples = new ArrayList<>();
+        for (Zone z : yodesk.getZones().getZones()) {
+            for (Integer m : z.getIzax().getGoalItems()) {
+                triples.add(new ImmutableTriple<>(z.getIndex(), getTileName(yodesk, m), m));
+            }
+        }
+        triples.stream().collect(Collectors.groupingBy(Triple::getRight))
+                .entrySet().stream().sorted(Comparator.comparing(e -> e.getValue().get(0).getMiddle()))
+                .forEach((e) -> System.out.println(String.format("| %d | ![](images/tiles/%04d.png) | %s | %s | %s |", e.getKey(), e.getKey(), e.getValue().get(0).getMiddle(), e.getValue().size(),
+                        e.getValue().stream().map(z -> "" + z.getLeft()).collect(Collectors.joining(", ")))));
+    }
+
+    private static void showLoot(Yodesk yodesk) {
+        List<Triple<Integer, String, Integer>> triples = new ArrayList<>();
+        for (Zone z : yodesk.getZones().getZones()) {
+            for (Monster m : z.getIzax().getMonsters()) {
+                if (m.getLoot() != 0 && m.getLoot() != 65535 && m.getDropsLoot() != 0) {
+                    triples.add(new ImmutableTriple<>(z.getIndex(), getTileName(yodesk, m.getLoot() - 1), m.getLoot() - 1));
+                }
+            }
+        }
+        triples.stream().collect(Collectors.groupingBy(Triple::getRight))
+                .entrySet().stream().sorted((e1, e2) -> Integer.compare(e2.getValue().size(), e1.getValue().size()))
+                .forEach((e) -> System.out.println(String.format("| %d | ![](images/tiles/%04d.png) | %s | %s | %s |", e.getKey(), e.getKey(), e.getValue().get(0).getMiddle(), e.getValue().size(),
+                        e.getValue().stream().map(z -> "" + z.getLeft()).collect(Collectors.joining(", ")))));
+    }
+
+    private static String getTileName(Yodesk yodesk, int tileId) {
+        String tileName = yodesk.getTileNames().getFilteredNames().stream().filter(t -> t.getTileId() == tileId)
+                .findFirst().map(TileName::getName).orElse(null);
+        if (tileName == null) {
+            tileName = "??? #" + (tileId);
+        }
+        return tileName;
+    }
+
     private static void showUnreachableLoot(Yodesk yodesk) {
         for (Zone z : yodesk.getZones().getZones()) {
             for (Monster m : z.getIzax().getMonsters()) {
                 if (m.getLoot() != 0 && m.getLoot() != 65535 && m.getDropsLoot() == 0) {
                     String character = yodesk.getCharacters().getCharacters().get(m.getCharacterId()).getName();
-                    String tileName = yodesk.getTileNames().getFilteredNames().stream().filter(t -> t.getTileId() == m.getLoot() - 1)
-                            .findFirst().map(TileName::getName).orElse(null);
-                    if (tileName == null) {
-                        tileName = "??? #" + (m.getLoot() - 1);
-                    }
+                    String tileName = getTileName(yodesk, m.getLoot() - 1);
                     System.out.println(String.format("* Zone #%s: %s: %s", z.getIndex(), character, tileName));
                 }
             }
