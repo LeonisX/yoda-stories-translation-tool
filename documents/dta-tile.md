@@ -3,7 +3,7 @@ Tiles
 
 TODO hex
 
-#### Format
+#### TILE Format
 
 * 4 bytes: "`TILE`"
 * 4 bytes: section size
@@ -13,6 +13,11 @@ TODO hex
 
 * 4 bytes: tile attributes
 * `1024` bytes: pixels
+
+
+## Tiles
+
+_The total number of tiles in the game is limited to a signed number that fits in 2 bytes: `32768`._
 
 Technically every tile is the most common Bitmap. Dimensions:
 
@@ -31,7 +36,7 @@ Computers of those times didn’t even come close to having so much RAM._
 Each location divided into 32x32 pixel cells, and tiles cannot go beyond the borders of these cells.
 These are not sprites, but static images.
 So, you cannot even dream about the smoothness of Luke Skywalker's movement.
-It moves immediately 32 pixels in the selected direction.
+It moves exactly 32 pixels in the selected direction.
 The same goes for the movement of enemies and even shots with laser weapons.
 
 > **Note:** The loading screen and speech bubbles do not use tiles. In the first case, this is a full-fledged bitmap,
@@ -65,7 +70,7 @@ For example, "transparent" tiles on the bottom layer of the zone for some reason
 | 5        | Map         | Tiles used in mini-map screen                           |
 | 6        | Weapon      | Weapon tiles                                            |
 | 7        | Item        | Various items                                           |
-| 8        | Character   | Tile forms part of a character                          |
+| 8        | Character   | The tile is part of the character's appearance          |
 
 ### Qualifying attributes
      
@@ -227,12 +232,12 @@ Most of these tiles are quest items.
 ![](images/tiles/tiles-blockade-south-solved.png)
 ![](images/tiles/tiles-blockade-west.png)
 ![](images/tiles/tiles-blockade-west-solved.png)
-![](images/tiles/tiles-goal.png)
+![](images/tiles/tiles-final-chapter.png)
 ![](images/tiles/tiles-puzzle.png)
 ![](images/tiles/tiles-puzzle-solved.png)
-![](images/tiles/tiles-town.png)
-![](images/tiles/tiles-travel.png)
-![](images/tiles/tiles-travel-solved.png)
+![](images/tiles/tiles-spaceport.png)
+![](images/tiles/tiles-gateway.png)
+![](images/tiles/tiles-gateway-solved.png)
 ![](images/tiles/tiles-locator-indicator.png)
 
 Please note that some tiles related to the map
@@ -288,6 +293,85 @@ and only the game engine knows when to render them.
 #### Weapon The Force (transparent)
 
 ![](images/tiles/tiles-the-force-transparent.png)
+
+### The most significant tiles
+
+These tiles are worth remembering better. Developers liked them more than others.
+
+### The most popular tiles in locations
+
+| TileId | Image                      | Number of uses/Name                                 |
+|:------:|:--------------------------:|:---------------------------------------------------:|
+| 648    | ![](images/tiles/0648.png) | 36481                                               |
+| 0      | ![](images/tiles/0000.png) | 35115                                               |
+| 403    | ![](images/tiles/0403.png) | 23408                                               |
+| 858    | ![](images/tiles/0858.png) | 6720                                                |
+| 355    | ![](images/tiles/0355.png) | 5827 / Invis.Blocker                                  |
+| 678    | ![](images/tiles/0678.png) | 4734                                                |
+| 192    | ![](images/tiles/0192.png) | 4388                                                |
+| 306    | ![](images/tiles/0306.png) | 3754                                                |
+| 598    | ![](images/tiles/0598.png) | 3460                                                |
+| 875    | ![](images/tiles/0875.png) | 2611                                                |
+	
+		
+### Unused tiles
+
+These tiles are not used in YODASK.DTA. However, some of them are used directly by the game engine.
+
+
+| TileId | Image                     | Comment                                                  |
+|:------:|---------------------------|----------------------------------------------------------|
+| 81    | ![](images/tiles/0081.png) | ![](images/tiles/0082.png) This door has a sand entry counterpart |
+| 83    | ![](images/tiles/0083.png) |                                                          |
+| 84    | ![](images/tiles/0084.png) |                                                          |
+| 221   | ![](images/tiles/0221.png) | ![](images/tiles/0220.png) This door has a double with a red indicator |
+| 251   | ![](images/tiles/0251.png) |                                                          |
+| 338   | ![](images/tiles/0338.png) | The bottom of the Millennium Falcon. Must check in game  |
+| 343   | ![](images/tiles/0343.png) | Probably part of the Millennium Falcon. Must check in game |
+| 414   | ![](images/tiles/0414.png) | ![](images/tiles/0415.png) This door has a mirrored version |
+| 546   | ![](images/tiles/0546.png) | ![](images/tiles/0547.png) The mirror version is used    |
+| 579   | ![](images/tiles/0579.png) |                                                          |
+| 628   | ![](images/tiles/0628.png) | ![](images/tiles/0627.png) A slightly different version of this door is used |
+| 701   | ![](images/tiles/0701.png) | ![](images/tiles/0702.png) Used version of this door with lock |
+| 703   | ![](images/tiles/0703.png) | Weird. This door must be used, there are no others       |
+| 706   | ![](images/tiles/0706.png) |                                                          |
+| 718   | ![](images/tiles/0718.png) | ![](images/tiles/0717.png) The mirror version is used    |
+| 757   | ![](images/tiles/0757.png) | Top layer graphic element                                |
+| 803   | ![](images/tiles/0803.png) | Nose of Landspeeder X-34 without transparency            |
+| 830   | ![](images/tiles/0830.png) | Used directly by the game engine                         |
+| 832   | ![](images/tiles/0832.png) | Used directly by the game engine                         |
+| 833   | ![](images/tiles/0833.png) | Used directly by the game engine                         |
+| 834   | ![](images/tiles/0834.png) | Used directly by the game engine                         |
+| 835   | ![](images/tiles/0835.png) | Used directly by the game engine                         |
+| 836   | ![](images/tiles/0836.png) | Used directly by the game engine                         |
+| 1094  | ![](images/tiles/1094.png) |                                                          |
+| 1186  | ![](images/tiles/1186.png) | TIE Fighter shadow. It is strange that it is not used    |
+| 1187  | ![](images/tiles/1187.png) | TIE Fighter shadow. It is strange that it is not used    |
+| 1392  | ![](images/tiles/1392.png) |                                                          |
+| 1503  | ![](images/tiles/1503.png) |                                                          |
+| 1504  | ![](images/tiles/1504.png) |                                                          |
+| 1506  | ![](images/tiles/1506.png) |                                                          |
+| 1508  | ![](images/tiles/1508.png) |                                                          |
+| 2086  | ![](images/tiles/2086.png) |                                                          |
+| 2088  | ![](images/tiles/2088.png) |                                                          |
+
+
+Game state
+----------
+
+We already have the building blocks of the game. Tiles have characteristics such as transparency,
+permeability, mobility and belonging to a certain group.
+
+With the help of tiles, you can draw a game space of any complexity, since 3 layers of graphics are used.
+They also represent the appearance of items and make up the animation frames of the characters.
+
+
+Localization
+------------
+
+It makes sense to translate such phrases as `YODA STORIES`, `TRY AGAIN...`, `YOU WIN!`, `FORCE FACTOR`.
+They are made up of individual tiles.
+If the allotted space is not enough, then additional tiles can be added to the game.
 
 
 Hacking possibilities
