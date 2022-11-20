@@ -196,7 +196,7 @@ public class StructureDump extends ArrayList<String> {
             Puzzle puzzle = puzzles.get(i);
             add("* item1Class: " + puzzle.getItem1Class());
             add("* item2Class: " + puzzle.getItem2Class());
-            add("* _unnamed6: " + puzzle.get_unnamed6());
+            add("* unknown3: " + puzzle.getUnknown3());
             add("* item1: " + puzzle.getItem1());
             add("* item2: " + puzzle.getItem2());
         }

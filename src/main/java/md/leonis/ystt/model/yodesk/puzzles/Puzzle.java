@@ -21,7 +21,7 @@ public class Puzzle extends KaitaiStruct {
     private Long type;
     private PuzzleItemClass item1Class;
     private PuzzleItemClass item2Class;
-    private Integer _unnamed6;
+    private Integer unknown3;
     private final List<PrefixedStr> prefixesStrings = new ArrayList<>(5);
     private Integer item1;
     private Integer item2;
@@ -34,6 +34,12 @@ public class Puzzle extends KaitaiStruct {
 1 Trade     ONE_NPC_QUEST_1     QUEST_IN_PROGRESS
 2 Goal      ONE_NPC_QUEST_2     STORY
 3 End       YODA_QUEST          STORY_INTRO
+
+		PuzzleType.Transaction,
+		PuzzleType.Offer,
+		PuzzleType.Goal,
+		PuzzleType.Mission,
+		PuzzleType.Unknown
 
 * Unnamed 6
 
@@ -84,7 +90,7 @@ public class Puzzle extends KaitaiStruct {
             type = io.readU4le();
             item1Class = PuzzleItemClass.byId(io.readU4le());
             item2Class = PuzzleItemClass.byId(io.readU4le());
-            _unnamed6 = io.readU2le();
+            unknown3 = io.readU2le();
 
             for (int i = 0; i < 5; i++) {
                 PrefixedStr prefixedStr = new PrefixedStr(io, this, root);
@@ -108,7 +114,7 @@ public class Puzzle extends KaitaiStruct {
             os.writeU4le(type);
             os.writeU4le(item1Class.getId());
             os.writeU4le(item2Class.getId());
-            os.writeU2le(_unnamed6);
+            os.writeU2le(unknown3);
 
             for (PrefixedStr prefixesString : prefixesStrings) {
                 prefixesString.write(os);
@@ -168,8 +174,8 @@ public class Puzzle extends KaitaiStruct {
         return item2Class;
     }
 
-    public Integer get_unnamed6() {
-        return _unnamed6;
+    public Integer getUnknown3() {
+        return unknown3;
     }
 
     public List<PrefixedStr> getPrefixesStrings() {
