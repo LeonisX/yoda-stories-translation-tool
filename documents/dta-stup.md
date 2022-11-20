@@ -54,7 +54,7 @@ At this point, our game cannot do very much - only display the splash screen.
 
 
 Localization
------------
+------------
 
 Optionally, you can translate the phrase "`YODA STORIES`".
 
