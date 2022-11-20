@@ -47,6 +47,18 @@ and thanks to this, this "transparency" was found.
 Zones `#76`, `#77` also have a similar invisible defect.
 
 
+Game state
+-------------
+
+At this point, our game cannot do very much - only display the splash screen.
+
+
+Localization
+-----------
+
+Optionally, you can translate the phrase "`YODA STORIES`".
+
+
 Hacking possibilities
 ---------------------
 
