@@ -169,6 +169,18 @@ EEP.WAV is a slightly modified version of [PLUCK, CARTOON - VAROOP](https://soun
 A very popular sound recorded back in the 50s by Greg Watson.
 
 
+Game state
+----------
+
+At this point, we will already be able to diversify the static splash screen with sound.
+
+
+Localization
+------------
+
+It doesn't make any sense to translate filenames.
+
+
 Hacking possibilities
 ---------------------
 
