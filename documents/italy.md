@@ -128,7 +128,7 @@ These tiles used in zones 76-77.
 
 ![](images/tiles/0061.png) ![](images/tiles/0069.png)
 
-![](images/zones/z265.png)
+![](images/zones/265-diff.png)
 
 Most likely, the change made out of curiosity, and the programmer used the level editor.
 

@@ -71,7 +71,7 @@ These tiles used in zones `0, 76, 77`.
 
 **Zone 0**
 
-![](images/zones/000br.png) ![](images/zones/z000-br-diff.png)
+![](images/zones/000br.png) ![](images/zones/000-br-diff.png)
 
 Apart from the text, three of these tiles have been replaced:
 
@@ -91,7 +91,7 @@ Apart from the text, three of these tiles have been replaced:
 
 Three changes made for an unknown purpose. The background became more heterogeneous.
 
-![](images/zones/z003.png)
+![](images/zones/003-diff.png)
 
 On the left side is the original sprite, on the right is its replacement:
 

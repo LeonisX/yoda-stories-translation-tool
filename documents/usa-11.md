@@ -69,13 +69,13 @@ Nice secret, you can find something in the equipment of that two-legged riding a
 
 Changed snowdrifts at the top of the map `151` (pink areas).
 
-![](images/zones/z151-diff.png)
+![](images/zones/151-diff.png)
 
 **Zone 176**: new Monster `61` [7; 6] loot: 65535; dropsLoot: 0
 
 ![](images/tiles/1775.png)
 
-![](images/zones/z176.png)
+![](images/zones/176.png)
 
 Added a robot of the `R2` series, I do not remember whether something falls from it or not.
 Much more interesting is the following fix:
@@ -86,7 +86,7 @@ So far, one can only guess what the developers have changed here.
 
 **Zone 203**: new Monster `61` [1; 3] loot: 65535; dropsLoot: 0
 
-![](images/zones/z203.png)
+![](images/zones/203.png)
 
 Another `R2` robot in a snowy location.
 
@@ -96,7 +96,7 @@ Also, in two places, tile `678` was replaced with tile `680`, but in fact these 
 
 **Zone 430**: Action 4: fix in a rather long action, specifically in the NPC dialogue:
 
-![](images/zones/z430.png)
+![](images/zones/430.png)
 
 Invalid Y coordinate of the dialog.
 
@@ -104,7 +104,7 @@ Invalid Y coordinate of the dialog.
 
 **Zone 535**: New Action 50 with 1 condition and 3 instructions:
 
-![](images/zones/z535.png)
+![](images/zones/535.png)
 
 ```
 Action 50

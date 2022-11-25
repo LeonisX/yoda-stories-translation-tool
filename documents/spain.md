@@ -75,7 +75,7 @@ Changed categories:
 The pink areas show where the stars were.
 For some unknown reason, the tiles `1079` and `1078` at the bottom of the screen have been changed to `1084` (100% black square).
 
-![](images/zones/z000-diff.png)
+![](images/zones/000-diff.png)
 
 It should be understood that there is a similar change in Zone 0.
 

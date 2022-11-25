@@ -117,15 +117,15 @@ One thing is confusing - how did one of the LucasArts employees find out about t
 
 Graphical changes related to tile `1543`.
 
-![](images/zones/z409.png)
+![](images/zones/409.png)
 
-![](images/zones/z445.png)
+![](images/zones/445.png)
 
-![](images/zones/z526.png)
+![](images/zones/526.png)
 
-![](images/zones/z567.png)
+![](images/zones/567.png)
 
-![](images/zones/z595.png)
+![](images/zones/595.png)
 
 **Characters**: changes in the unused part of the character names.
 This value has a fixed length of 16, that is,
@@ -147,7 +147,7 @@ Given that one Character record is 84 bytes long.
 
 **Zone 72**: Action 14: +1 instruction
 
-![](images/zones/z072.png)
+![](images/zones/072.png)
 
 The NPC drops the quest item at [10, 12].
 
@@ -155,13 +155,13 @@ The NPC drops the quest item at [10, 12].
 
 **Zone 236**: There was a problem with the hotspot on the transport, apparently, it was not possible to take the item.
 
-![](images/zones/z236.png)
+![](images/zones/236.png)
 
 ![](images/code/z236-hp.png)
 
 **Zone 266**: New Action 1:
 
-![](images/zones/z266.png)
+![](images/zones/266.png)
 
 When the zone has not yet been initialized, the Mystery theme music plays. This, and two subsequent locations
 Yoda shows Luke every 5 wins. After completing the quest, the young Jedi becomes stronger.
@@ -181,7 +181,7 @@ Play `Flourish` theme song.
 
 **Zone 267**: New Action 0:
 
-![](images/zones/z267.png)
+![](images/zones/267.png)
 
 When the zone has not yet been initialized, the `Mystery` theme music plays.
 
@@ -202,7 +202,7 @@ Play `Flourish` theme song.
 	
 **Zone 271**: New Action 0:
 
-![](images/zones/z271.png)
+![](images/zones/271.png)
 
 Correction of sounds again (`Empire` theme).
 
@@ -221,7 +221,7 @@ Action 1 (2) - `play-sound 58` (`Flourish` theme).
 
 **Zone 407**: Small graphics errors
 
-![](images/zones/z407.png)
+![](images/zones/407.png)
 
 This is where the ice placement logic works until the zone has not yet been initialized.
 
@@ -240,7 +240,7 @@ Another thing is important - 2 obstacles appeared in the invisible part of the m
 
 **Zone 472**: a lot of fixes
 
-![](images/zones/z472.png)
+![](images/zones/472.png)
 
 This is a complex map, and a decent amount of errors and flaws crept into its work.
 There is a bold assumption that not all errors have been found so far.
@@ -373,7 +373,7 @@ There were 85 actions in total. It's not the most interactive map in the game, b
 
 **Zone 572**: Fixed two hotspots
 
-![](images/zones/z572.png)
+![](images/zones/572.png)
 
 This wooded area also became a source of errors when it was not possible to get a quest item.
 
