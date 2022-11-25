@@ -450,7 +450,7 @@
                                                                         <Canvas fx:id="zoneTypeCanvas" height="32.0" width="32.0" />
                                                                         <Label fx:id="zoneTypeLabel" />
                                                                     </HBox>
-                                                                    <CheckBox fx:id="showZoneMonstersCheckBox" mnemonicParsing="false" onAction="#drawEditZone" selected="true" text="Mosters border" />
+                                                                    <CheckBox fx:id="showZoneMonstersCheckBox" mnemonicParsing="false" onAction="#drawEditZone" selected="true" text="Monsters border" />
                                                                     <CheckBox fx:id="showZoneHotspotsCheckBox" mnemonicParsing="false" onAction="#drawEditZone" selected="true" text="Show hotspots" />
                                                                 </HBox>
                                                                 <HBox alignment="CENTER_LEFT" prefHeight="24.0" prefWidth="531.0" spacing="5">

@@ -835,13 +835,20 @@ public class MainPaneController {
             zoneIds.addAll(yodesk.getZones().getZones().stream()
                     .filter(z -> z.getActions().stream().flatMap(t -> t.getInstructions().stream()).anyMatch(i -> {
                         switch (i.getOpcode()) {
-                            case PLACE_TILE: return (int) i.getArguments().get(3) == tileId;
-                            case DRAW_TILE: return (int) i.getArguments().get(2) == tileId;
-                            case SET_VARIABLE: return (int) i.getArguments().get(3) == tileId;
-                            case DROP_ITEM: return (int) i.getArguments().get(0) == tileId;
-                            case ADD_ITEM: return (int) i.getArguments().get(0) == tileId;
-                            case REMOVE_ITEM: return (int) i.getArguments().get(0) == tileId;
-                            default: return false;
+                            case PLACE_TILE:
+                                return (int) i.getArguments().get(3) == tileId;
+                            case DRAW_TILE:
+                                return (int) i.getArguments().get(2) == tileId;
+                            case SET_VARIABLE:
+                                return (int) i.getArguments().get(3) == tileId;
+                            case DROP_ITEM:
+                                return (int) i.getArguments().get(0) == tileId;
+                            case ADD_ITEM:
+                                return (int) i.getArguments().get(0) == tileId;
+                            case REMOVE_ITEM:
+                                return (int) i.getArguments().get(0) == tileId;
+                            default:
+                                return false;
                         }
                     })).map(Zone::getIndex).collect(Collectors.toList()));
 
@@ -1447,7 +1454,7 @@ public class MainPaneController {
         }
         if (showZoneMonstersCheckBox.isSelected()) {
             zone.getIzax().getMonsters().forEach(m -> {
-                int tileId = yodesk.getCharacters().getCharacters().get(m.getCharacterId()).getTileIds().get(0);
+                int tileId = getMonsterTileId(zone, m);
                 drawTileOnCanvas(tileId, canvas, m.getX() * TILE_SIZE, m.getY() * TILE_SIZE, null);
                 drawBorderOnCanvas(canvas, m.getX() * TILE_SIZE, m.getY() * TILE_SIZE, Color.rgb(127, 255, 255));
             });
@@ -1480,7 +1487,7 @@ public class MainPaneController {
         if (showZoneMonstersCheckBox.isSelected()) {
             zone.getIzax().getMonsters().forEach(m -> {
                 if (m.getX() == x && m.getY() == y) {
-                    int tileId = yodesk.getCharacters().getCharacters().get(m.getCharacterId()).getTileIds().get(0);
+                    int tileId = getMonsterTileId(zone, m);
                     drawTileOnCanvas(tileId, canvas, m.getX() * TILE_SIZE, m.getY() * TILE_SIZE, null);
                     drawBorderOnCanvas(canvas, m.getX() * TILE_SIZE, m.getY() * TILE_SIZE, Color.rgb(127, 255, 255));
                 }
@@ -1501,11 +1508,26 @@ public class MainPaneController {
     private void drawTileOnMap(Canvas canvas, Zone zone, int x, int y, int layerId) {
         int tileId = zone.getTileIds().get(y * zone.getWidth() + x).getColumn().get(layerId);
         if (tileId < yodesk.getTiles().getTiles().size()) {
-            boolean isTransparent = yodesk.getTiles().getTiles().get(tileId).getAttributes().hasTransparency();
-            usedTiles.set(tileId, true);
-            Color color = (transparencyHack && layerId == 0) || !isTransparent ? Color.BLACK : null;
-            drawTileOnCanvas(tileId, canvas, x * TILE_SIZE, y * TILE_SIZE, color);
+            if (canDrawTile(tileId, zone, x, y)) {
+                boolean isTransparent = yodesk.getTiles().getTiles().get(tileId).getAttributes().hasTransparency();
+                usedTiles.set(tileId, true);
+                Color color = (transparencyHack && layerId == 0) || !isTransparent ? Color.BLACK : null;
+                drawTileOnCanvas(tileId, canvas, x * TILE_SIZE, y * TILE_SIZE, color);
+            }
         }
+    }
+
+    // If show monster - we need to hide it's tile from zone layer
+    private boolean canDrawTile(int tileId, Zone zone, int x, int y) {
+        if (!showZoneMonstersCheckBox.isSelected()) {
+            return true;
+        }
+        Monster monster = zone.getIzax().getMonsters().stream().filter(m -> m.getX() == x && m.getY() == y).findFirst().orElse(null);
+        if (monster == null) {
+            return true;
+        }
+        Boolean isEnemy = yodesk.getTiles().getTiles().get(tileId).getAttributes().isEnemy();
+        return isEnemy == null || !isEnemy;
     }
 
     public void layerCheckBoxClick(ActionEvent event) {
@@ -2333,7 +2355,7 @@ public class MainPaneController {
         drawBIZoneLayer(canvas, zone, 1);
         if (drawMonsters.isSelected()) {
             zone.getIzax().getMonsters().forEach(m -> {
-                int tileId = yodesk.getCharacters().getCharacters().get(m.getCharacterId()).getTileIds().get(0);
+                int tileId = getMonsterTileId(zone, m);
                 drawTileOnBufferedImage(tileId, canvas, m.getX() * TILE_SIZE, m.getY() * TILE_SIZE, true);
                 if (drawMonstersBorder.isSelected()) {
                     drawBorderOnBufferedImage(canvas, m.getX() * TILE_SIZE, m.getY() * TILE_SIZE, new java.awt.Color(127, 255, 255));
@@ -2344,6 +2366,18 @@ public class MainPaneController {
         if (drawHotSpots.isSelected()) {
             zone.getHotspots().forEach(h -> drawBorderOnBufferedImage(canvas, h.getX() * TILE_SIZE, h.getY() * TILE_SIZE, new java.awt.Color(255, 0, 255)));
         }
+    }
+
+    // If can, use monster tile from zone layer
+    private int getMonsterTileId(Zone zone, Monster m) {
+        List<Integer> zoneSpotTiles = zone.getTileIds().get(m.getY() * zone.getWidth() + m.getX()).getColumn();
+        List<Integer> monsterTiles = yodesk.getCharacters().getCharacters().get(m.getCharacterId()).getTileIds();
+        monsterTiles.retainAll(zoneSpotTiles);
+        int tileId = yodesk.getCharacters().getCharacters().get(m.getCharacterId()).getFrame1().getTiles().get(1);
+        if (!monsterTiles.isEmpty()) {
+            tileId = monsterTiles.get(0);
+        }
+        return tileId;
     }
 
     private void drawBIZoneLayer(BufferedImage canvas, Zone zone, int layerId) {
@@ -2357,8 +2391,10 @@ public class MainPaneController {
     private void drawBITileOnMap(BufferedImage canvas, Zone zone, int x, int y, int layerId) {
         int tileId = zone.getTileIds().get(y * zone.getWidth() + x).getColumn().get(layerId);
         if (tileId < yodesk.getTiles().getTiles().size()) {
-            usedTiles.set(tileId, true);
-            drawTileOnBufferedImage(tileId, canvas, x * TILE_SIZE, y * TILE_SIZE, true);
+            if (canDrawTile(tileId, zone, x, y)) {
+                usedTiles.set(tileId, true);
+                drawTileOnBufferedImage(tileId, canvas, x * TILE_SIZE, y * TILE_SIZE, true);
+            }
         }
     }
 
@@ -3099,7 +3135,7 @@ public class MainPaneController {
                     conditionComboBox.setItems(FXCollections.observableList(yodesk.getZones().getZones().stream().flatMap(z -> z.getIzax().getMonsters().stream())
                             .map(Monster::getDropsLoot).distinct().sorted().map(m -> "" + m).collect(Collectors.toList())));
                     break;
-                    case MONSTER_MOVEMENT_TYPE:
+                case MONSTER_MOVEMENT_TYPE:
                     conditionComboBox.setItems(FXCollections.observableList(Arrays.stream(MovementType.values()).map(Enum::name).collect(Collectors.toList())));
                     conditionComboBox.getItems().add("<null>");
                     break;

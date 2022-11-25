@@ -45,7 +45,7 @@
                                           <HBox prefHeight="20.0" prefWidth="531.0" spacing="5">
                                              <children>
                                                 <Button fx:id="showActionsButton" layoutX="14.0" layoutY="40.0" mnemonicParsing="false" onAction="#showActionsButtonClick" text="Show actions" />
-                                                <CheckBox fx:id="showMapMonstersCheckBox" mnemonicParsing="false" onAction="#drawViewZone" selected="true" text="Show mosters" />
+                                                <CheckBox fx:id="showMapMonstersCheckBox" mnemonicParsing="false" onAction="#drawViewZone" selected="true" text="Show monsters" />
                                                 <CheckBox fx:id="showMapHotspotsCheckBox" mnemonicParsing="false" onAction="#drawViewZone" selected="true" text="Show hotspots" />
                                              </children>
                                           </HBox>
