@@ -4,6 +4,10 @@ import com.google.gson.Gson;
 import javafx.util.Pair;
 import md.leonis.ystt.model.Encoding;
 import md.leonis.ystt.model.yodesk.Yodesk;
+import md.leonis.ystt.model.yodesk.characters.Character;
+import md.leonis.ystt.model.yodesk.characters.CharacterType;
+import md.leonis.ystt.model.yodesk.characters.CharacterWeapon;
+import md.leonis.ystt.model.yodesk.characters.MovementType;
 import md.leonis.ystt.model.yodesk.puzzles.Puzzle;
 import md.leonis.ystt.model.yodesk.tiles.TileName;
 import md.leonis.ystt.model.yodesk.zones.*;
@@ -33,7 +37,12 @@ public class MainTest {
         Yodesk yodesk = Yodesk.fromFile("C:\\Users\\user\\Downloads\\Games_YS\\my experiments\\Star Wars - Yoda Stories (USA) (10.08.1998) (The LucasArts Archives Vol. IV) (Leonis)\\yodesk.dta", "windows-1252");
         //Yodesk yodesk = Yodesk.fromFile("C:\\Users\\user\\Downloads\\Games_YS\\my experiments\\Star Wars - Yoda Stories (Spain) (22.05.1997) (Installed)\\yodesk.dta", "windows-1252");
 
-        showPuzzles(yodesk);
+        //showPuzzles(yodesk);
+
+        showCharactersMovementType(yodesk);
+        //showRarestCharacters(yodesk);
+        //showCharactersEnemies(yodesk);
+        //showCharactersWeapons(yodesk);
         //showActionsOnlyTiles(yodesk);
         //showNPCs(yodesk);
         //showProvidedItems(yodesk);
@@ -50,6 +59,71 @@ public class MainTest {
         //showSoundsUsage();
         //encodingsToJson();
         //docExcelExperiments();
+    }
+
+    private static void showCharactersMovementType(Yodesk yodesk) {
+        List<Pair<MovementType, Character>> pairs = new ArrayList<>();
+        List<Character> characters = yodesk.getCharacters().getFilteredCharacters().stream().filter(c -> c.getType().equals(CharacterType.ENEMY)).collect(Collectors.toList());
+        for (Character enemy : characters) {
+            pairs.add(new Pair<>(enemy.getMovementType(), enemy));
+        }
+        // id   name    tiles
+        pairs.stream().collect(Collectors.groupingBy(Pair::getKey))
+                .entrySet().stream()
+                .sorted(Comparator.comparingLong(e -> e.getKey().getId()))
+                .forEach((e) -> System.out.println(String.format("| %d | %s | %s |",
+                        e.getKey().getId(), e.getKey().name().charAt(0) + e.getKey().name().toLowerCase().substring(1),
+                        e.getValue().stream().map(c -> c.getValue().getFrame1().getTiles().get(1)).distinct().sorted()
+                                .map(t -> String.format("![](images/tiles/%04d.png)", t)).collect(Collectors.joining(" "))))
+                );
+    }
+
+    private static void showRarestCharacters(Yodesk yodesk) {
+        List<Pair<Character, Integer>> pairs = new ArrayList<>();
+        for (Zone z : yodesk.getZones().getZones()) {
+            for (Monster m : z.getIzax().getMonsters()) {
+                Character character = yodesk.getCharacters().getFilteredCharacters().get(m.getCharacterId());
+                pairs.add(new Pair<>(character, z.getIndex()));
+            }
+        }
+        pairs.stream().collect(Collectors.groupingBy(Pair::getKey))
+                .entrySet().stream()
+                .filter(e -> e.getValue().stream().map(Pair::getValue).distinct().count() <= 5)
+                .sorted(Comparator.comparingLong(e -> e.getValue().stream().map(Pair::getValue).distinct().count()))
+                .forEach((e) -> System.out.println(String.format("| %d | ![](images/tiles/%04d.png) | %s | %s | %s | %s |",
+                        e.getKey().getIndex(), e.getKey().getFrame1().getTiles().get(1), e.getKey().getName(),
+                        yodesk.getCharacterWeapons().getWeapons().get(e.getKey().getIndex()).getHealth().shortValue(),
+                        yodesk.getCharacterAuxiliaries().getAuxiliaries().get(e.getKey().getIndex()).getDamage(),
+                        e.getValue().stream().map(Pair::getValue).distinct().map(z -> "" + z).collect(Collectors.joining(", ")))));
+    }
+
+    private static void showCharactersEnemies(Yodesk yodesk) {
+        List<Pair<Character, Character>> pairs = new ArrayList<>();
+        List<Character> characters = yodesk.getCharacters().getFilteredCharacters().stream().filter(c -> c.getType().equals(CharacterType.ENEMY)).collect(Collectors.toList());
+        for (Character enemy : characters) {
+            CharacterWeapon enemyWeapon = yodesk.getCharacterWeapons().getWeapons().get(enemy.getIndex());
+            Character weapon = enemyWeapon.getReference() == 65535 ? null : yodesk.getCharacters().getFilteredCharacters().get(enemyWeapon.getReference());
+            pairs.add(new Pair<>(enemy, weapon));
+        }
+        // ID   Tile 	Name	Movement Type  	Health      Melee Damage     Shoot Damage
+        pairs.forEach(p -> System.out.println(String.format("| %d | ![](images/tiles/%04d.png) | %s | %s | %s | %s | %s |",
+                p.getKey().getIndex(), p.getKey().getFrame1().getTiles().get(1), p.getKey().getName(), p.getKey().getMovementType().name().charAt(0) + p.getKey().getMovementType().name().toLowerCase().substring(1),
+                yodesk.getCharacterWeapons().getWeapons().get(p.getKey().getIndex()).getHealth().shortValue(),
+                yodesk.getCharacterAuxiliaries().getAuxiliaries().get(p.getKey().getIndex()).getDamage(),
+                p.getValue() == null ? "-" : yodesk.getCharacterAuxiliaries().getAuxiliaries().get(p.getValue().getIndex()).getDamage())));
+    }
+
+    private static void showCharactersWeapons(Yodesk yodesk) {
+        List<Pair<Character, List<Character>>> pairs = new ArrayList<>();
+        List<Character> characters = yodesk.getCharacters().getFilteredCharacters().stream().filter(c -> c.getType().equals(CharacterType.WEAPON)).collect(Collectors.toList());
+        for (Character weapon : characters) {
+            List<Character> enemies = yodesk.getCharacters().getFilteredCharacters().stream().filter(c -> !c.getType().equals(CharacterType.WEAPON))
+                    .filter(c -> yodesk.getCharacterWeapons().getWeapons().get(c.getIndex()).getReference() == weapon.getIndex()).collect(Collectors.toList());
+            pairs.add(new Pair<>(weapon, enemies));
+        }
+        pairs.forEach(p -> System.out.println(String.format("| %d | ![](images/tiles/%04d.png) | %s | %s | %s |",
+                p.getKey().getIndex(), p.getKey().getFrame1().getTiles().get(7), p.getKey().getName(), yodesk.getCharacterAuxiliaries().getAuxiliaries().get(p.getKey().getIndex()).getDamage(),
+                p.getValue().stream().map(c -> c.getFrame1().getTiles().get(1)).distinct().sorted().map(t -> String.format("![](images/tiles/%04d.png)", t)).collect(Collectors.joining(" ")))));
     }
 
     //TODO
