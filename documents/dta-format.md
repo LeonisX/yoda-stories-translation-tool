@@ -69,6 +69,7 @@ In some places, you will need to use a certain object, move or drag something,
 press something, shoot someone, or try to negotiate verbally using the Force.
 The random value generator allows you to pass the same location in different ways.
 
+
 Structure of the YODESK.DTA file
 --------------------------------
 
@@ -78,22 +79,22 @@ List of sections/chunks:
 * [`STUP`](dta-stup.md): startup image
 * [`SNDS`](dta-snds.md): sounds
 * [`TILE`](dta-tile.md): tiles. Occupy almost half of the DTA file
-* `ZONE`: zones. Occupy almost half of the DTA file
-   *`IZON`
-   * `IZAX`
-   *`IZX2`
-   *`IZX3`
-   *`IZX4`
-   *`IACT`
-* `PUZ2`: puzzles
-   *`IPUZ`
-* `CHAR`: characters
-   *`ICHA`
-* `CHWP`: character weapons
-* `CAUX`: character auxiliaries
-* `TNAM`: tile names
-* `TGEN`: tile genders (non-english versions)
-* `ENDF`: end section
+* [`ZONE`](dta-zone.md): zones. Occupy almost half of the DTA file
+  * `IZON`: [Planet type](dta-zone-1-planet.md), [Zone type](dta-zone-2-type.md), [HotSpots](dta-zone-3-hotspots.md)
+    * [`IZAX`](dta-zone-4-izax.md)
+    * [`IZX2`](dta-zone-5-izx2.md)
+    * [`IZX3`](dta-zone-6-izx3.md)
+    * [`IZX4`](dta-zone-7-izx4.md)
+    * [`IACT`](dta-zone-8-iact.md)
+* [`PUZ2`](dta-puz2.md): puzzles
+  * `IPUZ`
+* [`CHAR`](dta-char.md): characters
+  * `ICHA`
+* [`CHWP`](dta-char.md): character weapons
+* [`CAUX`](dta-char.md): character auxiliaries
+* [`TNAM`](dta-tnam.md): tile names
+* [`TGEN`](dta-tnam.md): tile genders (non-english versions)
+* [`ENDF`](dta-endf.md): end section
 
 Usually, after the name of the section, the next 4 bytes indicate its size in bytes.
 
@@ -101,6 +102,8 @@ The exceptions are:
  
 * `VERS`: all 4 bytes of this section store the value `512`.
 * `ZONE`: the first 2 bytes of this section indicate the total number of zones in the file: `658`.
+
+We will study the sections in order of their importance, gradually learning the structure of the game.
 
 **_If you took part in the development of the game, you know some intriguing details,
 you can add to this documentation, or you know the answer to one of the questions asked,

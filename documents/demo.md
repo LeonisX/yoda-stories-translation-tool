@@ -357,7 +357,7 @@ izx4._unnamed2: 1 -> 0
 
 _In fact, the `izx4._unnamed2` field is haunting me.
 It can be assumed that it is not used,
-But it may also be that this value is somehow used when generating a map, or somewhere else._
+but it may also be that this value is somehow used when generating a map, or somewhere else._
 
 **Zone 152**:
 
