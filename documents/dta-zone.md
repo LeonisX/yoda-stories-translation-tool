@@ -19,6 +19,16 @@ The zone is a completely self-sufficient object, consisting of:
 * Actions, Scripts and Hotspots
 
 During world generation, quest items and NPCs are randomly selected for the zone from the available list.
+These items are selected semi-randomly to create a new story each time.
+
+On the world map neighboring zones can be visited by walking off the current zone.
+Additionally, zones are connected through doors.
+
+In order to make zones a little more interesting to play and replay,
+the game includes a custom scripting language. These *actions* are defined per zone.
+
+Special points of interest on a zone are marked by *hotspots*. 
+These locations mark doors, or places where an item can be used, or an NPC be placed by the world generator.
 
 
 Format
