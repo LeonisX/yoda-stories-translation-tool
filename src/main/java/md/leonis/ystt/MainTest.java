@@ -39,7 +39,9 @@ public class MainTest {
 
         //showPuzzles(yodesk);
 
-        showCharactersMovementType(yodesk);
+        showPlanetTypes(yodesk);
+
+        //showCharactersMovementType(yodesk);
         //showRarestCharacters(yodesk);
         //showCharactersEnemies(yodesk);
         //showCharactersWeapons(yodesk);
@@ -59,6 +61,16 @@ public class MainTest {
         //showSoundsUsage();
         //encodingsToJson();
         //docExcelExperiments();
+    }
+
+    private static void showPlanetTypes(Yodesk yodesk) {
+        yodesk.getZones().getZones().stream().collect(Collectors.groupingBy(Zone::getPlanet))
+                .forEach((key, value) -> System.out.println(key.name() + ": " + value.size()));
+
+        System.out.println();
+
+        yodesk.getZones().getZones().stream().collect(Collectors.groupingBy(Zone::getType))
+                .forEach((key, value) -> System.out.println(key.name() + ": " + value.size()));
     }
 
     private static void showCharactersMovementType(Yodesk yodesk) {
