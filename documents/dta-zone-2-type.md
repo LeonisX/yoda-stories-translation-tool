@@ -57,6 +57,8 @@ Lose
 Town
 ----
 
+The hotspots `Ship From Planet` are located in these zones.
+
 **Zones**: 2, 151, 476.
 
 ![](images/zones/002.png)
@@ -67,7 +69,7 @@ Town
 Find Unique Weapon
 ------------------
 
-These are places of "`The Power`".
+These are places of "`The Power`". Almost all hotspots `Drop Unique Weapon` are located in these zones.
 
 **Zones**: 129, 272, 330, 369, 547, 640.
 
@@ -203,6 +205,8 @@ Gateway Departure
 
 **Zones**: 93, 642.
 
+The hotspots `Ship To Planet` are located in these zones.
+
 ![](images/zones/093.png)
 ![](images/zones/642.png)
 
@@ -211,6 +215,8 @@ Gateway Departure / Destination
 
 **Zones**: 105/106, 107/108, 142/143, 382/385, 384/402, 391/404,
 463/464, 465/466, 542/543, 544/546, 595/596, 598/599.
+
+These zones are respectively located hotspots `Vehicle To` and `Vehicle Back`.
 
 ![](images/zones/105.png)
 ![](images/zones/106.png)
