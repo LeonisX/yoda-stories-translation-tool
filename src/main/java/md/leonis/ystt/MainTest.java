@@ -39,7 +39,7 @@ public class MainTest {
 
         //showPuzzles(yodesk);
 
-        showPlanetTypes(yodesk);
+        //showPlanetTypes(yodesk);
 
         //showCharactersMovementType(yodesk);
         //showRarestCharacters(yodesk);
@@ -47,7 +47,7 @@ public class MainTest {
         //showCharactersWeapons(yodesk);
         //showActionsOnlyTiles(yodesk);
         //showNPCs(yodesk);
-        //showProvidedItems(yodesk);
+        showProvidedItems(yodesk);
         //showRequiredItems(yodesk);
         //showGoalItems(yodesk);
         //showLoot(yodesk);
@@ -231,7 +231,7 @@ public class MainTest {
     private static void showProvidedItems(Yodesk yodesk) {
         List<Triple<Integer, String, Integer>> triples = new ArrayList<>();
         for (Zone z : yodesk.getZones().getZones()) {
-            for (Integer m : z.getIzax().getRequiredItems()) {
+            for (Integer m : z.getIzx2().getProvidedItems()) {
                 triples.add(new ImmutableTriple<>(z.getIndex(), getTileName(yodesk, m), m));
             }
         }
