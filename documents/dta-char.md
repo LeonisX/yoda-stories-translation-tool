@@ -282,7 +282,72 @@ Enemies:
 | 76  | ![](images/tiles/2039.png) | CeilingFan      | -1     | -1     | 126, 411, 412, 626 |
 | 37  | ![](images/tiles/0355.png) | TimerWander     | -1     | -1     | 344, 345, 489, 496, 580 |
 
-    
+The invisible characters `TimerPatrol` and `TimerWander` are used as timers.
+For example, in zone #211 `TimerPatrol` has a strictly defined trajectory,
+and with each appearance at a certain point in the location, the counter increases by one.
+
+#### Zones of the rarest characters
+
+**Zone 72**: armed mercenary `Greedo`.
+
+![](images/zones/072.png)
+
+**Zone 211**: invisible `TimerPatrol` as timer.
+If you do not come to the aid of the rebel within a certain time, he will die.
+
+![](images/zones/211.png)
+
+**Zone 223**: mini boss `Snowman`. 
+It will be possible to fight with him only if more than 6 missions are successfully completed.
+However, in this case, the probability of this meeting is small: 1 to 10.
+If you manage to defeat the central snowman, then his brothers will appear in the four corners of the map.
+After the final victory, Luke's health level will rise to 300,
+and 7 Thermal Detonators will immediately appear in his inventory!
+
+![](images/zones/223.png)
+
+**Zone 548**: almost invulnerable `Gurk`. Visually, this monster strongly resembles `Little Rancor`,
+and he calls himself `Grrk`, but in any case, ordinary weapons do not cause him any harm.
+You must have `Gas Grenade` with you, without defeating him you will not receive a quest item.
+
+![](images/zones/548.png)
+
+**Zone 379**: mini boss `Rancor`, `Little Rancor`. There are a total of 7 monsters to defeat in the pit,
+but `Rancor` is in four parts. However, both in appearance and in damage this monster is far from its TV original.
+
+![](images/zones/379.png)
+
+**Zone 409**: `Bugs` (Alessian Terror Moth).
+They do not pose any danger, but they can scare city dwellers.
+Like any other insects, they fly into the light.
+
+![](images/zones/409.png)
+
+**Zone 412**: cowardly imperial officer `Imp-ScaredyGuy`. 
+
+![](images/zones/412.png)
+
+**Zone 519**: robot-mercenary `IG-88B`. It does not cause any particular difficulties.
+
+![](images/zones/519.png)
+
+**Zone 372**: aggressive `ForestTroopSit`. It does not cause any particular difficulties.
+
+![](images/zones/372.png)
+
+**Zone 580**: 12 unfriendly `Luke` clones.
+
+![](images/zones/580.png)
+
+**Zone 624**: `BatPatrol`, aka `Jungle Ray`. Caught with `Grappling Hook`.
+
+![](images/zones/624.png)
+
+**Zone 271**: mini boss `Dianoga`, aka `Dainoughout`. You need to get her heart.
+
+![](images/zones/271.png)
+
+
 ### Movement Types
 
 All characters have one important characteristic - movement type.
@@ -337,7 +402,7 @@ A determined enemy always goes to the protagonist.
 
 #### Wander
 
-Механический враг блуждает по карте.
+A mechanical enemy is wandering around the map.
 
 #### Unspecific
 

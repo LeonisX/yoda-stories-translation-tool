@@ -41,7 +41,7 @@ public enum InstructionOpcode {
     ENABLE_ALL_MONSTERS(25, 0, "Enable all monsters"),
     DISABLE_ALL_MONSTERS(26, 0, "Disable all monsters"),
     DROP_ITEM(27, 3, "Drops item `arg_0` for pickup at `arg_1`x`arg_2`. " +
-            "If the item is -1, it drops the current sector's find item. instead"),
+            "If the item is -1, it drops the current sector's find item instead"),
     ADD_ITEM(28, 1, "Add item with id `arg_0` to inventory"),
     REMOVE_ITEM(29, 1, "Remove one instance of item `arg_0` from the inventory"),
     MARK_AS_SOLVED(30, 0, ""),
