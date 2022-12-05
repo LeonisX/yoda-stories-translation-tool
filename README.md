@@ -98,6 +98,10 @@ Uses modified code from http://image4j.sourceforge.net project.
 
 ## TODO List
 
+* List hotspots/monsters in UI
+* Zone tiles: show name
+* Zone: show x,y
+* Actions: show readable names, tiles
 * Add hex dumps images to all sections, other images
 * 65535 values == -1; 255 == -1; 4294967295 - need correct values when load DTA assets. Unsigned -> Signed, may be all
 FFFFFFFF, FFFF, FF
