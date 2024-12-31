@@ -47,7 +47,7 @@ public class MainTest {
         //showCharactersWeapons(yodesk);
         //showActionsOnlyTiles(yodesk);
         //showNPCs(yodesk);
-        showProvidedItems(yodesk);
+        //showProvidedItems(yodesk);
         //showRequiredItems(yodesk);
         //showGoalItems(yodesk);
         //showLoot(yodesk);
@@ -55,9 +55,9 @@ public class MainTest {
         //showZonesTypeVsUnk2(yodesk);
         //showZonesTypeVsProvidedItems(yodesk);
 
-        //showGarbage(yodesk);
-        //showInstructionTitles(yodesk);
-        //showConditionsTitles(yodesk);
+        showGarbage(yodesk);
+        showInstructionTitles(yodesk);
+        showConditionsTitles(yodesk);
         //showSoundsUsage();
         //encodingsToJson();
         //docExcelExperiments();
@@ -316,19 +316,33 @@ public class MainTest {
                 .collect(Collectors.groupingBy(Zone::getType)).forEach((key, value) -> System.out.println(key + ": " + value.size()));
     }
 
-    private static void showGarbage(Yodesk yodesk) {
-        yodesk.getZones().getZones().forEach(zone -> {
-            System.out.println("Zone #" + zone.getIndex());
-            List<Action> actions = zone.getActions();
-            for (int i = 0; i < actions.size(); i++) {
-                Action action = actions.get(i);
-                System.out.println("Action #" + i);
-
-                System.out.println(getGarbage(action));
-                System.out.println(getActionScript(action));
+    private static void showGarbage(Yodesk yodesk) throws IOException {
+        LinkedHashMap<InstructionOpcode, List<String>> imap = Arrays.stream(InstructionOpcode.values())
+                .collect(Collectors.toMap(Function.identity(), i -> new ArrayList<>(), (x, y) -> y, LinkedHashMap::new));
+        LinkedHashMap<ConditionOpcode, List<String>> cmap = Arrays.stream(ConditionOpcode.values())
+                .collect(Collectors.toMap(Function.identity(), i -> new ArrayList<>(), (x, y) -> y, LinkedHashMap::new));
+        List<String> allLines = new ArrayList<>();
+        for (Zone zone : yodesk.getZones().getZones()) {
+            for (int i = 0; i < zone.getActions().size(); i++) {
+                Action action = zone.getActions().get(i);
+                List<String> lines = new ArrayList<>();
+                lines.add(String.format("\nAction #%s/%s", zone.getIndex(), i));
+                lines.add(getGarbage(action));
+                lines.add(getActionScript(action));
+                action.getConditions().stream().map(Condition::getOpcode).distinct().forEach(c -> cmap.get(c).addAll(lines));
+                action.getInstructions().stream().map(Instruction::getOpcode).distinct().forEach(c -> imap.get(c).addAll(lines));
+                allLines.addAll(lines);
             }
-        });
-
+        }
+        allLines = allLines.stream().flatMap(s -> Arrays.stream(s.split("(?<=\\G.{220})"))).collect(Collectors.toList());
+        allLines.forEach(System.out::println);
+        IOUtils.saveTextFile(allLines, Paths.get("actions-garbage.txt"));
+        for (Map.Entry<InstructionOpcode, List<String>> entry : imap.entrySet()) {
+            IOUtils.saveTextFile(entry.getValue(), Paths.get(entry.getKey().getOpcode() + ".txt"));
+        }
+        for (Map.Entry<ConditionOpcode, List<String>> entry : cmap.entrySet()) {
+            IOUtils.saveTextFile(entry.getValue(), Paths.get(entry.getKey().getOpcode() + ".txt"));
+        }
     }
 
     private static String getGarbage(Action action) {
@@ -336,14 +350,16 @@ public class MainTest {
 
         action.getConditions().forEach(c -> {
             for (int j = c.getOpcode().getArgsCount(); j < 5; j++) {
-                sb.append(" ").append(getUnusedVariableAsText(c.getArguments().get(j)));
+                sb.append(getUnusedVariableAsText(c.getArguments().get(j)));
             }
+            sb.append("           ");
         });
 
         action.getInstructions().forEach(i -> {
             for (int j = i.getOpcode().getArgsCount(); j < 5; j++) {
-                sb.append(" ").append(getUnusedVariableAsText(i.getArguments().get(j)));
+                sb.append(getUnusedVariableAsText(i.getArguments().get(j)));
             }
+            sb.append("           ");
         });
 
         return sb.toString();
@@ -354,18 +370,18 @@ public class MainTest {
 
         action.getConditions().forEach(c -> {
             String args = printArguments(c);
-            sb.append("    ").append(c.getOpcode().getOpcode());
+            sb.append(c.getOpcode().getCamelCaseOpcode());
             if (!args.isEmpty()) {
-                sb.append(": ");
+                sb.append(" ");
             }
             sb.append(args);
             sb.append("; ");
         });
         action.getInstructions().forEach(i -> {
             String args = printArguments(i);
-            sb.append("    ").append(i.getOpcode().getOpcode());
+            sb.append(i.getOpcode().getCamelCaseOpcode());
             if (!args.isEmpty()) {
-                sb.append(": ");
+                sb.append(" ");
             }
             sb.append(printArguments(i));
             sb.append("; ");
@@ -402,7 +418,9 @@ public class MainTest {
             });
         }));
         System.out.println("Conditions usage:");
-        map.forEach((key, value) -> System.out.println(key.getId() + ": " + key.getOpcode() + ": " + value.size()));
+        map.forEach((k, v) ->
+                System.out.println(String.format("|   %-4s | %-26s |  %4s |  %-3s | %-131s |", k.getId(), k.getCamelCaseOpcode(), v.size(), k.getArgsCount(), k.getDescription())));
+
         System.out.println("\nConditions garbage:");
         map.forEach((key, value) -> System.out.println(key.getOpcode() + ": " + value.stream()
                 .collect(Collectors.groupingBy(Function.identity())).entrySet().stream()
@@ -423,7 +441,9 @@ public class MainTest {
             });
         }));
         System.out.println("Instructions usage:");
-        map.forEach((key, value) -> System.out.println(key.getId() + ": " + key.getOpcode() + ": " + value.size()));
+        map.forEach((k, v) ->
+                System.out.println(String.format("|   %-4s | %-26s |  %4s |  %-3s | %-131s |", k.getId(), k.getCamelCaseOpcode(), v.size(), k.getArgsCount(), k.getDescription())));
+
         System.out.println("\nInstructions garbage:");
         map.forEach((key, value) -> System.out.println(key.getOpcode() + ": " + value.stream()
                 .collect(Collectors.groupingBy(Function.identity())).entrySet().stream()

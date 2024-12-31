@@ -1,7 +1,11 @@
 package md.leonis.ystt.model.yodesk.zones;
 
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 // https://github.com/cyco/WebFun/tree/master/src/engine/script/instructions
 // https://www.webfun.io/docs/scripting/instructions.html
@@ -85,6 +89,10 @@ public enum InstructionOpcode {
 
     public String getOpcode() {
         return name().toLowerCase().replace("_", "-");
+    }
+
+    public String getCamelCaseOpcode() {
+        return Arrays.stream(name().split("_")).map(s -> StringUtils.capitalize(s.toLowerCase())).collect(Collectors.joining());
     }
 
     public String getDescription() {

@@ -19,8 +19,7 @@ public class IOUtils {
     }
 
     public static void saveTextFile(List<String> lines, Path path) throws IOException {
-
-        createDirectories(path.getParent());
+        createDirectories(path.toAbsolutePath().getParent());
         Files.write(path, lines);
     }
 
@@ -29,9 +28,7 @@ public class IOUtils {
     }
 
     public void saveToFile(String filePath, String fileName, List<String> lines) throws IOException {
-
         Path directory = Paths.get(filePath);
-
         Files.createDirectories(directory);
         Files.write(directory.resolve(fileName), lines, Charset.defaultCharset());
     }
@@ -88,8 +85,7 @@ public class IOUtils {
     }
 
     public static void createDirectories(Path path) {
-        try {
-            Files.createDirectories(path);
+        try { Files.createDirectories(path);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -101,7 +97,6 @@ public class IOUtils {
     }
 
     public static Path findUnusedFileName(Path rootPath, String name, String ext) {
-
         Path path = rootPath.resolve(name + ext);
         if (!Files.exists(path)) {
             return path;
@@ -119,7 +114,6 @@ public class IOUtils {
     }
 
     public static Path getDtaPath(Path dir) throws IOException {
-
         try (Stream<Path> stream = Files.list(dir)) {
             return stream
                     .filter(file -> !Files.isDirectory(file))
