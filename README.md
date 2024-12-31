@@ -68,10 +68,13 @@ Uses modified code from http://image4j.sourceforge.net project.
 
 ### YODESK.DTA
 
+//todo finalize
 * [Format](documents/dta-format.md)
 * [VERS](documents/dta-vers.md)
 * [STUP](documents/dta-stup.md)
 * [SNDS](documents/dta-snds.md)
+
+//todo dta-endf, puz2, tnam, zone-8-iact (свериться с документацией json)
 
 ### Download
 
