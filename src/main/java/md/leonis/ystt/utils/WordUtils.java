@@ -43,7 +43,7 @@ public class WordUtils {
         FileOutputStream out = new FileOutputStream(path.toFile());
         document.write(out);
         out.close();
-        System.out.println(path.toString() + " written successfully");
+        System.out.println(path + " written successfully");
     }
 
     public static void savePuzzles(String crc32, Path path) throws IOException, InvalidFormatException {
@@ -68,7 +68,7 @@ public class WordUtils {
         FileOutputStream out = new FileOutputStream(path.toFile());
         document.write(out);
         out.close();
-        System.out.println(path.toString() + " written successfully");
+        System.out.println(path + " written successfully");
     }
 
     public static void saveNames(String crc32, Path path) throws IOException, InvalidFormatException {
@@ -83,7 +83,7 @@ public class WordUtils {
         FileOutputStream out = new FileOutputStream(path.toFile());
         document.write(out);
         out.close();
-        System.out.println(path.toString() + " written successully");
+        System.out.println(path + " written successfully");
     }
 
     public static void saveCharacters(String title, String crc32, Path path) throws IOException, InvalidFormatException {
@@ -99,7 +99,7 @@ public class WordUtils {
         FileOutputStream out = new FileOutputStream(path.toFile());
         document.write(out);
         out.close();
-        System.out.println(path.toString() + " written successully");
+        System.out.println(path + " written successfully");
     }
 
     private static void addNoTranslationHeader(XWPFDocument document, String title, String crc32) {
@@ -213,7 +213,7 @@ public class WordUtils {
         for (int i = 0; i < objectsList.size(); i++) {
             Object o = objectsList.get(i);
             if (o instanceof List) {
-                XWPFRun run = row.getCell(i).addParagraph().createRun();
+                XWPFRun run = row.getCell(i).getParagraphs().get(0).createRun();
                 for (Object e : ((List) o)) {
                     if (e instanceof BufferedImage) {
                         addImage(run, Collections.singletonList((BufferedImage) e));
@@ -222,7 +222,7 @@ public class WordUtils {
                         if (s.equals("\n") || s.equals("\r\n")) {
                             run.addBreak();
                         } else {
-                            run.setText((String) e);
+                            run.setText(s);
                         }
                     }
                 }

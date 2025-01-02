@@ -1,8 +1,9 @@
 package md.leonis.ystt.model.docx;
 
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class WordRecord {
 
@@ -37,6 +38,10 @@ public class WordRecord {
 
     public List<StringRecord> getStringRecords() {
         return stringRecords;
+    }
+
+    public List<StringImagesRecord> getStringImageRecords() {
+        return stringRecords.stream().map(s -> new StringImagesRecord(s.getId(), Collections.emptyList(), s.getOriginal(), s.getTranslation())).collect(Collectors.toList());
     }
 
     public void setStringRecords(List<StringRecord> stringRecords) {

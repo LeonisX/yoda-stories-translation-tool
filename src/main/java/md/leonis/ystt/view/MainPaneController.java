@@ -601,14 +601,7 @@ public class MainPaneController {
         try {
             tilesFlowPane.getChildren().clear();
             for (int i = 0; i < yodesk.getTiles().getTiles().size(); i++) {
-                boolean condition = true;
-                if (enableTilesFilterCheckBox.isSelected()) {
-                    String tileAttribute = yodesk.getTiles().getTiles().get(i).getAttributesBinaryString();
-                    int selectedIndex = tilesFilterComboBox.getSelectionModel().getSelectedIndex();
-                    String radioTileAttribute = (String) tilesToggleGroup.getToggles().get(selectedIndex).getUserData();
-                    condition = tileAttribute.equals(radioTileAttribute);
-                }
-                if (condition) {
+                if (canAddTile(i)) {
                     tilesFlowPane.getChildren().add(newTile(i, true));
                 }
             }
@@ -619,6 +612,16 @@ public class MainPaneController {
         } catch (Exception e) {
             JavaFxUtils.showAlert("Tiles display error", e);
         }
+    }
+
+    private boolean canAddTile(int tileId) {
+        if (enableTilesFilterCheckBox.isSelected()) {
+            String tileAttribute = yodesk.getTiles().getTiles().get(tileId).getAttributesBinaryString();
+            int selectedIndex = tilesFilterComboBox.getSelectionModel().getSelectedIndex();
+            String radioTileAttribute = (String) tilesToggleGroup.getToggles().get(selectedIndex).getUserData();
+            return tileAttribute.equals(radioTileAttribute);
+        }
+        return true;
     }
 
     private void drawTilesOnFlowPane(FlowPane flowPane, List<Integer> tileIds) {
@@ -836,15 +839,12 @@ public class MainPaneController {
                     .filter(z -> z.getActions().stream().flatMap(t -> t.getInstructions().stream()).anyMatch(i -> {
                         switch (i.getOpcode()) {
                             case PLACE_TILE:
+                            case SET_VARIABLE:
                                 return (int) i.getArguments().get(3) == tileId;
                             case DRAW_TILE:
                                 return (int) i.getArguments().get(2) == tileId;
-                            case SET_VARIABLE:
-                                return (int) i.getArguments().get(3) == tileId;
                             case DROP_ITEM:
-                                return (int) i.getArguments().get(0) == tileId;
                             case ADD_ITEM:
-                                return (int) i.getArguments().get(0) == tileId;
                             case REMOVE_ITEM:
                                 return (int) i.getArguments().get(0) == tileId;
                             default:
@@ -1552,7 +1552,7 @@ public class MainPaneController {
     }
 
     private int getEditorZoneId() {
-        if (zoneEditorListView.getItems().size() == 0) {
+        if (zoneEditorListView.getItems().isEmpty()) {
             return -1;
         }
         if (zoneEditorListView.getSelectionModel().getSelectedItem() == null) {
@@ -2368,7 +2368,7 @@ public class MainPaneController {
         }
     }
 
-    // If can, use monster tile from zone layer
+    // If possible, use monster tile from zone layer.
     private int getMonsterTileId(Zone zone, Monster m) {
         List<Integer> zoneSpotTiles = zone.getTileIds().get(m.getY() * zone.getWidth() + m.getX()).getColumn();
         List<Integer> monsterTiles = yodesk.getCharacters().getCharacters().get(m.getCharacterId()).getTileIds();
@@ -2631,7 +2631,7 @@ public class MainPaneController {
                 Log.debug("Load puzzles text from file: " + path);
                 WordRecord wordRecord = WordUtils.loadRecords(path);
                 validateProps(wordRecord.getProps());
-                puzzlesTexts = wordRecord.getStringRecords().stream().map(s -> new StringImagesRecord(s.getId(), Collections.emptyList(), s.getOriginal(), s.getTranslation())).collect(Collectors.toList());
+                puzzlesTexts = wordRecord.getStringImageRecords();
                 puzzlesTextTableView.setItems(FXCollections.observableList(puzzlesTexts));
                 Log.appendOk("Load puzzles text");
             } catch (Exception e) {
@@ -2778,7 +2778,7 @@ public class MainPaneController {
                 Log.debug("Loading tile names from file: " + path);
                 WordRecord wordRecord = WordUtils.loadNames(path);
                 validateProps(wordRecord.getProps());
-                namesTexts = wordRecord.getStringRecords().stream().map(s -> new StringImagesRecord(s.getId(), Collections.emptyList(), s.getOriginal(), s.getTranslation())).collect(Collectors.toList());
+                namesTexts = wordRecord.getStringImageRecords();
                 namesTextTableView.setItems(FXCollections.observableList(namesTexts));
 
                 double maxWidth = 0;
@@ -2871,12 +2871,14 @@ public class MainPaneController {
         return entry.getValue();
     }
 
+    private static final String HTTP = "http:";
+
     public void peExplorerHyperlinkClick() {
-        JavaFxUtils.openUrl("http://heaventools.com/pe-explorer.htm");
+        JavaFxUtils.openUrl(HTTP + "//heaventools.com/pe-explorer.htm");
     }
 
     public void resEditHyperlinkClick() {
-        JavaFxUtils.openUrl("http://resedit.net");
+        JavaFxUtils.openUrl(HTTP + "//resedit.net");
     }
 
     public void resourceBuilderHyperlinkClick() {
@@ -2884,11 +2886,11 @@ public class MainPaneController {
     }
 
     public void resourceHackerHyperlinkClick() {
-        JavaFxUtils.openUrl("http://angusj.com/resourcehacker");
+        JavaFxUtils.openUrl(HTTP + "//angusj.com/resourcehacker");
     }
 
     public void resourceTunerHyperlinkClick() {
-        JavaFxUtils.openUrl("http://restuner.com");
+        JavaFxUtils.openUrl(HTTP + "//restuner.com");
     }
 
     public void restoratorHyperlinkClick() {
@@ -3048,11 +3050,11 @@ public class MainPaneController {
                 int id = Integer.parseInt(conditionComboBox.getSelectionModel().getSelectedItem());
                 return z -> z.getIzax().getMonsters().stream().anyMatch(m -> m.getDropsLoot() == id);
             case MONSTER_MOVEMENT_TYPE:
-                id = conditionComboBox.getSelectionModel().getSelectedIndex();
-                if (id > MovementType.values().length - 1) {
+                int mid = conditionComboBox.getSelectionModel().getSelectedIndex();
+                if (mid > MovementType.values().length - 1) {
                     return z -> z.getIzax().getMonsters().stream().anyMatch(m -> yodesk.getCharacters().getCharacters().get(m.getCharacterId()).getMovementType() == null);
                 } else {
-                    return z -> z.getIzax().getMonsters().stream().anyMatch(m -> yodesk.getCharacters().getCharacters().get(m.getCharacterId()).getMovementType().getId() == id);
+                    return z -> z.getIzax().getMonsters().stream().anyMatch(m -> yodesk.getCharacters().getCharacters().get(m.getCharacterId()).getMovementType().getId() == mid);
                 }
             case MONSTER_WAYPOINT:
                 switch (conditionComboBox.getSelectionModel().getSelectedIndex()) {
@@ -3068,22 +3070,22 @@ public class MainPaneController {
                 if (conditionComboBox.getSelectionModel().getSelectedIndex() == conditionComboBox.getItems().size() - 1) {
                     return z -> z.getIzx2().getNumProvidedItems() == 0;
                 } else {
-                    tileId = Integer.parseInt(conditionComboBox.getSelectionModel().getSelectedItem().split("#")[1]);
-                    return z -> z.getIzx2().getProvidedItems().stream().anyMatch(m -> m == tileId);
+                    int tileId2 = Integer.parseInt(conditionComboBox.getSelectionModel().getSelectedItem().split("#")[1]);
+                    return z -> z.getIzx2().getProvidedItems().stream().anyMatch(m -> m == tileId2);
                 }
             case REQUIRED_ITEM:
                 if (conditionComboBox.getSelectionModel().getSelectedIndex() == conditionComboBox.getItems().size() - 1) {
                     return z -> z.getIzax().getNumRequiredItems() == 0;
                 } else {
-                    tileId = Integer.parseInt(conditionComboBox.getSelectionModel().getSelectedItem().split("#")[1]);
-                    return z -> z.getIzax().getRequiredItems().stream().anyMatch(m -> m == tileId);
+                    int tileId3 = Integer.parseInt(conditionComboBox.getSelectionModel().getSelectedItem().split("#")[1]);
+                    return z -> z.getIzax().getRequiredItems().stream().anyMatch(m -> m == tileId3);
                 }
             case GOAL_ITEM:
                 if (conditionComboBox.getSelectionModel().getSelectedIndex() == conditionComboBox.getItems().size() - 1) {
                     return z -> z.getIzax().getNumGoalItems() == 0;
                 } else {
-                    tileId = Integer.parseInt(conditionComboBox.getSelectionModel().getSelectedItem().split("#")[1]);
-                    return z -> z.getIzax().getGoalItems().stream().anyMatch(m -> m == tileId);
+                    int tileId4 = Integer.parseInt(conditionComboBox.getSelectionModel().getSelectedItem().split("#")[1]);
+                    return z -> z.getIzax().getGoalItems().stream().anyMatch(m -> m == tileId4);
                 }
             case IZAX_UNNAMED2:
                 return z -> z.getIzax().get_unnamed2() == Integer.parseInt(conditionComboBox.getSelectionModel().getSelectedItem());

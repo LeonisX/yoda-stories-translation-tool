@@ -17,7 +17,6 @@ public class ActionController {
 
     @FXML
     void initialize() {
-
     }
 
     public void okButtonClick() {

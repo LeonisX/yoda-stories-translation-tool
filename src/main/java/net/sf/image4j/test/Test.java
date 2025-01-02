@@ -51,7 +51,7 @@ public class Test {
 			
 			if (!strInFile.endsWith(".ico")) {
 
-				images = new ArrayList<java.awt.image.BufferedImage>(1);
+				images = new ArrayList<>(1);
 				images.add(ImageIO.read(in));
 				
 				System.out.println("Read image "+strInFile+"...OK");

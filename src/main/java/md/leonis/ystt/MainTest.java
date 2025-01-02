@@ -83,10 +83,10 @@ public class MainTest {
         pairs.stream().collect(Collectors.groupingBy(Pair::getKey))
                 .entrySet().stream()
                 .sorted(Comparator.comparingLong(e -> e.getKey().getId()))
-                .forEach((e) -> System.out.println(String.format("| %d | %s | %s |",
+                .forEach((e) -> System.out.printf("| %d | %s | %s |%n",
                         e.getKey().getId(), e.getKey().name().charAt(0) + e.getKey().name().toLowerCase().substring(1),
                         e.getValue().stream().map(c -> c.getValue().getFrame1().getTiles().get(1)).distinct().sorted()
-                                .map(t -> String.format("![](images/tiles/%04d.png)", t)).collect(Collectors.joining(" "))))
+                                .map(t -> String.format("![](images/tiles/%04d.png)", t)).collect(Collectors.joining(" ")))
                 );
     }
 
@@ -102,11 +102,11 @@ public class MainTest {
                 .entrySet().stream()
                 .filter(e -> e.getValue().stream().map(Pair::getValue).distinct().count() <= 5)
                 .sorted(Comparator.comparingLong(e -> e.getValue().stream().map(Pair::getValue).distinct().count()))
-                .forEach((e) -> System.out.println(String.format("| %d | ![](images/tiles/%04d.png) | %s | %s | %s | %s |",
+                .forEach((e) -> System.out.printf("| %d | ![](images/tiles/%04d.png) | %s | %s | %s | %s |%n",
                         e.getKey().getIndex(), e.getKey().getFrame1().getTiles().get(1), e.getKey().getName(),
                         yodesk.getCharacterWeapons().getWeapons().get(e.getKey().getIndex()).getHealth().shortValue(),
                         yodesk.getCharacterAuxiliaries().getAuxiliaries().get(e.getKey().getIndex()).getDamage(),
-                        e.getValue().stream().map(Pair::getValue).distinct().map(z -> "" + z).collect(Collectors.joining(", ")))));
+                        e.getValue().stream().map(Pair::getValue).distinct().map(z -> "" + z).collect(Collectors.joining(", "))));
     }
 
     private static void showCharactersEnemies(Yodesk yodesk) {
@@ -118,11 +118,11 @@ public class MainTest {
             pairs.add(new Pair<>(enemy, weapon));
         }
         // ID   Tile 	Name	Movement Type  	Health      Melee Damage     Shoot Damage
-        pairs.forEach(p -> System.out.println(String.format("| %d | ![](images/tiles/%04d.png) | %s | %s | %s | %s | %s |",
+        pairs.forEach(p -> System.out.printf("| %d | ![](images/tiles/%04d.png) | %s | %s | %s | %s | %s |%n",
                 p.getKey().getIndex(), p.getKey().getFrame1().getTiles().get(1), p.getKey().getName(), p.getKey().getMovementType().name().charAt(0) + p.getKey().getMovementType().name().toLowerCase().substring(1),
                 yodesk.getCharacterWeapons().getWeapons().get(p.getKey().getIndex()).getHealth().shortValue(),
                 yodesk.getCharacterAuxiliaries().getAuxiliaries().get(p.getKey().getIndex()).getDamage(),
-                p.getValue() == null ? "-" : yodesk.getCharacterAuxiliaries().getAuxiliaries().get(p.getValue().getIndex()).getDamage())));
+                p.getValue() == null ? "-" : yodesk.getCharacterAuxiliaries().getAuxiliaries().get(p.getValue().getIndex()).getDamage()));
     }
 
     private static void showCharactersWeapons(Yodesk yodesk) {
@@ -133,9 +133,9 @@ public class MainTest {
                     .filter(c -> yodesk.getCharacterWeapons().getWeapons().get(c.getIndex()).getReference() == weapon.getIndex()).collect(Collectors.toList());
             pairs.add(new Pair<>(weapon, enemies));
         }
-        pairs.forEach(p -> System.out.println(String.format("| %d | ![](images/tiles/%04d.png) | %s | %s | %s |",
+        pairs.forEach(p -> System.out.printf("| %d | ![](images/tiles/%04d.png) | %s | %s | %s |%n",
                 p.getKey().getIndex(), p.getKey().getFrame1().getTiles().get(7), p.getKey().getName(), yodesk.getCharacterAuxiliaries().getAuxiliaries().get(p.getKey().getIndex()).getDamage(),
-                p.getValue().stream().map(c -> c.getFrame1().getTiles().get(1)).distinct().sorted().map(t -> String.format("![](images/tiles/%04d.png)", t)).collect(Collectors.joining(" ")))));
+                p.getValue().stream().map(c -> c.getFrame1().getTiles().get(1)).distinct().sorted().map(t -> String.format("![](images/tiles/%04d.png)", t)).collect(Collectors.joining(" "))));
     }
 
     //TODO
@@ -148,9 +148,9 @@ public class MainTest {
         }
         triples.stream().collect(Collectors.groupingBy(Triple::getRight))
                 .entrySet().stream().sorted((e1, e2) -> Integer.compare(e2.getValue().size(), e1.getValue().size()))
-                .forEach((e) -> System.out.println(String.format("| %d | ![](images/tiles/%04d.png) | %s | %s | %s |", e.getKey(), e.getKey(), e.getValue().get(0).getMiddle(), e.getValue().size(),
+                .forEach((e) -> System.out.printf("| %d | ![](images/tiles/%04d.png) | %s | %s | %s |%n", e.getKey(), e.getKey(), e.getValue().get(0).getMiddle(), e.getValue().size(),
                         e.getValue().size() > 16 ? e.getValue().subList(0, 16).stream().map(z -> "" + z.getLeft()).collect(Collectors.joining(", ")) + ", ..."
-                                : e.getValue().stream().map(z -> "" + z.getLeft()).collect(Collectors.joining(", ")))));
+                                : e.getValue().stream().map(z -> "" + z.getLeft()).collect(Collectors.joining(", "))));
     }
 
     private static void showActionsOnlyTiles(Yodesk yodesk) {
@@ -162,20 +162,14 @@ public class MainTest {
             z.getActions().stream().flatMap(t -> t.getInstructions().stream()).forEach(i -> {
                 switch (i.getOpcode()) {
                     case PLACE_TILE:
+                    case SET_VARIABLE:
                         actionZones.add(new Pair<>((int) i.getArguments().get(3), z.getIndex()));
                         break;
                     case DRAW_TILE:
                         actionZones.add(new Pair<>((int) i.getArguments().get(2), z.getIndex()));
                         break;
-                    case SET_VARIABLE:
-                        actionZones.add(new Pair<>((int) i.getArguments().get(3), z.getIndex()));
-                        break;
                     case DROP_ITEM:
-                        actionZones.add(new Pair<>((int) i.getArguments().get(0), z.getIndex()));
-                        break;
                     case ADD_ITEM:
-                        actionZones.add(new Pair<>((int) i.getArguments().get(0), z.getIndex()));
-                        break;
                     case REMOVE_ITEM:
                         actionZones.add(new Pair<>((int) i.getArguments().get(0), z.getIndex()));
                         break;
@@ -185,19 +179,22 @@ public class MainTest {
 
         Map<Integer, List<Pair<Integer, Integer>>> actions = actionZones.stream().collect(Collectors.groupingBy(Pair::getKey));
 
+        List<Zone> zones = yodesk.getZones().getZones();
+        List<Puzzle> puzzles = yodesk.getPuzzles().getPuzzles();
+
         actions.keySet().removeAll(zoneTiles.keySet());
-        actions.keySet().removeAll(yodesk.getZones().getZones().stream().flatMap(z -> z.getIzax().getRequiredItems().stream()).distinct().collect(Collectors.toList()));
-        actions.keySet().removeAll(yodesk.getZones().getZones().stream().flatMap(z -> z.getIzax().getGoalItems().stream()).distinct().collect(Collectors.toList()));
-        actions.keySet().removeAll(yodesk.getZones().getZones().stream().flatMap(z -> z.getIzx2().getProvidedItems().stream()).distinct().collect(Collectors.toList()));
-        actions.keySet().removeAll(yodesk.getZones().getZones().stream().flatMap(z -> z.getIzx3().getNpcs().stream()).distinct().collect(Collectors.toList()));
-        actions.keySet().removeAll(yodesk.getZones().getZones().stream().flatMap(z -> z.getIzax().getMonsters().stream().map(m -> m.getLoot() - 1)).distinct().collect(Collectors.toList()));
-        actions.keySet().removeAll(yodesk.getCharacters().getFilteredCharacters().stream().flatMap(c -> c.getTileIds().stream()).distinct().collect(Collectors.toList()));
-        actions.keySet().removeAll(yodesk.getPuzzles().getPuzzles().stream().map(Puzzle::getItem1).distinct().collect(Collectors.toList()));
-        actions.keySet().removeAll(yodesk.getPuzzles().getPuzzles().stream().map(Puzzle::getItem2).distinct().collect(Collectors.toList()));
+        zones.stream().flatMap(z -> z.getIzax().getRequiredItems().stream()).distinct().forEach(actions.keySet()::remove);
+        zones.stream().flatMap(z -> z.getIzax().getGoalItems().stream()).distinct().forEach(actions.keySet()::remove);
+        zones.stream().flatMap(z -> z.getIzx2().getProvidedItems().stream()).distinct().forEach(actions.keySet()::remove);
+        zones.stream().flatMap(z -> z.getIzx3().getNpcs().stream()).distinct().forEach(actions.keySet()::remove);
+        zones.stream().flatMap(z -> z.getIzax().getMonsters().stream().map(m -> m.getLoot() - 1)).distinct().forEach(actions.keySet()::remove);
+        yodesk.getCharacters().getFilteredCharacters().stream().flatMap(c -> c.getTileIds().stream()).distinct().forEach(actions.keySet()::remove);
+        puzzles.stream().map(Puzzle::getItem1).distinct().forEach(actions.keySet()::remove);
+        puzzles.stream().map(Puzzle::getItem2).distinct().forEach(actions.keySet()::remove);
 
         actions.entrySet().stream().sorted((e1, e2) -> Integer.compare(e2.getValue().size(), e1.getValue().size()))
-                .forEach((e) -> System.out.println(String.format("| %d | ![](images/tiles/%04d.png) | %s | %s | %s |", e.getKey(), e.getKey(), getTileName2(yodesk, e.getKey()), e.getValue().size(),
-                        distinctZones(e.getValue()).stream().map(z -> "" + z).collect(Collectors.joining(", ")))));
+                .forEach((e) -> System.out.printf("| %d | ![](images/tiles/%04d.png) | %s | %s | %s |%n", e.getKey(), e.getKey(), getTileName2(yodesk, e.getKey()), e.getValue().size(),
+                        distinctZones(e.getValue()).stream().map(z -> "" + z).collect(Collectors.joining(", "))));
     }
 
     private static List<Integer> distinctZones(List<Pair<Integer, Integer>> pairs) {
@@ -223,9 +220,9 @@ public class MainTest {
         }
         triples.stream().collect(Collectors.groupingBy(Triple::getRight))
                 .entrySet().stream().sorted((e1, e2) -> Integer.compare(e2.getValue().size(), e1.getValue().size()))
-                .forEach((e) -> System.out.println(String.format("| %d | ![](images/tiles/%04d.png) | %s | %s | %s |", e.getKey(), e.getKey(), e.getValue().get(0).getMiddle(), e.getValue().size(),
+                .forEach((e) -> System.out.printf("| %d | ![](images/tiles/%04d.png) | %s | %s | %s |%n", e.getKey(), e.getKey(), e.getValue().get(0).getMiddle(), e.getValue().size(),
                         e.getValue().size() > 16 ? e.getValue().subList(0, 16).stream().map(z -> "" + z.getLeft()).collect(Collectors.joining(", ")) + ", ..."
-                                : e.getValue().stream().map(z -> "" + z.getLeft()).collect(Collectors.joining(", ")))));
+                                : e.getValue().stream().map(z -> "" + z.getLeft()).collect(Collectors.joining(", "))));
     }
 
     private static void showProvidedItems(Yodesk yodesk) {
@@ -237,9 +234,9 @@ public class MainTest {
         }
         triples.stream().collect(Collectors.groupingBy(Triple::getRight))
                 .entrySet().stream().sorted((e1, e2) -> Integer.compare(e2.getValue().size(), e1.getValue().size()))
-                .forEach((e) -> System.out.println(String.format("| %d | ![](images/tiles/%04d.png) | %s | %s | %s |", e.getKey(), e.getKey(), e.getValue().get(0).getMiddle(), e.getValue().size(),
+                .forEach((e) -> System.out.printf("| %d | ![](images/tiles/%04d.png) | %s | %s | %s |%n", e.getKey(), e.getKey(), e.getValue().get(0).getMiddle(), e.getValue().size(),
                         e.getValue().size() > 16 ? e.getValue().subList(0, 16).stream().map(z -> "" + z.getLeft()).collect(Collectors.joining(", ")) + ", ..."
-                                : e.getValue().stream().map(z -> "" + z.getLeft()).collect(Collectors.joining(", ")))));
+                                : e.getValue().stream().map(z -> "" + z.getLeft()).collect(Collectors.joining(", "))));
     }
 
     private static void showRequiredItems(Yodesk yodesk) {
@@ -251,9 +248,9 @@ public class MainTest {
         }
         triples.stream().collect(Collectors.groupingBy(Triple::getRight))
                 .entrySet().stream().sorted((e1, e2) -> Integer.compare(e2.getValue().size(), e1.getValue().size()))
-                .forEach((e) -> System.out.println(String.format("| %d | ![](images/tiles/%04d.png) | %s | %s | %s |", e.getKey(), e.getKey(), e.getValue().get(0).getMiddle(), e.getValue().size(),
+                .forEach((e) -> System.out.printf("| %d | ![](images/tiles/%04d.png) | %s | %s | %s |%n", e.getKey(), e.getKey(), e.getValue().get(0).getMiddle(), e.getValue().size(),
                         e.getValue().size() > 16 ? e.getValue().subList(0, 16).stream().map(z -> "" + z.getLeft()).collect(Collectors.joining(", ")) + ", ..."
-                                : e.getValue().stream().map(z -> "" + z.getLeft()).collect(Collectors.joining(", ")))));
+                                : e.getValue().stream().map(z -> "" + z.getLeft()).collect(Collectors.joining(", "))));
     }
 
     private static void showGoalItems(Yodesk yodesk) {
@@ -265,8 +262,8 @@ public class MainTest {
         }
         triples.stream().collect(Collectors.groupingBy(Triple::getRight))
                 .entrySet().stream().sorted(Comparator.comparing(e -> e.getValue().get(0).getMiddle()))
-                .forEach((e) -> System.out.println(String.format("| %d | ![](images/tiles/%04d.png) | %s | %s | %s |", e.getKey(), e.getKey(), e.getValue().get(0).getMiddle(), e.getValue().size(),
-                        e.getValue().stream().map(z -> "" + z.getLeft()).collect(Collectors.joining(", ")))));
+                .forEach((e) -> System.out.printf("| %d | ![](images/tiles/%04d.png) | %s | %s | %s |%n", e.getKey(), e.getKey(), e.getValue().get(0).getMiddle(), e.getValue().size(),
+                        e.getValue().stream().map(z -> "" + z.getLeft()).collect(Collectors.joining(", "))));
     }
 
     private static void showLoot(Yodesk yodesk) {
@@ -280,8 +277,8 @@ public class MainTest {
         }
         triples.stream().collect(Collectors.groupingBy(Triple::getRight))
                 .entrySet().stream().sorted((e1, e2) -> Integer.compare(e2.getValue().size(), e1.getValue().size()))
-                .forEach((e) -> System.out.println(String.format("| %d | ![](images/tiles/%04d.png) | %s | %s | %s |", e.getKey(), e.getKey(), e.getValue().get(0).getMiddle(), e.getValue().size(),
-                        e.getValue().stream().map(z -> "" + z.getLeft()).collect(Collectors.joining(", ")))));
+                .forEach((e) -> System.out.printf("| %d | ![](images/tiles/%04d.png) | %s | %s | %s |%n", e.getKey(), e.getKey(), e.getValue().get(0).getMiddle(), e.getValue().size(),
+                        e.getValue().stream().map(z -> "" + z.getLeft()).collect(Collectors.joining(", "))));
     }
 
     private static String getTileName(Yodesk yodesk, int tileId) {
@@ -299,7 +296,7 @@ public class MainTest {
                 if (m.getLoot() != 0 && m.getLoot() != 65535 && m.getDropsLoot() == 0) {
                     String character = yodesk.getCharacters().getCharacters().get(m.getCharacterId()).getName();
                     String tileName = getTileName(yodesk, m.getLoot() - 1);
-                    System.out.println(String.format("* Zone #%s: %s: %s", z.getIndex(), character, tileName));
+                    System.out.printf("* Zone #%s: %s: %s%n", z.getIndex(), character, tileName);
                 }
             }
         }
@@ -419,7 +416,7 @@ public class MainTest {
         }));
         System.out.println("Conditions usage:");
         map.forEach((k, v) ->
-                System.out.println(String.format("|   %-4s | %-26s |  %4s |  %-3s | %-131s |", k.getId(), k.getCamelCaseOpcode(), v.size(), k.getArgsCount(), k.getDescription())));
+                System.out.printf("|   %-4s | %-26s |  %4s |  %-3s | %-131s |%n", k.getId(), k.getCamelCaseOpcode(), v.size(), k.getArgsCount(), k.getDescription()));
 
         System.out.println("\nConditions garbage:");
         map.forEach((key, value) -> System.out.println(key.getOpcode() + ": " + value.stream()
@@ -442,7 +439,7 @@ public class MainTest {
         }));
         System.out.println("Instructions usage:");
         map.forEach((k, v) ->
-                System.out.println(String.format("|   %-4s | %-26s |  %4s |  %-3s | %-131s |", k.getId(), k.getCamelCaseOpcode(), v.size(), k.getArgsCount(), k.getDescription())));
+                System.out.printf("|   %-4s | %-26s |  %4s |  %-3s | %-131s |%n", k.getId(), k.getCamelCaseOpcode(), v.size(), k.getArgsCount(), k.getDescription()));
 
         System.out.println("\nInstructions garbage:");
         map.forEach((key, value) -> System.out.println(key.getOpcode() + ": " + value.stream()

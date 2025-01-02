@@ -24,7 +24,6 @@ import static md.leonis.ystt.utils.ImageUtils.getTile;
 public class WordHelper {
 
     public static List<StringRecord> getActionsTexts() {
-
         List<StringRecord> zoneRecords = new ArrayList<>();
 
         yodesk.getZones().getZones().forEach(zone -> {
@@ -53,7 +52,6 @@ public class WordHelper {
     }
 
     public static List<StringImagesRecord> getPuzzlesTexts() {
-
         List<StringImagesRecord> puzzleRecords = new ArrayList<>();
 
         yodesk.getPuzzles().getFilteredPuzzles().forEach(p -> {
@@ -87,7 +85,6 @@ public class WordHelper {
     }
 
     public static List<StringImagesRecord> getNamesTexts() {
-
         List<StringImagesRecord> list = new ArrayList<>();
 
         List<TileName> filteredNames = yodesk.getTileNames().getFilteredNames();

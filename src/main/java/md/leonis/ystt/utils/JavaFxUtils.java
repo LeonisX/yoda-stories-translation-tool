@@ -135,7 +135,6 @@ public class JavaFxUtils {
 
     @SuppressWarnings("all")
     public static int showDeleteTileConfirmation(int tileId, List<Integer> zoneIds, List<Integer> puzzleIds, List<Integer> charactersIds, List<String> tileNameIds) {
-
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Delete tile #" + tileId);
         alert.setHeaderText("Do you really want to delete this tile?");
@@ -171,23 +170,21 @@ public class JavaFxUtils {
     }
 
     public static boolean showModifiedConfirmation() {
-
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("You have unsaved changes!");
         alert.setHeaderText("Click Cancel if you don't want to lose them.");
 
         Optional<ButtonType> result = alert.showAndWait();
-        return result.get() == ButtonType.OK;
+        return result.orElse(null) == ButtonType.OK;
     }
 
     public static boolean showOverwriteConfirmation() {
-
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("The data on the disc will be overwritten!");
         alert.setHeaderText("Are you sure you want to continue?");
 
         Optional<ButtonType> result = alert.showAndWait();
-        return result.get() == ButtonType.OK;
+        return result.orElse(null) == ButtonType.OK;
     }
 
     public static void showAlert(String title, Exception exception) {
@@ -224,7 +221,6 @@ public class JavaFxUtils {
     }
 
     private static FileChooser getFileChooser(String title, List<FileChooser.ExtensionFilter> extensionFilters, String initialDir, String initialFile) {
-
         FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().addAll(extensionFilters);
         if (initialDir != null && new File(initialDir).exists()) {
@@ -237,14 +233,12 @@ public class JavaFxUtils {
     }
 
     public static void runInBackground(Runnable runnable) {
-
         Thread thread = new Thread(runnable);
         thread.setDaemon(true);
         thread.start();
     }
 
     public static void runInBackground(Runnable runnable, Runnable guiRunnable) {
-
         Task<Void> task = new Task<Void>() {
             @Override
             protected Void call() {

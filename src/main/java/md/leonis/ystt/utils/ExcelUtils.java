@@ -107,12 +107,15 @@ public class ExcelUtils {
         Map<Integer, List<Integer>> actionsTiles = yodesk.getZones().getZones().stream()
                 .flatMap(z -> z.getActions().stream()).flatMap(t -> t.getInstructions().stream()).map(i -> {
                     switch (i.getOpcode()) {
-                        case PLACE_TILE: return (int) i.getArguments().get(3);
-                        case DRAW_TILE: return (int) i.getArguments().get(2);
-                        case SET_VARIABLE: return (int) i.getArguments().get(3);
-                        case DROP_ITEM: return (int) i.getArguments().get(0);
-                        case ADD_ITEM: return (int) i.getArguments().get(0);
-                        case REMOVE_ITEM: return (int) i.getArguments().get(0);
+                        case PLACE_TILE:
+                        case SET_VARIABLE:
+                            return (int) i.getArguments().get(3);
+                        case DRAW_TILE:
+                            return (int) i.getArguments().get(2);
+                        case DROP_ITEM:
+                        case ADD_ITEM:
+                        case REMOVE_ITEM:
+                            return (int) i.getArguments().get(0);
                         default: return -1;
                     }
                 }).collect(Collectors.groupingBy(t -> t));
@@ -445,8 +448,6 @@ public class ExcelUtils {
 
         cell = row.createCell(columnIndex++);
         cell.setCellValue("ZA4 Unnamed2    ");
-
-        columnIndex = columnIndex / 1000;
 
         List<Zone> zones = yodesk.getZones().getZones();
 

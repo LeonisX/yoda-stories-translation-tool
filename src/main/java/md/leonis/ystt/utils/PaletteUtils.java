@@ -81,10 +81,6 @@ public class PaletteUtils {
             return false;
         }
 
-        if (i >= 224 * 4 && i <= 245 * 4) {
-            return false;
-        }
-
-        return true;
+        return i < 224 * 4 || i > 245 * 4;
     }
 }
