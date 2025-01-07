@@ -2502,7 +2502,18 @@ public class MainPaneController {
                                 .replace("[CR]", "\r\n")
                                 .replace("¥", var2(Yodesk.getOutputCharset()))
                                 .replace("¢", var1(Yodesk.getOutputCharset()))
-                                .replace("…", "...")
+                                .replace("…", "...")// U+2026
+                                .replace("‐", "-")  // U+2010
+                                .replace("‑", "-")  // U+2011
+                                .replace("‒", "-")  // U+2012
+                                .replace("–", "-")  // U+2013
+                                .replace("—", "-")  // U+2014
+                                .replace("―", "-")  // U+2015
+                                .replace("⸺", "-")  // U+2E3A
+                                .replace("⸻", "-")  // U+2E3B
+                                .replace("﹘", "-")  // U+FE58
+                                .replace("﹣", "-")  // U+FE63
+                                .replace("－", "-")  // U+FF0D
                         )
                 );
 
