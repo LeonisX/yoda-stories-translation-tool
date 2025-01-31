@@ -142,19 +142,19 @@ public class Dump {
             case LITTLE_ENDIAN:
                 result = Byte.toUnsignedInt(dump[index]);
                 index++;
-                result += Byte.toUnsignedInt(dump[index]) * 256;
+                result += Byte.toUnsignedInt(dump[index]) * 256L;
                 index++;
-                result += Byte.toUnsignedInt(dump[index]) * 256 * 256;
+                result += Byte.toUnsignedInt(dump[index]) * 256 * 256L;
                 index++;
-                result += Byte.toUnsignedInt(dump[index]) * 256 * 256 * 256;
+                result += Byte.toUnsignedInt(dump[index]) * 256 * 256 * 256L;
                 index++;
                 break;
             default:
-                result = Byte.toUnsignedInt(dump[index]) * 256 * 256 * 256;
+                result = Byte.toUnsignedInt(dump[index]) * 256 * 256 * 256L;
                 index++;
-                result += Byte.toUnsignedInt(dump[index]) * 256 * 256;
+                result += Byte.toUnsignedInt(dump[index]) * 256 * 256L;
                 index++;
-                result += Byte.toUnsignedInt(dump[index]) * 256;
+                result += Byte.toUnsignedInt(dump[index]) * 256L;
                 index++;
                 result += Byte.toUnsignedInt(dump[index]);
                 index++;
@@ -201,21 +201,21 @@ public class Dump {
             case LITTLE_ENDIAN:
                 result = result.add(BigInteger.valueOf(Byte.toUnsignedInt(dump[index])));
                 index++;
-                result = result.add(BigInteger.valueOf(Byte.toUnsignedInt(dump[index]) * 256));
+                result = result.add(BigInteger.valueOf(Byte.toUnsignedInt(dump[index]) * 256L));
                 index++;
-                result = result.add(BigInteger.valueOf(Byte.toUnsignedInt(dump[index]) * 256 * 256));
+                result = result.add(BigInteger.valueOf(Byte.toUnsignedInt(dump[index]) * 256 * 256L));
                 index++;
-                BigInteger v = BigInteger.valueOf(Byte.toUnsignedInt(dump[index]) * 256 * 256);
+                BigInteger v = BigInteger.valueOf(Byte.toUnsignedInt(dump[index]) * 256 * 256L);
                 result = result.add(v.multiply(BigInteger.valueOf(256)));
                 index++;
                 break;
             default:
-                v = BigInteger.valueOf(Byte.toUnsignedInt(dump[index]) * 256 * 256);
-                result = v.multiply(BigInteger.valueOf(256));
+                BigInteger w = BigInteger.valueOf(Byte.toUnsignedInt(dump[index]) * 256 * 256L);
+                result = w.multiply(BigInteger.valueOf(256));
                 index++;
-                result = result.add(BigInteger.valueOf(Byte.toUnsignedInt(dump[index]) * 256 * 256));
+                result = result.add(BigInteger.valueOf(Byte.toUnsignedInt(dump[index]) * 256 * 256L));
                 index++;
-                result = result.add(BigInteger.valueOf(Byte.toUnsignedInt(dump[index]) * 256));
+                result = result.add(BigInteger.valueOf(Byte.toUnsignedInt(dump[index]) * 256L));
                 index++;
                 result = result.add(BigInteger.valueOf(Byte.toUnsignedInt(dump[index])));
                 index++;
@@ -413,15 +413,14 @@ public class Dump {
 
         if (byteOrder == ByteOrder.BIG_ENDIAN) {
             for (int i = 0; i < data.length() / 2; i++) {
-                setByte(Integer.parseInt(data.substring(i * 2, i * 2 + 2) + "", 16));
+                setByte(Integer.parseInt(data.substring(i * 2, i * 2 + 2), 16));
             }
         } else { // Little Endian
             for (int i = data.length() / 2 - 1; i >= 0; i--) {
-                setByte(Integer.parseInt(data.substring(i * 2, i * 2 + 2) + "", 16));
+                setByte(Integer.parseInt(data.substring(i * 2, i * 2 + 2), 16));
             }
         }
     }
-
 
     public void erase(int address, int size) {
         moveToAddress(address);
@@ -434,7 +433,6 @@ public class Dump {
         }
     }
 
-
     public int getOffset() {
         return offset;
     }
@@ -442,7 +440,6 @@ public class Dump {
     public void setOffset(int offset) {
         this.offset = offset;
     }
-
 
     public byte[] getDump() {
         return dump;
@@ -501,7 +498,6 @@ public class Dump {
     }
 
     public int findAddress(int[] sample) {
-
         boolean done;
         int startIndex = -1;
 
@@ -524,7 +520,6 @@ public class Dump {
 
     // "??" as mask
     public Map<Integer, Long> findValueAddressByMask(String data) {
-
         data = data.replace(" ", "");
         if (data.length() % 2 != 0) {
             throw new RuntimeException("Bad HexDump: " + data);
@@ -532,7 +527,7 @@ public class Dump {
         int[] sample = new int[data.length() / 2];
         for (int i = 0; i < sample.length; i++) {
             try {
-                sample[i] = Integer.parseInt(data.substring(i * 2, i * 2 + 2) + "", 16);
+                sample[i] = Integer.parseInt(data.substring(i * 2, i * 2 + 2), 16);
             } catch (Exception e) {
                 sample[i] = Integer.MAX_VALUE;
             }
