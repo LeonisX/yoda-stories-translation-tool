@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Map;
+import java.util.Objects;
 
 public class DumpTest extends Assert {
 
@@ -16,13 +17,18 @@ public class DumpTest extends Assert {
     private final int FF = 0xFF;
     private final int OO = 0x00;
 
+    @Before
+    public void init() throws URISyntaxException, IOException {
+        romData = new Dump(new File(Objects.requireNonNull(Dump.class.getResource("/ps.ssm")).toURI()));
+    }
+
     @Test
     public void size() {
         assertEquals(romData.size(), 8188);
     }
 
     /*@Test
-    public void moveTo() throws Exception {
+    public void moveToAddress() {
         for (int i = 0; i < SaveState.START_TEXT.length(); i++) {
             romData.moveToAddress(i);
             assertEquals(romData.getByte(), SaveState.START_TEXT.codePointAt(i));
@@ -34,7 +40,8 @@ public class DumpTest extends Assert {
     }
 
     @Test
-    public void readString() throws Exception {
+    public void readString() {
+        romData.setCharset("windows-1252");
         assertEquals(romData.readString(SaveState.START_TEXT.length()), SaveState.START_TEXT);
     }*/
 
@@ -223,11 +230,6 @@ public class DumpTest extends Assert {
         assertEquals(romData.getByte(),  FF);
     }
 
-    @Before
-    public void init() throws URISyntaxException, IOException {
-        romData = new Dump(new File(Dump.class.getResource("/ps.ssm").toURI()));
-    }
-
     @Test
     @SuppressWarnings("all")
     public void saveToFile() throws Exception {
@@ -309,7 +311,7 @@ public class DumpTest extends Assert {
         prepareDump();
         Map<Integer, Long> result = romData.findValueAddressByMask("???????? 87654321");
         assertEquals(result.size(), 15);
-        assertEquals(result.get(0).longValue(), 0x87654321);
+        assertEquals(result.get(0).longValue(), 0x87654321L);
     }
 
     @Test
@@ -325,7 +327,7 @@ public class DumpTest extends Assert {
         prepareDump();
         Map<Integer, Long> result = romData.findValueAddressByMask("87654321 ????????");
         assertEquals(result.size(), 16);
-        assertEquals(result.get(4).longValue(), 0x87654321);
+        assertEquals(result.get(4).longValue(), 0x87654321L);
     }
 
     @Test
@@ -365,12 +367,10 @@ public class DumpTest extends Assert {
         assertEquals(result.get(offset + 32).longValue(), value);
     }
 
-
     private void prepareDump() {
         romData.setByteOrder(ByteOrder.BIG_ENDIAN);
         romData.setIndex(0);
         romData.writeHexDump("87654321 87654321 87654321 87654321 87654321 87654321 87654321 87654321");
         romData.writeHexDump("87654321 87654321 87654321 87654321 87654321 87654321 87654321 87654321");
     }
-
 }
